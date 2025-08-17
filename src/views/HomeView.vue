@@ -148,9 +148,16 @@
     <div class="recent-section">
       <h3 class="section-title">Recently uploaded</h3>
       
-      <div class="food-item" v-for="item in recentFoods" :key="item.id">
+      <div v-if="recentFoods.length === 0" class="empty-state">
+        <div class="empty-icon">📱</div>
+        <p>Noch keine Scans vorhanden</p>
+        <p class="empty-subtitle">Nutzen Sie den Scan-Button um Ihr erstes Essen zu scannen!</p>
+      </div>
+      
+      <div v-else class="food-item" v-for="item in recentFoods" :key="item.id">
         <div class="food-image">
-          <img :src="item.image" :alt="item.name" />
+          <img v-if="item.image && !item.image.includes('placeholder')" :src="item.image" :alt="item.name" />
+          <span v-else>{{ item.type === 'food' ? '🍽️' : '📦' }}</span>
         </div>
         <div class="food-info">
           <h4 class="food-name">{{ item.name }}</h4>
@@ -217,7 +224,29 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+
+// Type definitions
+interface ScanData {
+  id: number
+  type: 'food' | 'barcode'
+  timestamp: string
+  time: string
+  image?: string
+  data: any
+}
+
+interface FoodItem {
+  id: number
+  name: string
+  calories: number
+  protein: number
+  carbs: number
+  fats: number
+  time: string
+  image: string
+  type: string
+}
 
 // Daily targets
 const dailyCalories = 3000
@@ -231,6 +260,57 @@ const consumedProtein = ref(105)
 const consumedCarbs = ref(211)
 const consumedFats = ref(52)
 
+// Scan history from localStorage
+const scanHistory = ref<ScanData[]>([])
+
+// Load scan history from localStorage
+function loadScanHistory() {
+  try {
+    const history = JSON.parse(localStorage.getItem('scanHistory') || '[]') as ScanData[]
+    scanHistory.value = history.slice(0, 10) // Show only last 10 items
+  } catch (error) {
+    console.error('Error loading scan history:', error)
+    scanHistory.value = []
+  }
+}
+
+// Convert scan history to food items format
+const recentFoods = computed((): FoodItem[] => {
+  return scanHistory.value.map((scan: ScanData): FoodItem | null => {
+    if (scan.type === 'food') {
+      // For food scans, use total nutrition data
+      const total = scan.data.total
+      const firstFood = scan.data.foods?.[0]
+      return {
+        id: scan.id,
+        name: firstFood?.name || 'Gescanntes Essen',
+        calories: total.calories || 0,
+        protein: total.protein || 0,
+        carbs: total.carbs || 0,
+        fats: total.fat || 0,
+        time: scan.time,
+        image: scan.image || '/api/placeholder/60/60',
+        type: 'food'
+      }
+    } else if (scan.type === 'barcode') {
+      // For barcode scans, use product data
+      const nutriments = scan.data.nutriments || {}
+      return {
+        id: scan.id,
+        name: scan.data.product_name || 'Unbekanntes Produkt',
+        calories: Math.round(nutriments.energy_kcal_100g || 0),
+        protein: Math.round(nutriments.proteins_100g || 0),
+        carbs: Math.round(nutriments.carbohydrates_100g || 0),
+        fats: Math.round(nutriments.fat_100g || 0),
+        time: scan.time,
+        image: '/api/placeholder/60/60',
+        type: 'barcode'
+      }
+    }
+    return null
+  }).filter((item): item is FoodItem => item !== null)
+})
+
 // Calculated remaining amounts
 const caloriesLeft = computed(() => dailyCalories - consumedCalories.value)
 const proteinLeft = computed(() => consumedProtein.value - dailyProtein)
@@ -243,29 +323,16 @@ const proteinProgress = computed(() => consumedProtein.value / dailyProtein)
 const carbsProgress = computed(() => consumedCarbs.value / dailyCarbs)
 const fatsProgress = computed(() => consumedFats.value / dailyFats)
 
-// Sample recent foods data
-const recentFoods = ref([
-  {
-    id: 1,
-    name: 'Apple Salmon salad...',
-    calories: 500,
-    protein: 78,
-    carbs: 78,
-    fats: 78,
-    time: '9:00am',
-    image: '/api/placeholder/60/60'
-  },
-  {
-    id: 2,
-    name: 'Apple Salmon salad...',
-    calories: 500,
-    protein: 78,
-    carbs: 78,
-    fats: 78,
-    time: '9:00am',
-    image: '/api/placeholder/60/60'
-  }
-])
+// Load scan history when component mounts
+onMounted(() => {
+  loadScanHistory()
+  
+  // Listen for storage changes to update in real-time
+  window.addEventListener('storage', loadScanHistory)
+  
+  // Also listen for focus events to refresh when returning to app
+  window.addEventListener('focus', loadScanHistory)
+})
 </script>
 
 <style scoped>
@@ -463,6 +530,32 @@ const recentFoods = ref([
   font-size: 20px;
   font-weight: 600;
   margin-bottom: 20px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+  opacity: 0.6;
+}
+
+.empty-state p {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.empty-subtitle {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px !important;
+  margin-bottom: 0 !important;
 }
 
 .food-item {
