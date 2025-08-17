@@ -22,17 +22,34 @@
             
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">📱</div>
+                    <div class="feature-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                            <path d="M12 18h.01"/>
+                        </svg>
+                    </div>
                     <h3>AI Food Recognition</h3>
                     <p>Simply take a photo of your meal</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">📊</div>
+                    <div class="feature-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 3v5h5"/>
+                            <path d="M21 21v-5h-5"/>
+                            <path d="M8 8l13 13"/>
+                            <path d="M3 8v10a2 2 0 0 0 2 2h10"/>
+                        </svg>
+                    </div>
                     <h3>Smart Analytics</h3>
                     <p>Track macros and calories effortlessly</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🎯</div>
+                    <div class="feature-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M16.2 7.8l-2 6.3-6.3 2 2-6.3 6.3-2z"/>
+                        </svg>
+                    </div>
                     <h3>Personal Goals</h3>
                     <p>Set and achieve your nutrition targets</p>
                 </div>
@@ -296,6 +313,7 @@
 <script setup lang="ts">
 import { ref, computed, reactive } from 'vue'
 import { useRouter } from 'vue-router'
+import { updateUserProfile, updateDailyGoals, completeOnboarding } from '../stores/userStore'
 
 const router = useRouter()
 
@@ -416,10 +434,10 @@ function previousStep() {
 }
 
 function finishOnboarding() {
-    // Save user data and goals to localStorage
-    localStorage.setItem('userProfile', JSON.stringify(userInfo))
-    localStorage.setItem('dailyGoals', JSON.stringify(goals))
-    localStorage.setItem('onboardingCompleted', 'true')
+    // Update user store with data
+    updateUserProfile(userInfo)
+    updateDailyGoals(goals)
+    completeOnboarding()
     
     // Navigate to home
     router.push('/')
@@ -528,8 +546,15 @@ function finishOnboarding() {
 }
 
 .feature-icon {
-    font-size: 32px;
-    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    margin: 0 auto 12px;
+    color: #007052;
 }
 
 .feature-card h3 {

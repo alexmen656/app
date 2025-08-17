@@ -243,9 +243,9 @@ function handleTouchEnd(event: TouchEvent) {
     
     // Check if it's more horizontal than vertical
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
-        // Swipe right (from left to right) - go back to yesterday
+        // Swipe right (from left to right) - go back to home
         if (deltaX > swipeThreshold) {
-            router.push('/yesterday')
+            router.push('/')
         }
         // Swipe left (from right to left) - go to settings
         if (deltaX < -swipeThreshold) {
