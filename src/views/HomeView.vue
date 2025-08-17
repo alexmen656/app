@@ -67,24 +67,35 @@
         <div class="macro-label">Protein over</div>
         <div class="macro-progress">
           <svg width="60" height="60" viewBox="0 0 60 60">
-            <circle cx="30" cy="30" r="24" stroke="#2a2d37" stroke-width="4" fill="none"/>
+            <!-- Background circle -->
+            <circle 
+              cx="30" 
+              cy="30" 
+              r="24" 
+              stroke="#2a2d37" 
+              stroke-width="5" 
+              fill="none"
+            />
+            <!-- Progress circle -->
             <circle 
               cx="30" 
               cy="30" 
               r="24" 
               stroke="#ff6b6b" 
-              stroke-width="4" 
+              stroke-width="5" 
               fill="none"
               stroke-dasharray="150.8"
-              :stroke-dashoffset="150.8 - (150.8 * proteinProgress)"
+              :stroke-dashoffset="calculateMacroOffset(proteinProgress, 150.8)"
               stroke-linecap="round"
               transform="rotate(-90 30 30)"
+              class="progress-circle"
             />
           </svg>
           <div class="macro-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="#ff6b6b">
-              <path d="M11 21h-1l1-7H7.5c-.58 0-.57-.32-.38-.66.19-.34.05-.08.07-.12C8.48 10.94 10.42 7.54 13 3h1l-1 7h3.5c.49 0 .56.33.47.51l-.07.15C12.96 17.55 11 21 11 21z"/>
-            </svg>
+
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 640 640"><path fill="#ff6b6b" d="M500.5 320.5L499.8 318.6C465.8 224.8 410 140.5 337.1 72.5L333.8 69.5C330.1 66 325.1 64 320 64C314.9 64 309.9 66 306.2 69.5L302.9 72.5C230 140.5 174.2 224.8 140.2 318.6L139.5 320.5C131.9 341.3 128 363.4 128 385.6C128 490.7 214.8 576 320 576C425.2 576 512 490.7 512 385.6C512 363.4 508.1 341.4 500.5 320.5zM409.7 370C413.8 379.3 415.9 389.4 415.9 399.5C415.9 452.5 372.9 496 319.9 496C266.9 496 223.9 452.5 223.9 399.5C223.9 389.4 226 379.2 230.1 370L232 365.7C247.8 330.3 269.9 298 297.3 270.6L306.2 261.7C309.8 258.1 314.7 256.1 319.8 256.1C324.9 256.1 329.8 258.1 333.4 261.7L342.3 270.6C369.7 298 391.9 330.3 407.6 365.7L409.5 370z"/></svg>
+
+            
           </div>
         </div>
       </div>
@@ -94,24 +105,32 @@
         <div class="macro-label">Carbs left</div>
         <div class="macro-progress">
           <svg width="60" height="60" viewBox="0 0 60 60">
-            <circle cx="30" cy="30" r="24" stroke="#2a2d37" stroke-width="4" fill="none"/>
+            <!-- Background circle -->
+            <circle 
+              cx="30" 
+              cy="30" 
+              r="24" 
+              stroke="#2a2d37" 
+              stroke-width="5" 
+              fill="none"
+            />
+            <!-- Progress circle -->
             <circle 
               cx="30" 
               cy="30" 
               r="24" 
               stroke="#ffa726" 
-              stroke-width="4" 
+              stroke-width="5" 
               fill="none"
               stroke-dasharray="150.8"
-              :stroke-dashoffset="150.8 - (150.8 * carbsProgress)"
+              :stroke-dashoffset="calculateMacroOffset(carbsProgress, 150.8)"
               stroke-linecap="round"
               transform="rotate(-90 30 30)"
+              class="progress-circle"
             />
           </svg>
           <div class="macro-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="#ffa726">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-            </svg>
+         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="#ffa726" d="M79.7 234.6c6.2-4.1 14.7-3.4 20.1 2.1l46.1 46.1 6.1 6.7c19.7 23.8 26.3 55 19.2 83.9 31.7-7.7 66.2 1 90.6 25.3l46.1 46.1c6.2 6.2 6.2 16.4 0 22.6l-7.4 7.4c-37.5 37.5-98.3 37.5-135.8 0L134.1 444.3 49.4 529c-9.4 9.4-24.5 9.4-33.9 0-9.4-9.4-9.4-24.6 0-33.9l84.7-84.7-30.5-30.5c-37.5-37.5-37.5-98.3 0-135.7l7.4-7.4 2.5-2.1zm104-104c6.2-4.1 14.7-3.4 20.1 2.1l46.1 46.1 6.1 6.7c19.7 23.8 26.3 55 19.2 83.9 31.7-7.7 66.2 1 90.6 25.3l46.1 46.1c6.2 6.2 6.2 16.4 0 22.6l-7.4 7.4c-37.5 37.5-98.3 37.5-135.8 0l-94.9-94.9c-37.5-37.5-37.5-98.3 0-135.7l7.4-7.4 2.5-2.1zM495.2 15c9.4-9.4 24.6-9.4 34 0 8.8 8.8 9.3 22.7 1.6 32.2L529.2 49 414.7 163.4c7.7 1 15.2 3 22.5 5.9L495.5 111c9.4-9.4 24.6-9.4 34 0 8.8 8.8 9.3 22.7 1.6 32.1l-1.7 1.8-52.7 52.7 39 39c6.2 6.2 6.2 16.4 0 22.6l-7.4 7.4c-37.5 37.5-98.3 37.5-135.8 0l-94.9-94.9c-37.5-37.5-37.5-98.3 0-135.7l7.4-7.4 2.5-2.1c6.2-4.1 14.7-3.4 20.1 2.1l39 39 52.7-52.7c9.4-9.4 24.6-9.4 34 0 8.8 8.8 9.3 22.7 1.6 32.1l-1.7 1.8-58.3 58.3c2.8 7.1 4.7 14.5 5.7 22.1L495.2 15z"/></svg>
           </div>
         </div>
       </div>
@@ -121,24 +140,32 @@
         <div class="macro-label">Fats left</div>
         <div class="macro-progress">
           <svg width="60" height="60" viewBox="0 0 60 60">
-            <circle cx="30" cy="30" r="24" stroke="#2a2d37" stroke-width="4" fill="none"/>
+            <!-- Background circle -->
+            <circle 
+              cx="30" 
+              cy="30" 
+              r="24" 
+              stroke="#2a2d37" 
+              stroke-width="5" 
+              fill="none"
+            />
+            <!-- Progress circle -->
             <circle 
               cx="30" 
               cy="30" 
               r="24" 
               stroke="#42a5f5" 
-              stroke-width="4" 
+              stroke-width="5" 
               fill="none"
               stroke-dasharray="150.8"
-              :stroke-dashoffset="150.8 - (150.8 * fatsProgress)"
+              :stroke-dashoffset="calculateMacroOffset(fatsProgress, 150.8)"
               stroke-linecap="round"
               transform="rotate(-90 30 30)"
+              class="progress-circle"
             />
           </svg>
           <div class="macro-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="#42a5f5">
-              <path d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0 2c-4.411 0-8 3.589-8 8s3.589 8 8 8 8-3.589 8-8-3.589-8-8-8z"/>
-            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path fill="#42a5f5" d="M240 64C240 46.3 254.3 32 272 32L368 32C385.7 32 400 46.3 400 64C400 81.7 385.7 96 368 96L368 199.3C432.9 219.7 480 280.3 480 352L480 544C480 579.3 451.3 608 416 608L224 608C188.7 608 160 579.3 160 544L160 352C160 280.4 207.1 219.7 272 199.3L272 96C254.3 96 240 81.7 240 64zM320 480C355.3 480 384 447.6 384 416C384 394.8 355.1 351.5 336.1 325.4C328 314.3 311.9 314.3 303.8 325.4C284.8 351.5 255.9 394.8 255.9 416C255.9 447.6 284.6 480 319.9 480z"/></svg>
           </div>
         </div>
       </div>
@@ -318,10 +345,17 @@ const carbsLeft = computed(() => dailyCarbs - consumedCarbs.value)
 const fatsLeft = computed(() => dailyFats - consumedFats.value)
 
 // Progress calculations (0 to 1)
-const caloriesProgress = computed(() => consumedCalories.value / dailyCalories)
-const proteinProgress = computed(() => consumedProtein.value / dailyProtein)
-const carbsProgress = computed(() => consumedCarbs.value / dailyCarbs)
-const fatsProgress = computed(() => consumedFats.value / dailyFats)
+const caloriesProgress = computed(() => Math.min(consumedCalories.value / dailyCalories, 1))
+const proteinProgress = computed(() => Math.min(consumedProtein.value / dailyProtein, 1))
+const carbsProgress = computed(() => Math.min(consumedCarbs.value / dailyCarbs, 1))
+const fatsProgress = computed(() => Math.min(consumedFats.value / dailyFats, 1))
+
+// Calculate stroke-dashoffset for macro circles
+function calculateMacroOffset(progress: number, circumference: number): number {
+  // Ensure progress is between 0 and 1
+  const clampedProgress = Math.max(0, Math.min(1, progress))
+  return circumference - (circumference * clampedProgress)
+}
 
 // Load scan history when component mounts
 onMounted(() => {
@@ -476,7 +510,6 @@ onMounted(() => {
   padding: 16px;
   text-align: center;
   backdrop-filter: blur(10px);
-  height: 120px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -503,12 +536,12 @@ onMounted(() => {
   margin: 0 auto;
 }
 
-.macro-progress svg {
+.macro-progress > svg {
   width: 60px;
   height: 60px;
 }
 
-.macro-progress svg circle:last-child {
+.macro-progress svg .progress-circle {
   transition: stroke-dashoffset 0.8s ease-in-out;
 }
 
@@ -517,9 +550,14 @@ onMounted(() => {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 16px;
+  /*font-size: 12px;*/
   pointer-events: none;
   z-index: 1;
+}
+
+.macro-icon > svg{
+  width: 30px;
+  height: 30px;
 }
 
 .recent-section {
