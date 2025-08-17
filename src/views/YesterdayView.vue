@@ -1,13 +1,12 @@
 <template>
-    <div class="home-view" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
+    <div class="yesterday-view"
+         @touchstart="handleTouchStart"
+         @touchmove="handleTouchMove"
+         @touchend="handleTouchEnd">
         <!-- Header -->
         <header class="header">
             <div class="logo-section">
-                <!--<svg class="logo" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                    <path
-                        d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                </svg>-->
-                <h1 class="app-title"><span style="color: #007052;">Kal</span>oriq</h1><!--#005e4a #005f4a -->
+                <h1 class="app-title"><span style="color: #007052;">Kal</span>oriq</h1>
             </div>
             <div class="streak">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="#ff6b35">
@@ -20,21 +19,21 @@
 
         <!-- Today/Yesterday Toggle -->
         <div class="date-toggle">
-            <button class="date-btn active">Today</button>
-            <router-link to="/yesterday"> <button class="date-btn">Yesterday</button> </router-link>
+            <router-link to="/" class="date-btn">Today</router-link>
+            <button class="date-btn active">Yesterday</button>
         </div>
 
         <!-- Main Calories Card -->
         <div class="main-card">
             <div class="calories-section">
-                <h2 class="calories-number">{{ caloriesLeft }}</h2>
-                <p class="calories-label">Calories left</p>
+                <h2 class="calories-number">{{ yesterdayCaloriesLeft }}</h2>
+                <p class="calories-label">Calories consumed</p>
             </div>
             <div class="progress-ring">
                 <svg class="progress-svg" width="100" height="100" viewBox="0 0 100 100">
                     <circle cx="50" cy="50" r="40" stroke="#2a2d37" stroke-width="6" fill="none" />
                     <circle cx="50" cy="50" r="40" stroke="white" stroke-width="6" fill="none" stroke-dasharray="251.2"
-                        :stroke-dashoffset="251.2 - (251.2 * caloriesProgress)" stroke-linecap="round"
+                        :stroke-dashoffset="251.2 - (251.2 * yesterdayCaloriesProgress)" stroke-linecap="round"
                         class="progress-circle" transform="rotate(-90 50 50)" />
                 </svg>
                 <div class="flame-icon">
@@ -49,15 +48,15 @@
         <!-- Macros Grid -->
         <div class="macros-grid">
             <div class="macro-card protein">
-                <div class="macro-amount">{{ proteinLeft }}g</div>
-                <div class="macro-label">Protein over</div>
+                <div class="macro-amount">{{ yesterdayProtein }}g</div>
+                <div class="macro-label">Protein</div>
                 <div class="macro-progress">
                     <svg width="60" height="60" viewBox="0 0 60 60">
                         <!-- Background circle -->
                         <circle cx="30" cy="30" r="24" stroke="#2a2d37" stroke-width="5" fill="none" />
                         <!-- Progress circle -->
                         <circle cx="30" cy="30" r="24" stroke="#ff6b6b" stroke-width="5" fill="none"
-                            stroke-dasharray="150.8" :stroke-dashoffset="calculateMacroOffset(proteinProgress, 150.8)"
+                            stroke-dasharray="150.8" :stroke-dashoffset="calculateMacroOffset(yesterdayProteinProgress, 150.8)"
                             stroke-linecap="round" transform="rotate(-90 30 30)" class="progress-circle" />
                     </svg>
                     <div class="macro-icon">
@@ -70,15 +69,15 @@
             </div>
 
             <div class="macro-card carbs">
-                <div class="macro-amount">{{ carbsLeft }}g</div>
-                <div class="macro-label">Carbs left</div>
+                <div class="macro-amount">{{ yesterdayCarbs }}g</div>
+                <div class="macro-label">Carbs</div>
                 <div class="macro-progress">
                     <svg width="60" height="60" viewBox="0 0 60 60">
                         <!-- Background circle -->
                         <circle cx="30" cy="30" r="24" stroke="#2a2d37" stroke-width="5" fill="none" />
                         <!-- Progress circle -->
                         <circle cx="30" cy="30" r="24" stroke="#ffa726" stroke-width="5" fill="none"
-                            stroke-dasharray="150.8" :stroke-dashoffset="calculateMacroOffset(carbsProgress, 150.8)"
+                            stroke-dasharray="150.8" :stroke-dashoffset="calculateMacroOffset(yesterdayCarbsProgress, 150.8)"
                             stroke-linecap="round" transform="rotate(-90 30 30)" class="progress-circle" />
                     </svg>
                     <div class="macro-icon">
@@ -91,15 +90,15 @@
             </div>
 
             <div class="macro-card fats">
-                <div class="macro-amount">{{ fatsLeft }}g</div>
-                <div class="macro-label">Fats left</div>
+                <div class="macro-amount">{{ yesterdayFats }}g</div>
+                <div class="macro-label">Fats</div>
                 <div class="macro-progress">
                     <svg width="60" height="60" viewBox="0 0 60 60">
                         <!-- Background circle -->
                         <circle cx="30" cy="30" r="24" stroke="#2a2d37" stroke-width="5" fill="none" />
                         <!-- Progress circle -->
                         <circle cx="30" cy="30" r="24" stroke="#42a5f5" stroke-width="5" fill="none"
-                            stroke-dasharray="150.8" :stroke-dashoffset="calculateMacroOffset(fatsProgress, 150.8)"
+                            stroke-dasharray="150.8" :stroke-dashoffset="calculateMacroOffset(yesterdayFatsProgress, 150.8)"
                             stroke-linecap="round" transform="rotate(-90 30 30)" class="progress-circle" />
                     </svg>
                     <div class="macro-icon">
@@ -112,17 +111,17 @@
             </div>
         </div>
 
-        <!-- Recently Uploaded Section -->
+        <!-- Yesterday's Food Section -->
         <div class="recent-section">
-            <h3 class="section-title">Recently uploaded</h3>
+            <h3 class="section-title">Gestern gegessen</h3>
 
-            <div v-if="recentFoods.length === 0" class="empty-state">
-                <div class="empty-icon">📱</div>
-                <p>Noch keine Scans vorhanden</p>
-                <p class="empty-subtitle">Nutzen Sie den Scan-Button um Ihr erstes Essen zu scannen!</p>
+            <div v-if="yesterdayFoods.length === 0" class="empty-state">
+                <div class="empty-icon">📅</div>
+                <p>Keine Daten für gestern vorhanden</p>
+                <p class="empty-subtitle">Vergangsanalyse wird nach mehr Tracking-Tagen verfügbar sein!</p>
             </div>
 
-            <div v-else class="food-item" v-for="item in recentFoods" :key="item.id">
+            <div v-else class="food-item" v-for="item in yesterdayFoods" :key="item.id">
                 <div class="food-image">
                     <img v-if="item.image && !item.image.includes('placeholder')" :src="item.image" :alt="item.name" />
                     <span v-else>{{ item.type === 'food' ? '🍽️' : '📦' }}</span>
@@ -204,15 +203,6 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 // Type definitions
-interface ScanData {
-    id: number
-    type: 'food' | 'barcode'
-    timestamp: string
-    time: string
-    image?: string
-    data: any
-}
-
 interface FoodItem {
     id: number
     name: string
@@ -231,74 +221,82 @@ const dailyProtein = 150
 const dailyCarbs = 300
 const dailyFats = 100
 
-// Consumed amounts
-const consumedCalories = ref(500)
-const consumedProtein = ref(105)
-const consumedCarbs = ref(211)
-const consumedFats = ref(52)
+// Yesterday's consumed amounts (mock data for now)
+const yesterdayConsumedCalories = ref(2800)
+const yesterdayConsumedProtein = ref(145)
+const yesterdayConsumedCarbs = ref(285)
+const yesterdayConsumedFats = ref(95)
 
-// Scan history from localStorage
-const scanHistory = ref<ScanData[]>([])
-
-// Load scan history from localStorage
-function loadScanHistory() {
-    try {
-        const history = JSON.parse(localStorage.getItem('scanHistory') || '[]') as ScanData[]
-        scanHistory.value = history.slice(0, 10) // Show only last 10 items
-    } catch (error) {
-        console.error('Error loading scan history:', error)
-        scanHistory.value = []
+// Mock yesterday's food data
+const yesterdayFoods = ref<FoodItem[]>([
+    {
+        id: 1,
+        name: "Grilled Chicken Breast",
+        calories: 350,
+        protein: 40,
+        carbs: 0,
+        fats: 8,
+        time: "18:30",
+        image: "/api/placeholder/60/60",
+        type: "food"
+    },
+    {
+        id: 2,
+        name: "Brown Rice",
+        calories: 220,
+        protein: 5,
+        carbs: 45,
+        fats: 2,
+        time: "18:30",
+        image: "/api/placeholder/60/60",
+        type: "food"
+    },
+    {
+        id: 3,
+        name: "Greek Yogurt",
+        calories: 150,
+        protein: 20,
+        carbs: 10,
+        fats: 5,
+        time: "15:00",
+        image: "/api/placeholder/60/60",
+        type: "food"
+    },
+    {
+        id: 4,
+        name: "Banana",
+        calories: 105,
+        protein: 1,
+        carbs: 27,
+        fats: 0,
+        time: "10:30",
+        image: "/api/placeholder/60/60",
+        type: "food"
+    },
+    {
+        id: 5,
+        name: "Oatmeal",
+        calories: 300,
+        protein: 10,
+        carbs: 54,
+        fats: 6,
+        time: "08:00",
+        image: "/api/placeholder/60/60",
+        type: "food"
     }
-}
+])
 
-// Convert scan history to food items format
-const recentFoods = computed((): FoodItem[] => {
-    return scanHistory.value.map((scan: ScanData): FoodItem | null => {
-        if (scan.type === 'food') {
-            // For food scans, use total nutrition data
-            const total = scan.data.total
-            const firstFood = scan.data.foods?.[0]
-            return {
-                id: scan.id,
-                name: firstFood?.name || 'Gescanntes Essen',
-                calories: total.calories || 0,
-                protein: total.protein || 0,
-                carbs: total.carbs || 0,
-                fats: total.fat || 0,
-                time: scan.time,
-                image: scan.image || '/api/placeholder/60/60',
-                type: 'food'
-            }
-        } else if (scan.type === 'barcode') {
-            // For barcode scans, use product data
-            const nutriments = scan.data.nutriments || {}
-            return {
-                id: scan.id,
-                name: scan.data.product_name || 'Unbekanntes Produkt',
-                calories: Math.round(nutriments.energy_kcal_100g || 0),
-                protein: Math.round(nutriments.proteins_100g || 0),
-                carbs: Math.round(nutriments.carbohydrates_100g || 0),
-                fats: Math.round(nutriments.fat_100g || 0),
-                time: scan.time,
-                image: '/api/placeholder/60/60',
-                type: 'barcode'
-            }
-        }
-        return null
-    }).filter((item): item is FoodItem => item !== null)
-})
-
-// Calculated remaining amounts
-const caloriesLeft = computed(() => dailyCalories - consumedCalories.value)
-const proteinLeft = computed(() => consumedProtein.value - dailyProtein)
-const carbsLeft = computed(() => dailyCarbs - consumedCarbs.value)
-const fatsLeft = computed(() => dailyFats - consumedFats.value)
+// Yesterday calculations
+const yesterdayCaloriesLeft = computed(() => yesterdayConsumedCalories.value)
+const yesterdayProtein = computed(() => yesterdayConsumedProtein.value)
+const yesterdayCarbs = computed(() => yesterdayConsumedCarbs.value)
+const yesterdayFats = computed(() => yesterdayConsumedFats.value)
 
 // Progress calculations (0 to 1)
-const caloriesProgress = computed(() => Math.min(consumedCalories.value / dailyCalories, 1))
-const proteinProgress = computed(() => Math.min(consumedProtein.value / dailyProtein, 1))
-const carbsProgress = computed(() => Math.min(consumedCarbs.value / dailyCarbs, 1))
-const fatsProgress = computed(() => Math.min(consumedFats.value / dailyFats, 1))
+const yesterdayCaloriesProgress = computed(() => Math.min(yesterdayConsumedCalories.value / dailyCalories, 1))
+const yesterdayProteinProgress = computed(() => Math.min(yesterdayConsumedProtein.value / dailyProtein, 1))
+const yesterdayCarbsProgress = computed(() => Math.min(yesterdayConsumedCarbs.value / dailyCarbs, 1))
+const yesterdayFatsProgress = computed(() => Math.min(yesterdayConsumedFats.value / dailyFats, 1))
 
 // Calculate stroke-dashoffset for macro circles
 function calculateMacroOffset(progress: number, circumference: number): number {
@@ -324,7 +322,7 @@ function handleTouchMove(event: TouchEvent) {
     const currentY = event.touches[0].clientY
     const deltaX = Math.abs(currentX - touchStartX)
     const deltaY = Math.abs(currentY - touchStartY)
-
+    
     if (deltaX > deltaY && deltaX > 10) {
         event.preventDefault()
     }
@@ -333,40 +331,33 @@ function handleTouchMove(event: TouchEvent) {
 function handleTouchEnd(event: TouchEvent) {
     const touchEndX = event.changedTouches[0].clientX
     const touchEndY = event.changedTouches[0].clientY
-
+    
     const deltaX = touchEndX - touchStartX
     const deltaY = touchEndY - touchStartY
-
+    
     // Check if it's more horizontal than vertical
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
-        // Swipe left (from right to left) - go to yesterday
-        if (deltaX < -swipeThreshold) {
-            router.push('/yesterday')
+        // Swipe right (from left to right) - go back to today/home
+        if (deltaX > swipeThreshold) {
+            router.push('/')
         }
-        // Swipe right (from left to right) could be used for future navigation
-        // if (deltaX > swipeThreshold) {
-        //     // Could navigate to a different view
+        // Swipe left could be used for future navigation (maybe next day)
+        // if (deltaX < -swipeThreshold) {
+        //     // Could navigate to next day or other view
         // }
     }
 }
 
-// Load scan history when component mounts
 onMounted(() => {
-    loadScanHistory()
-
-    // Listen for storage changes to update in real-time
-    window.addEventListener('storage', loadScanHistory)
-
-    // Also listen for focus events to refresh when returning to app
-    window.addEventListener('focus', loadScanHistory)
+    // Load yesterday's data from localStorage or API in the future
+    console.log('Yesterday view loaded')
 })
 </script>
 
 <style scoped>
-.home-view {
+.yesterday-view {
     height: 100vh;
     height: 100dvh;
-    /* Dynamic viewport height for mobile */
     background: linear-gradient(135deg, #1e1e2e 0%, #2a2d37 100%);
     color: white;
     padding: 16px;
@@ -375,14 +366,10 @@ onMounted(() => {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
     overflow-y: auto;
     overflow-x: hidden;
-    /* Prevent text selection */
     -webkit-user-select: none;
     user-select: none;
-    /* Prevent touch callouts */
     -webkit-touch-callout: none;
-    /* Prevent tap highlights */
     -webkit-tap-highlight-color: transparent;
-    /* Prevent zoom on double tap */
     touch-action: manipulation;
 }
 
@@ -398,11 +385,6 @@ onMounted(() => {
     display: flex;
     align-items: center;
     gap: 10px;
-}
-
-.logo {
-    width: 24px;
-    height: 24px;
 }
 
 .app-title {
@@ -435,6 +417,7 @@ onMounted(() => {
     font-size: 16px;
     cursor: pointer;
     position: relative;
+    text-decoration: none;
 }
 
 .date-btn.active::after {
@@ -456,7 +439,6 @@ onMounted(() => {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 12px;
-    /*24px*/
     backdrop-filter: blur(10px);
     height: 140px;
 }
@@ -545,7 +527,6 @@ onMounted(() => {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    /*font-size: 12px;*/
     pointer-events: none;
     z-index: 1;
 }
@@ -731,9 +712,5 @@ onMounted(() => {
 
 .add-button:hover {
     transform: scale(1.1);
-}
-
-a {
-    text-decoration: none;
 }
 </style>
