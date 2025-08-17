@@ -1,4 +1,4 @@
-import { reactive, computed } from 'vue'
+import { reactive, computed, ref } from 'vue'
 
 interface UserProfile {
   name: string
@@ -81,9 +81,12 @@ export const userPreferences = reactive<UserPreferences>(
   loadFromStorage('userPreferences', defaultPreferences)
 )
 
+// Reactive onboarding completion state
+const onboardingCompleted = ref(localStorage.getItem('onboardingCompleted') === 'true')
+
 // Computed values
 export const isOnboardingCompleted = computed(() => {
-  return localStorage.getItem('onboardingCompleted') === 'true'
+  return onboardingCompleted.value
 })
 
 export const hasValidProfile = computed(() => {
@@ -109,6 +112,7 @@ export function updateUserPreferences(updates: Partial<UserPreferences>) {
 
 export function completeOnboarding() {
   localStorage.setItem('onboardingCompleted', 'true')
+  onboardingCompleted.value = true
 }
 
 export function resetOnboarding() {
@@ -121,6 +125,7 @@ export function resetOnboarding() {
   Object.assign(userProfile, defaultUserProfile)
   Object.assign(dailyGoals, defaultGoals)
   Object.assign(userPreferences, defaultPreferences)
+  onboardingCompleted.value = false
 }
 
 // BMR calculation using Harris-Benedict equation
