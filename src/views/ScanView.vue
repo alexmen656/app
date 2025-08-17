@@ -1,111 +1,106 @@
 <template>
   <div class="scan-view">
-    <!-- Header -->
-    <header class="header">
-      <div class="logo-section">
-        <svg class="logo" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-        </svg>
-        <h1 class="app-title">Cal AI</h1>
+    <!-- Camera Interface (Full Screen) -->
+    <div class="camera-container" v-if="!scanResults && !error">
+      <!-- Header Bar -->
+      <div class="header-bar">
+        <button @click="$router.go(-1)" class="back-btn">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+          </svg>
+        </button>
+        <h1 class="scanner-title">Scanner</h1>
+        <button class="menu-btn">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+            <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+          </svg>
+        </button>
       </div>
-      <router-link to="/" class="back-button">
-        <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-          <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
-        </svg>
-      </router-link>
-    </header>
 
-    <!-- Scan Mode Tabs -->
-    <div class="scan-tabs" v-if="!scanResults">
-      <button 
-        class="tab-button" 
-        :class="{ active: scanMode === 'food' }"
-        @click="setScanMode('food')"
-      >
-        <span class="tab-icon">📸</span>
-        Essen
-      </button>
-      <button 
-        class="tab-button" 
-        :class="{ active: scanMode === 'barcode' }"
-        @click="setScanMode('barcode')"
-      >
-        <span class="tab-icon">📱</span>
-        Barcode
-      </button>
-    </div>
-
-    <!-- Camera/Scanner Interface -->
-    <div class="scanner-interface" v-if="!scanResults && !error">
-      <!-- Food Camera View -->
-      <div v-if="scanMode === 'food'" class="camera-view">
-        <div class="camera-frame">
-          <div class="camera-overlay">
-            <div class="scan-area">
-              <div class="corner top-left"></div>
-              <div class="corner top-right"></div>
-              <div class="corner bottom-left"></div>
-              <div class="corner bottom-right"></div>
-            </div>
-          </div>
-          <div class="camera-placeholder">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-            </svg>
-            <p>Essen in den Rahmen positionieren</p>
+      <!-- Camera View -->
+      <div class="camera-view-full">
+        <!-- Viewfinder Overlay -->
+        <div class="viewfinder-overlay">
+          <div class="viewfinder-frame">
+            <div class="corner-tl"></div>
+            <div class="corner-tr"></div>
+            <div class="corner-bl"></div>
+            <div class="corner-br"></div>
           </div>
         </div>
-        
-        <div class="camera-controls">
-          <button 
-            @click="startFoodScan" 
-            class="capture-button"
-            :disabled="isScanning || isAnalyzing"
-          >
-            <div class="capture-inner" :class="{ scanning: isScanning || isAnalyzing }">
-              <svg v-if="!isScanning && !isAnalyzing" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+
+        <!-- Camera Placeholder/Preview -->
+        <div class="camera-preview">
+          <div v-if="!isScanning && !isAnalyzing" class="preview-placeholder">
+            <div class="placeholder-content">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="rgba(255,255,255,0.6)">
+                <path d="M9 2l-1 1H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-4L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>
               </svg>
-              <div v-else class="loading-spinner-small"></div>
+              <p v-if="scanMode === 'food'">Position food in frame</p>
+              <p v-else>Position barcode in frame</p>
             </div>
-          </button>
-          <p class="capture-hint">{{ isScanning || isAnalyzing ? loadingMessage : 'Tippen zum Fotografieren' }}</p>
+          </div>
+          <div v-else class="scanning-state">
+            <div class="loading-spinner"></div>
+            <p>{{ loadingMessage }}</p>
+          </div>
         </div>
       </div>
 
-      <!-- Barcode Scanner View -->
-      <div v-if="scanMode === 'barcode'" class="barcode-view">
-        <div class="scanner-frame">
-          <div class="scanner-overlay">
-            <div class="scan-line"></div>
-            <div class="scan-area-barcode">
-              <div class="scan-guidelines">
-                <div class="guideline"></div>
-                <div class="guideline"></div>
-                <div class="guideline"></div>
-              </div>
-            </div>
-          </div>
-          <div class="scanner-placeholder">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M3 5v4h2V7h2V5H3zm2 10H3v4h4v-2H5v-2zm14 4v-2h-2v4h4v-4h-2zM19 5h-2v2h2v2h2V5h-4zM7 19h2v-2H7v2zm0-14h2V3H7v2zm12 0V3h-2v2h2zm-4 14h2v-2h-2v2zm-8 0h2v-2H7v2z"/>
-            </svg>
-            <p>Barcode in den Bereich scannen</p>
-          </div>
-        </div>
-        
-        <div class="scanner-controls">
+      <!-- Bottom Controls -->
+      <div class="bottom-controls">
+        <!-- Scan Mode Toggle -->
+        <div class="scan-mode-toggle">
           <button 
-            @click="startBarcodeScan" 
-            class="scan-button"
-            :disabled="isScanning || isAnalyzing"
+            class="mode-btn" 
+            :class="{ active: scanMode === 'barcode' }"
+            @click="setScanMode('barcode')"
           >
-            <svg v-if="!isScanning && !isAnalyzing" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
               <path d="M3 5v4h2V7h2V5H3zm2 10H3v4h4v-2H5v-2zm14 4v-2h-2v4h4v-4h-2zM19 5h-2v2h2v2h2V5h-4z"/>
             </svg>
-            <div v-else class="loading-spinner-small"></div>
-            {{ isScanning || isAnalyzing ? loadingMessage : 'Barcode scannen' }}
           </button>
+          <span class="mode-label">{{ modeLabel }}</span>
+          <button 
+            class="mode-btn" 
+            :class="{ active: scanMode === 'food' }"
+            @click="setScanMode('food')"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M9 2l-1 1H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-4L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Capture Controls -->
+        <div class="capture-controls">
+          <div class="capture-actions">
+            <!-- Flash Toggle -->
+            <button class="action-btn">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                <path d="M7 2v11h3v9l7-12h-4L17 2H7z"/>
+              </svg>
+            </button>
+
+            <!-- Main Capture Button -->
+            <button 
+              class="capture-btn"
+              :disabled="isScanning || isAnalyzing"
+              @click="scanMode === 'food' ? startFoodScan() : startBarcodeScan()"
+            >
+              <div class="capture-inner" :class="{ scanning: isScanning || isAnalyzing }">
+                <div v-if="!isScanning && !isAnalyzing" class="capture-ring"></div>
+                <div v-else class="capture-loading"></div>
+              </div>
+            </button>
+
+            <!-- Gallery/Image Picker -->
+            <button class="action-btn">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -441,6 +436,11 @@ function setScanMode(mode: 'food' | 'barcode') {
   resetScan() // Clear any existing results/errors when switching modes
 }
 
+// Computed property for mode label
+const modeLabel = computed(() => {
+  return scanMode.value === 'food' ? 'Scan food' : 'Scan code'
+})
+
 // Computed properties
 const confidenceClass = computed(() => {
   if (!scanResults.value?.data?.confidence) return ''
@@ -635,143 +635,177 @@ onMounted(() => {
 .scan-view {
   height: 100vh;
   height: 100dvh;
-  background: linear-gradient(135deg, #1e1e2e 0%, #2a2d37 100%);
+  background: #000;
   color: white;
-  padding: 16px;
-  padding-top: max(44px, env(safe-area-inset-top, 44px));
-  padding-bottom: max(80px, calc(80px + env(safe-area-inset-bottom, 0px)));
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
   -webkit-user-select: none;
   user-select: none;
   -webkit-touch-callout: none;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+  position: relative;
 }
 
-.header {
+/* Camera Container - Full Screen */
+.camera-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #000;
   display: flex;
+  flex-direction: column;
+}
+
+/* Header Bar */
+.header-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  padding: max(44px, env(safe-area-inset-top, 44px)) 20px 20px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+  display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
+}
+
+.back-btn, .menu-btn {
+  width: 44px;
   height: 44px;
-}
-
-.logo-section {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.logo {
-  width: 24px;
-  height: 24px;
-}
-
-.app-title {
-  font-size: 24px;
-  font-weight: 600;
-  margin: 0;
-}
-
-.back-button {
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  color: white;
-  text-decoration: none;
-  transition: background-color 0.2s;
-}
-
-.back-button:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.section-title {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: white;
-}
-
-.section-subtitle {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 16px;
-  margin-bottom: 32px;
-}
-
-.scan-options {
-  display: grid;
-  gap: 16px;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.option-card {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 20px;
-  padding: 24px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
   backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.option-card:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
+.back-btn:hover, .menu-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
 }
 
-.option-icon {
-  font-size: 3rem;
+.scanner-title {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 0;
+  color: white;
+  text-align: center;
+}
+
+/* Camera View Full Screen */
+.camera-view-full {
+  position: relative;
+  flex: 1;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Viewfinder Overlay */
+.viewfinder-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.viewfinder-frame {
+  position: relative;
+  width: 280px;
+  height: 280px;
+  border: 2px solid white;
+  border-radius: 12px;
+}
+
+.corner-tl, .corner-tr, .corner-bl, .corner-br {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border: 3px solid white;
+}
+
+.corner-tl {
+  top: -3px;
+  left: -3px;
+  border-right: none;
+  border-bottom: none;
+  border-radius: 12px 0 0 0;
+}
+
+.corner-tr {
+  top: -3px;
+  right: -3px;
+  border-left: none;
+  border-bottom: none;
+  border-radius: 0 12px 0 0;
+}
+
+.corner-bl {
+  bottom: -3px;
+  left: -3px;
+  border-right: none;
+  border-top: none;
+  border-radius: 0 0 0 12px;
+}
+
+.corner-br {
+  bottom: -3px;
+  right: -3px;
+  border-left: none;
+  border-top: none;
+  border-radius: 0 0 12px 0;
+}
+
+/* Camera Preview */
+.camera-preview {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1a1a1a;
+}
+
+.preview-placeholder {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.placeholder-content svg {
   margin-bottom: 16px;
 }
 
-.option-card h3 {
-  font-size: 20px;
-  margin-bottom: 8px;
-  color: #ffffff;
-  font-weight: 600;
+.placeholder-content p {
+  font-size: 16px;
+  margin: 0;
 }
 
-.option-card p {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 14px;
-  line-height: 1.4;
-}
-
-.loading-state, .error-state {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 400px;
-}
-
-.loading-card, .error-card {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 20px;
-  padding: 40px;
+.scanning-state {
   text-align: center;
-  backdrop-filter: blur(10px);
-  max-width: 400px;
-  width: 100%;
+  color: white;
 }
 
 .loading-spinner {
-  width: 50px;
-  height: 50px;
-  border: 4px solid rgba(255, 255, 255, 0.1);
-  border-top: 4px solid white;
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid white;
   border-radius: 50%;
   animation: spin 1s linear infinite;
-  margin: 0 auto 20px;
+  margin: 0 auto 16px;
 }
 
 @keyframes spin {
@@ -779,12 +813,158 @@ onMounted(() => {
   100% { transform: rotate(360deg); }
 }
 
-.error-icon {
-  font-size: 3rem;
-  margin-bottom: 20px;
+.scanning-state p {
+  margin: 0;
+  font-size: 16px;
 }
 
+/* Bottom Controls */
+.bottom-controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  padding: 20px 20px max(34px, calc(34px + env(safe-area-inset-bottom, 0px)));
+  background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+}
+
+/* Scan Mode Toggle */
+.scan-mode-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.mode-btn {
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.mode-btn.active {
+  background: white;
+  color: #000;
+  transform: scale(1.1);
+}
+
+.mode-btn:not(.active):hover {
+  background: rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+.mode-label {
+  color: white;
+  font-size: 17px;
+  font-weight: 500;
+  min-width: 120px;
+  text-align: center;
+}
+
+/* Capture Controls */
+.capture-controls {
+  display: flex;
+  justify-content: center;
+}
+
+.capture-actions {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.action-btn {
+  width: 50px;
+  height: 50px;
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+}
+
+.action-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+/* Main Capture Button */
+.capture-btn {
+  width: 80px;
+  height: 80px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.capture-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.capture-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 4px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.capture-inner.scanning {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.capture-ring {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid #000;
+}
+
+.capture-btn:active .capture-inner {
+  transform: scale(0.95);
+}
+
+.capture-loading {
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(0, 0, 0, 0.3);
+  border-top: 2px solid #000;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Results Display - Keep existing styles for results */
 .results {
+  height: 100vh;
+  height: 100dvh;
+  background: linear-gradient(135deg, #1e1e2e 0%, #2a2d37 100%);
+  color: white;
+  padding: 16px;
+  padding-top: max(44px, env(safe-area-inset-top, 44px));
+  padding-bottom: max(80px, calc(80px + env(safe-area-inset-bottom, 0px)));
+  overflow-y: auto;
   max-width: 800px;
   margin: 0 auto;
 }
@@ -794,6 +974,13 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
+}
+
+.section-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: white;
 }
 
 .reset-btn {
@@ -809,6 +996,399 @@ onMounted(() => {
 
 .reset-btn:hover {
   background: rgba(255, 255, 255, 0.2);
+}
+
+.result-image {
+  width: 100%;
+  height: 200px;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.result-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.confidence-badge {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.confidence-badge.high {
+  background: #16a34a;
+  color: white;
+}
+
+.confidence-badge.medium {
+  background: #ca8a04;
+  color: white;
+}
+
+.confidence-badge.low {
+  background: #dc2626;
+  color: white;
+}
+
+.main-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  backdrop-filter: blur(10px);
+  height: 120px;
+}
+
+.calories-number {
+  font-size: 36px;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1;
+}
+
+.calories-label {
+  font-size: 14px;
+  opacity: 0.8;
+  margin: 5px 0 0 0;
+}
+
+.progress-ring {
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.flame-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.macros-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.macro-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  padding: 16px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.macro-amount {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.macro-label {
+  font-size: 11px;
+  opacity: 0.8;
+  margin-bottom: 8px;
+}
+
+.macro-progress {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  margin: 0 auto;
+}
+
+.macro-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.product-info {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 24px;
+  backdrop-filter: blur(10px);
+}
+
+.product-name {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: white;
+}
+
+.product-brand {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+}
+
+.food-items {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 24px;
+  backdrop-filter: blur(10px);
+}
+
+.food-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  padding: 15px;
+  margin-bottom: 12px;
+}
+
+.food-item:last-child {
+  margin-bottom: 0;
+}
+
+.food-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.food-info {
+  flex: 1;
+}
+
+.food-name {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0 0 8px 0;
+  color: white;
+}
+
+.food-calories {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.food-macros {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+}
+
+.macro-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.protein-color { color: #ff6b6b; }
+.carbs-color { color: #ffa726; }
+.fats-color { color: #42a5f5; }
+
+.food-amount {
+  font-size: 14px;
+  opacity: 0.7;
+  font-weight: 500;
+}
+
+.notes {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 24px;
+  border-left: 4px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.notes h4 {
+  color: white;
+  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.notes p {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+.save-btn {
+  background: white;
+  color: #1e1e2e;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: transform 0.2s;
+  flex: 1;
+  max-width: 200px;
+}
+
+.save-btn:hover {
+  transform: translateY(-2px);
+}
+
+.cancel-btn, .retry-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: background-color 0.2s;
+  flex: 1;
+  max-width: 200px;
+}
+
+.cancel-btn:hover, .retry-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Error State */
+.error-state {
+  height: 100vh;
+  height: 100dvh;
+  background: linear-gradient(135deg, #1e1e2e 0%, #2a2d37 100%);
+  color: white;
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.error-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 40px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  max-width: 400px;
+  width: 100%;
+}
+
+.error-icon {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .macros-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .macro-card {
+    height: 80px;
+    padding: 12px;
+  }
+  
+  .main-card {
+    height: 100px;
+    padding: 20px;
+  }
+  
+  .calories-number {
+    font-size: 28px;
+  }
+  
+  .progress-ring {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .results-header {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .save-btn, .cancel-btn, .retry-btn {
+    max-width: none;
+  }
+
+  .food-item {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .food-macros {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .capture-actions {
+    gap: 24px;
+  }
+
+  .action-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .capture-btn {
+    width: 70px;
+    height: 70px;
+  }
+
+  .capture-ring {
+    width: 50px;
+    height: 50px;
+  }
+
+  .viewfinder-frame {
+    width: 240px;
+    height: 240px;
+  }
+
+  .mode-label {
+    font-size: 15px;
+    min-width: 100px;
+  }
 }
 
 .result-image {
