@@ -3,11 +3,11 @@
         <!-- Header -->
         <header class="header">
             <div class="logo-section">
-                <svg class="logo" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                <!--<svg class="logo" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
                     <path
                         d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                </svg>
-                <h1 class="app-title">Kaloriq</h1>
+                </svg>-->
+                <h1 class="app-title"><span style="color: #007052;">Kal</span>oriq</h1><!--#005e4a #005f4a -->
             </div>
             <div class="streak">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="#ff6b35">
@@ -360,7 +360,7 @@ onMounted(() => {
 }
 
 .app-title {
-    font-size: 24px;
+    font-size: 28px;
     font-weight: 600;
     margin: 0;
 }
