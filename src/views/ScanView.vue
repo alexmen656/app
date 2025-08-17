@@ -15,30 +15,98 @@
       </router-link>
     </header>
 
-    <!-- Scan Type Selection -->
-    <div class="scan-options" v-if="!isScanning && !scanResults && !error">
-      <h2 class="section-title">Scannen</h2>
-      <p class="section-subtitle">Wählen Sie eine Scan-Option</p>
-      
-      <div class="option-card" @click="startFoodScan">
-        <div class="option-icon">📸</div>
-        <h3>Essen scannen</h3>
-        <p>Foto vom Essen aufnehmen und analysieren lassen</p>
-      </div>
-      
-      <div class="option-card" @click="startBarcodeScan">
-        <div class="option-icon">📱</div>
-        <h3>Barcode scannen</h3>
-        <p>Produktbarcode scannen für Nährwertinformationen</p>
-      </div>
+    <!-- Scan Mode Tabs -->
+    <div class="scan-tabs" v-if="!scanResults">
+      <button 
+        class="tab-button" 
+        :class="{ active: scanMode === 'food' }"
+        @click="setScanMode('food')"
+      >
+        <span class="tab-icon">📸</span>
+        Essen
+      </button>
+      <button 
+        class="tab-button" 
+        :class="{ active: scanMode === 'barcode' }"
+        @click="setScanMode('barcode')"
+      >
+        <span class="tab-icon">📱</span>
+        Barcode
+      </button>
     </div>
 
-    <!-- Loading State -->
-    <div class="loading-state" v-if="isScanning || isAnalyzing">
-      <div class="loading-card">
-        <div class="loading-spinner"></div>
-        <h3>{{ loadingMessage }}</h3>
-        <button @click="cancelScan" class="cancel-btn">Abbrechen</button>
+    <!-- Camera/Scanner Interface -->
+    <div class="scanner-interface" v-if="!scanResults && !error">
+      <!-- Food Camera View -->
+      <div v-if="scanMode === 'food'" class="camera-view">
+        <div class="camera-frame">
+          <div class="camera-overlay">
+            <div class="scan-area">
+              <div class="corner top-left"></div>
+              <div class="corner top-right"></div>
+              <div class="corner bottom-left"></div>
+              <div class="corner bottom-right"></div>
+            </div>
+          </div>
+          <div class="camera-placeholder">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+            <p>Essen in den Rahmen positionieren</p>
+          </div>
+        </div>
+        
+        <div class="camera-controls">
+          <button 
+            @click="startFoodScan" 
+            class="capture-button"
+            :disabled="isScanning || isAnalyzing"
+          >
+            <div class="capture-inner" :class="{ scanning: isScanning || isAnalyzing }">
+              <svg v-if="!isScanning && !isAnalyzing" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+              <div v-else class="loading-spinner-small"></div>
+            </div>
+          </button>
+          <p class="capture-hint">{{ isScanning || isAnalyzing ? loadingMessage : 'Tippen zum Fotografieren' }}</p>
+        </div>
+      </div>
+
+      <!-- Barcode Scanner View -->
+      <div v-if="scanMode === 'barcode'" class="barcode-view">
+        <div class="scanner-frame">
+          <div class="scanner-overlay">
+            <div class="scan-line"></div>
+            <div class="scan-area-barcode">
+              <div class="scan-guidelines">
+                <div class="guideline"></div>
+                <div class="guideline"></div>
+                <div class="guideline"></div>
+              </div>
+            </div>
+          </div>
+          <div class="scanner-placeholder">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M3 5v4h2V7h2V5H3zm2 10H3v4h4v-2H5v-2zm14 4v-2h-2v4h4v-4h-2zM19 5h-2v2h2v2h2V5h-4zM7 19h2v-2H7v2zm0-14h2V3H7v2zm12 0V3h-2v2h2zm-4 14h2v-2h-2v2zm-8 0h2v-2H7v2z"/>
+            </svg>
+            <p>Barcode in den Bereich scannen</p>
+          </div>
+        </div>
+        
+        <div class="scanner-controls">
+          <button 
+            @click="startBarcodeScan" 
+            class="scan-button"
+            :disabled="isScanning || isAnalyzing"
+          >
+            <svg v-if="!isScanning && !isAnalyzing" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M3 5v4h2V7h2V5H3zm2 10H3v4h4v-2H5v-2zm14 4v-2h-2v4h4v-4h-2zM19 5h-2v2h2v2h2V5h-4z"/>
+            </svg>
+            <div v-else class="loading-spinner-small"></div>
+            {{ isScanning || isAnalyzing ? loadingMessage : 'Barcode scannen' }}
+          </button>
+        </div>
       </div>
     </div>
 
@@ -355,7 +423,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'
 import { CapacitorBarcodeScanner } from '@capacitor/barcode-scanner'
 
@@ -365,6 +433,13 @@ const isAnalyzing = ref(false)
 const scanResults = ref<any>(null)
 const error = ref('')
 const loadingMessage = ref('')
+const scanMode = ref<'food' | 'barcode'>('food') // Default to food scanning
+
+// Set scan mode
+function setScanMode(mode: 'food' | 'barcode') {
+  scanMode.value = mode
+  resetScan() // Clear any existing results/errors when switching modes
+}
 
 // Computed properties
 const confidenceClass = computed(() => {
@@ -431,13 +506,14 @@ async function startFoodScan() {
 
     const result = await apiResponse.json()
     
-    if (!result.success) {
-      throw new Error(result.message || 'Analyse fehlgeschlagen')
+    // Check if the result has the expected structure
+    if (!result.foods || !result.total) {
+      throw new Error(result.error || 'Ungültige API-Antwort')
     }
 
     scanResults.value = {
       type: 'food',
-      data: result.data,
+      data: result,
       image: `data:image/jpeg;base64,${image.base64String}`
     }
 
@@ -499,12 +575,6 @@ async function startBarcodeScan() {
   }
 }
 
-// Cancel scanning
-function cancelScan() {
-  isScanning.value = false
-  isAnalyzing.value = false
-}
-
 // Reset to initial state
 function resetScan() {
   scanResults.value = null
@@ -554,6 +624,11 @@ function saveResults() {
     alert('Fehler beim Speichern der Ergebnisse')
   }
 }
+
+// Initialize with food mode on mount
+onMounted(() => {
+  scanMode.value = 'food'
+})
 </script>
 
 <style scoped>
@@ -1022,6 +1097,223 @@ function saveResults() {
   background: rgba(255, 255, 255, 0.2);
 }
 
+/* Tab Styles */
+.scan-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  justify-content: center;
+}
+
+.tab-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.tab-button.active {
+  background: #4ade80;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3);
+}
+
+.tab-button:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+}
+
+.tab-icon {
+  font-size: 18px;
+}
+
+/* Scanner Interface Styles */
+.scanner-interface {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.camera-view, .barcode-view {
+  text-align: center;
+}
+
+.camera-frame, .scanner-frame {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 24px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+}
+
+.camera-overlay, .scanner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scan-area {
+  width: 200px;
+  height: 200px;
+  border: 2px solid #4ade80;
+  border-radius: 15px;
+  position: relative;
+  animation: pulse 2s infinite;
+}
+
+.scan-area-barcode {
+  width: 250px;
+  height: 100px;
+  border: 2px solid #4ade80;
+  border-radius: 10px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scan-line {
+  width: 100%;
+  height: 2px;
+  background: #4ade80;
+  animation: scanLine 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    border-color: #4ade80;
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.4);
+  }
+  50% { 
+    border-color: #22c55e;
+    box-shadow: 0 0 0 10px rgba(74, 222, 128, 0);
+  }
+}
+
+@keyframes scanLine {
+  0% { transform: translateY(-50px); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateY(50px); opacity: 0; }
+}
+
+.camera-placeholder, .scanner-placeholder {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  z-index: 1;
+}
+
+.camera-placeholder p, .scanner-placeholder p {
+  margin: 12px 0 0 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.camera-controls, .scanner-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.capture-button {
+  width: 80px;
+  height: 80px;
+  border: 4px solid white;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.capture-button:hover {
+  border-color: #4ade80;
+  transform: scale(1.05);
+}
+
+.capture-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.capture-inner {
+  width: 60px;
+  height: 60px;
+  background: white;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.capture-inner.scanning {
+  background: #4ade80;
+  animation: pulse 1s infinite;
+}
+
+.scan-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 32px;
+  background: #4ade80;
+  color: white;
+  border: none;
+  border-radius: 15px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.scan-button:hover {
+  background: #22c55e;
+  transform: translateY(-2px);
+}
+
+.scan-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.capture-hint {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  margin: 0;
+  text-align: center;
+}
+
+.loading-spinner-small {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
 @media (max-width: 768px) {
   .macros-grid {
     grid-template-columns: 1fr;
@@ -1049,8 +1341,8 @@ function saveResults() {
   
   .results-header {
     flex-direction: column;
-    gap: 16px;
-    align-items: flex-start;
+    gap: 12px;
+    text-align: center;
   }
   
   .action-buttons {
@@ -1062,14 +1354,32 @@ function saveResults() {
   }
 
   .food-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-    text-align: left;
+    flex-wrap: wrap;
+    gap: 10px;
   }
 
   .food-macros {
     flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tab-button {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  .camera-frame, .scanner-frame {
+    height: 250px;
+  }
+
+  .scan-area {
+    width: 160px;
+    height: 160px;
+  }
+
+  .scan-area-barcode {
+    width: 200px;
+    height: 80px;
   }
 }
 </style>
