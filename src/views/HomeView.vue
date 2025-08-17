@@ -29,7 +29,7 @@
         <p class="calories-label">Calories left</p>
       </div>
       <div class="progress-ring">
-        <svg class="progress-svg" width="100" height="100">
+        <svg class="progress-svg" width="100" height="100" viewBox="0 0 100 100">
           <circle 
             cx="50" 
             cy="50" 
@@ -45,10 +45,11 @@
             stroke="white" 
             stroke-width="6" 
             fill="none"
-            stroke-dasharray="251"
-            :stroke-dashoffset="251 - (251 * caloriesProgress)"
+            stroke-dasharray="251.2"
+            :stroke-dashoffset="251.2 - (251.2 * caloriesProgress)"
             stroke-linecap="round"
             class="progress-circle"
+            transform="rotate(-90 50 50)"
           />
         </svg>
         <div class="flame-icon">
@@ -65,7 +66,7 @@
         <div class="macro-amount">{{ proteinLeft }}g</div>
         <div class="macro-label">Protein over</div>
         <div class="macro-progress">
-          <svg width="60" height="60">
+          <svg width="60" height="60" viewBox="0 0 60 60">
             <circle cx="30" cy="30" r="24" stroke="#2a2d37" stroke-width="4" fill="none"/>
             <circle 
               cx="30" 
@@ -74,9 +75,10 @@
               stroke="#ff6b6b" 
               stroke-width="4" 
               fill="none"
-              stroke-dasharray="151"
-              :stroke-dashoffset="151 - (151 * proteinProgress)"
+              stroke-dasharray="150.8"
+              :stroke-dashoffset="150.8 - (150.8 * proteinProgress)"
               stroke-linecap="round"
+              transform="rotate(-90 30 30)"
             />
           </svg>
           <div class="macro-icon">
@@ -91,7 +93,7 @@
         <div class="macro-amount">{{ carbsLeft }}g</div>
         <div class="macro-label">Carbs left</div>
         <div class="macro-progress">
-          <svg width="60" height="60">
+          <svg width="60" height="60" viewBox="0 0 60 60">
             <circle cx="30" cy="30" r="24" stroke="#2a2d37" stroke-width="4" fill="none"/>
             <circle 
               cx="30" 
@@ -100,9 +102,10 @@
               stroke="#ffa726" 
               stroke-width="4" 
               fill="none"
-              stroke-dasharray="151"
-              :stroke-dashoffset="151 - (151 * carbsProgress)"
+              stroke-dasharray="150.8"
+              :stroke-dashoffset="150.8 - (150.8 * carbsProgress)"
               stroke-linecap="round"
+              transform="rotate(-90 30 30)"
             />
           </svg>
           <div class="macro-icon">
@@ -117,7 +120,7 @@
         <div class="macro-amount">{{ fatsLeft }}g</div>
         <div class="macro-label">Fats left</div>
         <div class="macro-progress">
-          <svg width="60" height="60">
+          <svg width="60" height="60" viewBox="0 0 60 60">
             <circle cx="30" cy="30" r="24" stroke="#2a2d37" stroke-width="4" fill="none"/>
             <circle 
               cx="30" 
@@ -126,9 +129,10 @@
               stroke="#42a5f5" 
               stroke-width="4" 
               fill="none"
-              stroke-dasharray="151"
-              :stroke-dashoffset="151 - (151 * fatsProgress)"
+              stroke-dasharray="150.8"
+              :stroke-dashoffset="150.8 - (150.8 * fatsProgress)"
               stroke-linecap="round"
+              transform="rotate(-90 30 30)"
             />
           </svg>
           <div class="macro-icon">
@@ -380,12 +384,8 @@ const recentFoods = ref([
   height: 100px;
 }
 
-.progress-svg {
-  transform: rotate(-90deg);
-}
-
 .progress-circle {
-  transition: stroke-dashoffset 0.5s ease-in-out;
+  transition: stroke-dashoffset 0.8s ease-in-out;
 }
 
 .flame-icon {
@@ -437,9 +437,12 @@ const recentFoods = ref([
 }
 
 .macro-progress svg {
-  transform: rotate(-90deg);
   width: 60px;
   height: 60px;
+}
+
+.macro-progress svg circle:last-child {
+  transition: stroke-dashoffset 0.8s ease-in-out;
 }
 
 .macro-icon {
