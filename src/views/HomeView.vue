@@ -80,7 +80,7 @@
             />
           </svg>
           <div class="macro-icon">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="#ff6b6b">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#ff6b6b">
               <path d="M11 21h-1l1-7H7.5c-.58 0-.57-.32-.38-.66.19-.34.05-.08.07-.12C8.48 10.94 10.42 7.54 13 3h1l-1 7h3.5c.49 0 .56.33.47.51l-.07.15C12.96 17.55 11 21 11 21z"/>
             </svg>
           </div>
@@ -106,8 +106,8 @@
             />
           </svg>
           <div class="macro-icon">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="#ffa726">
-              <path d="M4.5 12.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5S6.83 14 6 14s-1.5-.67-1.5-1.5zm.5-2h2c.55 0 1-.45 1-1V8.5c0-.83-.67-1.5-1.5-1.5S5.5 7.67 5.5 8.5V9.5c0 .55-.45 1-1 1z"/>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#ffa726">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
             </svg>
           </div>
         </div>
@@ -132,8 +132,8 @@
             />
           </svg>
           <div class="macro-icon">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="#42a5f5">
-              <path d="M12 2c1.1 0 2 .9 2 2 0 .74-.4 1.38-1 1.72v2.56l7 7V17c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2v-1.72l7-7V5.72c-.6-.34-1-.98-1-1.72 0-1.1.9-2 2-2z"/>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#42a5f5">
+              <path d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0 2c-4.411 0-8 3.589-8 8s3.589 8 8 8 8-3.589 8-8-3.589-8-8-8z"/>
             </svg>
           </div>
         </div>
@@ -271,11 +271,20 @@ const recentFoods = ref([
   background: linear-gradient(135deg, #1e1e2e 0%, #2a2d37 100%);
   color: white;
   padding: 16px;
-  padding-top: max(16px, env(safe-area-inset-top));
-  padding-bottom: max(80px, calc(80px + env(safe-area-inset-bottom)));
+  padding-top: max(44px, env(safe-area-inset-top, 44px));
+  padding-bottom: max(80px, calc(80px + env(safe-area-inset-bottom, 0px)));
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   overflow-y: auto;
   overflow-x: hidden;
+  /* Prevent text selection */
+  -webkit-user-select: none;
+  user-select: none;
+  /* Prevent touch callouts */
+  -webkit-touch-callout: none;
+  /* Prevent tap highlights */
+  -webkit-tap-highlight-color: transparent;
+  /* Prevent zoom on double tap */
+  touch-action: manipulation;
 }
 
 .header {
@@ -439,6 +448,8 @@ const recentFoods = ref([
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 16px;
+  pointer-events: none;
+  z-index: 1;
 }
 
 .recent-section {
