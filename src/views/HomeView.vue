@@ -3,11 +3,15 @@
     <!-- Header -->
     <header class="header">
       <div class="logo-section">
-        <span class="logo">🍎</span>
+        <svg class="logo" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
         <h1 class="app-title">Cal AI</h1>
       </div>
       <div class="streak">
-        <span class="fire-icon">🔥</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#ff6b35">
+          <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z"/>
+        </svg>
         <span class="streak-count">15</span>
       </div>
     </header>
@@ -25,29 +29,33 @@
         <p class="calories-label">Calories left</p>
       </div>
       <div class="progress-ring">
-        <svg class="progress-svg" width="120" height="120">
+        <svg class="progress-svg" width="100" height="100">
           <circle 
-            cx="60" 
-            cy="60" 
-            r="50" 
+            cx="50" 
+            cy="50" 
+            r="40" 
             stroke="#2a2d37" 
-            stroke-width="8" 
+            stroke-width="6" 
             fill="none"
           />
           <circle 
-            cx="60" 
-            cy="60" 
-            r="50" 
+            cx="50" 
+            cy="50" 
+            r="40" 
             stroke="white" 
-            stroke-width="8" 
+            stroke-width="6" 
             fill="none"
-            stroke-dasharray="314"
-            :stroke-dashoffset="314 - (314 * caloriesProgress)"
+            stroke-dasharray="251"
+            :stroke-dashoffset="251 - (251 * caloriesProgress)"
             stroke-linecap="round"
             class="progress-circle"
           />
         </svg>
-        <div class="flame-icon">🔥</div>
+        <div class="flame-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+            <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z"/>
+          </svg>
+        </div>
       </div>
     </div>
 
@@ -57,21 +65,25 @@
         <div class="macro-amount">{{ proteinLeft }}g</div>
         <div class="macro-label">Protein over</div>
         <div class="macro-progress">
-          <svg width="80" height="80">
-            <circle cx="40" cy="40" r="30" stroke="#2a2d37" stroke-width="6" fill="none"/>
+          <svg width="60" height="60">
+            <circle cx="30" cy="30" r="24" stroke="#2a2d37" stroke-width="4" fill="none"/>
             <circle 
-              cx="40" 
-              cy="40" 
-              r="30" 
+              cx="30" 
+              cy="30" 
+              r="24" 
               stroke="#ff6b6b" 
-              stroke-width="6" 
+              stroke-width="4" 
               fill="none"
-              stroke-dasharray="188"
-              :stroke-dashoffset="188 - (188 * proteinProgress)"
+              stroke-dasharray="151"
+              :stroke-dashoffset="151 - (151 * proteinProgress)"
               stroke-linecap="round"
             />
           </svg>
-          <div class="macro-icon">⚡</div>
+          <div class="macro-icon">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="#ff6b6b">
+              <path d="M11 21h-1l1-7H7.5c-.58 0-.57-.32-.38-.66.19-.34.05-.08.07-.12C8.48 10.94 10.42 7.54 13 3h1l-1 7h3.5c.49 0 .56.33.47.51l-.07.15C12.96 17.55 11 21 11 21z"/>
+            </svg>
+          </div>
         </div>
       </div>
 
@@ -79,21 +91,25 @@
         <div class="macro-amount">{{ carbsLeft }}g</div>
         <div class="macro-label">Carbs left</div>
         <div class="macro-progress">
-          <svg width="80" height="80">
-            <circle cx="40" cy="40" r="30" stroke="#2a2d37" stroke-width="6" fill="none"/>
+          <svg width="60" height="60">
+            <circle cx="30" cy="30" r="24" stroke="#2a2d37" stroke-width="4" fill="none"/>
             <circle 
-              cx="40" 
-              cy="40" 
-              r="30" 
+              cx="30" 
+              cy="30" 
+              r="24" 
               stroke="#ffa726" 
-              stroke-width="6" 
+              stroke-width="4" 
               fill="none"
-              stroke-dasharray="188"
-              :stroke-dashoffset="188 - (188 * carbsProgress)"
+              stroke-dasharray="151"
+              :stroke-dashoffset="151 - (151 * carbsProgress)"
               stroke-linecap="round"
             />
           </svg>
-          <div class="macro-icon">🌾</div>
+          <div class="macro-icon">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="#ffa726">
+              <path d="M4.5 12.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5S6.83 14 6 14s-1.5-.67-1.5-1.5zm.5-2h2c.55 0 1-.45 1-1V8.5c0-.83-.67-1.5-1.5-1.5S5.5 7.67 5.5 8.5V9.5c0 .55-.45 1-1 1z"/>
+            </svg>
+          </div>
         </div>
       </div>
 
@@ -101,21 +117,25 @@
         <div class="macro-amount">{{ fatsLeft }}g</div>
         <div class="macro-label">Fats left</div>
         <div class="macro-progress">
-          <svg width="80" height="80">
-            <circle cx="40" cy="40" r="30" stroke="#2a2d37" stroke-width="6" fill="none"/>
+          <svg width="60" height="60">
+            <circle cx="30" cy="30" r="24" stroke="#2a2d37" stroke-width="4" fill="none"/>
             <circle 
-              cx="40" 
-              cy="40" 
-              r="30" 
+              cx="30" 
+              cy="30" 
+              r="24" 
               stroke="#42a5f5" 
-              stroke-width="6" 
+              stroke-width="4" 
               fill="none"
-              stroke-dasharray="188"
-              :stroke-dashoffset="188 - (188 * fatsProgress)"
+              stroke-dasharray="151"
+              :stroke-dashoffset="151 - (151 * fatsProgress)"
               stroke-linecap="round"
             />
           </svg>
-          <div class="macro-icon">💧</div>
+          <div class="macro-icon">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="#42a5f5">
+              <path d="M12 2c1.1 0 2 .9 2 2 0 .74-.4 1.38-1 1.72v2.56l7 7V17c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2v-1.72l7-7V5.72c-.6-.34-1-.98-1-1.72 0-1.1.9-2 2-2z"/>
+            </svg>
+          </div>
         </div>
       </div>
     </div>
@@ -131,13 +151,30 @@
         <div class="food-info">
           <h4 class="food-name">{{ item.name }}</h4>
           <div class="food-calories">
-            <span class="fire-icon">🔥</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#ff6b35">
+              <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z"/>
+            </svg>
             <span>{{ item.calories }} kcal</span>
           </div>
           <div class="food-macros">
-            <span class="macro-item protein-color">⚡ {{ item.protein }}g</span>
-            <span class="macro-item carbs-color">🌾 {{ item.carbs }}g</span>
-            <span class="macro-item fats-color">💧 {{ item.fats }}g</span>
+            <span class="macro-item protein-color">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M11 21h-1l1-7H7.5c-.58 0-.57-.32-.38-.66.19-.34.05-.08.07-.12C8.48 10.94 10.42 7.54 13 3h1l-1 7h3.5c.49 0 .56.33.47.51l-.07.15C12.96 17.55 11 21 11 21z"/>
+              </svg>
+              {{ item.protein }}g
+            </span>
+            <span class="macro-item carbs-color">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M4.5 12.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5S6.83 14 6 14s-1.5-.67-1.5-1.5zm.5-2h2c.55 0 1-.45 1-1V8.5c0-.83-.67-1.5-1.5-1.5S5.5 7.67 5.5 8.5V9.5c0 .55-.45 1-1 1z"/>
+              </svg>
+              {{ item.carbs }}g
+            </span>
+            <span class="macro-item fats-color">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2c1.1 0 2 .9 2 2 0 .74-.4 1.38-1 1.72v2.56l7 7V17c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2v-1.72l7-7V5.72c-.6-.34-1-.98-1-1.72 0-1.1.9-2 2-2z"/>
+              </svg>
+              {{ item.fats }}g
+            </span>
           </div>
         </div>
         <div class="food-time">{{ item.time }}</div>
@@ -147,22 +184,30 @@
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
       <router-link to="/" class="nav-item active">
-        <span class="nav-icon">🏠</span>
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </svg>
         <span class="nav-label">Home</span>
       </router-link>
       <div class="nav-item">
-        <span class="nav-icon">📊</span>
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+        </svg>
         <span class="nav-label">Analytics</span>
       </div>
       <div class="nav-item">
-        <span class="nav-icon">⚙️</span>
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+        </svg>
         <span class="nav-label">Settings</span>
       </div>
     </nav>
 
     <!-- Add Button -->
     <router-link to="/scan" class="add-button">
-      <span>+</span>
+      <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+      </svg>
     </router-link>
   </div>
 </template>
@@ -221,19 +266,24 @@ const recentFoods = ref([
 
 <style scoped>
 .home-view {
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh; /* Dynamic viewport height for mobile */
   background: linear-gradient(135deg, #1e1e2e 0%, #2a2d37 100%);
   color: white;
-  padding: 20px;
-  padding-bottom: 100px;
+  padding: 16px;
+  padding-top: max(16px, env(safe-area-inset-top));
+  padding-bottom: max(80px, calc(80px + env(safe-area-inset-bottom)));
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
+  height: 44px;
 }
 
 .logo-section {
@@ -243,7 +293,8 @@ const recentFoods = ref([
 }
 
 .logo {
-  font-size: 24px;
+  width: 24px;
+  height: 24px;
 }
 
 .app-title {
@@ -263,8 +314,9 @@ const recentFoods = ref([
 
 .date-toggle {
   display: flex;
-  gap: 10px;
-  margin-bottom: 30px;
+  gap: 8px;
+  margin-bottom: 24px;
+  height: 32px;
 }
 
 .date-btn {
@@ -291,12 +343,13 @@ const recentFoods = ref([
 .main-card {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 20px;
-  padding: 30px;
+  padding: 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 24px;
   backdrop-filter: blur(10px);
+  height: 140px;
 }
 
 .calories-number {
@@ -314,6 +367,8 @@ const recentFoods = ref([
 
 .progress-ring {
   position: relative;
+  width: 100px;
+  height: 100px;
 }
 
 .progress-svg {
@@ -335,16 +390,20 @@ const recentFoods = ref([
 .macros-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
-  margin-bottom: 40px;
+  gap: 12px;
+  margin-bottom: 32px;
 }
 
 .macro-card {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 15px;
-  padding: 20px;
+  padding: 16px;
   text-align: center;
   backdrop-filter: blur(10px);
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .macro-amount {
@@ -363,10 +422,15 @@ const recentFoods = ref([
   position: relative;
   display: flex;
   justify-content: center;
+  width: 60px;
+  height: 60px;
+  margin: 0 auto;
 }
 
 .macro-progress svg {
   transform: rotate(-90deg);
+  width: 60px;
+  height: 60px;
 }
 
 .macro-icon {
@@ -464,8 +528,10 @@ const recentFoods = ref([
   backdrop-filter: blur(10px);
   display: flex;
   justify-content: space-around;
-  padding: 15px 0 25px 0;
+  padding: 12px 0;
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+  height: 80px;
 }
 
 .nav-item {
@@ -484,7 +550,8 @@ const recentFoods = ref([
 }
 
 .nav-icon {
-  font-size: 20px;
+  width: 24px;
+  height: 24px;
 }
 
 .nav-label {
@@ -494,15 +561,14 @@ const recentFoods = ref([
 .add-button {
   position: fixed;
   bottom: 90px;
-  right: 20px;
-  width: 60px;
-  height: 60px;
+  right: 16px;
+  width: 56px;
+  height: 56px;
   background: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
   color: #1e1e2e;
   text-decoration: none;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);

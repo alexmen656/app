@@ -237,18 +237,22 @@ function selectRecentItem(item: any) {
 
 <style scoped>
 .scan-view {
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
   background: linear-gradient(135deg, #1e1e2e 0%, #2a2d37 100%);
   color: white;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px;
-  padding-top: 40px;
+  padding: 16px;
+  padding-top: max(16px, env(safe-area-inset-top));
+  height: 60px;
 }
 
 .back-button {
@@ -273,9 +277,9 @@ function selectRecentItem(item: any) {
 
 .scan-options {
   display: flex;
-  gap: 15px;
-  padding: 0 20px;
-  margin-bottom: 30px;
+  gap: 12px;
+  padding: 0 16px;
+  margin-bottom: 24px;
 }
 
 .scan-option {
@@ -283,12 +287,13 @@ function selectRecentItem(item: any) {
   background: rgba(255, 255, 255, 0.05);
   border: 2px solid transparent;
   border-radius: 15px;
-  padding: 20px;
+  padding: 16px;
   color: white;
   cursor: pointer;
   transition: all 0.2s;
   text-align: center;
   backdrop-filter: blur(10px);
+  height: 90px;
 }
 
 .scan-option.active {
@@ -315,14 +320,14 @@ function selectRecentItem(item: any) {
 
 .camera-preview {
   position: relative;
-  margin: 0 20px;
-  height: 300px;
+  margin: 0 16px;
+  height: 280px;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 30px;
+  margin-bottom: 24px;
   backdrop-filter: blur(10px);
 }
 
@@ -386,13 +391,13 @@ function selectRecentItem(item: any) {
 }
 
 .scanning-state {
-  margin: 0 20px;
-  height: 300px;
+  margin: 0 16px;
+  height: 280px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-bottom: 30px;
+  margin-bottom: 24px;
 }
 
 .scanning-animation {
@@ -447,8 +452,8 @@ function selectRecentItem(item: any) {
 }
 
 .scan-result {
-  margin: 0 20px;
-  margin-bottom: 30px;
+  margin: 0 16px;
+  margin-bottom: 24px;
 }
 
 .result-card {
@@ -599,22 +604,23 @@ function selectRecentItem(item: any) {
 
 .scan-button {
   position: fixed;
-  bottom: 30px;
+  bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
   background: white;
   color: #1e1e2e;
   border: none;
   border-radius: 50px;
-  padding: 15px 30px;
+  padding: 12px 24px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   transition: transform 0.2s;
+  margin-bottom: env(safe-area-inset-bottom);
 }
 
 .scan-button:hover {
@@ -626,8 +632,8 @@ function selectRecentItem(item: any) {
 }
 
 .recent-scans {
-  padding: 0 20px;
-  margin-bottom: 100px;
+  padding: 0 16px;
+  margin-bottom: 80px;
 }
 
 .section-title {
