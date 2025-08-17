@@ -247,11 +247,22 @@ const dailyProtein = computed(() => dailyGoals.protein)
 const dailyCarbs = computed(() => dailyGoals.carbs)
 const dailyFats = computed(() => dailyGoals.fats)
 
-// Consumed amounts
-const consumedCalories = ref(500)
-const consumedProtein = ref(105)
-const consumedCarbs = ref(211)
-const consumedFats = ref(52)
+// Consumed amounts - calculated from scanned items
+const consumedCalories = computed(() => {
+    return recentFoods.value.reduce((total, item) => total + item.calories, 0)
+})
+
+const consumedProtein = computed(() => {
+    return recentFoods.value.reduce((total, item) => total + item.protein, 0)
+})
+
+const consumedCarbs = computed(() => {
+    return recentFoods.value.reduce((total, item) => total + item.carbs, 0)
+})
+
+const consumedFats = computed(() => {
+    return recentFoods.value.reduce((total, item) => total + item.fats, 0)
+})
 
 // Scan history from localStorage
 const scanHistory = ref<ScanData[]>([])

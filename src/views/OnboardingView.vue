@@ -24,8 +24,8 @@
                 <div class="feature-card">
                     <div class="feature-icon">
                         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
-                            <path d="M12 18h.01"/>
+                            <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
+                            <circle cx="12" cy="13" r="3"/>
                         </svg>
                     </div>
                     <h3>AI Food Recognition</h3>
@@ -34,10 +34,9 @@
                 <div class="feature-card">
                     <div class="feature-icon">
                         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M3 3v5h5"/>
-                            <path d="M21 21v-5h-5"/>
-                            <path d="M8 8l13 13"/>
-                            <path d="M3 8v10a2 2 0 0 0 2 2h10"/>
+                            <path d="M18 20V10"/>
+                            <path d="M12 20V4"/>
+                            <path d="M6 20v-6"/>
                         </svg>
                     </div>
                     <h3>Smart Analytics</h3>
