@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import YesterdayView from '../views/YesterdayView.vue'
+import OnboardingView from '../views/OnboardingView.vue'
 import ScanView from '../views/ScanView.vue'
 import AnalyticsView from '../views/AnalyticsView.vue'
 import SettingsView from '../views/SettingsView.vue'
@@ -15,6 +16,11 @@ const routes = [
     path: '/yesterday',
     name: 'Yesterday',
     component: YesterdayView
+  },
+  {
+    path: '/onboarding',
+    name: 'Onboarding',
+    component: OnboardingView
   },
   {
     path: '/scan',

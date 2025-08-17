@@ -341,10 +341,10 @@ function handleTouchEnd(event: TouchEvent) {
         if (deltaX > swipeThreshold) {
             router.push('/')
         }
-        // Swipe left could be used for future navigation (maybe next day)
-        // if (deltaX < -swipeThreshold) {
-        //     // Could navigate to next day or other view
-        // }
+        // Swipe left (from right to left) - go to analytics
+        if (deltaX < -swipeThreshold) {
+            router.push('/analytics')
+        }
     }
 }
 

@@ -200,8 +200,24 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { dailyGoals, isOnboardingCompleted } from '../stores/userStore'
 
 const router = useRouter()
+
+// Check if onboarding is completed and redirect if needed
+onMounted(() => {
+    if (!isOnboardingCompleted.value) {
+        router.push('/onboarding')
+        return
+    }
+    loadScanHistory()
+
+    // Listen for storage changes to update in real-time
+    window.addEventListener('storage', loadScanHistory)
+
+    // Also listen for focus events to refresh when returning to app
+    window.addEventListener('focus', loadScanHistory)
+})
 
 // Type definitions
 interface ScanData {
@@ -225,11 +241,11 @@ interface FoodItem {
     type: string
 }
 
-// Daily targets
-const dailyCalories = 3000
-const dailyProtein = 150
-const dailyCarbs = 300
-const dailyFats = 100
+// Daily targets from store
+const dailyCalories = computed(() => dailyGoals.calories)
+const dailyProtein = computed(() => dailyGoals.protein)
+const dailyCarbs = computed(() => dailyGoals.carbs)
+const dailyFats = computed(() => dailyGoals.fats)
 
 // Consumed amounts
 const consumedCalories = ref(500)
@@ -289,16 +305,16 @@ const recentFoods = computed((): FoodItem[] => {
 })
 
 // Calculated remaining amounts
-const caloriesLeft = computed(() => dailyCalories - consumedCalories.value)
-const proteinLeft = computed(() => consumedProtein.value - dailyProtein)
-const carbsLeft = computed(() => dailyCarbs - consumedCarbs.value)
-const fatsLeft = computed(() => dailyFats - consumedFats.value)
+const caloriesLeft = computed(() => dailyCalories.value - consumedCalories.value)
+const proteinLeft = computed(() => consumedProtein.value - dailyProtein.value)
+const carbsLeft = computed(() => dailyCarbs.value - consumedCarbs.value)
+const fatsLeft = computed(() => dailyFats.value - consumedFats.value)
 
 // Progress calculations (0 to 1)
-const caloriesProgress = computed(() => Math.min(consumedCalories.value / dailyCalories, 1))
-const proteinProgress = computed(() => Math.min(consumedProtein.value / dailyProtein, 1))
-const carbsProgress = computed(() => Math.min(consumedCarbs.value / dailyCarbs, 1))
-const fatsProgress = computed(() => Math.min(consumedFats.value / dailyFats, 1))
+const caloriesProgress = computed(() => Math.min(consumedCalories.value / dailyCalories.value, 1))
+const proteinProgress = computed(() => Math.min(consumedProtein.value / dailyProtein.value, 1))
+const carbsProgress = computed(() => Math.min(consumedCarbs.value / dailyCarbs.value, 1))
+const fatsProgress = computed(() => Math.min(consumedFats.value / dailyFats.value, 1))
 
 // Calculate stroke-dashoffset for macro circles
 function calculateMacroOffset(progress: number, circumference: number): number {
@@ -352,6 +368,10 @@ function handleTouchEnd(event: TouchEvent) {
 
 // Load scan history when component mounts
 onMounted(() => {
+    if (!isOnboardingCompleted.value) {
+        router.push('/onboarding')
+        return
+    }
     loadScanHistory()
 
     // Listen for storage changes to update in real-time

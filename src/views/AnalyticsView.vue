@@ -1,5 +1,8 @@
 <template>
-  <div class="analytics-view">
+  <div class="analytics-view"
+       @touchstart="handleTouchStart"
+       @touchmove="handleTouchMove"
+       @touchend="handleTouchEnd">
     <!-- Header -->
     <header class="header">
       <h1 class="title">Analytics</h1>
@@ -190,6 +193,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const selectedPeriod = ref('week')
 const avgCalories = ref(2450)
@@ -204,6 +210,49 @@ const weeklyData = ref([
   { day: 'Sat', calories: 2900 },
   { day: 'Sun', calories: 2200 }
 ])
+
+// Touch/Swipe functionality
+let touchStartX = 0
+let touchStartY = 0
+const swipeThreshold = 50 // Minimum distance for a swipe
+
+function handleTouchStart(event: TouchEvent) {
+    touchStartX = event.touches[0].clientX
+    touchStartY = event.touches[0].clientY
+}
+
+function handleTouchMove(event: TouchEvent) {
+    // Prevent default to avoid scrolling issues during swipe
+    // Only prevent if we're in a horizontal swipe
+    const currentX = event.touches[0].clientX
+    const currentY = event.touches[0].clientY
+    const deltaX = Math.abs(currentX - touchStartX)
+    const deltaY = Math.abs(currentY - touchStartY)
+    
+    if (deltaX > deltaY && deltaX > 10) {
+        event.preventDefault()
+    }
+}
+
+function handleTouchEnd(event: TouchEvent) {
+    const touchEndX = event.changedTouches[0].clientX
+    const touchEndY = event.changedTouches[0].clientY
+    
+    const deltaX = touchEndX - touchStartX
+    const deltaY = touchEndY - touchStartY
+    
+    // Check if it's more horizontal than vertical
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        // Swipe right (from left to right) - go back to yesterday
+        if (deltaX > swipeThreshold) {
+            router.push('/yesterday')
+        }
+        // Swipe left (from right to left) - go to settings
+        if (deltaX < -swipeThreshold) {
+            router.push('/settings')
+        }
+    }
+}
 </script>
 
 <style scoped>

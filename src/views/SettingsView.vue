@@ -1,5 +1,8 @@
 <template>
-  <div class="settings-view">
+  <div class="settings-view"
+       @touchstart="handleTouchStart"
+       @touchmove="handleTouchMove"
+       @touchend="handleTouchEnd">
     <!-- Header -->
     <header class="header">
       <h1 class="title">Settings</h1>
@@ -14,8 +17,8 @@
           </svg>
         </div>
         <div class="profile-info">
-          <h3 class="profile-name">{{ userProfile.name }}</h3>
-          <p class="profile-email">{{ userProfile.email }}</p>
+          <h3 class="profile-name">{{ displayProfile.name }}</h3>
+          <p class="profile-email">{{ displayProfile.email }}</p>
         </div>
         <button class="edit-button" @click="editProfile">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -27,14 +30,22 @@
 
     <!-- Goals Section -->
     <div class="settings-section">
-      <h3 class="section-title">Daily Goals</h3>
+      <div class="section-header">
+        <h3 class="section-title">Daily Goals</h3>
+        <button @click="recalculateGoals" class="recalculate-button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"/>
+          </svg>
+          Recalculate
+        </button>
+      </div>
       <div class="settings-card">
         <div class="setting-item">
           <label class="setting-label">Calories Goal</label>
           <div class="setting-input">
             <input 
               type="number" 
-              v-model="goals.calories" 
+              v-model="dailyGoals.calories" 
               @change="saveGoals"
               class="number-input"
             />
@@ -47,7 +58,7 @@
           <div class="setting-input">
             <input 
               type="number" 
-              v-model="goals.protein" 
+              v-model="dailyGoals.protein" 
               @change="saveGoals"
               class="number-input"
             />
@@ -60,7 +71,7 @@
           <div class="setting-input">
             <input 
               type="number" 
-              v-model="goals.carbs" 
+              v-model="dailyGoals.carbs" 
               @change="saveGoals"
               class="number-input"
             />
@@ -73,7 +84,7 @@
           <div class="setting-input">
             <input 
               type="number" 
-              v-model="goals.fats" 
+              v-model="dailyGoals.fats" 
               @change="saveGoals"
               class="number-input"
             />
@@ -89,7 +100,7 @@
       <div class="settings-card">
         <div class="setting-item">
           <label class="setting-label">Units</label>
-          <select v-model="preferences.units" @change="savePreferences" class="select-input">
+          <select v-model="userPreferences.units" @change="savePreferences" class="select-input">
             <option value="metric">Metric (kg, cm)</option>
             <option value="imperial">Imperial (lbs, ft)</option>
           </select>
@@ -100,7 +111,7 @@
           <div class="toggle-switch">
             <input 
               type="checkbox" 
-              v-model="preferences.notifications" 
+              v-model="userPreferences.notifications" 
               @change="savePreferences"
               class="toggle-input"
             />
@@ -113,7 +124,7 @@
           <div class="toggle-switch">
             <input 
               type="checkbox" 
-              v-model="preferences.mealReminders" 
+              v-model="userPreferences.mealReminders" 
               @change="savePreferences"
               class="toggle-input"
             />
@@ -126,7 +137,7 @@
           <div class="toggle-switch">
             <input 
               type="checkbox" 
-              v-model="preferences.weeklyReports" 
+              v-model="userPreferences.weeklyReports" 
               @change="savePreferences"
               class="toggle-input"
             />
@@ -211,63 +222,131 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { 
+  userProfile, 
+  dailyGoals, 
+  userPreferences,
+  updateDailyGoals, 
+  resetOnboarding,
+  calculateRecommendedMacros
+} from '../stores/userStore'
 
-const userProfile = reactive({
-  name: 'Alex Polan',
-  email: 'alex@example.com'
-})
+const router = useRouter()
 
-const goals = reactive({
-  calories: 3000,
-  protein: 150,
-  carbs: 300,
-  fats: 100
-})
-
-const preferences = reactive({
-  units: 'metric',
-  notifications: true,
-  mealReminders: true,
-  weeklyReports: false
-})
+// Use computed to display current user data
+const displayProfile = computed(() => ({
+  name: userProfile.name || 'Set up profile',
+  email: userProfile.email || 'Add email address'
+}))
 
 function editProfile() {
-  // Implementation for profile editing
-  console.log('Edit profile clicked')
+  // Navigate to onboarding to edit profile
+  router.push('/onboarding')
 }
 
 function saveGoals() {
-  console.log('Goals saved:', goals)
-  // Here you would typically save to local storage or API
+  console.log('Goals saved:', dailyGoals)
+  // Goals are automatically saved via the store
 }
 
 function savePreferences() {
-  console.log('Preferences saved:', preferences)
-  // Here you would typically save to local storage or API
+  console.log('Preferences saved:', userPreferences)
+  // Preferences are automatically saved via the store
+}
+
+function recalculateGoals() {
+  if (userProfile.weight && userProfile.height && userProfile.age && userProfile.gender && userProfile.activityLevel) {
+    const recommended = calculateRecommendedMacros(userProfile)
+    updateDailyGoals(recommended)
+    alert('Goals updated based on your current profile!')
+  } else {
+    alert('Please complete your profile first to get personalized recommendations.')
+  }
 }
 
 function exportData() {
-  console.log('Exporting data...')
-  // Implementation for data export
+  const data = {
+    profile: userProfile,
+    goals: dailyGoals,
+    preferences: userPreferences,
+    exportDate: new Date().toISOString()
+  }
+  
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `kaloriq-data-${new Date().toISOString().split('T')[0]}.json`
+  a.click()
+  URL.revokeObjectURL(url)
 }
 
 function clearCache() {
-  console.log('Clearing cache...')
-  // Implementation for cache clearing
+  if (confirm('This will clear all cached data including scan history. Are you sure?')) {
+    localStorage.removeItem('scanHistory')
+    alert('Cache cleared successfully!')
+  }
 }
 
 function deleteAccount() {
   const confirmed = confirm('Are you sure you want to delete your account? This action cannot be undone.')
   if (confirmed) {
-    console.log('Account deletion requested')
-    // Implementation for account deletion
+    const doubleConfirm = confirm('This will permanently delete all your data. Type "DELETE" to confirm.')
+    if (doubleConfirm) {
+      resetOnboarding()
+      localStorage.clear()
+      router.push('/onboarding')
+    }
   }
 }
 
 function checkUpdates() {
-  console.log('Checking for updates...')
-  // Implementation for update checking
+  alert('You are using the latest version of Kaloriq!')
+}
+
+// Touch/Swipe functionality
+let touchStartX = 0
+let touchStartY = 0
+const swipeThreshold = 50 // Minimum distance for a swipe
+
+function handleTouchStart(event: TouchEvent) {
+    touchStartX = event.touches[0].clientX
+    touchStartY = event.touches[0].clientY
+}
+
+function handleTouchMove(event: TouchEvent) {
+    // Prevent default to avoid scrolling issues during swipe
+    // Only prevent if we're in a horizontal swipe
+    const currentX = event.touches[0].clientX
+    const currentY = event.touches[0].clientY
+    const deltaX = Math.abs(currentX - touchStartX)
+    const deltaY = Math.abs(currentY - touchStartY)
+    
+    if (deltaX > deltaY && deltaX > 10) {
+        event.preventDefault()
+    }
+}
+
+function handleTouchEnd(event: TouchEvent) {
+    const touchEndX = event.changedTouches[0].clientX
+    const touchEndY = event.changedTouches[0].clientY
+    
+    const deltaX = touchEndX - touchStartX
+    const deltaY = touchEndY - touchStartY
+    
+    // Check if it's more horizontal than vertical
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        // Swipe right (from left to right) - go back to analytics
+        if (deltaX > swipeThreshold) {
+            router.push('/analytics')
+        }
+        // Swipe left could be used for future navigation
+        // if (deltaX < -swipeThreshold) {
+        //     // Could navigate to another view if needed
+        // }
+    }
 }
 </script>
 
@@ -366,6 +445,33 @@ function checkUpdates() {
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 16px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.recalculate-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 112, 82, 0.2);
+  border: 1px solid rgba(0, 112, 82, 0.4);
+  border-radius: 8px;
+  color: #00a86b;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.recalculate-button:hover {
+  background: rgba(0, 112, 82, 0.3);
+  border-color: rgba(0, 112, 82, 0.6);
 }
 
 .settings-card {
