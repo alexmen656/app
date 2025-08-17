@@ -29,17 +29,23 @@
           </div>
         </div>
 
-        <!-- Camera Placeholder/Preview -->
+        <!-- Live Camera Preview - REAL -->
         <div class="camera-preview">
-          <div v-if="!isScanning && !isAnalyzing" class="preview-placeholder">
-            <div class="placeholder-content">
-              <svg width="64" height="64" viewBox="0 0 24 24" fill="rgba(255,255,255,0.6)">
-                <path d="M9 2l-1 1H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-4L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>
-              </svg>
-              <p v-if="scanMode === 'food'">Position food in frame</p>
-              <p v-else>Position barcode in frame</p>
-            </div>
+          <div v-if="!isScanning && !isAnalyzing" class="live-preview">
+            <!-- Real camera video stream -->
+            <video 
+              ref="videoElement" 
+              class="camera-video"
+              autoplay 
+              muted 
+              playsinline
+              @loadedmetadata="onVideoLoaded"
+            ></video>
+            
+            <!-- Focus indicator -->
+            <div class="focus-indicator" :class="{ active: isFocusing }" @click="focusCamera"></div>
           </div>
+          
           <div v-else class="scanning-state">
             <div class="loading-spinner"></div>
             <p>{{ loadingMessage }}</p>
@@ -76,7 +82,7 @@
         <div class="capture-controls">
           <div class="capture-actions">
             <!-- Flash Toggle -->
-            <button class="action-btn">
+            <button class="action-btn" :class="{ active: flashEnabled }" @click="toggleFlash">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
                 <path d="M7 2v11h3v9l7-12h-4L17 2H7z"/>
               </svg>
@@ -94,12 +100,8 @@
               </div>
             </button>
 
-            <!-- Gallery/Image Picker -->
-            <button class="action-btn">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-                <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
-              </svg>
-            </button>
+            <!-- Empty space for symmetry -->
+            <div class="action-btn-placeholder"></div>
           </div>
         </div>
       </div>
@@ -418,8 +420,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { CapacitorBarcodeScanner } from '@capacitor/barcode-scanner'
 
 // Reactive state
@@ -429,11 +430,85 @@ const scanResults = ref<any>(null)
 const error = ref('')
 const loadingMessage = ref('')
 const scanMode = ref<'food' | 'barcode'>('food') // Default to food scanning
+const isFocusing = ref(false)
+const flashEnabled = ref(false)
+
+// Video element reference
+const videoElement = ref<HTMLVideoElement | null>(null)
+let mediaStream: MediaStream | null = null
 
 // Set scan mode
 function setScanMode(mode: 'food' | 'barcode') {
   scanMode.value = mode
   resetScan() // Clear any existing results/errors when switching modes
+}
+
+// Camera functions
+async function startCameraStream() {
+  try {
+    const constraints = {
+      video: {
+        facingMode: 'environment', // Use back camera
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      }
+    }
+    
+    mediaStream = await navigator.mediaDevices.getUserMedia(constraints)
+    
+    if (videoElement.value) {
+      videoElement.value.srcObject = mediaStream
+    }
+  } catch (err) {
+    console.error('Error accessing camera:', err)
+    error.value = 'Kamera konnte nicht gestartet werden'
+  }
+}
+
+function stopCameraStream() {
+  if (mediaStream) {
+    mediaStream.getTracks().forEach(track => track.stop())
+    mediaStream = null
+  }
+  
+  if (videoElement.value) {
+    videoElement.value.srcObject = null
+  }
+}
+
+async function toggleFlash() {
+  try {
+    if (mediaStream) {
+      const videoTrack = mediaStream.getVideoTracks()[0]
+      const capabilities = videoTrack.getCapabilities() as any
+      
+      if (capabilities.torch) {
+        await videoTrack.applyConstraints({
+          advanced: [{ torch: !flashEnabled.value } as any]
+        })
+        flashEnabled.value = !flashEnabled.value
+      } else {
+        // Fallback: toggle visual indicator even if hardware flash isn't available
+        flashEnabled.value = !flashEnabled.value
+        console.log('Hardware flash not available, toggling visual indicator')
+      }
+    }
+  } catch (err) {
+    console.error('Flash error:', err)
+    // Still toggle the visual indicator
+    flashEnabled.value = !flashEnabled.value
+  }
+}
+
+function onVideoLoaded() {
+  console.log('Video stream loaded')
+}
+
+function focusCamera() {
+  isFocusing.value = true
+  setTimeout(() => {
+    isFocusing.value = false
+  }, 600)
 }
 
 // Computed property for mode label
@@ -454,43 +529,41 @@ const confidenceClass = computed(() => {
 async function startFoodScan() {
   try {
     isScanning.value = true
-    loadingMessage.value = 'Kamera wird vorbereitet...'
-    
-    // Request camera permissions
-    const permissions = await Camera.requestPermissions()
-    if (permissions.camera !== 'granted') {
-      throw new Error('Kamera-Berechtigung wurde verweigert')
-    }
-
     loadingMessage.value = 'Foto aufnehmen...'
     
-    // Take photo with improved error handling
-    const image = await Camera.getPhoto({
-      quality: 85,
-      allowEditing: false,
-      resultType: CameraResultType.Base64,
-      source: CameraSource.Camera,
-      width: 1024,
-      height: 1024,
-      correctOrientation: true
-    })
-
-    if (!image.base64String) {
-      throw new Error('Kein Bild aufgenommen')
+    if (!videoElement.value) {
+      throw new Error('Kamera nicht verfügbar')
     }
+
+    // Create canvas to capture frame from video
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    
+    if (!ctx) {
+      throw new Error('Canvas nicht verfügbar')
+    }
+
+    // Set canvas size to video size
+    canvas.width = videoElement.value.videoWidth
+    canvas.height = videoElement.value.videoHeight
+    
+    // Draw current video frame to canvas
+    ctx.drawImage(videoElement.value, 0, 0, canvas.width, canvas.height)
+    
+    // Convert canvas to blob
+    const blob = await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob((blob) => {
+        if (blob) {
+          resolve(blob)
+        } else {
+          reject(new Error('Bild konnte nicht erstellt werden'))
+        }
+      }, 'image/jpeg', 0.85)
+    })
 
     loadingMessage.value = 'Essen wird analysiert...'
     isAnalyzing.value = true
 
-    // Create blob from base64
-    const byteCharacters = atob(image.base64String)
-    const byteNumbers = new Array(byteCharacters.length)
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i)
-    }
-    const byteArray = new Uint8Array(byteNumbers)
-    const blob = new Blob([byteArray], { type: 'image/jpeg' })
-    
     // Send to AI API
     const formData = new FormData()
     formData.append('image', blob, 'food.jpg')
@@ -511,10 +584,20 @@ async function startFoodScan() {
       throw new Error(result.error || 'Ungültige API-Antwort')
     }
 
+    // Convert blob to base64 for display
+    const base64 = await new Promise<string>((resolve) => {
+      const reader = new FileReader()
+      reader.onload = () => {
+        const base64String = reader.result as string
+        resolve(base64String.split(',')[1]) // Remove data:image/jpeg;base64, prefix
+      }
+      reader.readAsDataURL(blob)
+    })
+
     scanResults.value = {
       type: 'food',
       data: result,
-      image: `data:image/jpeg;base64,${image.base64String}`
+      image: `data:image/jpeg;base64,${base64}`
     }
 
   } catch (err: any) {
@@ -526,20 +609,23 @@ async function startFoodScan() {
   }
 }
 
-// Barcode scanning
+// Barcode scanning using the plugin with live preview
 async function startBarcodeScan() {
   try {
     isScanning.value = true
     loadingMessage.value = 'Barcode-Scanner wird vorbereitet...'
-
+    
+    // Stop our video stream temporarily
+    stopCameraStream()
+    
     loadingMessage.value = 'Barcode scannen...'
 
-    // Start scanning with options
+    // Use the plugin's built-in camera and detection
     const result = await CapacitorBarcodeScanner.scanBarcode({
       hint: 17, // ALL barcode types
-      scanInstructions: 'Barcode scannen',
-      scanButton: true,
-      scanText: 'Scannen'
+      scanInstructions: 'Barcode in den Rahmen positionieren',
+      scanButton: false, // Hide the scan button since we control it
+      scanText: 'Scanning...'
     })
     
     if (!result.ScanResult) {
@@ -569,6 +655,8 @@ async function startBarcodeScan() {
 
   } catch (err: any) {
     error.value = err.message || 'Unbekannter Fehler beim Barcode-Scannen'
+    // Restart our camera stream
+    await startCameraStream()
   } finally {
     isScanning.value = false
     isAnalyzing.value = false
@@ -626,8 +714,14 @@ function saveResults() {
 }
 
 // Initialize with food mode on mount
-onMounted(() => {
+onMounted(async () => {
   scanMode.value = 'food'
+  await startCameraStream()
+})
+
+// Cleanup on unmount
+onUnmounted(() => {
+  stopCameraStream()
 })
 </script>
 
@@ -777,20 +871,55 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   background: #1a1a1a;
+  position: relative;
 }
 
-.preview-placeholder {
-  text-align: center;
-  color: rgba(255, 255, 255, 0.6);
+.live-preview {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
 }
 
-.placeholder-content svg {
-  margin-bottom: 16px;
+.camera-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #000;
 }
 
-.placeholder-content p {
-  font-size: 16px;
-  margin: 0;
+.focus-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  pointer-events: auto;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.focus-indicator.active {
+  opacity: 1;
+  animation: focusAnimation 0.6s ease-out;
+}
+
+@keyframes focusAnimation {
+  0% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
 }
 
 .scanning-state {
@@ -900,6 +1029,20 @@ onMounted(() => {
 .action-btn:hover {
   background: rgba(255, 255, 255, 0.3);
   transform: scale(1.05);
+}
+
+.action-btn.active {
+  background: rgba(255, 255, 0, 0.8);
+  color: #000;
+}
+
+.action-btn.active svg {
+  fill: #000;
+}
+
+.action-btn-placeholder {
+  width: 50px;
+  height: 50px;
 }
 
 /* Main Capture Button */
