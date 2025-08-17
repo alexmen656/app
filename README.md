@@ -1,4 +1,4 @@
-# CalAI - Calorie Tracking App
+# Kaloriq - Calorie Tracking App
 
 Eine moderne Vue.js + Capacitor App zum Kalorienzählen mit KI-gestützter Nahrungsmittelerkennung.
 

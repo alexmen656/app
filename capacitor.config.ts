@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.calai.app',
-  appName: 'CalAI',
+  appId: 'eu.control-center.sites.kaloriq',
+  appName: 'Kaloriq',
   webDir: 'dist',
   server: {
     androidScheme: 'https'
