@@ -96,8 +96,8 @@ async function initializeStore() {
   }
 }
 
-// Initialize the store
-initializeStore()
+// Initialize the store and export a ready promise so consumers can await storage load
+export const storeReady = initializeStore()
 
 // Computed values
 export const isOnboardingCompleted = computed(() => {

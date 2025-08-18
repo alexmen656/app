@@ -201,7 +201,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { dailyGoals, isOnboardingCompleted } from '../stores/userStore'
+import { dailyGoals, isOnboardingCompleted, storeReady } from '../stores/userStore'
 import { ScanHistory } from '../utils/storage'
 import { WidgetDataManager, StreakManager } from '../utils/widgetData'
 
@@ -209,31 +209,40 @@ const router = useRouter()
 const { t } = useI18n()
 
 // Check if onboarding is completed and redirect if needed
-onMounted(() => {
+// Named handlers so they can be removed properly
+function onScanHistoryUpdated() {
+    loadScanHistory()
+    loadStreak()
+}
+
+function onFocus() {
+    loadScanHistory()
+    loadStreak()
+}
+
+onMounted(async () => {
+    // Wait until store has loaded persisted values
+    await storeReady
+
     if (!isOnboardingCompleted.value) {
         router.push('/onboarding')
         return
     }
+
     loadScanHistory()
     loadStreak()
 
     // Listen for scan history updates from custom events
-    window.addEventListener('scanHistoryUpdated', () => {
-        loadScanHistory()
-        loadStreak()
-    })
+    window.addEventListener('scanHistoryUpdated', onScanHistoryUpdated)
 
     // Also listen for focus events to refresh when returning to app
-    window.addEventListener('focus', () => {
-        loadScanHistory()
-        loadStreak()
-    })
+    window.addEventListener('focus', onFocus)
 })
 
 onUnmounted(() => {
     // Clean up event listeners
-    window.removeEventListener('scanHistoryUpdated', loadScanHistory)
-    window.removeEventListener('focus', loadScanHistory)
+    window.removeEventListener('scanHistoryUpdated', onScanHistoryUpdated)
+    window.removeEventListener('focus', onFocus)
 })
 
 // Type definitions
