@@ -272,7 +272,76 @@ const stopCamera = () => {
   console.log('Camera stopped completely');
 };
 
-const takePhoto = () => {
+const analyzeFoodPhoto = async (photoDataUrl) => {
+  try {
+    // Convert data URL to blob
+    const response = await fetch(photoDataUrl);
+    const blob = await response.blob();
+    
+    // Create form data
+    const formData = new FormData();
+    formData.append('image', blob, 'photo.jpg');
+    
+    // Send to KaloriQ Food Analyze API
+    const apiResponse = await fetch('https://kaloriq-api.vercel.app/api/food/analyze', {
+      method: 'POST',
+      body: formData
+    });
+    
+    if (!apiResponse.ok) {
+      throw new Error(`API error: ${apiResponse.status}`);
+    }
+    
+    const data = await apiResponse.json();
+    
+    if (!data.success || !data.data) {
+      throw new Error('Food analysis failed');
+    }
+    
+    // Prepare food data for NutritionView
+    const foodData = {
+      foods: data.data.foods || [],
+      total: data.data.total || { calories: 0, protein: 0, carbs: 0, fat: 0 },
+      confidence: data.data.confidence || 'medium',
+      notes: data.data.notes || '',
+      timestamp: data.data.timestamp || new Date().toISOString()
+    };
+    
+    // Stop camera before navigation
+    stopCamera();
+    
+    // Navigate to NutritionView with food data
+    router.push({
+      name: 'Nutrition',
+      query: {
+        foodData: JSON.stringify(foodData),
+        photo: photoDataUrl
+      }
+    });
+    
+  } catch (error) {
+    console.error('Food analysis error:', error);
+    
+    // Stop camera and navigate anyway with basic data
+    stopCamera();
+    
+    router.push({
+      name: 'Nutrition',
+      query: {
+        foodData: JSON.stringify({
+          foods: [{ name: 'Analysiertes Gericht', calories: 0, protein: 0, carbs: 0, fat: 0 }],
+          total: { calories: 0, protein: 0, carbs: 0, fat: 0 },
+          confidence: 'low',
+          notes: 'Analyse fehlgeschlagen. Bitte korrigiere die Werte manuell.',
+          error: true
+        }),
+        photo: photoDataUrl
+      }
+    });
+  }
+};
+
+const takePhoto = async () => {
   const videoElement = document.getElementById('barcode-video');
   if (!videoElement) return;
 
@@ -291,6 +360,14 @@ const takePhoto = () => {
   `;
   document.body.appendChild(shutter);
   setTimeout(() => document.body.removeChild(shutter), 100);
+
+  // Foto an Food Analyze API senden
+  try {
+    await analyzeFoodPhoto(photoUrl.value);
+  } catch (error) {
+    console.error('Food analysis failed:', error);
+    // Zeige Fehler an oder navigiere trotzdem zur NutritionView
+  }
 };
 
 const toggleFlash = async () => {

@@ -135,6 +135,41 @@
                     <h3>Ingredients</h3>
                     <div class="ingredient-text">{{ product.ingredients.join(', ') }}</div>
                 </div>
+                
+                <!-- Detailed food breakdown for analyzed dishes -->
+                <div class="nutrition-foods" v-if="product.foods && product.foods.length > 1">
+                    <h3>Erkannte Zutaten</h3>
+                    <div class="foods-list">
+                        <div v-for="food in product.foods" :key="food.name" class="food-item">
+                            <div class="food-name">{{ food.name }}</div>
+                            <div class="food-amount" v-if="food.amount">{{ food.amount }}</div>
+                            <div class="food-macros">
+                                <span class="food-macro">{{ Math.round(food.calories * amount) }} kcal</span>
+                                <span class="food-macro">P: {{ Math.round(food.protein * amount) }}g</span>
+                                <span class="food-macro">K: {{ Math.round(food.carbs * amount) }}g</span>
+                                <span class="food-macro">F: {{ Math.round((food.fat || food.fats) * amount) }}g</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Analysis confidence and notes -->
+                <div class="nutrition-analysis" v-if="product.type === 'food' && (product.confidence || product.notes)">
+                    <div class="analysis-confidence" v-if="product.confidence">
+                        <div class="confidence-label">Analyse-Vertrauen</div>
+                        <div class="confidence-badge" :class="product.confidence">
+                            {{ product.confidence === 'hoch' ? 'Hoch' : product.confidence === 'medium' ? 'Mittel' : 'Niedrig' }}
+                        </div>
+                    </div>
+                    <div class="analysis-notes" v-if="product.notes">
+                        <div class="notes-label">Hinweise</div>
+                        <div class="notes-text">{{ product.notes }}</div>
+                    </div>
+                    <div class="analysis-error" v-if="product.analysisError">
+                        <div class="error-icon">⚠️</div>
+                        <div class="error-text">Die automatische Analyse konnte nicht durchgeführt werden. Bitte korrigiere die Werte manuell.</div>
+                    </div>
+                </div>
                 <div class="nutrition-actions">
                     <button class="fix-btn" @click="showFixModal = true">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -266,20 +301,63 @@ onMounted(() => {
         // Handle food scan data
         try {
             const foodData = JSON.parse(route.query.foodData);
-            product.value = {
-                name: foodData.name || 'Scanned Food',
-                image: route.query.photo,
-                calories: foodData.calories || 0,
-                protein: foodData.protein || 0,
-                carbs: foodData.carbs || 0,
-                fats: foodData.fats || 0,
-                healthScore: foodData.healthScore || 7,
-                ingredients: foodData.ingredients || [],
-                type: 'food'
-            };
+            
+            // Check if it's multiple foods (dish analysis) or single food
+            if (foodData.foods && foodData.foods.length > 0) {
+                // Use total values for multiple foods
+                const total = foodData.total || {};
+                const firstFood = foodData.foods[0] || {};
+                
+                product.value = {
+                    name: foodData.foods.length > 1 
+                        ? `Gericht mit ${foodData.foods.length} Zutaten`
+                        : firstFood.name || 'Analysiertes Gericht',
+                    image: route.query.photo,
+                    calories: total.calories || firstFood.calories || 0,
+                    protein: total.protein || firstFood.protein || 0,
+                    carbs: total.carbs || firstFood.carbs || 0,
+                    fats: total.fat || firstFood.fats || firstFood.fat || 0,
+                    healthScore: foodData.healthScore || 7,
+                    ingredients: foodData.foods.map(f => `${f.name} (${f.amount || 'ca. 100g'})`),
+                    type: 'food',
+                    confidence: foodData.confidence || 'medium',
+                    notes: foodData.notes || '',
+                    foods: foodData.foods, // Store individual foods for detailed view
+                    analysisError: foodData.error || false
+                };
+            } else {
+                // Fallback for old format
+                product.value = {
+                    name: foodData.name || 'Analysiertes Gericht',
+                    image: route.query.photo,
+                    calories: foodData.calories || 0,
+                    protein: foodData.protein || 0,
+                    carbs: foodData.carbs || 0,
+                    fats: foodData.fats || 0,
+                    healthScore: foodData.healthScore || 7,
+                    ingredients: foodData.ingredients || [],
+                    type: 'food'
+                };
+            }
+            
             editedProduct.value = { ...product.value };
         } catch (e) {
             console.error('Error parsing food data:', e);
+            
+            // Create fallback product
+            product.value = {
+                name: 'Analysiertes Gericht',
+                image: route.query.photo,
+                calories: 0,
+                protein: 0,
+                carbs: 0,
+                fats: 0,
+                healthScore: 5,
+                ingredients: [],
+                type: 'food',
+                analysisError: true
+            };
+            editedProduct.value = { ...product.value };
         }
     }
 });
@@ -685,6 +763,143 @@ function saveAndReturn() {
     font-size: 14px;
     line-height: 1.5;
     color: #666;
+}
+
+/* Food breakdown */
+.nutrition-foods {
+    margin-bottom: 24px;
+}
+
+.nutrition-foods h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #1a1a1a;
+}
+
+.foods-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.food-item {
+    background: #f8f9fa;
+    border-radius: 16px;
+    padding: 16px;
+    border-left: 4px solid #007aff;
+}
+
+.food-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+}
+
+.food-amount {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.food-macros {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.food-macro {
+    background: #fff;
+    border-radius: 8px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #333;
+    border: 1px solid #e1e5e9;
+}
+
+/* Analysis info */
+.nutrition-analysis {
+    background: #f8f9fa;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 24px;
+}
+
+.analysis-confidence {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.confidence-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #666;
+}
+
+.confidence-badge {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.confidence-badge.hoch {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.confidence-badge.medium {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.confidence-badge.niedrig,
+.confidence-badge.low {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.analysis-notes {
+    margin-bottom: 12px;
+}
+
+.notes-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #666;
+    margin-bottom: 6px;
+}
+
+.notes-text {
+    font-size: 14px;
+    line-height: 1.4;
+    color: #333;
+}
+
+.analysis-error {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px;
+    background: #fee2e2;
+    border-radius: 12px;
+    border-left: 4px solid #dc2626;
+}
+
+.error-icon {
+    flex-shrink: 0;
+    font-size: 16px;
+}
+
+.error-text {
+    font-size: 14px;
+    color: #991b1b;
+    line-height: 1.4;
 }
 
 /* Actions */
