@@ -286,7 +286,6 @@ import {
   calculateRecommendedMacros
 } from '../stores/userStore'
 import { BarcodeCache, ScanHistory } from '../utils/storage'
-import { DataMigration } from '../utils/migration'
 
 const router = useRouter()
 
@@ -402,21 +401,19 @@ function checkUpdates() {
 async function refreshDebugInfo() {
   try {
     const [
-      migrationStats,
       cacheStats,
       scanHistory
     ] = await Promise.all([
-      DataMigration.getMigrationStats(),
       BarcodeCache.getStats(),
       ScanHistory.get()
     ])
 
     debugInfo.value = {
-      migrationComplete: migrationStats.migrationComplete,
+      migrationComplete: true, // Migration removed
       barcodeCache: cacheStats,
       scanHistoryCount: scanHistory.length,
-      capacitorPreferencesItems: migrationStats.capacitorPreferencesItems,
-      localStorageItems: migrationStats.localStorageItems
+      capacitorPreferencesItems: 0, // No longer tracked
+      localStorageItems: 0 // No longer tracked
     }
   } catch (error) {
     console.error('Error refreshing debug info:', error)
@@ -424,16 +421,7 @@ async function refreshDebugInfo() {
 }
 
 async function forceMigration() {
-  if (confirm('Force migration from localStorage to Capacitor Preferences?')) {
-    try {
-      await DataMigration.forceMigration()
-      alert('Migration completed successfully!')
-      await refreshDebugInfo()
-    } catch (error) {
-      console.error('Migration failed:', error)
-      alert('Migration failed: ' + (error as Error).message)
-    }
-  }
+  alert('Migration system has been removed. Data is now stored directly in Capacitor Preferences.')
 }
 
 async function exportDebugData() {

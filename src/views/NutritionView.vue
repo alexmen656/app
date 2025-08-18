@@ -229,6 +229,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { BarcodeCache, ScanHistory } from '../utils/storage';
+import { WidgetDataManager, StreakManager } from '../utils/widgetData';
 
 const route = useRoute();
 const router = useRouter();
@@ -478,6 +479,15 @@ async function saveAndReturn() {
 
         // Save to scan history using Capacitor Preferences
         await ScanHistory.add(scanEntry);
+
+        // Update streak when food is logged
+        await StreakManager.updateStreak();
+
+        // Update widget data for iOS widgets
+        await WidgetDataManager.updateWidgetData();
+
+        // Dispatch event to update home view
+        window.dispatchEvent(new CustomEvent('scanHistoryUpdated'));
 
         router.push({ path: '/' });
 

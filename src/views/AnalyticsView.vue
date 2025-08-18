@@ -22,7 +22,7 @@
           <h3>Avg Daily Calories</h3>
           <span class="trend up">+5%</span>
         </div>
-        <div class="card-value">{{ avgCalories }}</div>
+        <div class="card-value">{{ analyticsData?.avgCalories || 0 }}</div>
       </div>
       
       <div class="summary-card">
@@ -30,7 +30,7 @@
           <h3>Days on Track</h3>
           <span class="trend up">+2</span>
         </div>
-        <div class="card-value">{{ daysOnTrack }}/7</div>
+        <div class="card-value">{{ analyticsData?.daysOnTrack || 0 }}/7</div>
       </div>
     </div>
 
@@ -41,7 +41,7 @@
         <div class="chart">
           <div class="chart-bars">
             <div 
-              v-for="(day, index) in weeklyData" 
+              v-for="(day, index) in (analyticsData?.weeklyData || [])" 
               :key="index"
               class="chart-bar"
               :style="{ height: (day.calories / 3000) * 100 + '%' }"
@@ -50,7 +50,7 @@
             </div>
           </div>
           <div class="chart-labels">
-            <span v-for="day in weeklyData" :key="day.day">{{ day.day }}</span>
+            <span v-for="day in (analyticsData?.weeklyData || [])" :key="day.day">{{ day.day }}</span>
           </div>
         </div>
       </div>
@@ -77,7 +77,7 @@
               />
             </svg>
             <div class="macro-center">
-              <span class="macro-percentage">35%</span>
+              <span class="macro-percentage">{{ analyticsData?.macroBreakdown.protein || 0 }}%</span>
             </div>
           </div>
           <span class="macro-label">Protein</span>
@@ -100,7 +100,7 @@
               />
             </svg>
             <div class="macro-center">
-              <span class="macro-percentage">40%</span>
+              <span class="macro-percentage">{{ analyticsData?.macroBreakdown.carbs || 0 }}%</span>
             </div>
           </div>
           <span class="macro-label">Carbs</span>
@@ -123,7 +123,7 @@
               />
             </svg>
             <div class="macro-center">
-              <span class="macro-percentage">25%</span>
+              <span class="macro-percentage">{{ analyticsData?.macroBreakdown.fats || 0 }}%</span>
             </div>
           </div>
           <span class="macro-label">Fats</span>
@@ -138,30 +138,30 @@
         <div class="goal-item">
           <div class="goal-info">
             <span class="goal-name">Daily Calorie Goal</span>
-            <span class="goal-progress">2400 / 3000 kcal</span>
+            <span class="goal-progress">{{ analyticsData?.goalProgress.calories.current || 0 }} / {{ analyticsData?.goalProgress.calories.target || 0 }} kcal</span>
           </div>
           <div class="goal-bar">
-            <div class="goal-fill" style="width: 80%"></div>
+            <div class="goal-fill" :style="{ width: Math.min((analyticsData?.goalProgress.calories.percentage || 0), 100) + '%' }"></div>
           </div>
         </div>
 
         <div class="goal-item">
           <div class="goal-info">
             <span class="goal-name">Weekly Exercise</span>
-            <span class="goal-progress">4 / 5 days</span>
+            <span class="goal-progress">{{ analyticsData?.goalProgress.exercise.current || 0 }} / {{ analyticsData?.goalProgress.exercise.target || 0 }} days</span>
           </div>
           <div class="goal-bar">
-            <div class="goal-fill" style="width: 80%"></div>
+            <div class="goal-fill" :style="{ width: Math.min((analyticsData?.goalProgress.exercise.percentage || 0), 100) + '%' }"></div>
           </div>
         </div>
 
         <div class="goal-item">
           <div class="goal-info">
             <span class="goal-name">Water Intake</span>
-            <span class="goal-progress">1.8 / 2.5 L</span>
+            <span class="goal-progress">{{ analyticsData?.goalProgress.water.current || 0 }} / {{ analyticsData?.goalProgress.water.target || 0 }} L</span>
           </div>
           <div class="goal-bar">
-            <div class="goal-fill" style="width: 72%"></div>
+            <div class="goal-fill" :style="{ width: Math.min((analyticsData?.goalProgress.water.percentage || 0), 100) + '%' }"></div>
           </div>
         </div>
       </div>
@@ -192,24 +192,31 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { AnalyticsManager, type AnalyticsData } from '../utils/analyticsData'
 
 const router = useRouter()
 
 const selectedPeriod = ref('week')
-const avgCalories = ref(2450)
-const daysOnTrack = ref(5)
+const analyticsData = ref<AnalyticsData | null>(null)
+const loading = ref(true)
 
-const weeklyData = ref([
-  { day: 'Mon', calories: 2300 },
-  { day: 'Tue', calories: 2650 },
-  { day: 'Wed', calories: 2100 },
-  { day: 'Thu', calories: 2800 },
-  { day: 'Fri', calories: 2450 },
-  { day: 'Sat', calories: 2900 },
-  { day: 'Sun', calories: 2200 }
-])
+// Load analytics data
+async function loadAnalyticsData() {
+    try {
+        loading.value = true
+        analyticsData.value = await AnalyticsManager.getAnalyticsData()
+    } catch (error) {
+        console.error('Error loading analytics data:', error)
+    } finally {
+        loading.value = false
+    }
+}
+
+onMounted(() => {
+    loadAnalyticsData()
+})
 
 // Touch/Swipe functionality
 let touchStartX = 0

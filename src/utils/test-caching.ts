@@ -1,6 +1,5 @@
-// Test script to verify barcode caching and migration functionality
+// Test script to verify barcode caching functionality
 import { BarcodeCache, ScanHistory } from './storage';
-import { DataMigration } from './migration';
 
 async function testCaching() {
   console.log('🧪 Testing Barcode Caching...');
@@ -58,14 +57,6 @@ async function testCaching() {
   console.log('✅ Scan history retrieved:', history.length, 'items');
 
   // Test migration
-  console.log('\n🧪 Testing Migration...');
-  
-  // Add some test data to localStorage
-  localStorage.setItem('testMigrationKey', JSON.stringify({ test: 'data' }));
-  
-  const migrationStats = await DataMigration.getMigrationStats();
-  console.log('📊 Migration stats:', migrationStats);
-
   console.log('\n✅ All tests completed successfully!');
 }
 

@@ -14,7 +14,7 @@
                     <path
                         d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z" />
                 </svg>
-                <span class="streak-count">15</span>
+                <span class="streak-count">{{ currentStreak }}</span>
             </div>
         </header>
 
@@ -202,6 +202,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { dailyGoals, isOnboardingCompleted } from '../stores/userStore'
 import { ScanHistory } from '../utils/storage'
+import { WidgetDataManager, StreakManager } from '../utils/widgetData'
 
 const router = useRouter()
 
@@ -212,12 +213,19 @@ onMounted(() => {
         return
     }
     loadScanHistory()
+    loadStreak()
 
     // Listen for scan history updates from custom events
-    window.addEventListener('scanHistoryUpdated', loadScanHistory)
+    window.addEventListener('scanHistoryUpdated', () => {
+        loadScanHistory()
+        loadStreak()
+    })
 
     // Also listen for focus events to refresh when returning to app
-    window.addEventListener('focus', loadScanHistory)
+    window.addEventListener('focus', () => {
+        loadScanHistory()
+        loadStreak()
+    })
 })
 
 onUnmounted(() => {
@@ -273,15 +281,29 @@ const consumedFats = computed(() => {
 
 // Scan history from Capacitor Preferences
 const scanHistory = ref<ScanData[]>([])
+const currentStreak = ref<number>(0)
 
 // Load scan history from Capacitor Preferences
 async function loadScanHistory() {
     try {
         const history = await ScanHistory.get()
         scanHistory.value = history.slice(0, 10) // Show only last 10 items
+        
+        // Update widget data when scan history changes
+        await WidgetDataManager.updateWidgetData()
     } catch (error) {
         console.error('Error loading scan history:', error)
         scanHistory.value = []
+    }
+}
+
+// Load current streak
+async function loadStreak() {
+    try {
+        currentStreak.value = await StreakManager.getCurrentStreak()
+    } catch (error) {
+        console.error('Error loading streak:', error)
+        currentStreak.value = 0
     }
 }
 
@@ -383,21 +405,6 @@ function handleTouchEnd(event: TouchEvent) {
         // }
     }
 }
-
-// Load scan history when component mounts
-onMounted(() => {
-    if (!isOnboardingCompleted.value) {
-        router.push('/onboarding')
-        return
-    }
-    loadScanHistory()
-
-    // Listen for storage changes to update in real-time
-    window.addEventListener('storage', loadScanHistory)
-
-    // Also listen for focus events to refresh when returning to app
-    window.addEventListener('focus', loadScanHistory)
-})
 </script>
 
 <style scoped>

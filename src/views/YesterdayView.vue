@@ -13,7 +13,7 @@
                     <path
                         d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z" />
                 </svg>
-                <span class="streak-count">15</span>
+                <span class="streak-count">{{ currentStreak }}</span>
             </div>
         </header>
 
@@ -199,6 +199,9 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { dailyGoals } from '../stores/userStore'
+import { AnalyticsManager, type DayData } from '../utils/analyticsData'
+import { StreakManager } from '../utils/widgetData'
 
 const router = useRouter()
 
@@ -215,88 +218,66 @@ interface FoodItem {
     type: string
 }
 
-// Daily targets
-const dailyCalories = 3000
-const dailyProtein = 150
-const dailyCarbs = 300
-const dailyFats = 100
+// State
+const yesterdayData = ref<DayData | null>(null)
+const currentStreak = ref<number>(0)
+const loading = ref(true)
 
-// Yesterday's consumed amounts (mock data for now)
-const yesterdayConsumedCalories = ref(2800)
-const yesterdayConsumedProtein = ref(145)
-const yesterdayConsumedCarbs = ref(285)
-const yesterdayConsumedFats = ref(95)
+// Daily targets from store
+const dailyCalories = computed(() => dailyGoals.calories)
+const dailyProtein = computed(() => dailyGoals.protein)
+const dailyCarbs = computed(() => dailyGoals.carbs)
+const dailyFats = computed(() => dailyGoals.fats)
 
-// Mock yesterday's food data
-const yesterdayFoods = ref<FoodItem[]>([
-    {
-        id: 1,
-        name: "Grilled Chicken Breast",
-        calories: 350,
-        protein: 40,
-        carbs: 0,
-        fats: 8,
-        time: "18:30",
-        image: "/api/placeholder/60/60",
-        type: "food"
-    },
-    {
-        id: 2,
-        name: "Brown Rice",
-        calories: 220,
-        protein: 5,
-        carbs: 45,
-        fats: 2,
-        time: "18:30",
-        image: "/api/placeholder/60/60",
-        type: "food"
-    },
-    {
-        id: 3,
-        name: "Greek Yogurt",
-        calories: 150,
-        protein: 20,
-        carbs: 10,
-        fats: 5,
-        time: "15:00",
-        image: "/api/placeholder/60/60",
-        type: "food"
-    },
-    {
-        id: 4,
-        name: "Banana",
-        calories: 105,
-        protein: 1,
-        carbs: 27,
-        fats: 0,
-        time: "10:30",
-        image: "/api/placeholder/60/60",
-        type: "food"
-    },
-    {
-        id: 5,
-        name: "Oatmeal",
-        calories: 300,
-        protein: 10,
-        carbs: 54,
-        fats: 6,
-        time: "08:00",
-        image: "/api/placeholder/60/60",
-        type: "food"
+// Load yesterday's data
+async function loadYesterdayData() {
+    try {
+        loading.value = true
+        yesterdayData.value = await AnalyticsManager.getYesterdayData()
+        currentStreak.value = await StreakManager.getCurrentStreak()
+    } catch (error) {
+        console.error('Error loading yesterday data:', error)
+    } finally {
+        loading.value = false
     }
-])
+}
+
+// Convert yesterdayData to food items format
+const yesterdayFoods = computed((): FoodItem[] => {
+    if (!yesterdayData.value) return []
+    
+    return yesterdayData.value.foods.map((food, index) => ({
+        id: index + 1,
+        name: food.name,
+        calories: food.calories,
+        protein: food.protein,
+        carbs: food.carbs,
+        fats: food.fats,
+        time: food.time,
+        image: "/api/placeholder/60/60",
+        type: food.type
+    }))
+})
 
 // Yesterday calculations
-const yesterdayCaloriesLeft = computed(() => yesterdayConsumedCalories.value)
-const yesterdayProtein = computed(() => yesterdayConsumedProtein.value)
-const yesterdayCarbs = computed(() => yesterdayConsumedCarbs.value)
-const yesterdayFats = computed(() => yesterdayConsumedFats.value)
+const yesterdayCaloriesLeft = computed(() => yesterdayData.value?.calories || 0)
+const yesterdayProtein = computed(() => yesterdayData.value?.protein || 0)
+const yesterdayCarbs = computed(() => yesterdayData.value?.carbs || 0)
+const yesterdayFats = computed(() => yesterdayData.value?.fats || 0)
 
 // Progress calculations (0 to 1)
-const yesterdayCaloriesProgress = computed(() => Math.min(yesterdayConsumedCalories.value / dailyCalories, 1))
-const yesterdayProteinProgress = computed(() => Math.min(yesterdayConsumedProtein.value / dailyProtein, 1))
-const yesterdayCarbsProgress = computed(() => Math.min(yesterdayConsumedCarbs.value / dailyCarbs, 1))
-const yesterdayFatsProgress = computed(() => Math.min(yesterdayConsumedFats.value / dailyFats, 1))
+const yesterdayCaloriesProgress = computed(() => 
+    Math.min((yesterdayData.value?.calories || 0) / dailyCalories.value, 1)
+)
+const yesterdayProteinProgress = computed(() => 
+    Math.min((yesterdayData.value?.protein || 0) / dailyProtein.value, 1)
+)
+const yesterdayCarbsProgress = computed(() => 
+    Math.min((yesterdayData.value?.carbs || 0) / dailyCarbs.value, 1)
+)
+const yesterdayFatsProgress = computed(() => 
+    Math.min((yesterdayData.value?.fats || 0) / dailyFats.value, 1)
+)
 
 // Calculate stroke-dashoffset for macro circles
 function calculateMacroOffset(progress: number, circumference: number): number {
@@ -349,8 +330,7 @@ function handleTouchEnd(event: TouchEvent) {
 }
 
 onMounted(() => {
-    // Load yesterday's data from localStorage or API in the future
-    console.log('Yesterday view loaded')
+    loadYesterdayData()
 })
 </script>
 

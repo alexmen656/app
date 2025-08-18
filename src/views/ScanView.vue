@@ -97,6 +97,7 @@
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import { BrowserMultiFormatReader, BarcodeFormat } from '@zxing/browser';
 import { useRouter } from 'vue-router';
+import { WidgetDataManager, StreakManager } from '../utils/widgetData';
 
 const mode = ref('barcode'); // 'barcode' oder 'photo'
 const barcodeResult = ref('');
