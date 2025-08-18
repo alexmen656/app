@@ -27,7 +27,7 @@
         <div class="main-card">
             <div class="calories-section">
                 <h2 class="calories-number">{{ yesterdayCaloriesLeft }}</h2>
-                <p class="calories-label">Calories consumed</p>
+                <p class="calories-label">{{ $t('yesterday.caloriesConsumed') }}</p>
             </div>
             <div class="progress-ring">
                 <svg class="progress-svg" width="100" height="100" viewBox="0 0 100 100">
@@ -49,7 +49,7 @@
         <div class="macros-grid">
             <div class="macro-card protein">
                 <div class="macro-amount">{{ yesterdayProtein }}g</div>
-                <div class="macro-label">Protein</div>
+                <div class="macro-label">{{ $t('nutrition.protein') }}</div>
                 <div class="macro-progress">
                     <svg width="60" height="60" viewBox="0 0 60 60">
                         <!-- Background circle -->
@@ -70,7 +70,7 @@
 
             <div class="macro-card carbs">
                 <div class="macro-amount">{{ yesterdayCarbs }}g</div>
-                <div class="macro-label">Carbs</div>
+                <div class="macro-label">{{ $t('nutrition.carbs') }}</div>
                 <div class="macro-progress">
                     <svg width="60" height="60" viewBox="0 0 60 60">
                         <!-- Background circle -->
@@ -91,7 +91,7 @@
 
             <div class="macro-card fats">
                 <div class="macro-amount">{{ yesterdayFats }}g</div>
-                <div class="macro-label">Fats</div>
+                <div class="macro-label">{{ $t('nutrition.fats') }}</div>
                 <div class="macro-progress">
                     <svg width="60" height="60" viewBox="0 0 60 60">
                         <!-- Background circle -->
@@ -113,12 +113,12 @@
 
         <!-- Yesterday's Food Section -->
         <div class="recent-section">
-            <h3 class="section-title">Gestern gegessen</h3>
+            <h3 class="section-title">{{ $t('yesterday.title') }}</h3>
 
             <div v-if="yesterdayFoods.length === 0" class="empty-state">
                 <div class="empty-icon">📅</div>
-                <p>Keine Daten für gestern vorhanden</p>
-                <p class="empty-subtitle">Vergangsanalyse wird nach mehr Tracking-Tagen verfügbar sein!</p>
+                <p>{{ $t('yesterday.emptyMessage') }}</p>
+                <p class="empty-subtitle">{{ $t('yesterday.emptySubtitle') }}</p>
             </div>
 
             <div v-else class="food-item" v-for="item in yesterdayFoods" :key="item.id">
@@ -169,21 +169,21 @@
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
                 </svg>
-                <span class="nav-label">Home</span>
+                <span class="nav-label">{{ $t('app.home') }}</span>
             </router-link>
             <router-link to="/analytics" class="nav-item">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
                     <path
                         d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" />
                 </svg>
-                <span class="nav-label">Analytics</span>
+                <span class="nav-label">{{ $t('app.analytics') }}</span>
             </router-link>
             <router-link to="/settings" class="nav-item">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
                     <path
                         d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z" />
                 </svg>
-                <span class="nav-label">Settings</span>
+                <span class="nav-label">{{ $t('app.settings') }}</span>
             </router-link>
         </nav>
 

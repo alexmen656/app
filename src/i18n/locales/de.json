@@ -21,6 +21,12 @@
     "scannedFood": "Gescanntes Essen",
     "unknownProduct": "Unbekanntes Produkt"
   },
+  "yesterday": {
+    "title": "Gestern gegessen",
+    "emptyMessage": "Keine Daten für gestern vorhanden",
+    "emptySubtitle": "Die Verlaufsanalyse wird nach mehr Tracking-Tagen verfügbar sein!",
+    "caloriesConsumed": "Verbrauchte Kalorien"
+  },
   "scanner": {
     "scanBarcode": "Barcode scannen",
     "scanFood": "Essen scannen",
@@ -65,6 +71,27 @@
     "weeklyReports": "Wochenberichte",
     "metric": "Metrisch (kg, cm)",
     "imperial": "Imperial (lbs, ft)"
+  ,
+  "dataPrivacy": "Daten & Datenschutz",
+  "exportData": "Daten exportieren",
+  "clearCache": "Cache leeren",
+  "clearBarcodeCache": "Barcode-Cache leeren",
+  "deleteAccount": "Account löschen",
+  "debugInfo": "Debug-Informationen",
+  "refresh": "Aktualisieren",
+  "migrationStatus": "Migrationsstatus",
+  "migrationComplete": "Abgeschlossen",
+  "migrationPending": "Ausstehend",
+  "cachedBarcodes": "Zwischengespeicherte Barcodes",
+  "cacheSize": "Cache-Größe",
+  "scanHistoryItems": "Scan-Historie Einträge",
+  "capacitorPreferences": "Capacitor-Einstellungen",
+  "localStorageItems": "LocalStorage Einträge",
+  "forceMigration": "Migration erzwingen",
+  "exportDebugData": "Debug-Daten exportieren",
+  "version": "Version",
+  "build": "Build",
+  "checkUpdates": "Nach Updates suchen"
   },
   "analytics": {
     "weeklyOverview": "Wochenübersicht",

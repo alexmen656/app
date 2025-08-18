@@ -21,6 +21,12 @@
     "scannedFood": "Scanned food",
     "unknownProduct": "Unknown product"
   },
+  "yesterday": {
+    "title": "Yesterday's meals",
+    "emptyMessage": "No data for yesterday",
+    "emptySubtitle": "Historical analysis will become available after more tracking days!",
+    "caloriesConsumed": "Calories consumed"
+  },
   "scanner": {
     "scanBarcode": "Scan barcode",
     "scanFood": "Scan food",
@@ -65,6 +71,27 @@
     "weeklyReports": "Weekly Reports",
     "metric": "Metric (kg, cm)",
     "imperial": "Imperial (lbs, ft)"
+  ,
+  "dataPrivacy": "Data & Privacy",
+  "exportData": "Export Data",
+  "clearCache": "Clear Cache",
+  "clearBarcodeCache": "Clear Barcode Cache",
+  "deleteAccount": "Delete Account",
+  "debugInfo": "Debug Info",
+  "refresh": "Refresh",
+  "migrationStatus": "Migration Status",
+  "migrationComplete": "Complete",
+  "migrationPending": "Pending",
+  "cachedBarcodes": "Cached Barcodes",
+  "cacheSize": "Cache Size",
+  "scanHistoryItems": "Scan History Items",
+  "capacitorPreferences": "Capacitor Preferences",
+  "localStorageItems": "LocalStorage Items",
+  "forceMigration": "Force Migration",
+  "exportDebugData": "Export Debug Data",
+  "version": "Version",
+  "build": "Build",
+  "checkUpdates": "Check for Updates"
   },
   "analytics": {
     "weeklyOverview": "Weekly Overview",

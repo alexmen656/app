@@ -163,34 +163,34 @@
 
     <!-- Data Section -->
     <div class="settings-section">
-      <h3 class="section-title">Data & Privacy</h3>
+      <h3 class="section-title">{{ $t('settings.dataPrivacy') }}</h3>
       <div class="settings-card">
         <button class="action-button" @click="exportData">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
             <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
           </svg>
-          <span>Export Data</span>
+          <span>{{ $t('settings.exportData') }}</span>
         </button>
 
         <button class="action-button" @click="clearCache">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
             <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"/>
           </svg>
-          <span>Clear Cache</span>
+          <span>{{ $t('settings.clearCache') }}</span>
         </button>
 
         <button class="action-button" @click="clearBarcodeCache">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
             <path d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"/>
           </svg>
-          <span>Clear Barcode Cache</span>
+          <span>{{ $t('settings.clearBarcodeCache') }}</span>
         </button>
 
         <button class="action-button danger" @click="deleteAccount">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
             <path d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"/>
           </svg>
-          <span>Delete Account</span>
+          <span>{{ $t('settings.deleteAccount') }}</span>
         </button>
       </div>
     </div>
@@ -198,60 +198,60 @@
     <!-- Developer/Debug Section -->
     <div v-if="showDebugInfo" class="settings-section">
       <div class="section-header">
-        <h3 class="section-title">Debug Info</h3>
+        <h3 class="section-title">{{ $t('settings.debugInfo') }}</h3>
         <button @click="refreshDebugInfo" class="recalculate-button">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"/>
           </svg>
-          Refresh
+          {{ $t('settings.refresh') }}
         </button>
       </div>
       <div class="settings-card debug-card">
         <div class="debug-item">
-          <span class="debug-label">Migration Status</span>
+          <span class="debug-label">{{ $t('settings.migrationStatus') }}</span>
           <span class="debug-value" :class="{ 'success': debugInfo.migrationComplete }">
-            {{ debugInfo.migrationComplete ? 'Complete' : 'Pending' }}
+            {{ debugInfo.migrationComplete ? $t('settings.migrationComplete') : $t('settings.migrationPending') }}
           </span>
         </div>
         <div class="debug-item">
-          <span class="debug-label">Cached Barcodes</span>
+          <span class="debug-label">{{ $t('settings.cachedBarcodes') }}</span>
           <span class="debug-value">{{ debugInfo.barcodeCache.count }}</span>
         </div>
         <div class="debug-item">
-          <span class="debug-label">Cache Size</span>
+          <span class="debug-label">{{ $t('settings.cacheSize') }}</span>
           <span class="debug-value">{{ formatBytes(debugInfo.barcodeCache.totalSize) }}</span>
         </div>
         <div class="debug-item">
-          <span class="debug-label">Scan History Items</span>
+          <span class="debug-label">{{ $t('settings.scanHistoryItems') }}</span>
           <span class="debug-value">{{ debugInfo.scanHistoryCount }}</span>
         </div>
         <div class="debug-item">
-          <span class="debug-label">Capacitor Preferences</span>
+          <span class="debug-label">{{ $t('settings.capacitorPreferences') }}</span>
           <span class="debug-value">{{ debugInfo.capacitorPreferencesItems }}</span>
         </div>
         <div class="debug-item">
-          <span class="debug-label">LocalStorage Items</span>
+          <span class="debug-label">{{ $t('settings.localStorageItems') }}</span>
           <span class="debug-value">{{ debugInfo.localStorageItems }}</span>
         </div>
         
         <div class="debug-actions">
-          <button class="debug-button" @click="forceMigration">Force Migration</button>
-          <button class="debug-button" @click="exportDebugData">Export Debug Data</button>
+          <button class="debug-button" @click="forceMigration">{{ $t('settings.forceMigration') }}</button>
+          <button class="debug-button" @click="exportDebugData">{{ $t('settings.exportDebugData') }}</button>
         </div>
       </div>
     </div>
 
     <!-- About Section -->
     <div class="settings-section">
-      <h3 class="section-title">About</h3>
+    <h3 class="section-title">{{ $t('settings.about') }}</h3>
       <div class="settings-card">
         <div class="setting-item">
-          <span class="setting-label">Version</span>
-          <span class="setting-value">1.0.0</span>
+      <span class="setting-label">{{ $t('settings.version') }}</span>
+      <span class="setting-value">1.0.0</span>
         </div>
         
         <div class="setting-item">
-          <span class="setting-label">Build</span>
+          <span class="setting-label">{{ $t('settings.build') }}</span>
           <span class="setting-value">2024.08.001</span>
         </div>
 
@@ -259,7 +259,7 @@
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
             <path d="M21,10.12H14.22L16.96,7.3C14.23,4.6 9.81,4.5 7.08,7.2C4.35,9.91 4.35,14.28 7.08,17C9.81,19.7 14.23,19.7 16.96,17C18.32,15.65 19,14.08 19,12.1H21C21,14.08 20.12,16.65 18.36,18.39C14.85,21.87 9.15,21.87 5.64,18.39C2.14,14.92 2.11,9.28 5.62,5.81C9.13,2.34 14.76,2.34 18.27,5.81L21,3V10.12M12.5,8V12.25L16,14.33L15.28,15.54L11,13V8H12.5Z"/>
           </svg>
-          <span>Check for Updates</span>
+          <span>{{ $t('settings.checkUpdates') }}</span>
         </button>
       </div>
     </div>
@@ -270,19 +270,19 @@
         <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
           <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
         </svg>
-        <span class="nav-label">Home</span>
+  <span class="nav-label">{{ $t('app.home') }}</span>
       </router-link>
       <router-link to="/analytics" class="nav-item">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
           <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
         </svg>
-        <span class="nav-label">Analytics</span>
+  <span class="nav-label">{{ $t('app.analytics') }}</span>
       </router-link>
       <router-link to="/settings" class="nav-item active">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
           <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
         </svg>
-        <span class="nav-label">Settings</span>
+  <span class="nav-label">{{ $t('app.settings') }}</span>
       </router-link>
     </nav>
   </div>
