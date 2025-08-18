@@ -165,10 +165,10 @@ const setupCamera = async (deviceId = null) => {
     const constraints = {
       video: {
         deviceId: videoInputDeviceId,
-        width: { ideal: 1920, min: 1280 },
-        height: { ideal: 1080, min: 720 },
-        frameRate: { ideal: 30, min: 15 },
-        focusMode: { ideal: 'continuous' },
+        width: { ideal: 3840, min: 1280 },
+        height: { ideal: 2160, min: 720 },
+        frameRate: { ideal: 60, min: 30 },
+        //focusMode: { ideal: 'continuous' },
         autoGainControl: true,
         echoCancellation: false,
         noiseSuppression: false
