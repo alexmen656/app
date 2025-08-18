@@ -1,27 +1,35 @@
 <template>
-  <div class="nutrition-container" v-if="product">
+  <div v-if="product" class="nutrition-container">
     <div class="nutrition-header">
-      <div class="statusbar-spacer"></div>
       <div class="nutrition-image-wrap" :style="backgroundStyle">
-        <button class="nutrition-back" @click="$router.go(-1)">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <button class="nutrition-menu">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 12H12.01M12 6H12.01M12 18H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
+        <div class="statusbar-spacer"></div>
+        <div class="header-controls">
+          <button class="nutrition-back" @click="$router.go(-1)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="nutrition-menu">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 12H12.01M12 6H12.01M12 18H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
       </div>
     </div>
     <div class="nutrition-content">
       <div class="nutrition-time">{{ time }}</div>
-      <h1 class="nutrition-name">{{ product.name }}</h1>
-      <div class="nutrition-amount">
-        <button class="amount-btn minus" @click="decreaseAmount">−</button>
-        <span class="amount-number">{{ amount }}</span>
-        <button class="amount-btn plus" @click="increaseAmount">+</button>
+      <div class="product-header">
+        <h1 class="nutrition-name">{{ product.name }}</h1>
+        <div class="nutrition-amount">
+          <button class="amount-btn minus" @click="decreaseAmount">−</button>
+          <span class="amount-number">{{ amount }}</span>
+          <button class="amount-btn plus" @click="increaseAmount">+</button>
+        </div>
       </div>
       <div class="nutrition-macros">
         <div class="macro calories">
-          <div class="macro-icon">🔥</div>
+          <div class="macro-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#ff6b35">
+              <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z"/>
+            </svg>
+          </div>
           <div class="macro-info">
             <div class="macro-label">Calories</div>
             <div class="macro-value">{{ Math.round(product.calories * amount) }}</div>
@@ -31,7 +39,11 @@
           </div>
         </div>
         <div class="macro protein">
-          <div class="macro-icon">🥩</div>
+          <div class="macro-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#ff6b6b">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+          </div>
           <div class="macro-info">
             <div class="macro-label">Protein</div>
             <div class="macro-value">{{ Math.round(product.protein * amount) }}g</div>
@@ -41,7 +53,11 @@
           </div>
         </div>
         <div class="macro carbs">
-          <div class="macro-icon">🌾</div>
+          <div class="macro-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#ffa726">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+          </div>
           <div class="macro-info">
             <div class="macro-label">Carbs</div>
             <div class="macro-value">{{ Math.round(product.carbs * amount) }}g</div>
@@ -51,7 +67,11 @@
           </div>
         </div>
         <div class="macro fats">
-          <div class="macro-icon">🧈</div>
+          <div class="macro-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#42a5f5">
+              <path d="M9 11H7v9h2v-9zm4 0h-2v9h2v-9zm4 0h-2v9h2v-9zm2-7H4v2h1v11c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V6h1V4zm-2 13H6V6h12v11z"/>
+            </svg>
+          </div>
           <div class="macro-info">
             <div class="macro-label">Fat</div>
             <div class="macro-value">{{ Math.round(product.fats * amount) }}g</div>
@@ -62,7 +82,11 @@
         </div>
       </div>
       <div class="nutrition-health">
-        <div class="health-icon">💚</div>
+        <div class="health-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="#22c55e">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
+        </div>
         <div class="health-info">
           <div class="health-label">Health Score</div>
           <div class="health-score">{{ product.healthScore }}/10</div>
@@ -118,7 +142,11 @@
     </div>
   </div>
   
-  <div v-else class="nutrition-loading">Loading...</div>
+  <!-- Loading State -->
+  <div v-else class="nutrition-loading">
+    <div class="loading-spinner"></div>
+    <span>Loading...</span>
+  </div>
 </template>
 
 <script setup>
@@ -235,23 +263,22 @@ const backgroundStyle = computed(() => {
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         width: '100%',
-        height: '280px',
-        borderBottomLeftRadius: '32px',
-        borderBottomRightRadius: '32px',
+        height: '340px',
         position: 'relative',
         zIndex: 1,
       }
     : {
         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
         width: '100%',
-        height: '280px',
+        height: '340px',
         borderBottomLeftRadius: '32px',
         borderBottomRightRadius: '32px',
         position: 'relative',
         zIndex: 1,
       };
 });
-
+// /        borderBottomLeftRadius: '32px',
+    //    borderBottomRightRadius: '32px',
 // Amount controls
 function increaseAmount() {
   amount.value += 1;
@@ -354,8 +381,6 @@ function saveAndReturn() {
 .nutrition-header {
   position: relative;
   background: #f5f5f5;
-  border-bottom-left-radius: 32px;
-  border-bottom-right-radius: 32px;
   overflow: hidden;
   padding-bottom: 0;
 }
@@ -365,14 +390,22 @@ function saveAndReturn() {
   width: 100%;
   height: 280px;
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  flex-direction: column;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-bottom-left-radius: 32px;
-  border-bottom-right-radius: 32px;
   overflow: hidden;
   z-index: 1;
-  padding-top: 16px;
+}
+
+.header-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 16px 16px 0 16px;
+  position: absolute;
+  top: env(safe-area-inset-top, 44px);
+  left: 0;
+  right: 0;
+  z-index: 3;
 }
 
 .nutrition-back, .nutrition-menu {
@@ -388,7 +421,6 @@ function saveAndReturn() {
   backdrop-filter: blur(10px);
   cursor: pointer;
   transition: all 0.2s ease;
-  margin: 0 16px;
 }
 
 .nutrition-back:hover, .nutrition-menu:hover {
@@ -416,38 +448,43 @@ function saveAndReturn() {
   font-weight: 500;
 }
 
+.product-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+
 .nutrition-name {
   font-size: 26px;
   font-weight: 700;
-  margin: 0 0 20px 0;
+  margin: 0;
   word-break: break-word;
   color: #1a1a1a;
+  flex: 1;
 }
 
 .nutrition-amount {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 20px;
-  margin-bottom: 24px;
+  gap: 12px;
   background: #f8f9fa;
   border-radius: 20px;
-  padding: 8px 16px;
-  width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
+  padding: 6px 12px;
+  flex-shrink: 0;
 }
 
 .amount-btn {
   background: #fff;
   border: 2px solid #e1e5e9;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -470,9 +507,9 @@ function saveAndReturn() {
 }
 
 .amount-number {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
-  min-width: 30px;
+  min-width: 24px;
   text-align: center;
   color: #333;
 }
@@ -502,8 +539,10 @@ function saveAndReturn() {
 }
 
 .macro-icon {
-  font-size: 24px;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .macro-info {
@@ -557,8 +596,10 @@ function saveAndReturn() {
 }
 
 .health-icon {
-  font-size: 24px;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .health-info {
@@ -765,12 +806,28 @@ function saveAndReturn() {
 /* Loading State */
 .nutrition-loading {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
   font-size: 18px;
   color: #666;
   font-weight: 500;
+  gap: 16px;
+}
+
+.loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #f0f0f0;
+  border-top: 3px solid #333;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* Responsive Design */
