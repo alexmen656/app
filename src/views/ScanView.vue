@@ -156,9 +156,22 @@ const setupCamera = async (deviceId = null) => {
         if (mode.value === 'barcode' && result) {
           const code = result.getText();
           barcodeResult.value = code;
-          // Direkt weiterleiten zu NutritionView
+          // Foto aufnehmen
+          const video = document.getElementById('barcode-video');
+          let scanPhoto = '';
+          if (video) {
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            scanPhoto = canvas.toDataURL('image/jpeg');
+            photoUrl.value = scanPhoto;
+          }
           await controls.stop();
-          router.push({ name: 'Nutrition', query: { barcode: code } });
+          const query = { barcode: code };
+          if (scanPhoto) query.photo = scanPhoto;
+          router.push({ name: 'Nutrition', query });
         }
       }
     );

@@ -1,15 +1,13 @@
 <template>
   <div class="nutrition-container" v-if="product">
     <div class="nutrition-header">
-      <img :src="product.image" class="nutrition-image" v-if="product.image"/>
-      <button class="nutrition-back" @click="$router.go(-1)">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <h2 class="nutrition-title">Nutrition</h2>
-      <button class="nutrition-share">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M18 8.59V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-3.59" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 12l5-5m0 0l-5-5m5 5H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <button class="nutrition-menu">...</button>
+      <div class="statusbar-spacer"></div>
+      <div class="nutrition-image-wrap" :style="backgroundStyle">
+        <button class="nutrition-back" @click="$router.go(-1)">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="nutrition-menu">...</button>
+      </div>
     </div>
     <div class="nutrition-content">
       <div class="nutrition-time">{{ time }}</div>
@@ -59,7 +57,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
@@ -92,12 +90,34 @@ if (route.query.barcode) {
   fetchProduct(route.query.barcode);
 }
 
+const backgroundStyle = computed(() => {
+  const img = route.query.photo || (product.value && product.value.image);
+  return img
+    ? {
+        backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.18), rgba(0,0,0,0.18)), url('${img}')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        width: '100%',
+        height: '220px',
+        borderBottomLeftRadius: '32px',
+        borderBottomRightRadius: '32px',
+        position: 'relative',
+        zIndex: 1,
+      }
+    : {};
+});
+
 function editAmount() {
   // TODO: implement amount editing
 }
 </script>
 
 <style scoped>
+/* Statusbar-Space für iOS */
+.statusbar-spacer {
+  height: env(safe-area-inset-top, 44px);
+  width: 100%;
+}
 .nutrition-container {
   background: #fff;
   min-height: 100vh;
@@ -106,37 +126,48 @@ function editAmount() {
 }
 .nutrition-header {
   position: relative;
-  height: 220px;
   background: #f5f5f5;
+  border-bottom-left-radius: 32px;
+  border-bottom-right-radius: 32px;
+  overflow: hidden;
+  padding-bottom: 0;
+}
+.nutrition-image-wrap {
+  position: relative;
+  width: 100%;
+  height: 220px;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  padding: 16px;
-}
-.nutrition-image {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  width: 100%; height: 100%; object-fit: cover;
+  background: #f5f5f5;
+  border-bottom-left-radius: 32px;
+  border-bottom-right-radius: 32px;
+  overflow: hidden;
   z-index: 1;
-  border-radius: 0 0 32px 32px;
 }
-.nutrition-back, .nutrition-share, .nutrition-menu {
+.nutrition-back {
+  position: absolute;
+  top: 16px;
+  left: 16px;
   z-index: 2;
   background: #e5e9d7;
   border: none;
   border-radius: 50%;
   width: 44px; height: 44px;
   display: flex; align-items: center; justify-content: center;
-  margin: 0 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
-.nutrition-title {
+.nutrition-menu {
   position: absolute;
-  top: 24px; left: 50%; transform: translateX(-50%);
-  color: #fff;
-  font-size: 20px;
-  font-weight: 600;
+  top: 16px;
+  right: 16px;
   z-index: 2;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  background: #e5e9d7;
+  border: none;
+  border-radius: 50%;
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 .nutrition-content {
   background: #fff;
@@ -146,15 +177,18 @@ function editAmount() {
   box-shadow: 0 -4px 24px rgba(0,0,0,0.04);
   flex: 1;
 }
+/* Zeit, Name, Menge */
 .nutrition-time {
   color: #888;
   font-size: 13px;
   margin-bottom: 8px;
+  margin-top: 0;
 }
 .nutrition-name {
   font-size: 24px;
   font-weight: 700;
   margin: 0 0 12px 0;
+  word-break: break-word;
 }
 .nutrition-amount {
   display: flex;
@@ -180,6 +214,7 @@ function editAmount() {
   padding: 12px 16px;
   flex: 1;
   text-align: center;
+  min-width: 0;
 }
 .macro-label {
   color: #888;
@@ -263,5 +298,13 @@ function editAmount() {
   height: 100vh;
   font-size: 20px;
   color: #888;
+}
+@media (max-width: 390px) {
+  .nutrition-image-wrap, .nutrition-image {
+    height: 160px;
+  }
+  .nutrition-content {
+    padding: 16px 8px 0 8px;
+  }
 }
 </style>
