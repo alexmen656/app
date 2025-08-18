@@ -2,20 +2,21 @@
   <div class="camera-container">
     <!-- Camera video stream -->
     <video id="barcode-video" class="camera-video" autoplay muted playsinline></video>
-    
+
     <!-- Header -->
     <div class="header">
       <button class="header-btn back-btn" @click="$router.go(-1)">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" />
         </svg>
       </button>
       <h1 class="header-title">Scanner</h1>
       <button class="header-btn menu-btn">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="1" fill="currentColor"/>
-          <circle cx="12" cy="5" r="1" fill="currentColor"/>
-          <circle cx="12" cy="19" r="1" fill="currentColor"/>
+          <circle cx="12" cy="12" r="1" fill="currentColor" />
+          <circle cx="12" cy="5" r="1" fill="currentColor" />
+          <circle cx="12" cy="19" r="1" fill="currentColor" />
         </svg>
       </button>
     </div>
@@ -28,30 +29,24 @@
     <!-- Mode selector -->
     <div class="mode-selector">
       <div class="mode-tabs">
-        <button 
-          class="mode-tab" 
-          :class="{ active: mode === 'barcode' }"
-          @click="mode = 'barcode'"
-        >
+        <button class="mode-tab" :class="{ active: mode === 'barcode' }" @click="mode = 'barcode'">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <rect x="3" y="6" width="18" height="2" fill="currentColor"/>
-            <rect x="3" y="10" width="10" height="1" fill="currentColor"/>
-            <rect x="15" y="10" width="6" height="1" fill="currentColor"/>
-            <rect x="3" y="12" width="14" height="1" fill="currentColor"/>
-            <rect x="3" y="14" width="8" height="1" fill="currentColor"/>
-            <rect x="13" y="14" width="8" height="1" fill="currentColor"/>
-            <rect x="3" y="16" width="18" height="2" fill="currentColor"/>
+            <rect x="3" y="6" width="18" height="2" fill="currentColor" />
+            <rect x="3" y="10" width="10" height="1" fill="currentColor" />
+            <rect x="15" y="10" width="6" height="1" fill="currentColor" />
+            <rect x="3" y="12" width="14" height="1" fill="currentColor" />
+            <rect x="3" y="14" width="8" height="1" fill="currentColor" />
+            <rect x="13" y="14" width="8" height="1" fill="currentColor" />
+            <rect x="3" y="16" width="18" height="2" fill="currentColor" />
           </svg>
           <span>Barcode</span>
         </button>
-        <button 
-          class="mode-tab" 
-          :class="{ active: mode === 'photo' }"
-          @click="mode = 'photo'"
-        >
+        <button class="mode-tab" :class="{ active: mode === 'photo' }" @click="mode = 'photo'">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
-            <path d="M12 1a4 4 0 0 0-4 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3a4 4 0 0 0-4-4z" stroke="currentColor" stroke-width="2"/>
+            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" />
+            <path
+              d="M12 1a4 4 0 0 0-4 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3a4 4 0 0 0-4-4z"
+              stroke="currentColor" stroke-width="2" />
           </svg>
           <span>Foto</span>
         </button>
@@ -62,43 +57,45 @@
     <div class="bottom-controls">
       <button class="control-btn gallery-btn" @click="switchCamera">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-          <path d="M17 17.5V15.5C17 14.1193 15.8807 13 14.5 13H9.5C8.11929 13 7 14.1193 7 15.5V17.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          <path d="M12 7V3M12 3L9 6M12 3L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M17 17.5V15.5C17 14.1193 15.8807 13 14.5 13H9.5C8.11929 13 7 14.1193 7 15.5V17.5"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          <path d="M12 7V3M12 3L9 6M12 3L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" />
         </svg>
       </button>
-      
+
       <div class="capture-section">
-       <!-- <p class="scan-label">{{ mode === 'barcode' ? 'Scan barcode' : 'Scan food' }}</p>-->
+        <!-- <p class="scan-label">{{ mode === 'barcode' ? 'Scan barcode' : 'Scan food' }}</p>-->
         <div v-if="mode === 'photo'" class="shutter-btn" @click="takePhoto"></div>
         <div v-else class="barcode-indicator">
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
-            <rect x="3" y="6" width="18" height="2" fill="currentColor"/>
-            <rect x="3" y="10" width="10" height="1" fill="currentColor"/>
-            <rect x="15" y="10" width="6" height="1" fill="currentColor"/>
-            <rect x="3" y="12" width="14" height="1" fill="currentColor"/>
-            <rect x="3" y="14" width="8" height="1" fill="currentColor"/>
-            <rect x="13" y="14" width="8" height="1" fill="currentColor"/>
-            <rect x="3" y="16" width="18" height="2" fill="currentColor"/>
+            <rect x="3" y="6" width="18" height="2" fill="currentColor" />
+            <rect x="3" y="10" width="10" height="1" fill="currentColor" />
+            <rect x="15" y="10" width="6" height="1" fill="currentColor" />
+            <rect x="3" y="12" width="14" height="1" fill="currentColor" />
+            <rect x="3" y="14" width="8" height="1" fill="currentColor" />
+            <rect x="13" y="14" width="8" height="1" fill="currentColor" />
+            <rect x="3" y="16" width="18" height="2" fill="currentColor" />
           </svg>
         </div>
       </div>
-      
+
       <button class="control-btn flash-btn" :class="{ active: flashEnabled }" @click="toggleFlash">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
         </svg>
       </button>
     </div>
 
     <!-- Result display -->
-  <!-- Overlay entfernt: Navigation erfolgt direkt nach Scan -->
+    <!-- Overlay entfernt: Navigation erfolgt direkt nach Scan -->
   </div>
 </template>
 
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
-import { BrowserMultiFormatReader } from '@zxing/browser';
+import { BrowserMultiFormatReader, BarcodeFormat } from '@zxing/browser';
 import { useRouter } from 'vue-router';
 
 
@@ -117,7 +114,22 @@ let currentDeviceIndex = 0;
 
 const setupCamera = async (deviceId = null) => {
   try {
-    codeReader = new BrowserMultiFormatReader();
+    const foodBarcodeFormats = [
+      BarcodeFormat.EAN_13,    // Most common for food products in Europe
+      BarcodeFormat.EAN_8,     // Smaller food products
+      BarcodeFormat.UPC_A,     // Common in North America
+      BarcodeFormat.UPC_E,     // Compact UPC for small products
+      BarcodeFormat.CODE_128,  // Used for some food products
+      BarcodeFormat.ITF,       // Interleaved 2 of 5, used for cases/boxes
+    ];
+
+    const hints = new Map();
+    hints.set('POSSIBLE_FORMATS', foodBarcodeFormats);
+    hints.set('TRY_HARDER', true);
+    hints.set('ASSUME_GS1', true);
+
+    codeReader = new BrowserMultiFormatReader(hints);
+
     allVideoInputDevices = await BrowserMultiFormatReader.listVideoInputDevices();
     // Filter nur auf Front/Back, keine Ultraweitwinkel/Zoom/Tele
     videoInputDevices = allVideoInputDevices.filter(d => {
@@ -148,14 +160,33 @@ const setupCamera = async (deviceId = null) => {
         currentDeviceIndex = 0;
       }
     }
-    // Start barcode scanning
+
+    // High resolution camera constraints for better barcode scanning
+    const constraints = {
+      video: {
+        deviceId: videoInputDeviceId,
+        width: { ideal: 1920, min: 1280 },
+        height: { ideal: 1080, min: 720 },
+        frameRate: { ideal: 30, min: 15 },
+        focusMode: { ideal: 'continuous' },
+        autoGainControl: true,
+        echoCancellation: false,
+        noiseSuppression: false
+      }
+    };
+
+    // Start barcode scanning with improved resolution and food-specific hints
     await codeReader.decodeFromVideoDevice(
       videoInputDeviceId,
       'barcode-video',
       async (result, err, controls) => {
         if (mode.value === 'barcode' && result) {
           const code = result.getText();
+          const format = result.getBarcodeFormat();
           barcodeResult.value = code;
+
+          console.log(`Scanned ${format} barcode: ${code}`);
+
           // Foto aufnehmen
           const video = document.getElementById('barcode-video');
           let scanPhoto = '';
@@ -165,11 +196,11 @@ const setupCamera = async (deviceId = null) => {
             canvas.height = video.videoHeight;
             const ctx = canvas.getContext('2d');
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            scanPhoto = canvas.toDataURL('image/jpeg');
+            scanPhoto = canvas.toDataURL('image/jpeg', 1); // High quality
             photoUrl.value = scanPhoto;
           }
           await controls.stop();
-          const query = { barcode: code };
+          const query = { barcode: code, format: format };
           if (scanPhoto) query.photo = scanPhoto;
           router.push({ name: 'Nutrition', query });
         }
@@ -203,7 +234,7 @@ const stopCamera = () => {
 const takePhoto = () => {
   const video = document.getElementById('barcode-video');
   if (!video) return;
-  
+
   const canvas = document.createElement('canvas');
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
@@ -211,7 +242,7 @@ const takePhoto = () => {
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
   const dataUrl = canvas.toDataURL('image/jpeg');
   photoUrl.value = dataUrl;
-  
+
   // Simulate camera shutter effect
   const shutterEffect = document.createElement('div');
   shutterEffect.style.cssText = `
@@ -227,7 +258,7 @@ const takePhoto = () => {
   `;
   document.body.appendChild(shutterEffect);
   setTimeout(() => document.body.removeChild(shutterEffect), 100);
-  
+
   // Show photo result
   console.log('Photo taken in mode:', mode.value);
 };
@@ -239,7 +270,7 @@ const toggleFlash = async () => {
       const stream = video.srcObject;
       const track = stream.getVideoTracks()[0];
       const capabilities = track.getCapabilities();
-      
+
       if (capabilities.torch) {
         flashEnabled.value = !flashEnabled.value;
         await track.applyConstraints({
@@ -302,7 +333,7 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: space-between;
   padding: 50px 20px 20px;
-  background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 70%, transparent 100%);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.3) 70%, transparent 100%);
 }
 
 .header-btn {
@@ -330,7 +361,7 @@ onBeforeUnmount(() => {
   font-size: 18px;
   font-weight: 600;
   margin: 0;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* Mode selector */
@@ -401,7 +432,7 @@ onBeforeUnmount(() => {
   border-radius: 20px;
   position: relative;
   background: transparent;
-  box-shadow: 
+  box-shadow:
     0 0 0 9999px rgba(0, 0, 0, 0.4),
     inset 0 0 30px rgba(255, 255, 255, 0.1);
 }
@@ -438,7 +469,7 @@ onBeforeUnmount(() => {
   right: 0;
   height: 200px;
   z-index: 10;
-  background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 70%, transparent 100%);
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 70%, transparent 100%);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -482,7 +513,7 @@ onBeforeUnmount(() => {
   font-size: 16px;
   font-weight: 500;
   margin: 0;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .capture-btn {
@@ -551,9 +582,11 @@ onBeforeUnmount(() => {
   0% {
     box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
   }
+
   70% {
     box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
   }
+
   100% {
     box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
   }
@@ -626,11 +659,11 @@ onBeforeUnmount(() => {
     width: 240px;
     height: 240px;
   }
-  
+
   .bottom-controls {
     padding: 30px 20px 50px;
   }
-  
+
   .header {
     padding: 45px 15px 15px;
   }
