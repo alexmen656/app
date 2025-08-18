@@ -24,6 +24,10 @@
                 <div class="nutrition-time">{{ time }}</div>
                 <div class="product-header">
                     <h1 class="nutrition-name">{{ product.name }}</h1>
+                    <!--<div v-if="product.brand" class="nutrition-brand">{{ product.brand }}</div>
+                    <div v-if="product.servingSize && product.servingUnit" class="nutrition-serving">
+                        Serving: {{ product.servingSize }} {{ product.servingUnit }}
+                    </div>-->
                     <div class="nutrition-amount">
                         <button class="amount-btn minus" @click="decreaseAmount">−</button>
                         <span class="amount-number">{{ amount }}</span>
@@ -200,30 +204,43 @@ const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-dig
 
 const fetchProduct = async (barcode) => {
     try {
-        const res = await fetch(`https://world.openfoodfacts.org/api/v2/product/${barcode}`);
-        const data = await res.json();
-        if (!data.product) throw new Error('Not found');
+        // Use KaloriQ API as primary source
+        const response = await fetch(`https://kaloriq-api.vercel.app/api/product/${barcode}`);
+        
+        if (!response.ok) {
+            throw new Error(`KaloriQ API error: ${response.status}`);
+        }
 
-        // Map Open Food Facts fields to our UI
-        const nutriments = data.product.nutriments || {};
+        const data = await response.json();
+        
+        if (!data.success || !data.product) {
+            throw new Error('Product not found in KaloriQ API');
+        }
+
+        // KaloriQ API already provides data in the correct format
         product.value = {
-            name: data.product.product_name || 'Unknown Product',
-            image: data.product.image_url,
-            calories: nutriments.energy_kcal_100g || nutriments['energy-kcal_100g'] || 0,
-            protein: nutriments.proteins_100g || 0,
-            carbs: nutriments.carbohydrates_100g || 0,
-            fats: nutriments.fat_100g || 0,
-            healthScore: calculateHealthScore(nutriments),
-            ingredients: data.product.ingredients_text ?
-                data.product.ingredients_text.split(/[,;]/).map(s => s.trim()).filter(Boolean) : [],
-            barcode: barcode
+            ...data.product,
+            // Ensure all required fields are present
+            name: data.product.name || 'Unknown Product',
+            calories: data.product.calories || 0,
+            protein: data.product.protein || 0,
+            carbs: data.product.carbs || 0,
+            fats: data.product.fats || 0,
+            healthScore: data.product.healthScore || 5,
+            ingredients: data.product.ingredients || [],
+            barcode: data.product.barcode || barcode,
+            source: data.product.source || 'KaloriQ',
+            brand: data.product.brand || null,
+            image: data.product.image || null
         };
 
         // Initialize edited product for fix modal
         editedProduct.value = { ...product.value };
+        
     } catch (e) {
-        console.error('Error fetching product:', e);
-        // Fallback product if API fails
+        console.error('KaloriQ API failed:', e);
+        
+        // Fallback: Create unknown product
         product.value = {
             name: 'Unknown Product',
             image: null,
@@ -233,37 +250,12 @@ const fetchProduct = async (barcode) => {
             fats: 0,
             healthScore: 5,
             ingredients: [],
-            barcode: route.query.barcode
+            barcode: barcode,
+            source: 'Manual',
+            brand: null
         };
         editedProduct.value = { ...product.value };
     }
-};
-
-const calculateHealthScore = (nutriments) => {
-    // Simple health score calculation based on nutrients
-    let score = 7; // Base score
-
-    // Adjust based on various factors
-    const sugar = nutriments.sugars_100g || 0;
-    const sodium = nutriments.sodium_100g || 0;
-    const fiber = nutriments.fiber_100g || 0;
-    const saturatedFat = nutriments['saturated-fat_100g'] || 0;
-
-    // Reduce score for high sugar
-    if (sugar > 20) score -= 2;
-    else if (sugar > 10) score -= 1;
-
-    // Reduce score for high sodium
-    if (sodium > 1000) score -= 2;
-    else if (sodium > 500) score -= 1;
-
-    // Increase score for fiber
-    if (fiber > 5) score += 1;
-
-    // Reduce score for high saturated fat
-    if (saturatedFat > 10) score -= 1;
-
-    return Math.max(1, Math.min(10, score));
 };
 
 // Initialize product data
