@@ -71,7 +71,7 @@ function onEnter(el: Element) {
     element.style.position = ''
     element.style.width = ''
     element.style.height = ''
-  }, 300)
+  }, 150)
 }
 </script>
 
