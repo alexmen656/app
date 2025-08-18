@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import YesterdayView from '../views/YesterdayView.vue'
 import OnboardingView from '../views/OnboardingView.vue'
 import ScanView from '../views/ScanView.vue'
+import NutritionView from '../views/NutritionView.vue'
 import AnalyticsView from '../views/AnalyticsView.vue'
 import SettingsView from '../views/SettingsView.vue'
 
@@ -36,6 +37,11 @@ const routes = [
     path: '/settings',
     name: 'Settings',
     component: SettingsView
+  },
+  {
+    path: '/nutrition',
+    name: 'Nutrition',
+    component: NutritionView
   }
 ]
 

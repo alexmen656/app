@@ -91,23 +91,20 @@
     </div>
 
     <!-- Result display -->
-    <div v-if="barcodeResult" class="result-overlay">
-      <div class="result-content">
-        <h3>Barcode gefunden:</h3>
-        <p>{{ barcodeResult }}</p>
-        <button @click="barcodeResult = ''" class="close-result">Schließen</button>
-      </div>
-    </div>
+  <!-- Overlay entfernt: Navigation erfolgt direkt nach Scan -->
   </div>
 </template>
+
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import { BrowserMultiFormatReader } from '@zxing/browser';
+import { useRouter } from 'vue-router';
 
 
 const mode = ref('barcode'); // 'barcode' oder 'photo'
 const barcodeResult = ref('');
+const router = useRouter();
 const photoUrl = ref('');
 const flashEnabled = ref(false);
 let videoInputDeviceId = null;
@@ -155,9 +152,13 @@ const setupCamera = async (deviceId = null) => {
     await codeReader.decodeFromVideoDevice(
       videoInputDeviceId,
       'barcode-video',
-      (result, err, controls) => {
+      async (result, err, controls) => {
         if (mode.value === 'barcode' && result) {
-          barcodeResult.value = result.getText();
+          const code = result.getText();
+          barcodeResult.value = code;
+          // Direkt weiterleiten zu NutritionView
+          await controls.stop();
+          router.push({ name: 'Nutrition', query: { barcode: code } });
         }
       }
     );
