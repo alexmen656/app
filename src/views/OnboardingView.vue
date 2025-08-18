@@ -432,11 +432,11 @@ function previousStep() {
     }
 }
 
-function finishOnboarding() {
+async function finishOnboarding() {
     // Update user store with data
-    updateUserProfile(userInfo)
-    updateDailyGoals(goals)
-    completeOnboarding()
+    await updateUserProfile(userInfo)
+    await updateDailyGoals(goals)
+    await completeOnboarding()
     
     // Navigate to home
     router.push('/')

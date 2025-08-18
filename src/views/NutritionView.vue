@@ -228,6 +228,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { BarcodeCache, ScanHistory } from '../utils/storage';
 
 const route = useRoute();
 const router = useRouter();
@@ -239,7 +240,31 @@ const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-dig
 
 const fetchProduct = async (barcode) => {
     try {
-        // Use KaloriQ API as primary source
+        // First check cache
+        const cachedProduct = await BarcodeCache.get(barcode);
+        if (cachedProduct) {
+            console.log('Using cached product data for barcode:', barcode);
+            product.value = {
+                ...cachedProduct,
+                // Ensure all required fields are present
+                name: cachedProduct.name || 'Unknown Product',
+                calories: cachedProduct.calories || 0,
+                protein: cachedProduct.protein || 0,
+                carbs: cachedProduct.carbs || 0,
+                fats: cachedProduct.fats || 0,
+                healthScore: cachedProduct.healthScore || 5,
+                ingredients: cachedProduct.ingredients || [],
+                barcode: cachedProduct.barcode || barcode,
+                source: cachedProduct.source || 'Cache',
+                brand: cachedProduct.brand || null,
+                image: cachedProduct.image || null
+            };
+            editedProduct.value = { ...product.value };
+            return;
+        }
+
+        // If not cached, fetch from API
+        console.log('Fetching product data from API for barcode:', barcode);
         const response = await fetch(`https://kaloriq-api.vercel.app/api/product/${barcode}`);
         
         if (!response.ok) {
@@ -253,7 +278,7 @@ const fetchProduct = async (barcode) => {
         }
 
         // KaloriQ API already provides data in the correct format
-        product.value = {
+        const productData = {
             ...data.product,
             // Ensure all required fields are present
             name: data.product.name || 'Unknown Product',
@@ -268,6 +293,11 @@ const fetchProduct = async (barcode) => {
             brand: data.product.brand || null,
             image: data.product.image || null
         };
+
+        product.value = productData;
+
+        // Cache the product data
+        await BarcodeCache.set(barcode, productData);
 
         // Initialize edited product for fix modal
         editedProduct.value = { ...product.value };
@@ -408,13 +438,10 @@ function applyFix() {
 }
 
 // Save and return function
-function saveAndReturn() {
+async function saveAndReturn() {
     if (!product.value) return;
 
     try {
-        // Get existing scan history
-        const existingHistory = JSON.parse(localStorage.getItem('scanHistory') || '[]');
-
         // Create new scan entry
         const scanEntry = {
             id: Date.now(),
@@ -449,17 +476,8 @@ function saveAndReturn() {
             }
         };
 
-        // Add to beginning of history
-        existingHistory.unshift(scanEntry);
-
-        // Keep only last 20 items
-        const updatedHistory = existingHistory.slice(0, 20);
-
-        // Save to localStorage
-        localStorage.setItem('scanHistory', JSON.stringify(updatedHistory));
-
-        // Dispatch storage event to update other components
-        window.dispatchEvent(new Event('storage'));
+        // Save to scan history using Capacitor Preferences
+        await ScanHistory.add(scanEntry);
 
         router.push({ path: '/' });
 

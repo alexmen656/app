@@ -10,6 +10,8 @@ PODS:
   - CapacitorMlkitBarcodeScanning (7.3.0):
     - Capacitor
     - GoogleMLKit/BarcodeScanning (= 7.0.0)
+  - CapacitorPreferences (7.0.2):
+    - Capacitor
   - CapacitorSplashScreen (7.0.2):
     - Capacitor
   - CapacitorStatusBar (7.0.2):
@@ -70,6 +72,7 @@ DEPENDENCIES:
   - "CapacitorCamera (from `../../node_modules/@capacitor/camera`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorMlkitBarcodeScanning (from `../../node_modules/@capacitor-mlkit/barcode-scanning`)"
+  - "CapacitorPreferences (from `../../node_modules/@capacitor/preferences`)"
   - "CapacitorSplashScreen (from `../../node_modules/@capacitor/splash-screen`)"
   - "CapacitorStatusBar (from `../../node_modules/@capacitor/status-bar`)"
   - "CapawesomeCapacitorTorch (from `../../node_modules/@capawesome/capacitor-torch`)"
@@ -100,6 +103,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/ios"
   CapacitorMlkitBarcodeScanning:
     :path: "../../node_modules/@capacitor-mlkit/barcode-scanning"
+  CapacitorPreferences:
+    :path: "../../node_modules/@capacitor/preferences"
   CapacitorSplashScreen:
     :path: "../../node_modules/@capacitor/splash-screen"
   CapacitorStatusBar:
@@ -113,6 +118,7 @@ SPEC CHECKSUMS:
   CapacitorCamera: f9e54db0a18bb218a8dc360907d63aaefe9209ff
   CapacitorCordova: 5e58d04631bc5094894ac106e2bf1da18a9e6151
   CapacitorMlkitBarcodeScanning: 05b2dfc7a70099f6d4594365c521534d79a17b1d
+  CapacitorPreferences: 65107ed7437d96ee72583df5763985e3c0ff2bc2
   CapacitorSplashScreen: 157947576b59d913792063a8d442a79e6d283ee5
   CapacitorStatusBar: e04d05e121d5a5979c29eb4249186a4e4a84cacb
   CapawesomeCapacitorTorch: d3bf7695fbf36923ea66cacc9b384acf66d2a064
@@ -129,6 +135,6 @@ SPEC CHECKSUMS:
   OSBarcodeLib: f2e981270a64faf476cb790864262b29ab8cd68a
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
 
-PODFILE CHECKSUM: 4363437e00ca50e5a15db5d5aa78493a75ea0a5c
+PODFILE CHECKSUM: 364e1d4e3da83effaed432b0e673fe52b8ffa808
 
 COCOAPODS: 1.16.2

@@ -198,9 +198,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { dailyGoals, isOnboardingCompleted } from '../stores/userStore'
+import { ScanHistory } from '../utils/storage'
 
 const router = useRouter()
 
@@ -212,11 +213,17 @@ onMounted(() => {
     }
     loadScanHistory()
 
-    // Listen for storage changes to update in real-time
-    window.addEventListener('storage', loadScanHistory)
+    // Listen for scan history updates from custom events
+    window.addEventListener('scanHistoryUpdated', loadScanHistory)
 
     // Also listen for focus events to refresh when returning to app
     window.addEventListener('focus', loadScanHistory)
+})
+
+onUnmounted(() => {
+    // Clean up event listeners
+    window.removeEventListener('scanHistoryUpdated', loadScanHistory)
+    window.removeEventListener('focus', loadScanHistory)
 })
 
 // Type definitions
@@ -264,13 +271,13 @@ const consumedFats = computed(() => {
     return recentFoods.value.reduce((total, item) => total + item.fats, 0)
 })
 
-// Scan history from localStorage
+// Scan history from Capacitor Preferences
 const scanHistory = ref<ScanData[]>([])
 
-// Load scan history from localStorage
-function loadScanHistory() {
+// Load scan history from Capacitor Preferences
+async function loadScanHistory() {
     try {
-        const history = JSON.parse(localStorage.getItem('scanHistory') || '[]') as ScanData[]
+        const history = await ScanHistory.get()
         scanHistory.value = history.slice(0, 10) // Show only last 10 items
     } catch (error) {
         console.error('Error loading scan history:', error)

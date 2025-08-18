@@ -165,12 +165,65 @@
           <span>Clear Cache</span>
         </button>
 
+        <button class="action-button" @click="clearBarcodeCache">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"/>
+          </svg>
+          <span>Clear Barcode Cache</span>
+        </button>
+
         <button class="action-button danger" @click="deleteAccount">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
             <path d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"/>
           </svg>
           <span>Delete Account</span>
         </button>
+      </div>
+    </div>
+
+    <!-- Developer/Debug Section -->
+    <div v-if="showDebugInfo" class="settings-section">
+      <div class="section-header">
+        <h3 class="section-title">Debug Info</h3>
+        <button @click="refreshDebugInfo" class="recalculate-button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"/>
+          </svg>
+          Refresh
+        </button>
+      </div>
+      <div class="settings-card debug-card">
+        <div class="debug-item">
+          <span class="debug-label">Migration Status</span>
+          <span class="debug-value" :class="{ 'success': debugInfo.migrationComplete }">
+            {{ debugInfo.migrationComplete ? 'Complete' : 'Pending' }}
+          </span>
+        </div>
+        <div class="debug-item">
+          <span class="debug-label">Cached Barcodes</span>
+          <span class="debug-value">{{ debugInfo.barcodeCache.count }}</span>
+        </div>
+        <div class="debug-item">
+          <span class="debug-label">Cache Size</span>
+          <span class="debug-value">{{ formatBytes(debugInfo.barcodeCache.totalSize) }}</span>
+        </div>
+        <div class="debug-item">
+          <span class="debug-label">Scan History Items</span>
+          <span class="debug-value">{{ debugInfo.scanHistoryCount }}</span>
+        </div>
+        <div class="debug-item">
+          <span class="debug-label">Capacitor Preferences</span>
+          <span class="debug-value">{{ debugInfo.capacitorPreferencesItems }}</span>
+        </div>
+        <div class="debug-item">
+          <span class="debug-label">LocalStorage Items</span>
+          <span class="debug-value">{{ debugInfo.localStorageItems }}</span>
+        </div>
+        
+        <div class="debug-actions">
+          <button class="debug-button" @click="forceMigration">Force Migration</button>
+          <button class="debug-button" @click="exportDebugData">Export Debug Data</button>
+        </div>
       </div>
     </div>
 
@@ -222,7 +275,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { 
   userProfile, 
@@ -232,8 +285,31 @@ import {
   resetOnboarding,
   calculateRecommendedMacros
 } from '../stores/userStore'
+import { BarcodeCache, ScanHistory } from '../utils/storage'
+import { DataMigration } from '../utils/migration'
 
 const router = useRouter()
+
+// Debug state
+const showDebugInfo = ref(false)
+const debugInfo = ref({
+  migrationComplete: false,
+  barcodeCache: { count: 0, totalSize: 0 },
+  scanHistoryCount: 0,
+  capacitorPreferencesItems: 0,
+  localStorageItems: 0
+})
+
+// Check if debug mode should be enabled (e.g., if in development)
+onMounted(() => {
+  // Enable debug mode in development or if localStorage has debug flag
+  showDebugInfo.value = localStorage.getItem('enableDebug') === 'true' || 
+                        window.location.hostname === 'localhost'
+  
+  if (showDebugInfo.value) {
+    refreshDebugInfo()
+  }
+})
 
 // Use computed to display current user data
 const displayProfile = computed(() => ({
@@ -246,9 +322,9 @@ function editProfile() {
   router.push('/onboarding')
 }
 
-function saveGoals() {
+async function saveGoals() {
   console.log('Goals saved:', dailyGoals)
-  // Goals are automatically saved via the store
+  await updateDailyGoals(dailyGoals)
 }
 
 function savePreferences() {
@@ -256,21 +332,23 @@ function savePreferences() {
   // Preferences are automatically saved via the store
 }
 
-function recalculateGoals() {
+async function recalculateGoals() {
   if (userProfile.weight && userProfile.height && userProfile.age && userProfile.gender && userProfile.activityLevel) {
     const recommended = calculateRecommendedMacros(userProfile)
-    updateDailyGoals(recommended)
+    await updateDailyGoals(recommended)
     alert('Goals updated based on your current profile!')
   } else {
     alert('Please complete your profile first to get personalized recommendations.')
   }
 }
 
-function exportData() {
+async function exportData() {
+  const scanHistory = await ScanHistory.get()
   const data = {
     profile: userProfile,
     goals: dailyGoals,
     preferences: userPreferences,
+    scanHistory,
     exportDate: new Date().toISOString()
   }
   
@@ -283,20 +361,34 @@ function exportData() {
   URL.revokeObjectURL(url)
 }
 
-function clearCache() {
+async function clearCache() {
   if (confirm('This will clear all cached data including scan history. Are you sure?')) {
-    localStorage.removeItem('scanHistory')
+    await ScanHistory.clear()
     alert('Cache cleared successfully!')
+    if (showDebugInfo.value) {
+      refreshDebugInfo()
+    }
   }
 }
 
-function deleteAccount() {
+async function clearBarcodeCache() {
+  if (confirm('This will clear all cached barcode data. Are you sure?')) {
+    await BarcodeCache.clearAll()
+    alert('Barcode cache cleared successfully!')
+    if (showDebugInfo.value) {
+      refreshDebugInfo()
+    }
+  }
+}
+
+async function deleteAccount() {
   const confirmed = confirm('Are you sure you want to delete your account? This action cannot be undone.')
   if (confirmed) {
-    const doubleConfirm = confirm('This will permanently delete all your data. Type "DELETE" to confirm.')
+    const doubleConfirm = confirm('This will permanently delete all your data. Continue?')
     if (doubleConfirm) {
-      resetOnboarding()
-      localStorage.clear()
+      await resetOnboarding()
+      await BarcodeCache.clearAll()
+      await ScanHistory.clear()
       router.push('/onboarding')
     }
   }
@@ -304,6 +396,73 @@ function deleteAccount() {
 
 function checkUpdates() {
   alert('You are using the latest version of Kaloriq!')
+}
+
+// Debug functions
+async function refreshDebugInfo() {
+  try {
+    const [
+      migrationStats,
+      cacheStats,
+      scanHistory
+    ] = await Promise.all([
+      DataMigration.getMigrationStats(),
+      BarcodeCache.getStats(),
+      ScanHistory.get()
+    ])
+
+    debugInfo.value = {
+      migrationComplete: migrationStats.migrationComplete,
+      barcodeCache: cacheStats,
+      scanHistoryCount: scanHistory.length,
+      capacitorPreferencesItems: migrationStats.capacitorPreferencesItems,
+      localStorageItems: migrationStats.localStorageItems
+    }
+  } catch (error) {
+    console.error('Error refreshing debug info:', error)
+  }
+}
+
+async function forceMigration() {
+  if (confirm('Force migration from localStorage to Capacitor Preferences?')) {
+    try {
+      await DataMigration.forceMigration()
+      alert('Migration completed successfully!')
+      await refreshDebugInfo()
+    } catch (error) {
+      console.error('Migration failed:', error)
+      alert('Migration failed: ' + (error as Error).message)
+    }
+  }
+}
+
+async function exportDebugData() {
+  await refreshDebugInfo()
+  const debugData = {
+    debugInfo: debugInfo.value,
+    timestamp: new Date().toISOString(),
+    userAgent: navigator.userAgent,
+    capacitorInfo: (window as any).Capacitor ? {
+      isNative: (window as any).Capacitor.isNative,
+      platform: (window as any).Capacitor.platform
+    } : null
+  }
+  
+  const blob = new Blob([JSON.stringify(debugData, null, 2)], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `kaloriq-debug-${new Date().toISOString().split('T')[0]}.json`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
+function formatBytes(bytes: number): string {
+  if (bytes === 0) return '0 B'
+  const k = 1024
+  const sizes = ['B', 'KB', 'MB', 'GB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }
 
 // Touch/Swipe functionality
@@ -602,6 +761,69 @@ function handleTouchEnd(event: TouchEvent) {
 
 .action-button.danger:hover {
   background: rgba(244, 67, 54, 0.3);
+}
+
+/* Debug styles */
+.debug-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.debug-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.debug-item:last-child {
+  margin-bottom: 0;
+}
+
+.debug-label {
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+.debug-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #64b5f6;
+}
+
+.debug-value.success {
+  color: #4caf50;
+}
+
+.debug-actions {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.debug-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: white;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex: 1;
+  min-width: 120px;
+}
+
+.debug-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .bottom-nav {

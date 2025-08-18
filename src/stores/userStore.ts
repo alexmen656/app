@@ -1,4 +1,5 @@
 import { reactive, computed, ref } from 'vue'
+import { Storage } from '../utils/storage'
 
 interface UserProfile {
   name: string
@@ -49,40 +50,54 @@ const defaultPreferences: UserPreferences = {
   weeklyReports: false
 }
 
-// Load from localStorage or use defaults
-function loadFromStorage<T>(key: string, defaultValue: T): T {
+// Load from Capacitor Preferences or use defaults
+async function loadFromStorage<T>(key: string, defaultValue: T): Promise<T> {
   try {
-    const stored = localStorage.getItem(key)
-    return stored ? JSON.parse(stored) : defaultValue
+    const stored = await Storage.get(key)
+    return stored !== null ? stored : defaultValue
   } catch {
     return defaultValue
   }
 }
 
-// Save to localStorage
-function saveToStorage(key: string, data: any) {
+// Save to Capacitor Preferences
+async function saveToStorage(key: string, data: any): Promise<void> {
   try {
-    localStorage.setItem(key, JSON.stringify(data))
+    await Storage.set(key, data)
   } catch (error) {
-    console.error(`Failed to save ${key} to localStorage:`, error)
+    console.error(`Failed to save ${key} to storage:`, error)
   }
 }
 
-// Reactive state
-export const userProfile = reactive<UserProfile>(
-  loadFromStorage('userProfile', defaultUserProfile)
-)
-
-export const dailyGoals = reactive<DailyGoals>(
-  loadFromStorage('dailyGoals', defaultGoals)
-)
-
-export const userPreferences = reactive<UserPreferences>(
-  loadFromStorage('userPreferences', defaultPreferences)
-)
+// Initialize reactive state with defaults first, then load from storage
+export const userProfile = reactive<UserProfile>({ ...defaultUserProfile })
+export const dailyGoals = reactive<DailyGoals>({ ...defaultGoals })
+export const userPreferences = reactive<UserPreferences>({ ...defaultPreferences })
 
 // Reactive onboarding completion state
-const onboardingCompleted = ref(localStorage.getItem('onboardingCompleted') === 'true')
+const onboardingCompleted = ref(false)
+
+// Load data from storage on initialization
+async function initializeStore() {
+  try {
+    const [loadedProfile, loadedGoals, loadedPreferences, loadedOnboarding] = await Promise.all([
+      loadFromStorage('userProfile', defaultUserProfile),
+      loadFromStorage('dailyGoals', defaultGoals),
+      loadFromStorage('userPreferences', defaultPreferences),
+      Storage.get('onboardingCompleted')
+    ])
+
+    Object.assign(userProfile, loadedProfile)
+    Object.assign(dailyGoals, loadedGoals)
+    Object.assign(userPreferences, loadedPreferences)
+    onboardingCompleted.value = loadedOnboarding === true || loadedOnboarding === 'true'
+  } catch (error) {
+    console.error('Failed to initialize store:', error)
+  }
+}
+
+// Initialize the store
+initializeStore()
 
 // Computed values
 export const isOnboardingCompleted = computed(() => {
@@ -95,31 +110,32 @@ export const hasValidProfile = computed(() => {
 })
 
 // Actions
-export function updateUserProfile(updates: Partial<UserProfile>) {
+export async function updateUserProfile(updates: Partial<UserProfile>) {
   Object.assign(userProfile, updates)
-  saveToStorage('userProfile', userProfile)
+  await saveToStorage('userProfile', userProfile)
 }
-
-export function updateDailyGoals(updates: Partial<DailyGoals>) {
+export async function updateDailyGoals(updates: Partial<DailyGoals>) {
   Object.assign(dailyGoals, updates)
-  saveToStorage('dailyGoals', dailyGoals)
+  await saveToStorage('dailyGoals', dailyGoals)
 }
 
-export function updateUserPreferences(updates: Partial<UserPreferences>) {
+export async function updateUserPreferences(updates: Partial<UserPreferences>) {
   Object.assign(userPreferences, updates)
-  saveToStorage('userPreferences', userPreferences)
+  await saveToStorage('userPreferences', userPreferences)
 }
 
-export function completeOnboarding() {
-  localStorage.setItem('onboardingCompleted', 'true')
+export async function completeOnboarding() {
+  await Storage.set('onboardingCompleted', true)
   onboardingCompleted.value = true
 }
 
-export function resetOnboarding() {
-  localStorage.removeItem('onboardingCompleted')
-  localStorage.removeItem('userProfile')
-  localStorage.removeItem('dailyGoals')
-  localStorage.removeItem('userPreferences')
+export async function resetOnboarding() {
+  await Promise.all([
+    Storage.remove('onboardingCompleted'),
+    Storage.remove('userProfile'),
+    Storage.remove('dailyGoals'),
+    Storage.remove('userPreferences')
+  ])
   
   // Reset reactive state
   Object.assign(userProfile, defaultUserProfile)
