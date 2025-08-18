@@ -30,30 +30,26 @@
                     </div>
                 </div>
 
-                <!-- Live Camera Preview - REAL (only for food mode) -->
-                <div class="camera-preview" v-if="scanMode === 'food'">
-                    <div v-if="!isScanning && !isAnalyzing" class="live-preview">
-                        <!-- Real camera video stream -->
+                <!-- Live Camera Preview - Visible in both modes -->
+                <div class="camera-preview">
+                    <div v-if="!isAnalyzing" class="live-preview">
+                        <!-- Real camera video stream - always visible -->
                         <video ref="videoElement" class="camera-video" autoplay muted playsinline
                             @loadedmetadata="onVideoLoaded"></video>
 
-                        <!-- Focus indicator -->
-                        <div class="focus-indicator" :class="{ active: isFocusing }" @click="focusCamera"></div>
+                        <!-- Focus indicator (only in food mode) -->
+                        <div v-if="scanMode === 'food'" class="focus-indicator" :class="{ active: isFocusing }" @click="focusCamera"></div>
+                        
+                        <!-- Barcode scanning instructions overlay -->
+                        <div v-if="scanMode === 'barcode'" class="barcode-instructions-overlay">
+                            <div class="barcode-instructions">
+                                <h3>Barcode Scanner aktiv</h3>
+                                <p>Richten Sie den Barcode in den Rahmen</p>
+                                <p>Scanner erkennt automatisch</p>
+                            </div>
+                        </div>
                     </div>
 
-                    <div v-else class="scanning-state">
-                        <div class="loading-spinner"></div>
-                        <p>{{ loadingMessage }}</p>
-                    </div>
-                </div>
-
-                <!-- Barcode scanning instructions -->
-                <div v-if="scanMode === 'barcode'" class="camera-preview">
-                    <div v-if="!isAnalyzing" class="barcode-instructions">
-                        <h3>Barcode Scanner aktiv</h3>
-                        <p>Richten Sie die Kamera auf einen Barcode</p>
-                        <p>Der Scanner erkennt automatisch Barcodes</p>
-                    </div>
                     <div v-else class="scanning-state">
                         <div class="loading-spinner"></div>
                         <p>{{ loadingMessage }}</p>
@@ -403,6 +399,11 @@ function setScanMode(mode: 'food' | 'barcode') {
     scanMode.value = mode
     resetScan() // Clear any existing results/errors when switching modes
     
+    // Always ensure camera stream is running
+    if (!mediaStream) {
+        startCameraStream()
+    }
+    
     // If switching to barcode mode, start the barcode scanner
     if (mode === 'barcode') {
         startBarcodeScanning()
@@ -648,11 +649,11 @@ async function startFoodScan() {
         }
 
         // Set canvas size to video size
-        canvas.width = videoElement.value.videoWidth
-        canvas.height = videoElement.value.videoHeight
+       // canvas.width = videoElement.value.videoWidth
+        //canvas.height = videoElement.value.videoHeight
 
         // Draw current video frame to canvas
-        ctx.drawImage(videoElement.value, 0, 0, canvas.width, canvas.height)
+        //ctx.drawImage(videoElement.value, 0, 0, canvas.width, canvas.height)
 
         // Convert canvas to blob
         const blob = await new Promise<Blob>((resolve, reject) => {
@@ -783,7 +784,7 @@ function saveResults() {
 
 // Initialize with food mode on mount
 onMounted(async () => {
-    scanMode.value = 'food'
+    scanMode.value = 'barcode'
     await startCameraStream()
 })
 
@@ -2268,17 +2269,29 @@ onUnmounted(async () => {
 
 /* Hide video element when barcode scanner is active */
 :global(body.barcode-scanner-active .scan-view .camera-video) {
-    display: none !important;
+    /* Don't hide the video - let user see the camera feed */
+    opacity: 0.8;
+    z-index: 1;
+}
+
+/* Barcode instructions overlay */
+.barcode-instructions-overlay {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    pointer-events: none;
 }
 
 /* Special styling for barcode mode */
-.scan-view.barcode-mode .camera-view-full {
+/*.scan-view.barcode-mode .camera-view-full {
     background: transparent;
 }
 
 .scan-view.barcode-mode .camera-preview {
     background: transparent;
-}
+}*/
 
 .barcode-instructions {
     position: absolute;
@@ -2293,5 +2306,28 @@ onUnmounted(async () => {
     padding: 20px;
     border-radius: 12px;
     backdrop-filter: blur(10px);
+}
+
+.barcode-instructions-overlay .barcode-instructions {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 16px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.barcode-instructions-overlay .barcode-instructions h3 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.barcode-instructions-overlay .barcode-instructions p {
+    margin: 4px 0;
+    font-size: 13px;
+    opacity: 0.9;
 }
 </style>
