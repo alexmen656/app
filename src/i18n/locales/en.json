@@ -12,6 +12,7 @@
   "home": {
     "caloriesLeft": "Calories left",
     "proteinOver": "Protein over",
+    "proteinLeft": "Protein left",
     "carbsLeft": "Carbs left",
     "fatsLeft": "Fats left",
     "recentlyUploaded": "Recently uploaded",

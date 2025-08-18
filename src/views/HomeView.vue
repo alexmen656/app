@@ -50,7 +50,7 @@
         <div class="macros-grid">
             <div class="macro-card protein">
                 <div class="macro-amount">{{ proteinLeft }}g</div>
-                <div class="macro-label">{{ $t('home.proteinOver') }}</div>
+                <div class="macro-label">{{ $t('home.proteinLeft') }}</div>
                 <div class="macro-progress">
                     <svg width="60" height="60" viewBox="0 0 60 60">
                         <!-- Background circle -->
@@ -348,7 +348,7 @@ const recentFoods = computed((): FoodItem[] => {
 
 // Calculated remaining amounts
 const caloriesLeft = computed(() => dailyCalories.value - consumedCalories.value)
-const proteinLeft = computed(() => consumedProtein.value - dailyProtein.value)
+const proteinLeft = computed(() => dailyProtein.value - consumedProtein.value)
 const carbsLeft = computed(() => dailyCarbs.value - consumedCarbs.value)
 const fatsLeft = computed(() => dailyFats.value - consumedFats.value)
 
