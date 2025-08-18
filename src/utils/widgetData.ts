@@ -1,5 +1,6 @@
 import { Storage, ScanHistory } from './storage';
 import { dailyGoals } from '../stores/userStore';
+import { Preferences } from '@capacitor/preferences';
 
 // Widget data structure for iOS widgets
 export interface WidgetData {
@@ -75,6 +76,37 @@ export class WidgetDataManager {
     }
   }
 
+  // 🔥 NEW: Store data specifically for iOS widgets using App Group UserDefaults
+  private static async storeDataForWidgets(widgetData: WidgetData): Promise<void> {
+    try {
+      // Store in normal preferences first (for app use)
+      await Storage.set('widgetData', widgetData);
+      
+      // 🚨 CRITICAL: Store in shared App Group UserDefaults for iOS widgets
+      // This uses the 'group' parameter to specify the App Group
+      await Preferences.configure({
+        group: 'group.com.kaloriq.shared'
+      });
+      
+      // Store widget data as JSON string in shared UserDefaults
+      const widgetDataJson = JSON.stringify(widgetData);
+      await Preferences.set({
+        key: 'widgetData',
+        value: widgetDataJson
+      });
+      
+      console.log('✅ Widget data stored in App Group UserDefaults:', widgetData);
+      
+      // Reset preferences back to default (app container)
+      await Preferences.configure({
+        group: undefined
+      });
+      
+    } catch (error) {
+      console.error('❌ Error storing widget data in App Group:', error);
+    }
+  }
+
   // Update widget data in Capacitor Preferences (accessible by iOS)
   static async updateWidgetData(): Promise<void> {
     try {
@@ -122,13 +154,12 @@ export class WidgetDataManager {
         todayFoods
       };
 
-      // Store widget data in Capacitor Preferences
-      // This can be accessed by iOS widgets through shared app groups
-      await Storage.set('widgetData', widgetData);
+      // 🔥 Store data both in app storage AND App Group UserDefaults
+      await this.storeDataForWidgets(widgetData);
       
-      console.log('Widget data updated:', widgetData);
+      console.log('✅ Widget data updated successfully:', widgetData);
     } catch (error) {
-      console.error('Error updating widget data:', error);
+      console.error('❌ Error updating widget data:', error);
     }
   }
 
