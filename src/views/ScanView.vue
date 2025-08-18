@@ -60,12 +60,10 @@
 
     <!-- Bottom controls -->
     <div class="bottom-controls">
-      <button class="control-btn gallery-btn">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
-          <rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
-          <rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
-          <rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+      <button class="control-btn gallery-btn" @click="switchCamera">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+          <path d="M17 17.5V15.5C17 14.1193 15.8807 13 14.5 13H9.5C8.11929 13 7 14.1193 7 15.5V17.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M12 7V3M12 3L9 6M12 3L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
       
@@ -107,6 +105,7 @@
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import { BrowserMultiFormatReader } from '@zxing/browser';
 
+
 const mode = ref('barcode'); // 'barcode' oder 'photo'
 const barcodeResult = ref('');
 const photoUrl = ref('');
@@ -114,17 +113,44 @@ const flashEnabled = ref(false);
 let videoInputDeviceId = null;
 let codeReader;
 let videoStream = null;
+const cameraFacing = ref('environment'); // 'environment' (back) oder 'user' (front)
+let allVideoInputDevices = [];
+let videoInputDevices = [];
+let currentDeviceIndex = 0;
 
-const setupCamera = async () => {
+const setupCamera = async (deviceId = null) => {
   try {
     codeReader = new BrowserMultiFormatReader();
-    const videoInputDevices = await BrowserMultiFormatReader.listVideoInputDevices();
+    allVideoInputDevices = await BrowserMultiFormatReader.listVideoInputDevices();
+    // Filter nur auf Front/Back, keine Ultraweitwinkel/Zoom/Tele
+    videoInputDevices = allVideoInputDevices.filter(d => {
+      const label = d.label.toLowerCase();
+      // Erlaube nur "front", "user", "back", "environment"
+      if (label.includes('front') || label.includes('user')) return true;
+      if (label.includes('back') || label.includes('environment')) return true;
+      // Schließe "ultra", "zoom", "tele", "wide" aus
+      if (label.includes('ultra') || label.includes('zoom') || label.includes('tele') || label.includes('wide')) return false;
+      // Wenn keine Info, lasse zu (z.B. Desktop)
+      return true;
+    });
     if (videoInputDevices.length === 0) {
-      barcodeResult.value = 'Keine Kamera gefunden';
+      barcodeResult.value = 'Keine passende Kamera gefunden';
       return;
     }
-    videoInputDeviceId = videoInputDevices[0].deviceId;
-    
+    if (deviceId) {
+      videoInputDeviceId = deviceId;
+      currentDeviceIndex = videoInputDevices.findIndex(d => d.deviceId === deviceId);
+    } else {
+      // Prefer back camera if available
+      const backCam = videoInputDevices.find(d => d.label.toLowerCase().includes('back') || d.label.toLowerCase().includes('environment'));
+      if (backCam) {
+        videoInputDeviceId = backCam.deviceId;
+        currentDeviceIndex = videoInputDevices.findIndex(d => d.deviceId === videoInputDeviceId);
+      } else {
+        videoInputDeviceId = videoInputDevices[0].deviceId;
+        currentDeviceIndex = 0;
+      }
+    }
     // Start barcode scanning
     await codeReader.decodeFromVideoDevice(
       videoInputDeviceId,
@@ -132,7 +158,6 @@ const setupCamera = async () => {
       (result, err, controls) => {
         if (mode.value === 'barcode' && result) {
           barcodeResult.value = result.getText();
-          // Optional: controls.stop();
         }
       }
     );
@@ -140,6 +165,16 @@ const setupCamera = async () => {
     console.error('Camera setup error:', error);
     barcodeResult.value = 'Kamera-Fehler: ' + error.message;
   }
+};
+
+const switchCamera = async () => {
+  if (!videoInputDevices.length) return;
+  stopCamera();
+  currentDeviceIndex = (currentDeviceIndex + 1) % videoInputDevices.length;
+  videoInputDeviceId = videoInputDevices[currentDeviceIndex].deviceId;
+  // Set facing mode for UI logic if needed
+  cameraFacing.value = videoInputDevices[currentDeviceIndex].label.toLowerCase().includes('front') || videoInputDevices[currentDeviceIndex].label.toLowerCase().includes('user') ? 'user' : 'environment';
+  await setupCamera(videoInputDeviceId);
 };
 
 const stopCamera = () => {
