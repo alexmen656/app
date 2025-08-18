@@ -17,6 +17,9 @@ const config: CapacitorConfig = {
       permissions: {
         camera: "Camera access is required to scan barcodes."
       }
+    },
+    Preferences: {
+      group: "group.com.kaloriq.shared"
     }
   }
 };

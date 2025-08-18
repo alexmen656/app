@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 48;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -15,7 +15,56 @@
 		504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC3101FED79650016851F /* LaunchScreen.storyboard */; };
 		50B271D11FEDC1A000F3C39B /* public in Resources */ = {isa = PBXBuildFile; fileRef = 50B271D01FEDC1A000F3C39B /* public */; };
 		A084ECDBA7D38E1E42DFC39D /* Pods_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF277DCFFFF123FFC6DF26C7 /* Pods_App.framework */; };
+		D92BB6452E53AA2300877E99 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D92BB6442E53AA2300877E99 /* WidgetKit.framework */; };
+		D92BB6472E53AA2300877E99 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D92BB6462E53AA2300877E99 /* SwiftUI.framework */; };
+		D92BB6582E53AA2400877E99 /* KaloriqWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D92BB6432E53AA2300877E99 /* KaloriqWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D92BB6812E53AA7300877E99 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D92BB6442E53AA2300877E99 /* WidgetKit.framework */; };
+		D92BB6822E53AA7300877E99 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D92BB6462E53AA2300877E99 /* SwiftUI.framework */; };
+		D92BB6932E53AA7300877E99 /* KaloriqWidget2Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D92BB6802E53AA7300877E99 /* KaloriqWidget2Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D92BB69D2E53AA8500877E99 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D92BB6442E53AA2300877E99 /* WidgetKit.framework */; };
+		D92BB69E2E53AA8500877E99 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D92BB6462E53AA2300877E99 /* SwiftUI.framework */; };
+		D92BB6AF2E53AA8600877E99 /* KaloriqWidget3Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D92BB69C2E53AA8500877E99 /* KaloriqWidget3Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D92BB6562E53AA2400877E99 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 504EC2FC1FED79650016851F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D92BB6422E53AA2300877E99;
+			remoteInfo = KaloriqWidgetExtension;
+		};
+		D92BB6912E53AA7300877E99 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 504EC2FC1FED79650016851F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D92BB67F2E53AA7300877E99;
+			remoteInfo = KaloriqWidget2Extension;
+		};
+		D92BB6AD2E53AA8600877E99 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 504EC2FC1FED79650016851F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D92BB69B2E53AA8500877E99;
+			remoteInfo = KaloriqWidget3Extension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		D92BB6592E53AA2400877E99 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				D92BB6582E53AA2400877E99 /* KaloriqWidgetExtension.appex in Embed Foundation Extensions */,
+				D92BB6932E53AA7300877E99 /* KaloriqWidget2Extension.appex in Embed Foundation Extensions */,
+				D92BB6AF2E53AA8600877E99 /* KaloriqWidget3Extension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
@@ -29,8 +78,45 @@
 		50B271D01FEDC1A000F3C39B /* public */ = {isa = PBXFileReference; lastKnownFileType = folder; path = public; sourceTree = "<group>"; };
 		AF277DCFFFF123FFC6DF26C7 /* Pods_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AF51FD2D460BCFE21FA515B2 /* Pods-App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-App.release.xcconfig"; path = "Pods/Target Support Files/Pods-App/Pods-App.release.xcconfig"; sourceTree = "<group>"; };
+		D92BB6432E53AA2300877E99 /* KaloriqWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = KaloriqWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		D92BB6442E53AA2300877E99 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		D92BB6462E53AA2300877E99 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		D92BB6802E53AA7300877E99 /* KaloriqWidget2Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = KaloriqWidget2Extension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		D92BB69C2E53AA8500877E99 /* KaloriqWidget3Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = KaloriqWidget3Extension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		D92BB6B42E53ACAA00877E99 /* KaloriqWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KaloriqWidgetExtension.entitlements; sourceTree = "<group>"; };
+		D92BB6B52E53ACFC00877E99 /* App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = App.entitlements; sourceTree = "<group>"; };
 		FC68EB0AF532CFC21C3344DD /* Pods-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-App/Pods-App.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		D92BB65C2E53AA2400877E99 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = D92BB6422E53AA2300877E99 /* KaloriqWidgetExtension */;
+		};
+		D92BB6942E53AA7300877E99 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = D92BB67F2E53AA7300877E99 /* KaloriqWidget2Extension */;
+		};
+		D92BB6B02E53AA8600877E99 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = D92BB69B2E53AA8500877E99 /* KaloriqWidget3Extension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		D92BB6482E53AA2300877E99 /* KaloriqWidget */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (D92BB65C2E53AA2400877E99 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = KaloriqWidget; sourceTree = "<group>"; };
+		D92BB6832E53AA7300877E99 /* KaloriqWidget2 */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (D92BB6942E53AA7300877E99 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = KaloriqWidget2; sourceTree = "<group>"; };
+		D92BB69F2E53AA8500877E99 /* KaloriqWidget3 */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (D92BB6B02E53AA8600877E99 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = KaloriqWidget3; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		504EC3011FED79650016851F /* Frameworks */ = {
@@ -41,6 +127,33 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D92BB6402E53AA2300877E99 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D92BB6472E53AA2300877E99 /* SwiftUI.framework in Frameworks */,
+				D92BB6452E53AA2300877E99 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D92BB67D2E53AA7300877E99 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D92BB6822E53AA7300877E99 /* SwiftUI.framework in Frameworks */,
+				D92BB6812E53AA7300877E99 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D92BB6992E53AA8500877E99 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D92BB69E2E53AA8500877E99 /* SwiftUI.framework in Frameworks */,
+				D92BB69D2E53AA8500877E99 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -48,6 +161,8 @@
 			isa = PBXGroup;
 			children = (
 				AF277DCFFFF123FFC6DF26C7 /* Pods_App.framework */,
+				D92BB6442E53AA2300877E99 /* WidgetKit.framework */,
+				D92BB6462E53AA2300877E99 /* SwiftUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -55,7 +170,11 @@
 		504EC2FB1FED79650016851F = {
 			isa = PBXGroup;
 			children = (
+				D92BB6B42E53ACAA00877E99 /* KaloriqWidgetExtension.entitlements */,
 				504EC3061FED79650016851F /* App */,
+				D92BB6482E53AA2300877E99 /* KaloriqWidget */,
+				D92BB6832E53AA7300877E99 /* KaloriqWidget2 */,
+				D92BB69F2E53AA8500877E99 /* KaloriqWidget3 */,
 				504EC3051FED79650016851F /* Products */,
 				7F8756D8B27F46E3366F6CEA /* Pods */,
 				27E2DDA53C4D2A4D1A88CE4A /* Frameworks */,
@@ -66,6 +185,9 @@
 			isa = PBXGroup;
 			children = (
 				504EC3041FED79650016851F /* App.app */,
+				D92BB6432E53AA2300877E99 /* KaloriqWidgetExtension.appex */,
+				D92BB6802E53AA7300877E99 /* KaloriqWidget2Extension.appex */,
+				D92BB69C2E53AA8500877E99 /* KaloriqWidget3Extension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -73,6 +195,7 @@
 		504EC3061FED79650016851F /* App */ = {
 			isa = PBXGroup;
 			children = (
+				D92BB6B52E53ACFC00877E99 /* App.entitlements */,
 				50379B222058CBB4000EE86E /* capacitor.config.json */,
 				504EC3071FED79650016851F /* AppDelegate.swift */,
 				504EC30B1FED79650016851F /* Main.storyboard */,
@@ -106,15 +229,85 @@
 				504EC3011FED79650016851F /* Frameworks */,
 				504EC3021FED79650016851F /* Resources */,
 				9592DBEFFC6D2A0C8D5DEB22 /* [CP] Embed Pods Frameworks */,
+				D92BB6592E53AA2400877E99 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				D92BB6572E53AA2400877E99 /* PBXTargetDependency */,
+				D92BB6922E53AA7300877E99 /* PBXTargetDependency */,
+				D92BB6AE2E53AA8600877E99 /* PBXTargetDependency */,
 			);
 			name = App;
 			productName = App;
 			productReference = 504EC3041FED79650016851F /* App.app */;
 			productType = "com.apple.product-type.application";
+		};
+		D92BB6422E53AA2300877E99 /* KaloriqWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D92BB65D2E53AA2400877E99 /* Build configuration list for PBXNativeTarget "KaloriqWidgetExtension" */;
+			buildPhases = (
+				D92BB63F2E53AA2300877E99 /* Sources */,
+				D92BB6402E53AA2300877E99 /* Frameworks */,
+				D92BB6412E53AA2300877E99 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				D92BB6482E53AA2300877E99 /* KaloriqWidget */,
+			);
+			name = KaloriqWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = KaloriqWidgetExtension;
+			productReference = D92BB6432E53AA2300877E99 /* KaloriqWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		D92BB67F2E53AA7300877E99 /* KaloriqWidget2Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D92BB6952E53AA7300877E99 /* Build configuration list for PBXNativeTarget "KaloriqWidget2Extension" */;
+			buildPhases = (
+				D92BB67C2E53AA7300877E99 /* Sources */,
+				D92BB67D2E53AA7300877E99 /* Frameworks */,
+				D92BB67E2E53AA7300877E99 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				D92BB6832E53AA7300877E99 /* KaloriqWidget2 */,
+			);
+			name = KaloriqWidget2Extension;
+			packageProductDependencies = (
+			);
+			productName = KaloriqWidget2Extension;
+			productReference = D92BB6802E53AA7300877E99 /* KaloriqWidget2Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		D92BB69B2E53AA8500877E99 /* KaloriqWidget3Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D92BB6B12E53AA8600877E99 /* Build configuration list for PBXNativeTarget "KaloriqWidget3Extension" */;
+			buildPhases = (
+				D92BB6982E53AA8500877E99 /* Sources */,
+				D92BB6992E53AA8500877E99 /* Frameworks */,
+				D92BB69A2E53AA8500877E99 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				D92BB69F2E53AA8500877E99 /* KaloriqWidget3 */,
+			);
+			name = KaloriqWidget3Extension;
+			packageProductDependencies = (
+			);
+			productName = KaloriqWidget3Extension;
+			productReference = D92BB69C2E53AA8500877E99 /* KaloriqWidget3Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -122,13 +315,22 @@
 		504EC2FC1FED79650016851F /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0920;
+				LastSwiftUpdateCheck = 1640;
 				LastUpgradeCheck = 0920;
 				TargetAttributes = {
 					504EC3031FED79650016851F = {
 						CreatedOnToolsVersion = 9.2;
 						LastSwiftMigration = 1100;
 						ProvisioningStyle = Automatic;
+					};
+					D92BB6422E53AA2300877E99 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+					D92BB67F2E53AA7300877E99 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+					D92BB69B2E53AA8500877E99 = {
+						CreatedOnToolsVersion = 16.4;
 					};
 				};
 			};
@@ -148,6 +350,9 @@
 			projectRoot = "";
 			targets = (
 				504EC3031FED79650016851F /* App */,
+				D92BB6422E53AA2300877E99 /* KaloriqWidgetExtension */,
+				D92BB67F2E53AA7300877E99 /* KaloriqWidget2Extension */,
+				D92BB69B2E53AA8500877E99 /* KaloriqWidget3Extension */,
 			);
 		};
 /* End PBXProject section */
@@ -163,6 +368,27 @@
 				50379B232058CBB4000EE86E /* capacitor.config.json in Resources */,
 				504EC30D1FED79650016851F /* Main.storyboard in Resources */,
 				2FAD9763203C412B000D30F8 /* config.xml in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D92BB6412E53AA2300877E99 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D92BB67E2E53AA7300877E99 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D92BB69A2E53AA8500877E99 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -213,7 +439,46 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D92BB63F2E53AA2300877E99 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D92BB67C2E53AA7300877E99 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D92BB6982E53AA8500877E99 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D92BB6572E53AA2400877E99 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D92BB6422E53AA2300877E99 /* KaloriqWidgetExtension */;
+			targetProxy = D92BB6562E53AA2400877E99 /* PBXContainerItemProxy */;
+		};
+		D92BB6922E53AA7300877E99 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D92BB67F2E53AA7300877E99 /* KaloriqWidget2Extension */;
+			targetProxy = D92BB6912E53AA7300877E99 /* PBXContainerItemProxy */;
+		};
+		D92BB6AE2E53AA8600877E99 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D92BB69B2E53AA8500877E99 /* KaloriqWidget3Extension */;
+			targetProxy = D92BB6AD2E53AA8600877E99 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		504EC30B1FED79650016851F /* Main.storyboard */ = {
@@ -337,7 +602,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -347,6 +613,7 @@
 			baseConfigurationReference = FC68EB0AF532CFC21C3344DD /* Pods-App.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = AS5BHHK5AW;
@@ -354,7 +621,10 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Kaloriq;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.0;
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-DDEBUG\"";
 				PRODUCT_BUNDLE_IDENTIFIER = "eu.control-center.sites.kaloriq";
@@ -370,6 +640,7 @@
 			baseConfigurationReference = AF51FD2D460BCFE21FA515B2 /* Pods-App.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = AS5BHHK5AW;
@@ -377,11 +648,250 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Kaloriq;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "eu.control-center.sites.kaloriq";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		D92BB65A2E53AA2400877E99 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = KaloriqWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AS5BHHK5AW;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = KaloriqWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = KaloriqWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "eu.control-center.sites.kaloriq.KaloriqWidget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D92BB65B2E53AA2400877E99 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = KaloriqWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AS5BHHK5AW;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = KaloriqWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = KaloriqWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "eu.control-center.sites.kaloriq.KaloriqWidget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		D92BB6962E53AA7300877E99 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AS5BHHK5AW;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = KaloriqWidget2/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = KaloriqWidget2;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "eu.control-center.sites.kaloriq.KaloriqWidget2";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D92BB6972E53AA7300877E99 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AS5BHHK5AW;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = KaloriqWidget2/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = KaloriqWidget2;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "eu.control-center.sites.kaloriq.KaloriqWidget2";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		D92BB6B22E53AA8600877E99 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AS5BHHK5AW;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = KaloriqWidget3/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = KaloriqWidget3;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "eu.control-center.sites.kaloriq.KaloriqWidget3";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D92BB6B32E53AA8600877E99 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AS5BHHK5AW;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = KaloriqWidget3/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = KaloriqWidget3;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "eu.control-center.sites.kaloriq.KaloriqWidget3";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -404,6 +914,33 @@
 			buildConfigurations = (
 				504EC3171FED79650016851F /* Debug */,
 				504EC3181FED79650016851F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D92BB65D2E53AA2400877E99 /* Build configuration list for PBXNativeTarget "KaloriqWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D92BB65A2E53AA2400877E99 /* Debug */,
+				D92BB65B2E53AA2400877E99 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D92BB6952E53AA7300877E99 /* Build configuration list for PBXNativeTarget "KaloriqWidget2Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D92BB6962E53AA7300877E99 /* Debug */,
+				D92BB6972E53AA7300877E99 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D92BB6B12E53AA8600877E99 /* Build configuration list for PBXNativeTarget "KaloriqWidget3Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D92BB6B22E53AA8600877E99 /* Debug */,
+				D92BB6B32E53AA8600877E99 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
