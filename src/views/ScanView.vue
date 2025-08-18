@@ -98,7 +98,6 @@ import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import { BrowserMultiFormatReader, BarcodeFormat } from '@zxing/browser';
 import { useRouter } from 'vue-router';
 
-
 const mode = ref('barcode'); // 'barcode' oder 'photo'
 const barcodeResult = ref('');
 const router = useRouter();
@@ -115,12 +114,12 @@ let currentDeviceIndex = 0;
 const setupCamera = async (deviceId = null) => {
   try {
     const foodBarcodeFormats = [
-      BarcodeFormat.EAN_13,    // Most common for food products in Europe
-      BarcodeFormat.EAN_8,     // Smaller food products
-      BarcodeFormat.UPC_A,     // Common in North America
-      BarcodeFormat.UPC_E,     // Compact UPC for small products
-      BarcodeFormat.CODE_128,  // Used for some food products
-      BarcodeFormat.ITF,       // Interleaved 2 of 5, used for cases/boxes
+      BarcodeFormat.EAN_13,
+      BarcodeFormat.EAN_8,
+      BarcodeFormat.UPC_A,
+      BarcodeFormat.UPC_E,
+      BarcodeFormat.CODE_128,
+      BarcodeFormat.ITF,
     ];
 
     const hints = new Map();
@@ -131,51 +130,65 @@ const setupCamera = async (deviceId = null) => {
     codeReader = new BrowserMultiFormatReader(hints);
 
     allVideoInputDevices = await BrowserMultiFormatReader.listVideoInputDevices();
-    // Filter nur auf Front/Back, keine Ultraweitwinkel/Zoom/Tele
     videoInputDevices = allVideoInputDevices.filter(d => {
       const label = d.label.toLowerCase();
-      // Erlaube nur "front", "user", "back", "environment"
       if (label.includes('front') || label.includes('user')) return true;
       if (label.includes('back') || label.includes('environment')) return true;
-      // Schließe "ultra", "zoom", "tele", "wide" aus
       if (label.includes('ultra') || label.includes('zoom') || label.includes('tele') || label.includes('wide')) return false;
-      // Wenn keine Info, lasse zu (z.B. Desktop)
       return true;
     });
-    if (videoInputDevices.length === 0) {
+
+    if (!videoInputDevices.length) {
       barcodeResult.value = 'Keine passende Kamera gefunden';
       return;
     }
+
     if (deviceId) {
       videoInputDeviceId = deviceId;
       currentDeviceIndex = videoInputDevices.findIndex(d => d.deviceId === deviceId);
     } else {
-      // Prefer back camera if available
       const backCam = videoInputDevices.find(d => d.label.toLowerCase().includes('back') || d.label.toLowerCase().includes('environment'));
-      if (backCam) {
-        videoInputDeviceId = backCam.deviceId;
-        currentDeviceIndex = videoInputDevices.findIndex(d => d.deviceId === videoInputDeviceId);
-      } else {
-        videoInputDeviceId = videoInputDevices[0].deviceId;
-        currentDeviceIndex = 0;
-      }
+      videoInputDeviceId = backCam ? backCam.deviceId : videoInputDevices[0].deviceId;
+      currentDeviceIndex = videoInputDevices.findIndex(d => d.deviceId === videoInputDeviceId);
     }
 
-    // High resolution camera constraints for better barcode scanning
-    const constraints = {
+    // Kamera öffnen, um Track zu bekommen
+    videoStream = await navigator.mediaDevices.getUserMedia({
       video: {
         deviceId: videoInputDeviceId,
-        width: { ideal: 3840, min: 1280 },
-        height: { ideal: 2160, min: 720 },
-        frameRate: { ideal: 60, min: 30 },
-        //focusMode: { ideal: 'continuous' },
-        autoGainControl: true,
-        echoCancellation: false,
-        noiseSuppression: false
+        width: { ideal: 3840 },
+        height: { ideal: 2160 },
+        frameRate: { ideal: 60 }
       }
-    };
+    });
 
-    // Start barcode scanning with improved resolution and food-specific hints
+    const videoElement = document.getElementById('barcode-video');
+    if (videoElement) {
+      videoElement.srcObject = videoStream;
+      await videoElement.play();
+    }
+
+    // ImageCapture für besseren Fokus
+    const track = videoStream.getVideoTracks()[0];
+    const imageCapture = new ImageCapture(track);
+    const capabilities = await imageCapture.getPhotoCapabilities();
+
+    if (capabilities.focusMode && capabilities.focusMode.includes('continuous')) {
+      await track.applyConstraints({ advanced: [{ focusMode: 'continuous' }] });
+    } else if (capabilities.focusMode && capabilities.focusMode.includes('auto')) {
+      await track.applyConstraints({ advanced: [{ focusMode: 'auto' }] });
+    } else {
+      console.warn('Fokusmodus nicht verfügbar, Kamera nutzt Standardfokus');
+    }
+
+
+    const scanRegion = {
+      x: 0.15, // 20% vom linken Rand
+      y: 0.25, // 30% von oben
+      width: 0.7, // 80% der Breite
+      height: 0.5 // 40% der Höhe
+    };
+    // ZXing starten
     await codeReader.decodeFromVideoDevice(
       videoInputDeviceId,
       'barcode-video',
@@ -185,27 +198,25 @@ const setupCamera = async (deviceId = null) => {
           const format = result.getBarcodeFormat();
           barcodeResult.value = code;
 
-          console.log(`Scanned ${format} barcode: ${code}`);
-
-          // Foto aufnehmen
-          const video = document.getElementById('barcode-video');
+          // Foto erstellen
           let scanPhoto = '';
-          if (video) {
+          if (videoElement) {
             const canvas = document.createElement('canvas');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            scanPhoto = canvas.toDataURL('image/jpeg', 1); // High quality
+            canvas.width = videoElement.videoWidth;
+            canvas.height = videoElement.videoHeight;
+            canvas.getContext('2d').drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+            scanPhoto = canvas.toDataURL('image/jpeg', 1);
             photoUrl.value = scanPhoto;
           }
+
           await controls.stop();
-          const query = { barcode: code, format: format };
-          if (scanPhoto) query.photo = scanPhoto;
+          const query = { barcode: code, format, photo: scanPhoto };
           router.push({ name: 'Nutrition', query });
         }
-      }
+      },
+      scanRegion
     );
+
   } catch (error) {
     console.error('Camera setup error:', error);
     barcodeResult.value = 'Kamera-Fehler: ' + error.message;
@@ -217,65 +228,44 @@ const switchCamera = async () => {
   stopCamera();
   currentDeviceIndex = (currentDeviceIndex + 1) % videoInputDevices.length;
   videoInputDeviceId = videoInputDevices[currentDeviceIndex].deviceId;
-  // Set facing mode for UI logic if needed
   cameraFacing.value = videoInputDevices[currentDeviceIndex].label.toLowerCase().includes('front') || videoInputDevices[currentDeviceIndex].label.toLowerCase().includes('user') ? 'user' : 'environment';
   await setupCamera(videoInputDeviceId);
 };
 
 const stopCamera = () => {
-  if (codeReader && typeof codeReader.reset === 'function') {
-    codeReader.reset();
-  }
-  if (videoStream) {
-    videoStream.getTracks().forEach(track => track.stop());
-  }
+  if (codeReader && typeof codeReader.reset === 'function') codeReader.reset();
+  if (videoStream) videoStream.getTracks().forEach(track => track.stop());
 };
 
 const takePhoto = () => {
-  const video = document.getElementById('barcode-video');
-  if (!video) return;
+  const videoElement = document.getElementById('barcode-video');
+  if (!videoElement) return;
 
   const canvas = document.createElement('canvas');
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  const ctx = canvas.getContext('2d');
-  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-  const dataUrl = canvas.toDataURL('image/jpeg');
-  photoUrl.value = dataUrl;
+  canvas.width = videoElement.videoWidth;
+  canvas.height = videoElement.videoHeight;
+  canvas.getContext('2d').drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+  photoUrl.value = canvas.toDataURL('image/jpeg');
 
-  // Simulate camera shutter effect
-  const shutterEffect = document.createElement('div');
-  shutterEffect.style.cssText = `
+  // Kamera-Shutter-Effekt
+  const shutter = document.createElement('div');
+  shutter.style.cssText = `
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: white;
-    z-index: 9999;
-    opacity: 0.8;
-    pointer-events: none;
+    top:0; left:0; width:100vw; height:100vh;
+    background: white; opacity:0.8; z-index:9999; pointer-events:none;
   `;
-  document.body.appendChild(shutterEffect);
-  setTimeout(() => document.body.removeChild(shutterEffect), 100);
-
-  // Show photo result
-  console.log('Photo taken in mode:', mode.value);
+  document.body.appendChild(shutter);
+  setTimeout(() => document.body.removeChild(shutter), 100);
 };
 
 const toggleFlash = async () => {
   try {
-    const video = document.getElementById('barcode-video');
-    if (video && video.srcObject) {
-      const stream = video.srcObject;
-      const track = stream.getVideoTracks()[0];
-      const capabilities = track.getCapabilities();
-
-      if (capabilities.torch) {
+    const videoElement = document.getElementById('barcode-video');
+    if (videoElement && videoElement.srcObject) {
+      const track = videoElement.srcObject.getVideoTracks()[0];
+      if (track.getCapabilities().torch) {
         flashEnabled.value = !flashEnabled.value;
-        await track.applyConstraints({
-          advanced: [{ torch: flashEnabled.value }]
-        });
+        await track.applyConstraints({ advanced: [{ torch: flashEnabled.value }] });
       }
     }
   } catch (error) {
@@ -283,21 +273,16 @@ const toggleFlash = async () => {
   }
 };
 
-// Watch for mode changes
 watch(mode, (newMode) => {
   barcodeResult.value = '';
   photoUrl.value = '';
   console.log('Mode switched to:', newMode);
 });
 
-onMounted(() => {
-  setupCamera();
-});
-
-onBeforeUnmount(() => {
-  stopCamera();
-});
+onMounted(() => setupCamera());
+onBeforeUnmount(() => stopCamera());
 </script>
+
 
 <style scoped>
 .camera-container {
