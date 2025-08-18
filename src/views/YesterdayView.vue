@@ -19,8 +19,8 @@
 
         <!-- Today/Yesterday Toggle -->
         <div class="date-toggle">
-            <router-link to="/" class="date-btn">Today</router-link>
-            <button class="date-btn active">Yesterday</button>
+            <router-link to="/" class="date-btn">{{ $t('app.today') }}</router-link>
+            <button class="date-btn active">{{ $t('app.yesterday') }}</button>
         </div>
 
         <!-- Main Calories Card -->
@@ -199,11 +199,13 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+//import { useI18n } from 'vue-i18n'
 import { dailyGoals } from '../stores/userStore'
 import { AnalyticsManager, type DayData } from '../utils/analyticsData'
 import { StreakManager } from '../utils/widgetData'
 
 const router = useRouter()
+//const { t } = useI18n()
 
 // Type definitions
 interface FoodItem {

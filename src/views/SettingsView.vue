@@ -5,7 +5,7 @@
        @touchend="handleTouchEnd">
     <!-- Header -->
     <header class="header">
-      <h1 class="title">Settings</h1>
+      <h1 class="title">{{ $t('app.settings') }}</h1>
     </header>
 
     <!-- Profile Section -->
@@ -31,17 +31,17 @@
     <!-- Goals Section -->
     <div class="settings-section">
       <div class="section-header">
-        <h3 class="section-title">Daily Goals</h3>
+        <h3 class="section-title">{{ $t('settings.dailyGoals') }}</h3>
         <button @click="recalculateGoals" class="recalculate-button">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"/>
           </svg>
-          Recalculate
+          {{ $t('common.calculate') }}
         </button>
       </div>
       <div class="settings-card">
         <div class="setting-item">
-          <label class="setting-label">Calories Goal</label>
+          <label class="setting-label">{{ $t('nutrition.calories') }} Goal</label>
           <div class="setting-input">
             <input 
               type="number" 
@@ -54,7 +54,7 @@
         </div>
 
         <div class="setting-item">
-          <label class="setting-label">Protein Goal</label>
+          <label class="setting-label">{{ $t('nutrition.protein') }} Goal</label>
           <div class="setting-input">
             <input 
               type="number" 
@@ -67,7 +67,7 @@
         </div>
 
         <div class="setting-item">
-          <label class="setting-label">Carbs Goal</label>
+          <label class="setting-label">{{ $t('nutrition.carbs') }} Goal</label>
           <div class="setting-input">
             <input 
               type="number" 
@@ -80,7 +80,7 @@
         </div>
 
         <div class="setting-item">
-          <label class="setting-label">Fats Goal</label>
+          <label class="setting-label">{{ $t('nutrition.fats') }} Goal</label>
           <div class="setting-input">
             <input 
               type="number" 
@@ -94,20 +94,34 @@
       </div>
     </div>
 
-    <!-- Preferences Section -->
+    <!-- Language Section -->
     <div class="settings-section">
-      <h3 class="section-title">Preferences</h3>
+      <h3 class="section-title">{{ $t('settings.language') }}</h3>
       <div class="settings-card">
         <div class="setting-item">
-          <label class="setting-label">Units</label>
+          <label class="setting-label">{{ $t('settings.language') }}</label>
+          <select v-model="currentLanguage" @change="changeLanguage" class="select-input">
+            <option value="en">English</option>
+            <option value="de">Deutsch</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Preferences Section -->
+    <div class="settings-section">
+      <h3 class="section-title">{{ $t('settings.preferences') }}</h3>
+      <div class="settings-card">
+        <div class="setting-item">
+          <label class="setting-label">{{ $t('settings.units') }}</label>
           <select v-model="userPreferences.units" @change="savePreferences" class="select-input">
-            <option value="metric">Metric (kg, cm)</option>
-            <option value="imperial">Imperial (lbs, ft)</option>
+            <option value="metric">{{ $t('settings.metric') }}</option>
+            <option value="imperial">{{ $t('settings.imperial') }}</option>
           </select>
         </div>
 
         <div class="setting-item">
-          <label class="setting-label">Notifications</label>
+          <label class="setting-label">{{ $t('settings.notifications') }}</label>
           <div class="toggle-switch">
             <input 
               type="checkbox" 
@@ -120,7 +134,7 @@
         </div>
 
         <div class="setting-item">
-          <label class="setting-label">Meal Reminders</label>
+          <label class="setting-label">{{ $t('settings.mealReminders') }}</label>
           <div class="toggle-switch">
             <input 
               type="checkbox" 
@@ -133,7 +147,7 @@
         </div>
 
         <div class="setting-item">
-          <label class="setting-label">Weekly Reports</label>
+          <label class="setting-label">{{ $t('settings.weeklyReports') }}</label>
           <div class="toggle-switch">
             <input 
               type="checkbox" 
@@ -277,6 +291,7 @@
 <script setup lang="ts">
 import { computed, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+//import { useI18n } from 'vue-i18n'
 import { 
   userProfile, 
   dailyGoals, 
@@ -286,8 +301,20 @@ import {
   calculateRecommendedMacros
 } from '../stores/userStore'
 import { BarcodeCache, ScanHistory } from '../utils/storage'
+import { setLanguage, getCurrentLanguage } from '../i18n'
 
 const router = useRouter()
+//const { t } = useI18n()
+
+// Language functionality
+const currentLanguage = ref(getCurrentLanguage())
+
+const changeLanguage = (event: Event) => {
+  const target = event.target as HTMLSelectElement
+  const newLanguage = target.value as 'en' | 'de'
+  setLanguage(newLanguage)
+  currentLanguage.value = newLanguage
+}
 
 // Debug state
 const showDebugInfo = ref(false)

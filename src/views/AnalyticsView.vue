@@ -5,12 +5,12 @@
        @touchend="handleTouchEnd">
     <!-- Header -->
     <header class="header">
-      <h1 class="title">Analytics</h1>
+      <h1 class="title">{{ $t('app.analytics') }}</h1>
       <div class="date-picker">
         <select v-model="selectedPeriod" class="period-select">
-          <option value="week">This Week</option>
-          <option value="month">This Month</option>
-          <option value="year">This Year</option>
+          <option value="week">{{ $t('analytics.thisWeek') }}</option>
+          <option value="month">{{ $t('analytics.thisMonth') }}</option>
+          <option value="year">{{ $t('analytics.thisYear') }}</option>
         </select>
       </div>
     </header>
@@ -19,7 +19,7 @@
     <div class="summary-cards">
       <div class="summary-card">
         <div class="card-header">
-          <h3>Avg Daily Calories</h3>
+          <h3>{{ $t('analytics.avgDailyCalories') }}</h3>
           <span class="trend up">+5%</span>
         </div>
         <div class="card-value">{{ analyticsData?.avgCalories || 0 }}</div>
@@ -27,7 +27,7 @@
       
       <div class="summary-card">
         <div class="card-header">
-          <h3>Days on Track</h3>
+          <h3>{{ $t('analytics.daysOnTrack') }}</h3>
           <span class="trend up">+2</span>
         </div>
         <div class="card-value">{{ analyticsData?.daysOnTrack || 0 }}/7</div>
@@ -194,9 +194,11 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+//import { useI18n } from 'vue-i18n'
 import { AnalyticsManager, type AnalyticsData } from '../utils/analyticsData'
 
 const router = useRouter()
+//const { t } = useI18n()
 
 const selectedPeriod = ref('week')
 const analyticsData = ref<AnalyticsData | null>(null)

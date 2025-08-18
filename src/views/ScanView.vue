@@ -11,7 +11,7 @@
             stroke-linejoin="round" />
         </svg>
       </button>
-      <h1 class="header-title">Scanner</h1>
+      <h1 class="header-title">{{ $t('app.scanner') }}</h1>
       <button class="header-btn menu-btn">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <circle cx="12" cy="12" r="1" fill="currentColor" />
@@ -29,7 +29,7 @@
     <!-- Mode selector -->
     <div class="mode-selector">
       <div class="mode-tabs">
-        <button class="mode-tab" :class="{ active: mode === 'barcode' }" @click="mode = 'barcode'">
+                <button class="mode-tab" :class="{ active: mode === 'barcode' }" @click="mode = 'barcode'">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
             <rect x="3" y="6" width="18" height="2" fill="currentColor" />
             <rect x="3" y="10" width="10" height="1" fill="currentColor" />
@@ -39,16 +39,16 @@
             <rect x="13" y="14" width="8" height="1" fill="currentColor" />
             <rect x="3" y="16" width="18" height="2" fill="currentColor" />
           </svg>
-          <span>Barcode</span>
+          <span>{{ $t('scanner.modes.barcode') }}</span>
         </button>
         <button class="mode-tab" :class="{ active: mode === 'photo' }" @click="mode = 'photo'">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
             <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" />
             <path
-              d="M12 1a4 4 0 0 0-4 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3a4 4 0 0 0-4-4z"
-              stroke="currentColor" stroke-width="2" />
+              d="M9 2H15L17 5H21C21.5304 5 22.0391 5.21071 22.4142 5.58579C22.7893 5.96086 23 6.46957 23 7V19C23 19.5304 22.7893 20.0391 22.4142 20.4142C22.0391 20.7893 21.5304 21 21 21H3C2.46957 21 1.96086 20.7893 1.58579 20.4142C1.21071 20.0391 1 19.5304 1 19V7C1 6.46957 1.21071 5.96086 1.58579 5.58579C1.96086 5.21071 2.46957 5 3 5H7L9 2Z"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
-          <span>Foto</span>
+          <span>{{ $t('scanner.modes.photo') }}</span>
         </button>
       </div>
     </div>
@@ -97,7 +97,10 @@
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import { BrowserMultiFormatReader, BarcodeFormat } from '@zxing/browser';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { WidgetDataManager, StreakManager } from '../utils/widgetData';
+
+const { t } = useI18n();
 
 const mode = ref('barcode'); // 'barcode' oder 'photo'
 const barcodeResult = ref('');
@@ -330,10 +333,10 @@ const analyzeFoodPhoto = async (photoDataUrl) => {
       name: 'Nutrition',
       query: {
         foodData: JSON.stringify({
-          foods: [{ name: 'Analysiertes Gericht', calories: 0, protein: 0, carbs: 0, fat: 0 }],
+          foods: [{ name: t('home.scannedFood'), calories: 0, protein: 0, carbs: 0, fat: 0 }],
           total: { calories: 0, protein: 0, carbs: 0, fat: 0 },
           confidence: 'low',
-          notes: 'Analyse fehlgeschlagen. Bitte korrigiere die Werte manuell.',
+          notes: t('nutrition.analysisFailed'),
           error: true
         }),
         photo: photoDataUrl

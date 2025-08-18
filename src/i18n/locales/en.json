@@ -1,0 +1,107 @@
+{
+  "app": {
+    "name": "Kaloriq",
+    "scanner": "Scanner",
+    "home": "Home",
+    "analytics": "Analytics",
+    "settings": "Settings",
+    "nutrition": "Nutrition",
+    "yesterday": "Yesterday",
+    "today": "Today"
+  },
+  "home": {
+    "caloriesLeft": "Calories left",
+    "proteinOver": "Protein over",
+    "carbsLeft": "Carbs left",
+    "fatsLeft": "Fats left",
+    "recentlyUploaded": "Recently uploaded",
+    "noScansYet": "No scans yet",
+    "noScansSubtitle": "Use the scan button to scan your first meal!",
+    "scannedFood": "Scanned food",
+    "unknownProduct": "Unknown product"
+  },
+  "scanner": {
+    "scanBarcode": "Scan barcode",
+    "scanFood": "Scan food",
+    "barcode": "Barcode",
+    "photo": "Photo",
+    "modes": {
+      "barcode": "Barcode",
+      "photo": "Photo"
+    }
+  },
+  "nutrition": {
+    "calories": "Calories",
+    "protein": "Protein",
+    "carbs": "Carbs",
+    "fats": "Fats",
+    "fiber": "Fiber",
+    "sugar": "Sugar",
+    "sodium": "Sodium",
+    "serving": "Serving",
+    "nutritionFacts": "Nutrition Facts",
+    "ingredients": "Ingredients",
+    "allergens": "Allergens",
+    "addToMeals": "Add to meals",
+    "added": "Added",
+    "analysisFailed": "Analysis failed. Please correct the values manually.",
+    "confidence": {
+      "high": "High confidence",
+      "medium": "Medium confidence", 
+      "low": "Low confidence"
+    }
+  },
+  "settings": {
+    "dailyGoals": "Daily Goals",
+    "language": "Language",
+    "notifications": "Notifications",
+    "about": "About",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "preferences": "Preferences",
+    "units": "Units",
+    "mealReminders": "Meal Reminders",
+    "weeklyReports": "Weekly Reports",
+    "metric": "Metric (kg, cm)",
+    "imperial": "Imperial (lbs, ft)"
+  },
+  "analytics": {
+    "weeklyOverview": "Weekly Overview",
+    "monthlyTrends": "Monthly Trends",
+    "goals": "Goals",
+    "streaks": "Streaks",
+    "thisWeek": "This Week",
+    "thisMonth": "This Month",
+    "thisYear": "This Year",
+    "avgDailyCalories": "Avg Daily Calories",
+    "daysOnTrack": "Days on Track"
+  },
+  "onboarding": {
+    "welcome": "Welcome to Kaloriq",
+    "subtitle": "Track your nutrition with AI-powered food scanning",
+    "getStarted": "Get Started",
+    "setupGoals": "Setup Your Goals",
+    "age": "Age",
+    "weight": "Weight",
+    "height": "Height",
+    "activity": "Activity Level",
+    "goal": "Goal",
+    "continue": "Continue",
+    "finish": "Finish"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "done": "Done",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "close": "Close",
+    "calculate": "Recalculate"
+  }
+}

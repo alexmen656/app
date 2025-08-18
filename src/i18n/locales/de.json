@@ -1,0 +1,107 @@
+{
+  "app": {
+    "name": "Kaloriq",
+    "scanner": "Scanner",
+    "home": "Startseite",
+    "analytics": "Analytik",
+    "settings": "Einstellungen",
+    "nutrition": "Nährwerte",
+    "yesterday": "Gestern",
+    "today": "Heute"
+  },
+  "home": {
+    "caloriesLeft": "Kalorien übrig",
+    "proteinOver": "Protein über",
+    "carbsLeft": "Kohlenhydrate übrig", 
+    "fatsLeft": "Fette übrig",
+    "recentlyUploaded": "Kürzlich gescannt",
+    "noScansYet": "Noch keine Scans vorhanden",
+    "noScansSubtitle": "Nutzen Sie den Scan-Button um Ihr erstes Essen zu scannen!",
+    "scannedFood": "Gescanntes Essen",
+    "unknownProduct": "Unbekanntes Produkt"
+  },
+  "scanner": {
+    "scanBarcode": "Barcode scannen",
+    "scanFood": "Essen scannen",
+    "barcode": "Barcode",
+    "photo": "Foto",
+    "modes": {
+      "barcode": "Barcode",
+      "photo": "Foto"
+    }
+  },
+  "nutrition": {
+    "calories": "Kalorien",
+    "protein": "Protein",
+    "carbs": "Kohlenhydrate",
+    "fats": "Fette",
+    "fiber": "Ballaststoffe",
+    "sugar": "Zucker",
+    "sodium": "Natrium",
+    "serving": "Portion",
+    "nutritionFacts": "Nährwerte",
+    "ingredients": "Zutaten",
+    "allergens": "Allergene",
+    "addToMeals": "Zu Mahlzeiten hinzufügen",
+    "added": "Hinzugefügt",
+    "analysisFailed": "Analyse fehlgeschlagen. Bitte korrigiere die Werte manuell.",
+    "confidence": {
+      "high": "Hohe Sicherheit",
+      "medium": "Mittlere Sicherheit",
+      "low": "Niedrige Sicherheit"
+    }
+  },
+  "settings": {
+    "dailyGoals": "Tagesziele",
+    "language": "Sprache",
+    "notifications": "Benachrichtigungen",
+    "about": "Über",
+    "privacy": "Datenschutz",
+    "terms": "Nutzungsbedingungen",
+    "preferences": "Einstellungen",
+    "units": "Einheiten",
+    "mealReminders": "Mahlzeit-Erinnerungen",
+    "weeklyReports": "Wochenberichte",
+    "metric": "Metrisch (kg, cm)",
+    "imperial": "Imperial (lbs, ft)"
+  },
+  "analytics": {
+    "weeklyOverview": "Wochenübersicht",
+    "monthlyTrends": "Monatstrends",
+    "goals": "Ziele",
+    "streaks": "Streaks",
+    "thisWeek": "Diese Woche",
+    "thisMonth": "Diesen Monat",
+    "thisYear": "Dieses Jahr",
+    "avgDailyCalories": "Ø Tägliche Kalorien",
+    "daysOnTrack": "Tage im Ziel"
+  },
+  "onboarding": {
+    "welcome": "Willkommen bei Kaloriq",
+    "subtitle": "Verfolgen Sie Ihre Ernährung mit KI-gestütztem Lebensmittel-Scanning",
+    "getStarted": "Loslegen",
+    "setupGoals": "Ziele einrichten",
+    "age": "Alter",
+    "weight": "Gewicht",
+    "height": "Größe",
+    "activity": "Aktivitätslevel",
+    "goal": "Ziel",
+    "continue": "Weiter",
+    "finish": "Fertig"
+  },
+  "common": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "confirm": "Bestätigen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "done": "Fertig",
+    "loading": "Lädt...",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "close": "Schließen",
+    "calculate": "Neu berechnen"
+  }
+}
