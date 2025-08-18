@@ -4,65 +4,133 @@
       <div class="statusbar-spacer"></div>
       <div class="nutrition-image-wrap" :style="backgroundStyle">
         <button class="nutrition-back" @click="$router.go(-1)">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <button class="nutrition-menu">...</button>
+        <button class="nutrition-menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 12H12.01M12 6H12.01M12 18H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
       </div>
     </div>
     <div class="nutrition-content">
       <div class="nutrition-time">{{ time }}</div>
       <h1 class="nutrition-name">{{ product.name }}</h1>
       <div class="nutrition-amount">
-        <span>{{ amount }}</span>
-        <button class="nutrition-edit" @click="editAmount"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="amount-btn minus" @click="decreaseAmount">−</button>
+        <span class="amount-number">{{ amount }}</span>
+        <button class="amount-btn plus" @click="increaseAmount">+</button>
       </div>
       <div class="nutrition-macros">
         <div class="macro calories">
-          <div class="macro-label">Calories</div>
-          <div class="macro-value">{{ product.calories }}</div>
+          <div class="macro-icon">🔥</div>
+          <div class="macro-info">
+            <div class="macro-label">Calories</div>
+            <div class="macro-value">{{ Math.round(product.calories * amount) }}</div>
+            <button class="macro-edit" @click="editMacro('calories')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
         </div>
         <div class="macro protein">
-          <div class="macro-label">Protein</div>
-          <div class="macro-value">{{ product.protein }}g</div>
+          <div class="macro-icon">🥩</div>
+          <div class="macro-info">
+            <div class="macro-label">Protein</div>
+            <div class="macro-value">{{ Math.round(product.protein * amount) }}g</div>
+            <button class="macro-edit" @click="editMacro('protein')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
         </div>
         <div class="macro carbs">
-          <div class="macro-label">Carbs</div>
-          <div class="macro-value">{{ product.carbs }}g</div>
+          <div class="macro-icon">🌾</div>
+          <div class="macro-info">
+            <div class="macro-label">Carbs</div>
+            <div class="macro-value">{{ Math.round(product.carbs * amount) }}g</div>
+            <button class="macro-edit" @click="editMacro('carbs')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
         </div>
         <div class="macro fats">
-          <div class="macro-label">Fats</div>
-          <div class="macro-value">{{ product.fats }}g</div>
+          <div class="macro-icon">🧈</div>
+          <div class="macro-info">
+            <div class="macro-label">Fat</div>
+            <div class="macro-value">{{ Math.round(product.fats * amount) }}g</div>
+            <button class="macro-edit" @click="editMacro('fats')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
         </div>
       </div>
       <div class="nutrition-health">
-        <div class="health-label">Health Score</div>
-        <div class="health-score">{{ product.healthScore }}/10</div>
+        <div class="health-icon">💚</div>
+        <div class="health-info">
+          <div class="health-label">Health Score</div>
+          <div class="health-score">{{ product.healthScore }}/10</div>
+        </div>
         <div class="health-bar">
           <div class="health-bar-inner" :style="{ width: (product.healthScore * 10) + '%' }"></div>
         </div>
       </div>
-      <div class="nutrition-ingredients">
+      <div class="nutrition-ingredients" v-if="product.ingredients && product.ingredients.length > 0">
         <h3>Ingredients</h3>
-        <div class="ingredient-list">
-          <span v-for="(ing, i) in product.ingredients" :key="i" class="ingredient">{{ ing }}</span>
-        </div>
+        <div class="ingredient-text">{{ product.ingredients.join(', ') }}</div>
       </div>
       <div class="nutrition-actions">
-        <button class="fix-btn">Fix Results</button>
-        <button class="done-btn" @click="$router.go(-1)">Done</button>
+        <button class="fix-btn" @click="showFixModal = true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Fix Results
+        </button>
+        <button class="done-btn" @click="saveAndReturn">Done</button>
       </div>
     </div>
   </div>
+  
+  <!-- Fix Modal -->
+  <div v-if="showFixModal" class="modal-overlay" @click="showFixModal = false">
+    <div class="modal" @click.stop>
+      <h3>Fix Results</h3>
+      <div class="fix-form">
+        <div class="form-group">
+          <label>Product Name</label>
+          <input v-model="editedProduct.name" type="text">
+        </div>
+        <div class="form-group">
+          <label>Calories</label>
+          <input v-model.number="editedProduct.calories" type="number">
+        </div>
+        <div class="form-group">
+          <label>Protein (g)</label>
+          <input v-model.number="editedProduct.protein" type="number" step="0.1">
+        </div>
+        <div class="form-group">
+          <label>Carbs (g)</label>
+          <input v-model.number="editedProduct.carbs" type="number" step="0.1">
+        </div>
+        <div class="form-group">
+          <label>Fats (g)</label>
+          <input v-model.number="editedProduct.fats" type="number" step="0.1">
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="cancel-btn" @click="showFixModal = false">Cancel</button>
+        <button class="save-btn" @click="applyFix">Save</button>
+      </div>
+    </div>
+  </div>
+  
   <div v-else class="nutrition-loading">Loading...</div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { ref, computed, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
+const router = useRouter();
 const product = ref(null);
 const amount = ref(1);
+const showFixModal = ref(false);
+const editedProduct = ref({});
 const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
 const fetchProduct = async (barcode) => {
@@ -70,60 +138,219 @@ const fetchProduct = async (barcode) => {
     const res = await fetch(`https://world.openfoodfacts.org/api/v2/product/${barcode}`);
     const data = await res.json();
     if (!data.product) throw new Error('Not found');
+    
     // Map Open Food Facts fields to our UI
+    const nutriments = data.product.nutriments || {};
     product.value = {
-      name: data.product.product_name || 'Unknown',
+      name: data.product.product_name || 'Unknown Product',
       image: data.product.image_url,
-      calories: data.product.nutriments.energy_kcal || '-',
-      protein: data.product.nutriments.proteins || '-',
-      carbs: data.product.nutriments.carbohydrates || '-',
-      fats: data.product.nutriments.fat || '-',
-      healthScore: 7, // Placeholder, you can calculate based on nutrition
-      ingredients: (data.product.ingredients_text || '').split(/,|;/).map(s => s.trim()).filter(Boolean),
+      calories: nutriments.energy_kcal_100g || nutriments['energy-kcal_100g'] || 0,
+      protein: nutriments.proteins_100g || 0,
+      carbs: nutriments.carbohydrates_100g || 0,
+      fats: nutriments.fat_100g || 0,
+      healthScore: calculateHealthScore(nutriments),
+      ingredients: data.product.ingredients_text ? 
+        data.product.ingredients_text.split(/[,;]/).map(s => s.trim()).filter(Boolean) : [],
+      barcode: barcode
     };
+    
+    // Initialize edited product for fix modal
+    editedProduct.value = { ...product.value };
   } catch (e) {
-    product.value = null;
+    console.error('Error fetching product:', e);
+    // Fallback product if API fails
+    product.value = {
+      name: 'Unknown Product',
+      image: null,
+      calories: 0,
+      protein: 0,
+      carbs: 0,
+      fats: 0,
+      healthScore: 5,
+      ingredients: [],
+      barcode: route.query.barcode
+    };
+    editedProduct.value = { ...product.value };
   }
 };
 
-if (route.query.barcode) {
-  fetchProduct(route.query.barcode);
-}
+const calculateHealthScore = (nutriments) => {
+  // Simple health score calculation based on nutrients
+  let score = 7; // Base score
+  
+  // Adjust based on various factors
+  const sugar = nutriments.sugars_100g || 0;
+  const sodium = nutriments.sodium_100g || 0;
+  const fiber = nutriments.fiber_100g || 0;
+  const saturatedFat = nutriments['saturated-fat_100g'] || 0;
+  
+  // Reduce score for high sugar
+  if (sugar > 20) score -= 2;
+  else if (sugar > 10) score -= 1;
+  
+  // Reduce score for high sodium
+  if (sodium > 1000) score -= 2;
+  else if (sodium > 500) score -= 1;
+  
+  // Increase score for fiber
+  if (fiber > 5) score += 1;
+  
+  // Reduce score for high saturated fat
+  if (saturatedFat > 10) score -= 1;
+  
+  return Math.max(1, Math.min(10, score));
+};
+
+// Initialize product data
+onMounted(() => {
+  if (route.query.barcode) {
+    fetchProduct(route.query.barcode);
+  } else if (route.query.foodData) {
+    // Handle food scan data
+    try {
+      const foodData = JSON.parse(route.query.foodData);
+      product.value = {
+        name: foodData.name || 'Scanned Food',
+        image: route.query.photo,
+        calories: foodData.calories || 0,
+        protein: foodData.protein || 0,
+        carbs: foodData.carbs || 0,
+        fats: foodData.fats || 0,
+        healthScore: foodData.healthScore || 7,
+        ingredients: foodData.ingredients || [],
+        type: 'food'
+      };
+      editedProduct.value = { ...product.value };
+    } catch (e) {
+      console.error('Error parsing food data:', e);
+    }
+  }
+});
 
 const backgroundStyle = computed(() => {
   const img = route.query.photo || (product.value && product.value.image);
   return img
     ? {
-        backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.18), rgba(0,0,0,0.18)), url('${img}')`,
+        backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${img}')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         width: '100%',
-        height: '220px',
+        height: '280px',
         borderBottomLeftRadius: '32px',
         borderBottomRightRadius: '32px',
         position: 'relative',
         zIndex: 1,
       }
-    : {};
+    : {
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        width: '100%',
+        height: '280px',
+        borderBottomLeftRadius: '32px',
+        borderBottomRightRadius: '32px',
+        position: 'relative',
+        zIndex: 1,
+      };
 });
 
-function editAmount() {
-  // TODO: implement amount editing
+// Amount controls
+function increaseAmount() {
+  amount.value += 1;
+}
+
+function decreaseAmount() {
+  if (amount.value > 1) {
+    amount.value -= 1;
+  }
+}
+
+// Fix modal functions
+function editMacro(type) {
+  showFixModal.value = true;
+}
+
+function applyFix() {
+  product.value = { ...editedProduct.value };
+  showFixModal.value = false;
+}
+
+// Save and return function
+function saveAndReturn() {
+  if (!product.value) return;
+  
+  try {
+    // Get existing scan history
+    const existingHistory = JSON.parse(localStorage.getItem('scanHistory') || '[]');
+    
+    // Create new scan entry
+    const scanEntry = {
+      id: Date.now(),
+      type: product.value.type === 'food' ? 'food' : 'barcode',
+      timestamp: new Date().toISOString(),
+      time: time,
+      image: route.query.photo || product.value.image,
+      data: product.value.type === 'food' ? {
+        // Food scan format
+        total: {
+          calories: Math.round(product.value.calories * amount.value),
+          protein: Math.round(product.value.protein * amount.value),
+          carbs: Math.round(product.value.carbs * amount.value),
+          fat: Math.round(product.value.fats * amount.value)
+        },
+        foods: [{
+          name: product.value.name,
+          calories: Math.round(product.value.calories * amount.value),
+          protein: Math.round(product.value.protein * amount.value),
+          carbs: Math.round(product.value.carbs * amount.value),
+          fats: Math.round(product.value.fats * amount.value)
+        }]
+      } : {
+        // Barcode scan format  
+        product_name: product.value.name,
+        nutriments: {
+          energy_kcal_100g: Math.round(product.value.calories * amount.value),
+          proteins_100g: Math.round(product.value.protein * amount.value),
+          carbohydrates_100g: Math.round(product.value.carbs * amount.value),
+          fat_100g: Math.round(product.value.fats * amount.value)
+        }
+      }
+    };
+    
+    // Add to beginning of history
+    existingHistory.unshift(scanEntry);
+    
+    // Keep only last 20 items
+    const updatedHistory = existingHistory.slice(0, 20);
+    
+    // Save to localStorage
+    localStorage.setItem('scanHistory', JSON.stringify(updatedHistory));
+    
+    // Dispatch storage event to update other components
+    window.dispatchEvent(new Event('storage'));
+    
+    // Navigate back to home
+    router.push('/');
+  } catch (error) {
+    console.error('Error saving scan data:', error);
+    // Still navigate back even if save fails
+    router.push('/');
+  }
 }
 </script>
 
 <style scoped>
-/* Statusbar-Space für iOS */
+/* Statusbar Space for iOS */
 .statusbar-spacer {
   height: env(safe-area-inset-top, 44px);
   width: 100%;
 }
+
 .nutrition-container {
   background: #fff;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
+
 .nutrition-header {
   position: relative;
   background: #f5f5f5;
@@ -132,179 +359,461 @@ function editAmount() {
   overflow: hidden;
   padding-bottom: 0;
 }
+
 .nutrition-image-wrap {
   position: relative;
   width: 100%;
-  height: 220px;
+  height: 280px;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  background: #f5f5f5;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-bottom-left-radius: 32px;
   border-bottom-right-radius: 32px;
   overflow: hidden;
   z-index: 1;
+  padding-top: 16px;
 }
-.nutrition-back {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  z-index: 2;
-  background: #e5e9d7;
+
+.nutrition-back, .nutrition-menu {
+  background: rgba(255,255,255,0.9);
   border: none;
   border-radius: 50%;
-  width: 44px; height: 44px;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  width: 44px; 
+  height: 44px;
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin: 0 16px;
 }
-.nutrition-menu {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  z-index: 2;
-  background: #e5e9d7;
-  border: none;
-  border-radius: 50%;
-  width: 44px; height: 44px;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+
+.nutrition-back:hover, .nutrition-menu:hover {
+  background: rgba(255,255,255,1);
+  transform: scale(1.05);
 }
+
 .nutrition-content {
   background: #fff;
   border-radius: 32px 32px 0 0;
   margin-top: -32px;
-  padding: 24px 16px 0 16px;
-  box-shadow: 0 -4px 24px rgba(0,0,0,0.04);
+  padding: 24px 20px 0 20px;
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.06);
   flex: 1;
+  position: relative;
+  z-index: 2;
 }
-/* Zeit, Name, Menge */
+
+/* Time, Name, Amount */
 .nutrition-time {
-  color: #888;
-  font-size: 13px;
+  color: #666;
+  font-size: 14px;
   margin-bottom: 8px;
-  margin-top: 0;
+  margin-top: 8px;
+  font-weight: 500;
 }
+
 .nutrition-name {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 700;
-  margin: 0 0 12px 0;
+  margin: 0 0 20px 0;
   word-break: break-word;
+  color: #1a1a1a;
 }
+
 .nutrition-amount {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 16px;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 24px;
+  background: #f8f9fa;
+  border-radius: 20px;
+  padding: 8px 16px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
 }
-.nutrition-edit {
+
+.amount-btn {
   background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  padding: 4px 8px;
-  display: flex; align-items: center; justify-content: center;
-}
-.nutrition-macros {
+  border: 2px solid #e1e5e9;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
   display: flex;
-  gap: 16px;
-  margin-bottom: 16px;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #333;
 }
-.macro {
-  background: #f7f7f7;
-  border-radius: 16px;
-  padding: 12px 16px;
-  flex: 1;
-  text-align: center;
-  min-width: 0;
+
+.amount-btn:hover {
+  background: #f0f0f0;
+  border-color: #ccc;
 }
-.macro-label {
-  color: #888;
-  font-size: 13px;
-  margin-bottom: 4px;
+
+.amount-btn.minus {
+  color: #666;
 }
-.macro-value {
+
+.amount-btn.plus {
+  background: #000;
+  color: #fff;
+  border-color: #000;
+}
+
+.amount-number {
   font-size: 18px;
   font-weight: 600;
+  min-width: 30px;
+  text-align: center;
+  color: #333;
 }
-.nutrition-health {
-  margin-bottom: 16px;
-}
-.health-label {
-  color: #888;
-  font-size: 13px;
-}
-.health-score {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-.health-bar {
-  background: #eee;
-  border-radius: 8px;
-  height: 8px;
-  width: 100%;
-  margin-bottom: 8px;
-}
-.health-bar-inner {
-  background: #6ee37a;
-  height: 100%;
-  border-radius: 8px;
-  transition: width 0.3s;
-}
-.nutrition-ingredients {
+
+/* Macros Grid */
+.nutrition-macros {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
   margin-bottom: 24px;
 }
-.ingredient-list {
+
+.macro {
+  background: #f8f9fa;
+  border-radius: 20px;
+  padding: 20px 16px;
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  align-items: center;
+  gap: 12px;
+  min-height: 80px;
+  position: relative;
+  transition: all 0.2s ease;
 }
-.ingredient {
-  background: #f5f5f5;
-  border-radius: 12px;
-  padding: 6px 12px;
+
+.macro:hover {
+  background: #f0f0f0;
+}
+
+.macro-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.macro-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.macro-label {
+  color: #666;
   font-size: 13px;
+  font-weight: 500;
+  margin: 0;
 }
+
+.macro-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.macro-edit {
+  background: transparent;
+  border: none;
+  padding: 4px;
+  border-radius: 8px;
+  opacity: 0.7;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+.macro-edit:hover {
+  opacity: 1;
+  background: rgba(0,0,0,0.05);
+}
+
+/* Health Score */
+.nutrition-health {
+  background: #f8f9fa;
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.health-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.health-info {
+  flex: 1;
+}
+
+.health-label {
+  color: #666;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.health-score {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+}
+
+.health-bar {
+  background: #e1e5e9;
+  border-radius: 10px;
+  height: 8px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.health-bar-inner {
+  background: linear-gradient(90deg, #22c55e 0%, #16a34a 100%);
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.3s ease;
+}
+
+/* Ingredients */
+.nutrition-ingredients {
+  margin-bottom: 32px;
+}
+
+.nutrition-ingredients h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #1a1a1a;
+}
+
+.ingredient-text {
+  background: #f8f9fa;
+  border-radius: 16px;
+  padding: 16px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #666;
+}
+
+/* Actions */
 .nutrition-actions {
   display: flex;
   gap: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
+  padding-bottom: env(safe-area-inset-bottom, 20px);
 }
+
 .fix-btn {
   flex: 1;
   background: #fff;
   border: 2px solid #000;
-  border-radius: 16px;
-  padding: 14px 0;
+  border-radius: 20px;
+  padding: 16px 0;
   font-size: 16px;
   font-weight: 600;
   color: #000;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
+
+.fix-btn:hover {
+  background: #f8f9fa;
+}
+
 .done-btn {
   flex: 1;
   background: #000;
   color: #fff;
   border: none;
-  border-radius: 16px;
-  padding: 14px 0;
+  border-radius: 20px;
+  padding: 16px 0;
   font-size: 16px;
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
+
+.done-btn:hover {
+  background: #333;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 24px;
+  padding: 24px;
+  max-width: 400px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #1a1a1a;
+}
+
+.fix-form {
+  margin-bottom: 24px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e1e5e9;
+  border-radius: 12px;
+  font-size: 16px;
+  transition: border-color 0.2s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #000;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.cancel-btn {
+  flex: 1;
+  background: #fff;
+  border: 2px solid #e1e5e9;
+  border-radius: 16px;
+  padding: 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancel-btn:hover {
+  background: #f8f9fa;
+}
+
+.save-btn {
+  flex: 1;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 16px;
+  padding: 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.save-btn:hover {
+  background: #333;
+}
+
+/* Loading State */
 .nutrition-loading {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100vh;
-  font-size: 20px;
-  color: #888;
+  font-size: 18px;
+  color: #666;
+  font-weight: 500;
 }
+
+/* Responsive Design */
 @media (max-width: 390px) {
-  .nutrition-image-wrap, .nutrition-image {
-    height: 160px;
+  .nutrition-image-wrap {
+    height: 220px;
   }
+  
   .nutrition-content {
-    padding: 16px 8px 0 8px;
+    padding: 20px 16px 0 16px;
+  }
+  
+  .nutrition-macros {
+    gap: 12px;
+  }
+  
+  .macro {
+    padding: 16px 12px;
+    min-height: 70px;
+  }
+  
+  .macro-value {
+    font-size: 18px;
+  }
+  
+  .nutrition-actions {
+    margin-bottom: 24px;
+  }
+}
+
+@media (max-width: 360px) {
+  .nutrition-name {
+    font-size: 22px;
+  }
+  
+  .amount-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+  
+  .macro-value {
+    font-size: 16px;
   }
 }
 </style>
