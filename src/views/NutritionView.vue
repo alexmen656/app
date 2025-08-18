@@ -1,184 +1,186 @@
 <template>
-    <div v-if="product" class="nutrition-container">
-        <div class="nutrition-header">
-            <div class="nutrition-image-wrap" :style="backgroundStyle">
-                <div class="statusbar-spacer"></div>
-                <div class="header-controls">
-                    <button class="nutrition-back" @click="$router.go(-1)">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" />
-                        </svg>
-                    </button>
-                    <button class="nutrition-menu">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                            <path d="M12 12H12.01M12 6H12.01M12 18H12.01" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-        <div class="nutrition-content">
-            <div class="nutrition-time">{{ time }}</div>
-            <div class="product-header">
-                <h1 class="nutrition-name">{{ product.name }}</h1>
-                <div class="nutrition-amount">
-                    <button class="amount-btn minus" @click="decreaseAmount">−</button>
-                    <span class="amount-number">{{ amount }}</span>
-                    <button class="amount-btn plus" @click="increaseAmount">+</button>
-                </div>
-            </div>
-            <div class="nutrition-macros">
-                <div class="macro calories">
-                    <div class="macro-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="#ff6b35">
-                            <path
-                                d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z" />
-                        </svg>
-                    </div>
-                    <div class="macro-info">
-                        <div class="macro-label">Calories</div>
-                        <div class="macro-value">{{ Math.round(product.calories * amount) }}</div>
-                        <button class="macro-edit" @click="editMacro('calories')">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                                <path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                                <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z"
-                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    <div>
+        <div v-if="product" class="nutrition-container">
+            <div class="nutrition-header">
+                <div class="nutrition-image-wrap" :style="backgroundStyle">
+                    <div class="statusbar-spacer"></div>
+                    <div class="header-controls">
+                        <button class="nutrition-back" @click="$router.go(-1)">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                        <button class="nutrition-menu">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M12 12H12.01M12 6H12.01M12 18H12.01" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                         </button>
                     </div>
                 </div>
-                <div class="macro protein">
-                    <div class="macro-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="#ff6b6b">
+            </div>
+            <div class="nutrition-content">
+                <div class="nutrition-time">{{ time }}</div>
+                <div class="product-header">
+                    <h1 class="nutrition-name">{{ product.name }}</h1>
+                    <div class="nutrition-amount">
+                        <button class="amount-btn minus" @click="decreaseAmount">−</button>
+                        <span class="amount-number">{{ amount }}</span>
+                        <button class="amount-btn plus" @click="increaseAmount">+</button>
+                    </div>
+                </div>
+                <div class="nutrition-macros">
+                    <div class="macro calories">
+                        <div class="macro-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="#ff6b35">
+                                <path
+                                    d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z" />
+                            </svg>
+                        </div>
+                        <div class="macro-info">
+                            <div class="macro-label">Calories</div>
+                            <div class="macro-value">{{ Math.round(product.calories * amount) }}</div>
+                            <button class="macro-edit" @click="editMacro('calories')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                    <path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                                    <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="macro protein">
+                        <div class="macro-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="#ff6b6b">
+                                <path
+                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                            </svg>
+                        </div>
+                        <div class="macro-info">
+                            <div class="macro-label">Protein</div>
+                            <div class="macro-value">{{ Math.round(product.protein * amount) }}g</div>
+                            <button class="macro-edit" @click="editMacro('protein')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                    <path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                                    <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="macro carbs">
+                        <div class="macro-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="#ffa726">
+                                <path
+                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                            </svg>
+                        </div>
+                        <div class="macro-info">
+                            <div class="macro-label">Carbs</div>
+                            <div class="macro-value">{{ Math.round(product.carbs * amount) }}g</div>
+                            <button class="macro-edit" @click="editMacro('carbs')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                    <path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                                    <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="macro fats">
+                        <div class="macro-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="#42a5f5">
+                                <path
+                                    d="M9 11H7v9h2v-9zm4 0h-2v9h2v-9zm4 0h-2v9h2v-9zm2-7H4v2h1v11c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V6h1V4zm-2 13H6V6h12v11z" />
+                            </svg>
+                        </div>
+                        <div class="macro-info">
+                            <div class="macro-label">Fat</div>
+                            <div class="macro-value">{{ Math.round(product.fats * amount) }}g</div>
+                            <button class="macro-edit" @click="editMacro('fats')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                    <path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                                    <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="nutrition-health">
+                    <div class="health-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="#22c55e">
                             <path
                                 d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                         </svg>
                     </div>
-                    <div class="macro-info">
-                        <div class="macro-label">Protein</div>
-                        <div class="macro-value">{{ Math.round(product.protein * amount) }}g</div>
-                        <button class="macro-edit" @click="editMacro('protein')">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                                <path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                                <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z"
-                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                            </svg>
-                        </button>
+                    <div class="health-info">
+                        <div class="health-label">Health Score</div>
+                        <div class="health-score">{{ product.healthScore }}/10</div>
+                    </div>
+                    <div class="health-bar">
+                        <div class="health-bar-inner" :style="{ width: (product.healthScore * 10) + '%' }"></div>
                     </div>
                 </div>
-                <div class="macro carbs">
-                    <div class="macro-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="#ffa726">
-                            <path
-                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                <div class="nutrition-ingredients" v-if="product.ingredients && product.ingredients.length > 0">
+                    <h3>Ingredients</h3>
+                    <div class="ingredient-text">{{ product.ingredients.join(', ') }}</div>
+                </div>
+                <div class="nutrition-actions">
+                    <button class="fix-btn" @click="showFixModal = true">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                            <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
-                    </div>
-                    <div class="macro-info">
-                        <div class="macro-label">Carbs</div>
-                        <div class="macro-value">{{ Math.round(product.carbs * amount) }}g</div>
-                        <button class="macro-edit" @click="editMacro('carbs')">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                                <path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                                <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z"
-                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                            </svg>
-                        </button>
-                    </div>
+                        Fix Results
+                    </button>
+                    <button class="done-btn" @click="saveAndReturn">Done</button>
                 </div>
-                <div class="macro fats">
-                    <div class="macro-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="#42a5f5">
-                            <path
-                                d="M9 11H7v9h2v-9zm4 0h-2v9h2v-9zm4 0h-2v9h2v-9zm2-7H4v2h1v11c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V6h1V4zm-2 13H6V6h12v11z" />
-                        </svg>
-                    </div>
-                    <div class="macro-info">
-                        <div class="macro-label">Fat</div>
-                        <div class="macro-value">{{ Math.round(product.fats * amount) }}g</div>
-                        <button class="macro-edit" @click="editMacro('fats')">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                                <path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                                <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z"
-                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="nutrition-health">
-                <div class="health-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="#22c55e">
-                        <path
-                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                    </svg>
-                </div>
-                <div class="health-info">
-                    <div class="health-label">Health Score</div>
-                    <div class="health-score">{{ product.healthScore }}/10</div>
-                </div>
-                <div class="health-bar">
-                    <div class="health-bar-inner" :style="{ width: (product.healthScore * 10) + '%' }"></div>
-                </div>
-            </div>
-            <div class="nutrition-ingredients" v-if="product.ingredients && product.ingredients.length > 0">
-                <h3>Ingredients</h3>
-                <div class="ingredient-text">{{ product.ingredients.join(', ') }}</div>
-            </div>
-            <div class="nutrition-actions">
-                <button class="fix-btn" @click="showFixModal = true">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                        <path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                        <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                    Fix Results
-                </button>
-                <button class="done-btn" @click="saveAndReturn">Done</button>
             </div>
         </div>
-    </div>
 
-    <!-- Loading State -->
-    <div v-else class="nutrition-loading">
-        <div class="loading-spinner"></div>
-        <span>Loading...</span>
-    </div>
+        <!-- Loading State -->
+        <div v-else class="nutrition-loading">
+            <div class="loading-spinner"></div>
+            <span>Loading...</span>
+        </div>
 
-    <!-- Fix Modal -->
-    <div v-if="showFixModal" class="modal-overlay" @click="showFixModal = false">
-        <div class="modal" @click.stop>
-            <h3>Fix Results</h3>
-            <div class="fix-form">
-                <div class="form-group">
-                    <label>Product Name</label>
-                    <input v-model="editedProduct.name" type="text">
+        <!-- Fix Modal -->
+        <div v-if="showFixModal" class="modal-overlay" @click="showFixModal = false">
+            <div class="modal" @click.stop>
+                <h3>Fix Results</h3>
+                <div class="fix-form">
+                    <div class="form-group">
+                        <label>Product Name</label>
+                        <input v-model="editedProduct.name" type="text">
+                    </div>
+                    <div class="form-group">
+                        <label>Calories</label>
+                        <input v-model.number="editedProduct.calories" type="number">
+                    </div>
+                    <div class="form-group">
+                        <label>Protein (g)</label>
+                        <input v-model.number="editedProduct.protein" type="number" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>Carbs (g)</label>
+                        <input v-model.number="editedProduct.carbs" type="number" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>Fats (g)</label>
+                        <input v-model.number="editedProduct.fats" type="number" step="0.1">
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Calories</label>
-                    <input v-model.number="editedProduct.calories" type="number">
+                <div class="modal-actions">
+                    <button class="cancel-btn" @click="showFixModal = false">Cancel</button>
+                    <button class="save-btn" @click="applyFix">Save</button>
                 </div>
-                <div class="form-group">
-                    <label>Protein (g)</label>
-                    <input v-model.number="editedProduct.protein" type="number" step="0.1">
-                </div>
-                <div class="form-group">
-                    <label>Carbs (g)</label>
-                    <input v-model.number="editedProduct.carbs" type="number" step="0.1">
-                </div>
-                <div class="form-group">
-                    <label>Fats (g)</label>
-                    <input v-model.number="editedProduct.fats" type="number" step="0.1">
-                </div>
-            </div>
-            <div class="modal-actions">
-                <button class="cancel-btn" @click="showFixModal = false">Cancel</button>
-                <button class="save-btn" @click="applyFix">Save</button>
             </div>
         </div>
     </div>
@@ -389,13 +391,12 @@ function saveAndReturn() {
         // Dispatch storage event to update other components
         window.dispatchEvent(new Event('storage'));
 
-
-        router.replace('/');
+        router.push({ path: '/' });
 
     } catch (error) {
         console.error('Error saving scan data:', error);
         // Still navigate back even if save fails
-        router.replace('/');
+        router.push({ path: '/' });
     }
 }
 </script>

@@ -39,7 +39,8 @@ const navigationFlow = {
     position: 3 
   },
   '/onboarding': { position: -1 },
-  '/scan': { position: -1 }
+  '/scan': { position: -1 },
+  '/nutrition': { position: -1 }
 }
 
 function getTransitionName(route: any) {
