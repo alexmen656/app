@@ -72,6 +72,8 @@
     "metric": "Metrisch (kg, cm)",
     "imperial": "Imperial (lbs, ft)"
   ,
+  "legal": "Rechtliches"
+  ,
   "dataPrivacy": "Daten & Datenschutz",
   "exportData": "Daten exportieren",
   "clearCache": "Cache leeren",
