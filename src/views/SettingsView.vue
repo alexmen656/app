@@ -74,6 +74,28 @@
       </div>
     </div>
 
+    <!-- Goal Selection Section -->
+    <div class="settings-section">
+      <h3 class="section-title">{{ $t('settings.primaryGoal') }}</h3>
+      <div class="settings-card">
+        <div class="goal-selection">
+          <div 
+            v-for="goalOption in goalOptions" 
+            :key="goalOption.value"
+            class="goal-option-small"
+            :class="{ active: currentGoal === goalOption.value }"
+            @click="updateGoal(goalOption.value)"
+          >
+            <div class="goal-icon-small">{{ goalOption.icon }}</div>
+            <div class="goal-content-small">
+              <div class="goal-name-small">{{ goalOption.name }}</div>
+              <div class="goal-description-small">{{ goalOption.description }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Language Section -->
     <div class="settings-section">
       <h3 class="section-title">{{ $t('settings.language') }}</h3>
@@ -133,7 +155,7 @@
     <div class="settings-section">
       <h3 class="section-title">{{ $t('settings.dataPrivacy') }}</h3>
       <div class="settings-card">
-        <button class="action-button" @click="exportData">
+        <button class="action-button" @click="exportData" data-export>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
             <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
           </svg>
@@ -277,12 +299,13 @@
 <script setup lang="ts">
 import { computed, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-//import { useI18n } from 'vue-i18n'
+import { useI18n } from 'vue-i18n'
 import {
   userProfile,
   dailyGoals,
   userPreferences,
   updateDailyGoals,
+  updateUserProfile,
   resetOnboarding,
   calculateRecommendedMacros
 } from '../stores/userStore'
@@ -290,7 +313,7 @@ import { BarcodeCache, ScanHistory } from '../utils/storage'
 import { setLanguage, getCurrentLanguage } from '../i18n'
 
 const router = useRouter()
-//const { t } = useI18n()
+const { t } = useI18n()
 
 // Language functionality
 const currentLanguage = ref(getCurrentLanguage())
@@ -300,6 +323,48 @@ const changeLanguage = (event: Event) => {
   const newLanguage = target.value as 'en' | 'de'
   setLanguage(newLanguage)
   currentLanguage.value = newLanguage
+}
+
+// Goal management
+const currentGoal = ref(userProfile.goal || 'maintain')
+
+const goalOptions = computed(() => [
+  {
+    value: 'lose',
+    icon: '📉',
+    name: t('profile.goalOptions.lose.name'),
+    description: t('profile.goalOptions.lose.description')
+  },
+  {
+    value: 'maintain',
+    icon: '⚖️',
+    name: t('profile.goalOptions.maintain.name'),
+    description: t('profile.goalOptions.maintain.description')
+  },
+  {
+    value: 'gain',
+    icon: '📈',
+    name: t('profile.goalOptions.gain.name'),
+    description: t('profile.goalOptions.gain.description')
+  }
+])
+
+async function updateGoal(newGoal: string) {
+  currentGoal.value = newGoal
+  try {
+    await updateUserProfile({ ...userProfile, goal: newGoal })
+    
+    // Recalculate goals based on new target
+    if (userProfile.weight && userProfile.height && userProfile.age && userProfile.gender && userProfile.activityLevel) {
+      const recommended = calculateRecommendedMacros({
+        ...userProfile,
+        goal: newGoal
+      })
+      await updateDailyGoals(recommended)
+    }
+  } catch (error) {
+    console.error('Error updating goal:', error)
+  }
 }
 
 // Debug state
@@ -328,8 +393,8 @@ const displayProfile = computed(() => ({
 }))
 
 function editProfile() {
-  // Navigate to onboarding to edit profile
-  router.push('/onboarding')
+  // Navigate to profile edit view instead of onboarding
+  router.push('/profile/edit')
 }
 
 async function saveGoals() {
@@ -353,22 +418,56 @@ async function recalculateGoals() {
 }
 
 async function exportData() {
-  const scanHistory = await ScanHistory.get()
-  const data = {
-    profile: userProfile,
-    goals: dailyGoals,
-    preferences: userPreferences,
-    scanHistory,
-    exportDate: new Date().toISOString()
-  }
+  try {
+    // Show loading state
+    const exportButton = document.querySelector('.action-button[data-export]') as HTMLButtonElement
+    if (exportButton) {
+      exportButton.disabled = true
+      exportButton.textContent = 'Exporting...'
+    }
 
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = `kaloriq-data-${new Date().toISOString().split('T')[0]}.json`
-  a.click()
-  URL.revokeObjectURL(url)
+    const scanHistory = await ScanHistory.get()
+    const barcodeStats = await BarcodeCache.getStats()
+    
+    const data = {
+      profile: userProfile,
+      goals: dailyGoals,
+      preferences: userPreferences,
+      scanHistory,
+      statistics: {
+        totalScans: scanHistory.length,
+        barcodesCached: barcodeStats.count,
+        cacheSize: barcodeStats.totalSize
+      },
+      exportDate: new Date().toISOString(),
+      exportVersion: '1.0',
+      appVersion: '1.0.0'
+    }
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `kaloriq-data-${new Date().toISOString().split('T')[0]}.json`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+    
+    // Show success message
+    alert('Data exported successfully!')
+    
+  } catch (error) {
+    console.error('Export failed:', error)
+    alert('Failed to export data. Please try again.')
+  } finally {
+    // Reset button state
+    const exportButton = document.querySelector('.action-button[data-export]') as HTMLButtonElement
+    if (exportButton) {
+      exportButton.disabled = false
+      exportButton.textContent = 'Export Data'
+    }
+  }
 }
 
 async function clearCache() {
@@ -874,5 +973,46 @@ function handleTouchEnd(event: TouchEvent) {
 a {
   color: white;
   text-decoration: none;
+}
+
+/* Goal options styling */
+.goal-option-small {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  margin: 8px 0;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.goal-option-small:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(74, 222, 128, 0.3);
+}
+
+.goal-option-small.selected {
+  background: rgba(74, 222, 128, 0.2);
+  border-color: #4ade80;
+}
+
+.goal-option-small .goal-icon {
+  font-size: 24px;
+  margin-right: 16px;
+}
+
+.goal-option-small .goal-text h4 {
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+}
+
+.goal-option-small .goal-text p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  margin: 0;
 }
 </style>

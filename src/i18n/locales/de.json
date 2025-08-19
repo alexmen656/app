@@ -117,7 +117,9 @@
     "activity": "Aktivitätslevel",
     "goal": "Ziel",
     "continue": "Weiter",
-    "finish": "Fertig"
+    "finish": "Fertig",
+    "whatIsYourGoal": "Was ist Ihr Ziel?",
+    "goalSubtitle": "Wählen Sie Ihr Hauptziel aus, damit wir Ihre Ernährung optimal anpassen können"
   },
   "common": {
     "save": "Speichern",
@@ -133,5 +135,108 @@
     "success": "Erfolg",
     "close": "Schließen",
     "calculate": "Neu berechnen"
+  },
+  "streak": {
+    "title": "Streak Details",
+    "daysStreak": "Tage Streak",
+    "days": "Tage",
+    "nextMilestone": "Nächster Meilenstein",
+    "achievements": "Erfolge",
+    "history": "Verlauf",
+    "stats": "Statistiken",
+    "totalDaysLogged": "Gesamttage protokolliert",
+    "longestStreak": "Längste Streak",
+    "avgCalories": "Ø Kalorien",
+    "messages": {
+      "start": "Beginnen Sie Ihre Reise!",
+      "beginning": "Großartig! Sie haben angefangen!",
+      "building": "Sie bauen eine starke Gewohnheit auf!",
+      "strong": "Unglaubliche Beständigkeit!",
+      "incredible": "Sie sind ein Meister der Beständigkeit!"
+    },
+    "achievementsList": {
+      "starter": "Starter",
+      "consistent": "Beständig",
+      "dedicated": "Engagiert",
+      "unstoppable": "Unaufhaltsam",
+      "legendary": "Legendär"
+    },
+    "rewards": {
+      "week": "Eine Woche Beständigkeit!",
+      "twoWeeks": "Zwei Wochen stark!",
+      "month": "Ein ganzer Monat!",
+      "fiftyDays": "50 Tage Hingabe!",
+      "hundred": "100 Tage Meisterschaft!",
+      "twoHundred": "200 Tage Exzellenz!",
+      "year": "Ein ganzes Jahr!",
+      "master": "Absoluter Meister!"
+    },
+    "quotes": {
+      "consistency": "Beständigkeit ist der Schlüssel zum Erfolg.",
+      "progress": "Fortschritt, nicht Perfektion.",
+      "journey": "Die Reise ist das Ziel.",
+      "habits": "Gewohnheiten formen dein Leben.",
+      "discipline": "Disziplin führt zur Freiheit."
+    }
+  },
+  "profile": {
+    "editTitle": "Profil bearbeiten",
+    "editGreeting": "Aktualisieren Sie Ihre Informationen",
+    "basicInfo": "Grundinformationen",
+    "physicalInfo": "Körperliche Daten",
+    "name": "Name",
+    "email": "E-Mail",
+    "age": "Alter",
+    "gender": "Geschlecht",
+    "height": "Größe",
+    "weight": "Gewicht",
+    "activityLevel": "Aktivitätslevel",
+    "goals": "Ziele",
+    "calculatedGoals": "Berechnete Ziele",
+    "namePlaceholder": "Ihr Name",
+    "emailPlaceholder": "ihre.email@beispiel.com",
+    "agePlaceholder": "25",
+    "heightPlaceholder": "170",
+    "weightPlaceholder": "70",
+    "male": "Männlich",
+    "female": "Weiblich",
+    "savedSuccessfully": "Profil erfolgreich gespeichert!",
+    "saveError": "Fehler beim Speichern des Profils",
+    "activityLevels": {
+      "sedentary": {
+        "name": "Sitzend",
+        "description": "Wenig oder keine Bewegung"
+      },
+      "light": {
+        "name": "Leicht aktiv",
+        "description": "Leichte Übungen 1-3 Tage/Woche"
+      },
+      "moderate": {
+        "name": "Mäßig aktiv",
+        "description": "Mäßige Übungen 3-5 Tage/Woche"
+      },
+      "active": {
+        "name": "Aktiv",
+        "description": "Intensive Übungen 6-7 Tage/Woche"
+      },
+      "veryActive": {
+        "name": "Sehr aktiv",
+        "description": "Sehr intensive Übungen, körperliche Arbeit"
+      }
+    },
+    "goalOptions": {
+      "lose": {
+        "name": "Abnehmen",
+        "description": "Gewicht reduzieren"
+      },
+      "maintain": {
+        "name": "Halten",
+        "description": "Aktuelles Gewicht beibehalten"
+      },
+      "gain": {
+        "name": "Zunehmen",
+        "description": "Gewicht und Muskeln aufbauen"
+      }
+    }
   }
 }

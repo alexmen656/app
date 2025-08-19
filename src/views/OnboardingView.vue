@@ -143,8 +143,38 @@
             </div>
         </div>
 
-        <!-- Goals Step -->
+        <!-- Goal Selection Step -->
         <div v-if="currentStep === 4" class="step-container">
+            <div class="content-section">
+                <h2 class="step-title">{{ $t('onboarding.whatIsYourGoal') }}</h2>
+                <p class="step-subtitle">{{ $t('onboarding.goalSubtitle') }}</p>
+
+                <div class="goal-options">
+                    <div 
+                        v-for="goalOption in goalOptions" 
+                        :key="goalOption.value"
+                        class="goal-option"
+                        :class="{ active: userInfo.goal === goalOption.value }"
+                        @click="userInfo.goal = goalOption.value"
+                    >
+                        <div class="goal-icon-large">{{ goalOption.icon }}</div>
+                        <div class="goal-content">
+                            <h3 class="goal-name">{{ goalOption.name }}</h3>
+                            <p class="goal-description">{{ goalOption.description }}</p>
+                            <div class="goal-details">{{ goalOption.details }}</div>
+                        </div>
+                        <div class="goal-arrow">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Goals Step -->
+        <div v-if="currentStep === 5" class="step-container">
             <div class="content-section">
                 <h2 class="step-title">Set your daily goals</h2>
                 <p class="step-subtitle">Based on your profile, we recommend these targets</p>
@@ -317,15 +347,17 @@ import { updateUserProfile, updateDailyGoals, completeOnboarding } from '../stor
 const router = useRouter()
 
 const currentStep = ref(1)
-const totalSteps = 4
+const totalSteps = 5
 
 const userInfo = reactive({
     name: '',
+    email: '',
     age: null as number | null,
-    gender: '',
+    gender: '' as '' | 'male' | 'female',
     height: null as number | null,
     weight: null as number | null,
-    activityLevel: ''
+    activityLevel: '',
+    goal: ''
 })
 
 const goals = reactive({
@@ -368,6 +400,30 @@ const activityLevels = [
     }
 ]
 
+const goalOptions = [
+    {
+        value: 'lose',
+        icon: '📉',
+        name: 'Lose Weight',
+        description: 'Reduce body weight and body fat',
+        details: 'Target: 0.5-1kg per week'
+    },
+    {
+        value: 'maintain',
+        icon: '⚖️',
+        name: 'Maintain Weight',
+        description: 'Keep current weight and body composition',
+        details: 'Focus on balanced nutrition'
+    },
+    {
+        value: 'gain',
+        icon: '📈',
+        name: 'Gain Weight',
+        description: 'Build muscle mass and strength',
+        details: 'Target: 0.25-0.5kg per week'
+    }
+]
+
 const canProceed = computed(() => {
     switch (currentStep.value) {
         case 1:
@@ -377,6 +433,8 @@ const canProceed = computed(() => {
         case 3:
             return userInfo.activityLevel
         case 4:
+            return userInfo.goal
+        case 5:
             return true
         default:
             return false
@@ -406,7 +464,15 @@ function calculateRecommendedCalories() {
     }
 
     const multiplier = activityMultipliers[userInfo.activityLevel as keyof typeof activityMultipliers]
-    const recommendedCalories = Math.round(bmr * multiplier)
+    let recommendedCalories = Math.round(bmr * multiplier)
+
+    // Adjust calories based on goal
+    if (userInfo.goal === 'lose') {
+        recommendedCalories -= 500 // 500 calorie deficit for weight loss
+    } else if (userInfo.goal === 'gain') {
+        recommendedCalories += 300 // 300 calorie surplus for weight gain
+    }
+    // 'maintain' keeps the calculated TDEE
 
     goals.calories = recommendedCalories
     goals.protein = Math.round(userInfo.weight * 1.6) // 1.6g per kg body weight
@@ -415,7 +481,7 @@ function calculateRecommendedCalories() {
 }
 
 function nextStep() {
-    if (currentStep.value === 3) {
+    if (currentStep.value === 4) {
         calculateRecommendedCalories()
     }
     
@@ -851,6 +917,78 @@ async function finishOnboarding() {
 
 .nav-button.secondary:hover {
     background: rgba(255, 255, 255, 0.15);
+}
+
+/* Goal Options Styling */
+.goal-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.goal-option {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.goal-option:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+}
+
+.goal-option.active {
+    background: rgba(0, 112, 82, 0.2);
+    border-color: #007052;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 112, 82, 0.2);
+}
+
+.goal-icon-large {
+    font-size: 3rem;
+    width: 60px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.goal-content {
+    flex: 1;
+}
+
+.goal-name {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    color: white;
+}
+
+.goal-description {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0 0 0.5rem 0;
+}
+
+.goal-details {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-style: italic;
+}
+
+.goal-arrow {
+    color: rgba(255, 255, 255, 0.4);
+    transition: all 0.3s ease;
+}
+
+.goal-option.active .goal-arrow {
+    color: #007052;
+    transform: translateX(4px);
 }
 
 @media (max-width: 480px) {

@@ -224,10 +224,34 @@ export class StreakManager {
       await Storage.set(this.STREAK_KEY, newStreak);
       await Storage.set(this.LAST_LOGGED_DATE_KEY, today);
 
+      // Update longest streak if needed
+      await this.updateLongestStreak(newStreak);
+
       return newStreak;
     } catch (error) {
       console.error('Error updating streak:', error);
       return 0;
+    }
+  }
+
+  // Get longest streak
+  static async getLongestStreak(): Promise<number> {
+    try {
+      return await Storage.get('longestStreak') || 0;
+    } catch {
+      return 0;
+    }
+  }
+
+  // Update longest streak if current is higher
+  static async updateLongestStreak(currentStreak: number): Promise<void> {
+    try {
+      const longestStreak = await this.getLongestStreak();
+      if (currentStreak > longestStreak) {
+        await Storage.set('longestStreak', currentStreak);
+      }
+    } catch (error) {
+      console.error('Error updating longest streak:', error);
     }
   }
 

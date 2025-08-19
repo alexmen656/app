@@ -117,7 +117,9 @@
     "activity": "Activity Level",
     "goal": "Goal",
     "continue": "Continue",
-    "finish": "Finish"
+    "finish": "Finish",
+    "whatIsYourGoal": "What is your goal?",
+    "goalSubtitle": "Choose your main goal so we can optimize your nutrition plan"
   },
   "common": {
     "save": "Save",
@@ -133,5 +135,108 @@
     "success": "Success",
     "close": "Close",
     "calculate": "Recalculate"
+  },
+  "streak": {
+    "title": "Streak Details",
+    "daysStreak": "Days Streak",
+    "days": "Days",
+    "nextMilestone": "Next Milestone",
+    "achievements": "Achievements",
+    "history": "History",
+    "stats": "Statistics",
+    "totalDaysLogged": "Total Days Logged",
+    "longestStreak": "Longest Streak",
+    "avgCalories": "Avg Calories",
+    "messages": {
+      "start": "Start your journey!",
+      "beginning": "Great start! Keep going!",
+      "building": "Building a strong habit!",
+      "strong": "Incredible consistency!",
+      "incredible": "You're a master of consistency!"
+    },
+    "achievementsList": {
+      "starter": "Starter",
+      "consistent": "Consistent",
+      "dedicated": "Dedicated",
+      "unstoppable": "Unstoppable",
+      "legendary": "Legendary"
+    },
+    "rewards": {
+      "week": "One week of consistency!",
+      "twoWeeks": "Two weeks strong!",
+      "month": "A full month!",
+      "fiftyDays": "50 days of dedication!",
+      "hundred": "100 days of mastery!",
+      "twoHundred": "200 days of excellence!",
+      "year": "A full year!",
+      "master": "Absolute master!"
+    },
+    "quotes": {
+      "consistency": "Consistency is the key to success.",
+      "progress": "Progress, not perfection.",
+      "journey": "The journey is the destination.",
+      "habits": "Habits shape your life.",
+      "discipline": "Discipline leads to freedom."
+    }
+  },
+  "profile": {
+    "editTitle": "Edit Profile",
+    "editGreeting": "Update your information",
+    "basicInfo": "Basic Information",
+    "physicalInfo": "Physical Data",
+    "name": "Name",
+    "email": "Email",
+    "age": "Age",
+    "gender": "Gender",
+    "height": "Height",
+    "weight": "Weight",
+    "activityLevel": "Activity Level",
+    "goals": "Goals",
+    "calculatedGoals": "Calculated Goals",
+    "namePlaceholder": "Your name",
+    "emailPlaceholder": "your.email@example.com",
+    "agePlaceholder": "25",
+    "heightPlaceholder": "170",
+    "weightPlaceholder": "70",
+    "male": "Male",
+    "female": "Female",
+    "savedSuccessfully": "Profile saved successfully!",
+    "saveError": "Error saving profile",
+    "activityLevels": {
+      "sedentary": {
+        "name": "Sedentary",
+        "description": "Little or no exercise"
+      },
+      "light": {
+        "name": "Lightly active",
+        "description": "Light exercise 1-3 days/week"
+      },
+      "moderate": {
+        "name": "Moderately active",
+        "description": "Moderate exercise 3-5 days/week"
+      },
+      "active": {
+        "name": "Active",
+        "description": "Hard exercise 6-7 days/week"
+      },
+      "veryActive": {
+        "name": "Very active",
+        "description": "Very hard exercise, physical job"
+      }
+    },
+    "goalOptions": {
+      "lose": {
+        "name": "Lose weight",
+        "description": "Reduce body weight"
+      },
+      "maintain": {
+        "name": "Maintain",
+        "description": "Keep current weight"
+      },
+      "gain": {
+        "name": "Gain weight",
+        "description": "Build weight and muscle"
+      }
+    }
   }
 }

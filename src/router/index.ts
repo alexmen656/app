@@ -6,6 +6,8 @@ import ScanView from "../views/ScanView.vue";
 import NutritionView from "../views/NutritionView.vue";
 import AnalyticsView from "../views/AnalyticsView.vue";
 import SettingsView from "../views/SettingsView.vue";
+import StreakView from "../views/StreakView.vue";
+import ProfileEditView from "../views/ProfileEditView.vue";
 
 const routes = [
   {
@@ -42,6 +44,16 @@ const routes = [
     path: "/nutrition",
     name: "Nutrition",
     component: NutritionView,
+  },
+  {
+    path: "/streak",
+    name: "Streak",
+    component: StreakView,
+  },
+  {
+    path: "/profile/edit",
+    name: "ProfileEdit",
+    component: ProfileEditView,
   },
 ];
 

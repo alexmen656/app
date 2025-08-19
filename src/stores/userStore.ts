@@ -5,10 +5,11 @@ interface UserProfile {
   name: string
   email: string
   age: number | null
-  gender: string
+  gender: 'male' | 'female' | ''
   height: number | null
   weight: number | null
   activityLevel: string
+  goal?: string
 }
 
 interface DailyGoals {
@@ -33,7 +34,8 @@ const defaultUserProfile: UserProfile = {
   gender: '',
   height: null,
   weight: null,
-  activityLevel: ''
+  activityLevel: '',
+  goal: ''
 }
 
 const defaultGoals: DailyGoals = {
