@@ -194,7 +194,7 @@
     "goals": "Ziele",
     "calculatedGoals": "Berechnete Ziele",
     "namePlaceholder": "Ihr Name",
-    "emailPlaceholder": "ihre.email@beispiel.com",
+    "emailPlaceholder": "ihre.email{'@'}beispiel.com",
     "agePlaceholder": "25",
     "heightPlaceholder": "170",
     "weightPlaceholder": "70",

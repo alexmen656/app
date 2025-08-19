@@ -4,7 +4,7 @@
     <header class="header">
       <button @click="goBack" class="back-button">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.42-1.41L7.83 13H20v-2z"/>
+          <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.42-1.41L7.83 13H20v-2z" />
         </svg>
       </button>
       <h1 class="title">{{ $t('streak.title') }}</h1>
@@ -21,14 +21,15 @@
               <stop offset="100%" style="stop-color:#ff4757;stop-opacity:1" />
             </linearGradient>
           </defs>
-          <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z"/>
+          <path
+            d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z" />
         </svg>
       </div>
       <div class="streak-number" ref="streakCounter">
         {{ displayStreak }}
       </div>
       <div class="streak-label">{{ $t('streak.daysStreak') }}</div>
-      
+
       <div class="streak-message">
         {{ getStreakMessage() }}
       </div>
@@ -57,12 +58,8 @@
     <div class="achievements-section">
       <h3 class="section-title">{{ $t('streak.achievements') }}</h3>
       <div class="achievements-grid">
-        <div 
-          v-for="achievement in achievements" 
-          :key="achievement.id"
-          class="achievement-badge"
-          :class="{ 'earned': achievement.earned, 'locked': !achievement.earned }"
-        >
+        <div v-for="achievement in achievements" :key="achievement.id" class="achievement-badge"
+          :class="{ 'earned': achievement.earned, 'locked': !achievement.earned }">
           <div class="badge-icon">{{ achievement.icon }}</div>
           <div class="badge-name">{{ achievement.name }}</div>
           <div class="badge-requirement">{{ achievement.requirement }}</div>
@@ -74,16 +71,12 @@
     <div class="history-section">
       <h3 class="section-title">{{ $t('streak.history') }}</h3>
       <div class="history-calendar">
-        <div 
-          v-for="day in last30Days" 
-          :key="day.date"
-          class="calendar-day"
-          :class="{ 'active': day.hasLog, 'today': day.isToday }"
-        >
+        <div v-for="day in last30Days" :key="day.date" class="calendar-day"
+          :class="{ 'active': day.hasLog, 'today': day.isToday }">
           <div class="day-number">{{ day.dayNumber }}</div>
           <div class="day-indicator">
             <svg v-if="day.hasLog" width="16" height="16" viewBox="0 0 24 24" fill="#007052">
-              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
             </svg>
           </div>
         </div>
@@ -140,7 +133,7 @@ const displayStreak = ref(0)
 const countUp = (target: number) => {
   let current = 0
   const increment = target / 60 // Animate over 1 second (60 frames)
-  
+
   const animate = () => {
     current += increment
     if (current < target) {
@@ -150,7 +143,7 @@ const countUp = (target: number) => {
       displayStreak.value = target
     }
   }
-  
+
   animate()
 }
 
@@ -164,11 +157,11 @@ async function loadStreakData() {
   try {
     currentStreak.value = await StreakManager.getCurrentStreak()
     longestStreak.value = await StreakManager.getLongestStreak()
-    
+
     // Load scan history for stats
     const history = await ScanHistory.get()
     totalLogged.value = history.length
-    
+
     if (history.length > 0) {
       const totalCals = history.reduce((sum, scan) => {
         if (scan.type === 'food') {
@@ -196,9 +189,9 @@ const nextMilestone = computed(() => {
 })
 
 const milestoneProgress = computed(() => {
-  const previous = currentStreak.value === 0 ? 0 : 
+  const previous = currentStreak.value === 0 ? 0 :
     [0, 7, 14, 30, 50, 100, 200, 365].filter(m => m < currentStreak.value).pop() || 0
-  
+
   return ((currentStreak.value - previous) / (nextMilestone.value - previous)) * 100
 })
 
@@ -245,11 +238,11 @@ const achievements = computed(() => [
 const last30Days = computed(() => {
   const days = []
   const today = new Date()
-  
+
   for (let i = 29; i >= 0; i--) {
     const date = new Date(today)
     date.setDate(date.getDate() - i)
-    
+
     days.push({
       date: date.toISOString().split('T')[0],
       dayNumber: date.getDate(),
@@ -257,7 +250,7 @@ const last30Days = computed(() => {
       hasLog: i < currentStreak.value // Simplified - could be improved with actual history
     })
   }
-  
+
   return days
 })
 
@@ -311,7 +304,7 @@ function getMotivationalQuote() {
     t('streak.quotes.habits'),
     t('streak.quotes.discipline')
   ]
-  
+
   // Use streak count to pick quote for consistency
   return quotes[currentStreak.value % quotes.length]
 }
@@ -322,7 +315,9 @@ function getMotivationalQuote() {
   min-height: 100vh;
   background: linear-gradient(135deg, #1a1d26 0%, #2a2d37 100%);
   color: white;
-  padding-bottom: 2rem;
+  padding: 16px;
+  padding-top: max(44px, env(safe-area-inset-top, 44px));
+  padding-bottom: max(80px, calc(80px + env(safe-area-inset-bottom, 0px)));
 }
 
 .header {
@@ -359,7 +354,7 @@ function getMotivationalQuote() {
 .streak-hero {
   text-align: center;
   padding: 2rem 1rem;
-  margin: 1rem;
+/*  margin: 1rem;*/
   background: rgba(255, 255, 255, 0.05);
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -371,8 +366,13 @@ function getMotivationalQuote() {
 }
 
 @keyframes flicker {
-  0% { transform: scale(1) rotate(-2deg); }
-  100% { transform: scale(1.05) rotate(2deg); }
+  0% {
+    transform: scale(1) rotate(-2deg);
+  }
+
+  100% {
+    transform: scale(1.05) rotate(2deg);
+  }
 }
 
 .streak-number {
@@ -406,8 +406,12 @@ function getMotivationalQuote() {
   color: rgba(255, 255, 255, 0.9);
 }
 
-.milestone-section, .achievements-section, .history-section, .stats-section, .motivation-section {
-  margin: 1rem;
+.milestone-section,
+.achievements-section,
+.history-section,
+.stats-section,
+.motivation-section {
+/*  margin: 1rem;*/
 }
 
 .milestone-card {

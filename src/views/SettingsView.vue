@@ -29,16 +29,16 @@
 
     <!-- Goals Section -->
     <div class="settings-section">
-      <div class="section-header">
+      <!--<div class="section-header">-->
         <h3 class="section-title">{{ $t('settings.dailyGoals') }}</h3>
-        <button @click="recalculateGoals" class="recalculate-button">
+       <!--<button @click="recalculateGoals" class="recalculate-button">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
             <path
               d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z" />
           </svg>
           {{ $t('common.calculate') }}
-        </button>
-      </div>
+        </button>--> 
+     <!-- </div>-->
       <div class="settings-card">
         <div class="setting-item">
           <label class="setting-label">{{ $t('nutrition.calories') }} Goal</label>
@@ -75,7 +75,7 @@
     </div>
 
     <!-- Goal Selection Section -->
-    <div class="settings-section">
+  <!--  <div class="settings-section">
       <h3 class="section-title">{{ $t('settings.primaryGoal') }}</h3>
       <div class="settings-card">
         <div class="goal-selection">
@@ -94,7 +94,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div>-->
 
     <!-- Language Section -->
     <div class="settings-section">
@@ -299,21 +299,21 @@
 <script setup lang="ts">
 import { computed, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
+//import { useI18n } from 'vue-i18n'
 import {
   userProfile,
   dailyGoals,
   userPreferences,
   updateDailyGoals,
-  updateUserProfile,
+  //updateUserProfile,
   resetOnboarding,
-  calculateRecommendedMacros
+  //calculateRecommendedMacros
 } from '../stores/userStore'
 import { BarcodeCache, ScanHistory } from '../utils/storage'
 import { setLanguage, getCurrentLanguage } from '../i18n'
 
 const router = useRouter()
-const { t } = useI18n()
+//const { t } = useI18n()
 
 // Language functionality
 const currentLanguage = ref(getCurrentLanguage())
@@ -326,9 +326,9 @@ const changeLanguage = (event: Event) => {
 }
 
 // Goal management
-const currentGoal = ref(userProfile.goal || 'maintain')
+//const currentGoal = ref(userProfile.goal || 'maintain')
 
-const goalOptions = computed(() => [
+/*const goalOptions = computed(() => [
   {
     value: 'lose',
     icon: '📉',
@@ -347,9 +347,9 @@ const goalOptions = computed(() => [
     name: t('profile.goalOptions.gain.name'),
     description: t('profile.goalOptions.gain.description')
   }
-])
+])*/
 
-async function updateGoal(newGoal: string) {
+/*async function updateGoal(newGoal: string) {
   currentGoal.value = newGoal
   try {
     await updateUserProfile({ ...userProfile, goal: newGoal })
@@ -365,7 +365,7 @@ async function updateGoal(newGoal: string) {
   } catch (error) {
     console.error('Error updating goal:', error)
   }
-}
+}*/
 
 // Debug state
 const showDebugInfo = ref(false)
@@ -407,7 +407,7 @@ function savePreferences() {
   // Preferences are automatically saved via the store
 }
 
-async function recalculateGoals() {
+/*async function recalculateGoals() {
   if (userProfile.weight && userProfile.height && userProfile.age && userProfile.gender && userProfile.activityLevel) {
     const recommended = calculateRecommendedMacros(userProfile)
     await updateDailyGoals(recommended)
@@ -415,7 +415,7 @@ async function recalculateGoals() {
   } else {
     alert('Please complete your profile first to get personalized recommendations.')
   }
-}
+}*/
 
 async function exportData() {
   try {

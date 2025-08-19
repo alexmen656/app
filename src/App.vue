@@ -40,7 +40,9 @@ const navigationFlow = {
   },
   '/onboarding': { position: -1 },
   '/scan': { position: -1 },
-  '/nutrition': { position: -1 }
+  '/nutrition': { position: -1 },
+  '/streak': { position: -1 },
+  '/profile/edit': { position: -1 }
 }
 
 function getTransitionName(route: any) {
