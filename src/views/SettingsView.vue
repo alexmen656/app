@@ -386,11 +386,20 @@ onMounted(() => {
   }
 })
 
-// Use computed to display current user data
-const displayProfile = computed(() => ({
-  name: userProfile.name || 'Set up profile',
-  email: userProfile.email || 'Add email address'
-}))
+// Use computed to display current user data with truncated name
+function truncateName(name?: string, max = 20): string {
+  const s = name || ''
+  return s.length > max ? s.slice(0, max) + '...' : s
+}
+
+const displayProfile = computed(() => {
+  const rawName = userProfile.name || 'Set up profile'
+  const rawEmail = userProfile.email || 'Add email address'
+  return {
+    name: truncateName(rawName, 20),
+    email: truncateName(rawEmail, 24)
+  }
+})
 
 function editProfile() {
   // Navigate to profile edit view instead of onboarding

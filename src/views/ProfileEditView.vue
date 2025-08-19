@@ -304,7 +304,7 @@ const goals = computed(() => [
 
 // Form validation
 const isValid = computed(() => {
-  return form.value.name.trim().length > 0 &&
+  return form.value.name.trim().length > 0 && form.value.name.trim().length < 120 &&
          form.value.age >= 10 && form.value.age <= 120 &&
          form.value.height >= 100 && form.value.height <= 250 &&
          form.value.weight >= 30 && form.value.weight <= 300 &&
@@ -362,7 +362,8 @@ async function saveProfile() {
   min-height: 100vh;
   background: linear-gradient(135deg, #1a1d26 0%, #2a2d37 100%);
   color: white;
-  padding-bottom: 2rem;
+  padding-top: max(44px, env(safe-area-inset-top, 44px));
+  padding-bottom: max(80px, calc(80px + env(safe-area-inset-bottom, 0px)));
 }
 
 .header {

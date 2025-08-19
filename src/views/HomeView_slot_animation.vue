@@ -27,7 +27,7 @@
         <!-- Main Calories Card -->
         <div class="main-card">
             <div class="calories-section">
-                <h2 class="calories-number">{{ caloriesLeft }}</h2>
+                <h2 class="calories-number" ref="caloriesNumberEl">{{ caloriesLeft }}</h2>
                 <p class="calories-label">{{ $t('home.caloriesLeft') }}</p>
             </div>
             <div class="progress-ring">
@@ -49,7 +49,7 @@
         <!-- Macros Grid -->
         <div class="macros-grid">
             <div class="macro-card protein">
-                <div class="macro-amount">{{ proteinLeft }}g</div>
+                <div class="macro-amount" ref="proteinAmountEl">{{ proteinLeft }}g</div>
                 <div class="macro-label">{{ $t('home.proteinLeft') }}</div>
                 <div class="macro-progress">
                     <svg width="60" height="60" viewBox="0 0 60 60">
@@ -70,7 +70,7 @@
             </div>
 
             <div class="macro-card carbs">
-                <div class="macro-amount">{{ carbsLeft }}g</div>
+                <div class="macro-amount" ref="carbsAmountEl">{{ carbsLeft }}g</div>
                 <div class="macro-label">{{ $t('home.carbsLeft') }}</div>
                 <div class="macro-progress">
                     <svg width="60" height="60" viewBox="0 0 60 60">
@@ -91,7 +91,7 @@
             </div>
 
             <div class="macro-card fats">
-                <div class="macro-amount">{{ fatsLeft }}g</div>
+                <div class="macro-amount" ref="fatsAmountEl">{{ fatsLeft }}g</div>
                 <div class="macro-label">{{ $t('home.fatsLeft') }}</div>
                 <div class="macro-progress">
                     <svg width="60" height="60" viewBox="0 0 60 60">
@@ -204,6 +204,7 @@ import { useI18n } from 'vue-i18n'
 import { dailyGoals, isOnboardingCompleted, storeReady } from '../stores/userStore'
 import { ScanHistory } from '../utils/storage'
 import { WidgetDataManager, StreakManager } from '../utils/widgetData'
+import { SlotCounterAnimation } from '../utils/slotAnimation'
 
 const router = useRouter()
 const { t } = useI18n()
@@ -294,11 +295,24 @@ const consumedFats = computed(() => {
 const scanHistory = ref<ScanData[]>([])
 const currentStreak = ref<number>(0)
 
+// Refs for animated elements
+const caloriesNumberEl = ref<HTMLElement>()
+const proteinAmountEl = ref<HTMLElement>()
+const carbsAmountEl = ref<HTMLElement>()
+const fatsAmountEl = ref<HTMLElement>()
+
+// Animation state
+const isAnimating = ref(false)
+const lastValues = ref({ calories: 0, protein: 0, carbs: 0, fats: 0 })
+
 // Load scan history from Capacitor Preferences
 async function loadScanHistory() {
     try {
         const history = await ScanHistory.get()
         scanHistory.value = history.slice(0, 10) // Show only last 10 items
+        
+        // Trigger animations if values changed
+        await triggerAnimations()
         
         // Update widget data when scan history changes
         await WidgetDataManager.updateWidgetData()
@@ -306,6 +320,55 @@ async function loadScanHistory() {
         console.error('Error loading scan history:', error)
         scanHistory.value = []
     }
+}
+
+// Trigger slot machine animations when values change
+async function triggerAnimations() {
+    if (isAnimating.value) return
+    
+    const newValues = {
+        calories: caloriesLeft.value,
+        protein: proteinLeft.value,
+        carbs: carbsLeft.value,
+        fats: fatsLeft.value
+    }
+    
+    // Check if any values changed significantly (more than 10 calories or 2g)
+    const hasSignificantChange = 
+        Math.abs(newValues.calories - lastValues.value.calories) > 10 ||
+        Math.abs(newValues.protein - lastValues.value.protein) > 2 ||
+        Math.abs(newValues.carbs - lastValues.value.carbs) > 2 ||
+        Math.abs(newValues.fats - lastValues.value.fats) > 2
+    
+    if (hasSignificantChange) {
+        isAnimating.value = true
+        
+        // Run animations in parallel
+        const animations: Promise<void>[] = []
+        
+        if (caloriesNumberEl.value && Math.abs(newValues.calories - lastValues.value.calories) > 10) {
+            animations.push(SlotCounterAnimation.animateElement(caloriesNumberEl.value, Math.abs(newValues.calories), 1500))
+        }
+        
+        if (proteinAmountEl.value && Math.abs(newValues.protein - lastValues.value.protein) > 2) {
+            animations.push(SlotCounterAnimation.animateElement(proteinAmountEl.value, Math.abs(newValues.protein), 1200))
+        }
+        
+        if (carbsAmountEl.value && Math.abs(newValues.carbs - lastValues.value.carbs) > 2) {
+            animations.push(SlotCounterAnimation.animateElement(carbsAmountEl.value, Math.abs(newValues.carbs), 1200))
+        }
+        
+        if (fatsAmountEl.value && Math.abs(newValues.fats - lastValues.value.fats) > 2) {
+            animations.push(SlotCounterAnimation.animateElement(fatsAmountEl.value, Math.abs(newValues.fats), 1200))
+        }
+        
+        // Wait for all animations to complete
+        await Promise.all(animations)
+        
+        isAnimating.value = false
+    }
+    
+    lastValues.value = newValues
 }
 
 // Load current streak
@@ -479,6 +542,17 @@ function handleTouchEnd(event: TouchEvent) {
     background: rgba(255, 255, 255, 0.1);
     padding: 8px 12px;
     border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.streak:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(1.05);
+}
+
+.streak:active {
+    transform: scale(0.98);
 }
 
 .date-toggle {
