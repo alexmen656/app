@@ -11,10 +11,11 @@
                                     stroke-linejoin="round" />
                             </svg>
                         </button>
-                        <button class="nutrition-menu">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M12 12H12.01M12 6H12.01M12 18H12.01" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round" />
+                        <button class="nutrition-menu" @click="showDetailsModal = true">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <circle cx="12" cy="12" r="2"/>
+                                <circle cx="12" cy="5" r="2"/>
+                                <circle cx="12" cy="19" r="2"/>
                             </svg>
                         </button>
                     </div>
@@ -122,7 +123,7 @@
                 
                 <!-- Additional Nutrition Information -->
                 <div v-if="hasAdditionalNutrition" class="nutrition-additional">
-                    <h3>Additional Nutrition</h3>
+                    <h3>Zusätzliche Nährstoffe</h3>
                     <div class="additional-grid">
                         <div v-if="product.fiber > 0" class="additional-item">
                             <div class="additional-icon">
@@ -131,7 +132,7 @@
                                 </svg>
                             </div>
                             <div class="additional-info">
-                                <div class="additional-label">Fiber</div>
+                                <div class="additional-label">Ballaststoffe</div>
                                 <div class="additional-value">{{ Math.round(product.fiber * amount) }}g</div>
                             </div>
                         </div>
@@ -142,20 +143,8 @@
                                 </svg>
                             </div>
                             <div class="additional-info">
-                                <div class="additional-label">Sugar</div>
+                                <div class="additional-label">Zucker</div>
                                 <div class="additional-value">{{ Math.round(product.sugar * amount) }}g</div>
-                            </div>
-                        </div>
-                        <div v-if="product.salt > 0" class="additional-item">
-                            <div class="additional-icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="#64748b">
-                                    <circle cx="12" cy="12" r="10"/>
-                                    <path d="M16.2 7.8l-2 6.3-6.3 2 2-6.3 6.3-2z"/>
-                                </svg>
-                            </div>
-                            <div class="additional-info">
-                                <div class="additional-label">Salt</div>
-                                <div class="additional-value">{{ Math.round(product.salt * amount * 100) / 100 }}g</div>
                             </div>
                         </div>
                     </div>
@@ -235,6 +224,149 @@
             <span>Loading...</span>
         </div>
 
+        <!-- Details Modal -->
+        <div v-if="showDetailsModal" class="modal-overlay" @click="showDetailsModal = false">
+            <div class="details-modal" @click.stop>
+                <div class="details-header">
+                    <h3>Alle Nährstoffinformationen</h3>
+                    <button @click="showDetailsModal = false" class="close-btn">×</button>
+                </div>
+                <div class="details-content">
+                    <!-- Main Nutrition Values -->
+                    <div class="details-section">
+                        <h4>Hauptnährstoffe ({{ amount }}x Portion)</h4>
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <span class="detail-label">Kalorien</span>
+                                <span class="detail-value">{{ Math.round(product.calories * amount) }} kcal</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Protein</span>
+                                <span class="detail-value">{{ Math.round(product.protein * amount) }}g</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Kohlenhydrate</span>
+                                <span class="detail-value">{{ Math.round(product.carbs * amount) }}g</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Fett</span>
+                                <span class="detail-value">{{ Math.round(product.fats * amount) }}g</span>
+                            </div>
+                            <div v-if="product.fiber > 0" class="detail-item">
+                                <span class="detail-label">Ballaststoffe</span>
+                                <span class="detail-value">{{ Math.round(product.fiber * amount) }}g</span>
+                            </div>
+                            <div v-if="product.sugar > 0" class="detail-item">
+                                <span class="detail-label">Zucker</span>
+                                <span class="detail-value">{{ Math.round(product.sugar * amount) }}g</span>
+                            </div>
+                            <div v-if="product.salt > 0" class="detail-item">
+                                <span class="detail-label">Salz</span>
+                                <span class="detail-value">{{ Math.round(product.salt * amount * 100) / 100 }}g</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Per 100g Values -->
+                    <div v-if="product.nutritionPer100g" class="details-section">
+                        <h4>Pro 100g</h4>
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <span class="detail-label">Kalorien</span>
+                                <span class="detail-value">{{ product.nutritionPer100g.calories || 0 }} kcal</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Protein</span>
+                                <span class="detail-value">{{ product.nutritionPer100g.protein || 0 }}g</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Kohlenhydrate</span>
+                                <span class="detail-value">{{ product.nutritionPer100g.carbs || 0 }}g</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Fett</span>
+                                <span class="detail-value">{{ product.nutritionPer100g.fats || 0 }}g</span>
+                            </div>
+                            <div v-if="product.nutritionPer100g.fiber > 0" class="detail-item">
+                                <span class="detail-label">Ballaststoffe</span>
+                                <span class="detail-value">{{ product.nutritionPer100g.fiber }}g</span>
+                            </div>
+                            <div v-if="product.nutritionPer100g.sugar > 0" class="detail-item">
+                                <span class="detail-label">Zucker</span>
+                                <span class="detail-value">{{ product.nutritionPer100g.sugar }}g</span>
+                            </div>
+                            <div v-if="product.nutritionPer100g.salt > 0" class="detail-item">
+                                <span class="detail-label">Salz</span>
+                                <span class="detail-value">{{ product.nutritionPer100g.salt }}g</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Per Serving Values -->
+                    <div v-if="product.nutritionPerServing" class="details-section">
+                        <h4>Pro Portion ({{ product.servingSize }}{{ product.servingUnit }})</h4>
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <span class="detail-label">Kalorien</span>
+                                <span class="detail-value">{{ product.nutritionPerServing.calories || 0 }} kcal</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Protein</span>
+                                <span class="detail-value">{{ product.nutritionPerServing.protein || 0 }}g</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Kohlenhydrate</span>
+                                <span class="detail-value">{{ product.nutritionPerServing.carbs || 0 }}g</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Fett</span>
+                                <span class="detail-value">{{ product.nutritionPerServing.fats || 0 }}g</span>
+                            </div>
+                            <div v-if="product.nutritionPerServing.fiber > 0" class="detail-item">
+                                <span class="detail-label">Ballaststoffe</span>
+                                <span class="detail-value">{{ product.nutritionPerServing.fiber }}g</span>
+                            </div>
+                            <div v-if="product.nutritionPerServing.sugar > 0" class="detail-item">
+                                <span class="detail-label">Zucker</span>
+                                <span class="detail-value">{{ product.nutritionPerServing.sugar }}g</span>
+                            </div>
+                            <div v-if="product.nutritionPerServing.salt > 0" class="detail-item">
+                                <span class="detail-label">Salz</span>
+                                <span class="detail-value">{{ product.nutritionPerServing.salt }}g</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product Information -->
+                    <div class="details-section">
+                        <h4>Produktinformationen</h4>
+                        <div class="product-details">
+                            <div v-if="product.brand" class="product-detail">
+                                <span class="detail-label">Marke</span>
+                                <span class="detail-value">{{ product.brand }}</span>
+                            </div>
+                            <div v-if="product.packageSize" class="product-detail">
+                                <span class="detail-label">Packungsgröße</span>
+                                <span class="detail-value">{{ product.packageSize }}</span>
+                            </div>
+                            <div v-if="product.barcode" class="product-detail">
+                                <span class="detail-label">Barcode</span>
+                                <span class="detail-value">{{ product.barcode }}</span>
+                            </div>
+                            <div class="product-detail">
+                                <span class="detail-label">Health Score</span>
+                                <span class="detail-value">{{ product.healthScore }}/10</span>
+                            </div>
+                            <div class="product-detail">
+                                <span class="detail-label">Quelle</span>
+                                <span class="detail-value">{{ product.source }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Fix Modal -->
         <div v-if="showFixModal" class="modal-overlay" @click="showFixModal = false">
             <div class="modal" @click.stop>
@@ -293,6 +425,7 @@ const router = useRouter();
 const product = ref(null);
 const amount = ref(1);
 const showFixModal = ref(false);
+const showDetailsModal = ref(false);
 const editedProduct = ref({});
 const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -1364,6 +1497,151 @@ async function saveAndReturn() {
 
     .nutrition-serving {
         font-size: 12px;
+    }
+}
+
+/* Details Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+}
+
+.details-modal {
+    background: #1a1a1a;
+    border-radius: 24px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+.details-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 24px 0;
+    border-bottom: 1px solid #333;
+    margin-bottom: 20px;
+}
+
+.details-header h3 {
+    color: #00ff8c;
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+    background: #333;
+    color: #fff;
+}
+
+.details-content {
+    max-height: calc(80vh - 100px);
+    overflow-y: auto;
+    padding: 0 24px 24px;
+}
+
+.details-section {
+    margin-bottom: 32px;
+}
+
+.details-section h4 {
+    color: #00ff8c;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 16px 0;
+    border-bottom: 1px solid #333;
+    padding-bottom: 8px;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+.detail-item {
+    background: #2a2a2a;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.detail-label {
+    color: #999;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.detail-value {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.product-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.product-detail {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: #2a2a2a;
+    border-radius: 12px;
+}
+
+@media (max-width: 768px) {
+    .modal-overlay {
+        padding: 10px;
+    }
+    
+    .details-modal {
+        max-height: 90vh;
+    }
+    
+    .details-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .details-header {
+        padding: 20px 20px 0;
+    }
+    
+    .details-content {
+        padding: 0 20px 20px;
     }
 }
 </style>
