@@ -25,11 +25,11 @@
                 <div class="nutrition-time">{{ time }}</div>
                 <div class="product-header">
                     <div class="product-info">
-                        <h1 class="nutrition-name">{{ product.name }}</h1>
-                        <div v-if="product.brand" class="nutrition-brand">{{ product.brand }}</div>
+                        <h1 class="nutrition-name">{{ capitalizeIfLetter(product.name) }}</h1>
+                        <!--<div v-if="product.brand" class="nutrition-brand">{{ product.brand }}</div>-->
                         <div v-if="product.servingSize && product.servingUnit" class="nutrition-serving">
                             Serving: {{ product.servingSize }}{{ product.servingUnit }}
-                            <span v-if="product.packageSize" class="package-size">({{ product.packageSize }})</span>
+                            <!--<span v-if="product.packageSize" class="package-size">({{ product.packageSize }})</span>-->
                         </div>
                     </div>
                     <div class="nutrition-amount">
@@ -429,6 +429,13 @@ const showDetailsModal = ref(false);
 const editedProduct = ref({});
 const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
+function capitalizeIfLetter(value) {
+  if (!value) return ''
+  return /^[a-zA-Z]/.test(value)
+    ? value.charAt(0).toUpperCase() + value.slice(1)
+    : value
+}
+
 const fetchProduct = async (barcode) => {
     try {
         // First check cache
@@ -777,7 +784,7 @@ async function saveAndReturn() {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    padding: 16px 16px 0 16px;
+    padding: 0 16px;
     position: absolute;
     top: env(safe-area-inset-top, 44px);
     left: 0;
@@ -895,6 +902,7 @@ async function saveAndReturn() {
     cursor: pointer;
     transition: all 0.2s ease;
     color: #333;
+    line-height: 5px;
 }
 
 .amount-btn:hover {
