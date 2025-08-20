@@ -29,7 +29,7 @@
     <!-- Mode selector -->
     <div class="mode-selector">
       <div class="mode-tabs">
-                <button class="mode-tab" :class="{ active: mode === 'barcode' }" @click="mode = 'barcode'">
+        <button class="mode-tab" :class="{ active: mode === 'barcode' }" @click="mode = 'barcode'">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
             <rect x="3" y="6" width="18" height="2" fill="currentColor" />
             <rect x="3" y="10" width="10" height="1" fill="currentColor" />
@@ -197,28 +197,28 @@ const setupCamera = async (facing = 'environment') => {
 
 const switchCamera = async () => {
   if (isSwitchingCamera) return; // Verhindert mehrfache gleichzeitige Wechsel
-  
+
   isSwitchingCamera = true;
   console.log('Switching camera from:', cameraFacing.value);
-  
+
   try {
     // Erst die Kamera komplett stoppen
     stopCamera();
-    
+
     // Warte länger, damit die Kamera vollständig gestoppt wird
     await new Promise(resolve => setTimeout(resolve, 300));
-    
+
     // Wechsel zwischen Front- und Rückkamera
     const newFacing = cameraFacing.value === 'environment' ? 'user' : 'environment';
     cameraFacing.value = newFacing;
-    
+
     console.log('Switching camera to:', newFacing);
-    
+
     // Neue Kamera starten
     await setupCamera(newFacing);
-    
+
     console.log('Camera switched successfully to:', cameraFacing.value);
-    
+
   } catch (error) {
     console.error('Error switching camera:', error);
     // Bei Fehler versuche mit der ursprünglichen Kamera fortzufahren
@@ -238,7 +238,7 @@ const switchCamera = async () => {
 
 const stopCamera = () => {
   console.log('Stopping camera...');
-  
+
   // ZXing CodeReader stoppen
   if (codeReader && typeof codeReader.reset === 'function') {
     try {
@@ -248,7 +248,7 @@ const stopCamera = () => {
       console.error('Error resetting codeReader:', error);
     }
   }
-  
+
   // Video Stream stoppen
   if (videoStream) {
     try {
@@ -261,7 +261,7 @@ const stopCamera = () => {
       console.error('Error stopping video stream:', error);
     }
   }
-  
+
   // Video Element leeren
   const videoElement = document.getElementById('barcode-video');
   if (videoElement) {
@@ -272,7 +272,7 @@ const stopCamera = () => {
       console.error('Error clearing video element:', error);
     }
   }
-  
+
   console.log('Camera stopped completely');
 };
 
@@ -281,27 +281,27 @@ const analyzeFoodPhoto = async (photoDataUrl) => {
     // Convert data URL to blob
     const response = await fetch(photoDataUrl);
     const blob = await response.blob();
-    
+
     // Create form data
     const formData = new FormData();
     formData.append('image', blob, 'photo.jpg');
-    
+
     // Send to KaloriQ Food Analyze API
     const apiResponse = await fetch('https://kaloriq-api.vercel.app/api/food/analyze', {
       method: 'POST',
       body: formData
     });
-    
+
     if (!apiResponse.ok) {
       throw new Error(`API error: ${apiResponse.status}`);
     }
-    
+
     const data = await apiResponse.json();
-    
+
     if (!data.success || !data.data) {
       throw new Error('Food analysis failed');
     }
-    
+
     // Prepare food data for NutritionView
     const foodData = {
       foods: data.data.foods || [],
@@ -310,10 +310,10 @@ const analyzeFoodPhoto = async (photoDataUrl) => {
       notes: data.data.notes || '',
       timestamp: data.data.timestamp || new Date().toISOString()
     };
-    
+
     // Stop camera before navigation
     stopCamera();
-    
+
     // Navigate to NutritionView with food data
     router.push({
       name: 'Nutrition',
@@ -322,13 +322,13 @@ const analyzeFoodPhoto = async (photoDataUrl) => {
         photo: photoDataUrl
       }
     });
-    
+
   } catch (error) {
     console.error('Food analysis error:', error);
-    
+
     // Stop camera and navigate anyway with basic data
     stopCamera();
-    
+
     router.push({
       name: 'Nutrition',
       query: {

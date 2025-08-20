@@ -21,30 +21,8 @@
       </div>
     </div>
 
-    <!-- Native iOS Redemption (if available) -->
-    <div class="ios-redemption-section" v-if="isIOS">
-      <button @click="openAppleRedemption" class="apple-redemption-button" :disabled="isLoading">
-        <div class="apple-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-          </svg>
-        </div>
-        <div class="apple-text">
-          <span class="apple-title">{{ $t('coupon.redeemWithApple') }}</span>
-          <span class="apple-subtitle">{{ $t('coupon.appleSubtitle') }}</span>
-        </div>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="arrow-icon">
-          <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
-        </svg>
-      </button>
-    </div>
-
-    <!-- Manual Coupon Input Section -->
+    <!-- Coupon Input Section -->
     <div class="coupon-section">
-      <div class="section-divider" v-if="isIOS">
-        <span class="divider-text">{{ $t('coupon.orEnterManually') }}</span>
-      </div>
-      
       <div class="input-group">
         <label class="input-label">{{ $t('coupon.enterCode') }}</label>
         <div class="coupon-input-container">
@@ -144,8 +122,6 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { updateSubscriptionStatus } from '../stores/userStore'
-import { Capacitor } from '@capacitor/core'
-import { revenueCatService } from '../services/revenuecat'
 
 interface CouponOffer {
   id: string
@@ -164,9 +140,6 @@ const isLoading = ref(false)
 const successMessage = ref('')
 const errorMessage = ref('')
 const activeFaq = ref<number | null>(null)
-
-// Check if running on iOS
-const isIOS = Capacitor.getPlatform() === 'ios'
 
 // Mock available offers - in production, these would come from your backend
 const availableOffers = ref<CouponOffer[]>([
@@ -336,43 +309,6 @@ function selectOffer(offer: CouponOffer) {
 function toggleFaq(index: number) {
   activeFaq.value = activeFaq.value === index ? null : index
 }
-
-async function openAppleRedemption() {
-  if (!isIOS || isLoading.value) return
-
-  try {
-    isLoading.value = true
-    errorMessage.value = ''
-    
-    // Use RevenueCat's presentCodeRedemptionSheet for iOS
-    await revenueCatService.presentCodeRedemptionSheet()
-    
-    // After redemption, check subscription status
-    const isSubscribed = await revenueCatService.checkSubscriptionStatus()
-    if (isSubscribed) {
-      await updateSubscriptionStatus(true, 'Premium')
-      successMessage.value = 'Code successfully redeemed! Premium access activated.'
-      
-      // Redirect to home after success
-      setTimeout(() => {
-        router.push('/')
-      }, 2000)
-    }
-  } catch (error: any) {
-    console.error('Apple redemption failed:', error)
-    
-    if (error.message?.includes('cancelled')) {
-      // User cancelled the redemption sheet - don't show error
-      return
-    } else if (error.message?.includes('invalid')) {
-      errorMessage.value = 'Invalid redemption code. Please check and try again.'
-    } else {
-      errorMessage.value = 'Failed to redeem code. Please try again later.'
-    }
-  } finally {
-    isLoading.value = false
-  }
-}
 </script>
 
 <style scoped>
@@ -445,97 +381,6 @@ async function openAppleRedemption() {
 
 .coupon-section {
   margin-bottom: 40px;
-}
-
-.ios-redemption-section {
-  margin-bottom: 32px;
-}
-
-.apple-redemption-button {
-  width: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  color: white;
-  padding: 20px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  text-align: left;
-}
-
-.apple-redemption-button:hover:not(:disabled) {
-  background: rgba(0, 0, 0, 0.9);
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-}
-
-.apple-redemption-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.apple-icon {
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(135deg, #007aff, #5856d6);
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.apple-text {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.apple-title {
-  font-size: 18px;
-  font-weight: 600;
-  margin: 0;
-}
-
-.apple-subtitle {
-  font-size: 14px;
-  opacity: 0.7;
-  margin: 0;
-}
-
-.arrow-icon {
-  opacity: 0.6;
-  flex-shrink: 0;
-}
-
-.section-divider {
-  display: flex;
-  align-items: center;
-  margin: 32px 0 24px 0;
-  text-align: center;
-}
-
-.section-divider::before,
-.section-divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-}
-
-.divider-text {
-  padding: 0 20px;
-  font-size: 14px;
-  opacity: 0.6;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-weight: 500;
 }
 
 .input-group {

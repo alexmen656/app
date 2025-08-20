@@ -149,6 +149,9 @@
   "coupon": {
     "title": "Redeem Coupon",
     "subtitle": "Enter your promo code to unlock special offers and discounts",
+    "redeemWithApple": "Redeem with Apple",
+    "appleSubtitle": "Use Apple's native redemption",
+    "orEnterManually": "or enter manually",
     "enterCode": "Enter Coupon Code",
     "placeholder": "ENTER CODE",
     "redeem": "Redeem",

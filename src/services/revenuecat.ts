@@ -153,6 +153,24 @@ class RevenueCatService {
     return Object.keys(activeEntitlements).length > 0
   }
 
+  async presentCodeRedemptionSheet(): Promise<void> {
+    try {
+      if (!this.initialized) {
+        await this.initialize()
+      }
+
+      console.log('Presenting iOS code redemption sheet...')
+      
+      // Use RevenueCat's method to present Apple's native redemption sheet
+      await Purchases.presentCodeRedemptionSheet()
+      
+      console.log('Code redemption sheet presented successfully')
+    } catch (error) {
+      console.error('Failed to present code redemption sheet:', error)
+      throw error
+    }
+  }
+
   private isPopularPackage(identifier: string): boolean {
     // Mark annual packages as popular
     const popularPackages = ['$rc_annual', 'annual', 'annual_premium', 'com.kaloriq.annual']

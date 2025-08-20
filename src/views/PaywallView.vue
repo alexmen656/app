@@ -4,23 +4,25 @@
         <div class="menu-container">
             <button @click="toggleMenu" class="menu-button" v-if="showMenuButton">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                    <circle cx="12" cy="5" r="2"/>
-                    <circle cx="12" cy="12" r="2"/>
-                    <circle cx="12" cy="19" r="2"/>
+                    <circle cx="12" cy="5" r="2" />
+                    <circle cx="12" cy="12" r="2" />
+                    <circle cx="12" cy="19" r="2" />
                 </svg>
             </button>
-            
+
             <!-- Dropdown Menu -->
             <div v-if="showMenu" class="dropdown-menu" @click.stop>
                 <button @click="openCouponFromMenu" class="menu-item">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                     </svg>
                     🎫 {{ $t('paywall.redeemCoupon') }}
                 </button>
                 <button @click="skipPaywall" class="menu-item" v-if="dev">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                        <path
+                            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
                     </svg>
                     Skip (Dev)
                 </button>
@@ -40,7 +42,7 @@
         </div>
 
         <!-- Features Grid -->
-       <!-- <div class="features-section">
+        <!-- <div class="features-section">
             <div class="feature-item" v-for="feature in features" :key="feature.title">
                 <div class="feature-icon">
                     <component :is="'div'" v-html="feature.icon"></component>
@@ -126,6 +128,8 @@
                 <a href="#" @click.prevent="openTerms" class="legal-link">{{ $t('paywall.termsOfService') }}</a>
                 <span class="separator">•</span>
                 <a href="#" @click.prevent="openPrivacy" class="legal-link">{{ $t('paywall.privacyPolicy') }}</a>
+                <span class="separator">•</span>
+                <a href="#" @click.prevent="openMore" class="legal-link">{{ $t('paywall.privacyPolicy') }}</a>
             </div>
         </div>
 
@@ -325,6 +329,11 @@ function openPrivacy() {
     console.log('Open Privacy Policy')
 }
 
+function openMore() {
+    // Open more information
+    router.push('/coupon')
+}
+
 function toggleMenu() {
     showMenu.value = !showMenu.value
 }
@@ -337,7 +346,7 @@ function openCouponFromMenu() {
 // Close menu when clicking outside
 onMounted(async () => {
     await loadSubscriptionPlans()
-    
+
     // Add click listener to close menu when clicking outside
     document.addEventListener('click', () => {
         showMenu.value = false
@@ -406,6 +415,7 @@ onMounted(async () => {
         opacity: 0;
         transform: translateY(-10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -473,7 +483,7 @@ onMounted(async () => {
     font-size: 18px;
     opacity: 0.8;
     line-height: 1.5;
-   /* max-width: 280px; */
+    /* max-width: 280px; */
     margin: 0 auto;
     font-weight: 400;
 }
@@ -818,6 +828,7 @@ onMounted(async () => {
 }
 
 @media (max-width: 480px) {
+
     /*.paywall-view {
         padding: 16px;
     }

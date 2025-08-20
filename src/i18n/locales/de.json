@@ -149,6 +149,9 @@
   "coupon": {
     "title": "Gutschein einlösen",
     "subtitle": "Geben Sie Ihren Promo-Code ein, um spezielle Angebote und Rabatte freizuschalten",
+    "redeemWithApple": "Mit Apple einlösen",
+    "appleSubtitle": "Verwenden Sie Apples nativen Einlöseprozess",
+    "orEnterManually": "oder manuell eingeben",
     "enterCode": "Gutschein-Code eingeben",
     "placeholder": "CODE EINGEBEN",
     "redeem": "Einlösen",

@@ -299,7 +299,7 @@ async function loadScanHistory() {
     try {
         const history = await ScanHistory.get()
         scanHistory.value = history.slice(0, 10) // Show only last 10 items
-        
+
         // Update widget data when scan history changes
         await WidgetDataManager.updateWidgetData()
     } catch (error) {
