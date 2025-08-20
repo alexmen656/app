@@ -145,6 +145,27 @@
     "privacyPolicy": "Privacy Policy",
     "savingsText": "Save 50% compared to monthly"
   },
+  "coupon": {
+    "title": "Redeem Coupon",
+    "subtitle": "Enter your promo code to unlock special offers and discounts",
+    "enterCode": "Enter Coupon Code",
+    "placeholder": "ENTER CODE",
+    "redeem": "Redeem",
+    "hint": "Coupon codes are case-insensitive",
+    "success": "Success!",
+    "availableOffers": "Available Offers",
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "howToUse": "How do I use a coupon code?",
+      "howToUseAnswer": "Simply enter the code in the field above and tap 'Redeem'. The discount or offer will be applied immediately to your account.",
+      "whereToFind": "Where can I find coupon codes?",
+      "whereToFindAnswer": "Coupon codes are shared through our social media, email newsletters, and special promotions. Follow us to stay updated!",
+      "expired": "What if my coupon code has expired?",
+      "expiredAnswer": "Expired codes cannot be redeemed. Check the validity period and try to use codes before they expire.",
+      "multipleUse": "Can I use multiple coupon codes?",
+      "multipleUseAnswer": "Generally, only one coupon code can be active at a time. New codes will replace previously applied discounts."
+    }
+  },
   "common": {
     "save": "Save",
     "cancel": "Cancel",

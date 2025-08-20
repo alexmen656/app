@@ -145,6 +145,27 @@
     "privacyPolicy": "Datenschutzrichtlinie",
     "savingsText": "Sparen Sie 50% im Vergleich zu monatlich"
   },
+  "coupon": {
+    "title": "Gutschein einlösen",
+    "subtitle": "Geben Sie Ihren Promo-Code ein, um spezielle Angebote und Rabatte freizuschalten",
+    "enterCode": "Gutschein-Code eingeben",
+    "placeholder": "CODE EINGEBEN",
+    "redeem": "Einlösen",
+    "hint": "Gutschein-Codes sind nicht case-sensitiv",
+    "success": "Erfolg!",
+    "availableOffers": "Verfügbare Angebote",
+    "faq": {
+      "title": "Häufig gestellte Fragen",
+      "howToUse": "Wie verwende ich einen Gutschein-Code?",
+      "howToUseAnswer": "Geben Sie einfach den Code in das obige Feld ein und tippen Sie auf 'Einlösen'. Der Rabatt oder das Angebot wird sofort auf Ihr Konto angewendet.",
+      "whereToFind": "Wo finde ich Gutschein-Codes?",
+      "whereToFindAnswer": "Gutschein-Codes werden über unsere sozialen Medien, E-Mail-Newsletter und spezielle Aktionen geteilt. Folgen Sie uns, um auf dem Laufenden zu bleiben!",
+      "expired": "Was ist, wenn mein Gutschein-Code abgelaufen ist?",
+      "expiredAnswer": "Abgelaufene Codes können nicht eingelöst werden. Überprüfen Sie die Gültigkeitsdauer und versuchen Sie, Codes vor Ablauf zu verwenden.",
+      "multipleUse": "Kann ich mehrere Gutschein-Codes verwenden?",
+      "multipleUseAnswer": "Im Allgemeinen kann nur ein Gutschein-Code gleichzeitig aktiv sein. Neue Codes ersetzen zuvor angewendete Rabatte."
+    }
+  },
   "common": {
     "save": "Speichern",
     "cancel": "Abbrechen",

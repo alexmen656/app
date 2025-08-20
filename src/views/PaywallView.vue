@@ -110,6 +110,10 @@
         {{ $t('paywall.restorePurchases') }}
       </button>
 
+      <button @click="openCouponView" class="coupon-button" :disabled="isLoading">
+        🎫 Have a coupon code?
+      </button>
+
       <!-- Terms and Privacy -->
       <div class="legal-links">
         <a href="#" @click.prevent="openTerms" class="legal-link">{{ $t('paywall.termsOfService') }}</a>
@@ -312,6 +316,10 @@ function openTerms() {
 function openPrivacy() {
   // Open privacy policy
   console.log('Open Privacy Policy')
+}
+
+function openCouponView() {
+  router.push('/coupon')
 }
 </script>
 
@@ -684,6 +692,31 @@ function openPrivacy() {
 }
 
 .restore-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.coupon-button {
+  width: 100%;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.8);
+  border: 2px solid rgba(255, 107, 53, 0.3);
+  border-radius: 16px;
+  padding: 16px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 20px;
+}
+
+.coupon-button:hover:not(:disabled) {
+  background: rgba(255, 107, 53, 0.1);
+  border-color: rgba(255, 107, 53, 0.5);
+  color: white;
+}
+
+.coupon-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
