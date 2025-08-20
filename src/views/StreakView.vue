@@ -60,13 +60,13 @@
         <div v-for="achievement in achievements" :key="achievement.id" class="achievement-ring"
           :class="{ 'earned': achievement.earned }">
           <div class="ring-container">
-            <svg class="ring-svg" viewBox="0 0 120 120">
+            <svg class="ring-svg" viewBox="0 0 170 170">
               <!-- Background ring -->
-              <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255, 255, 255, 0.2)" stroke-width="8" />
+              <circle cx="85" cy="85" r="75" fill="none" stroke="rgba(255, 255, 255, 0.2)" stroke-width="10" />
               <!-- Progress ring -->
-              <circle cx="60" cy="60" r="50" fill="none" :stroke="achievement.color" stroke-width="8"
-                stroke-linecap="round" :stroke-dasharray="314" :stroke-dashoffset="achievement.earned ? 0 : 314"
-                :class="{ 'ring-animate': achievement.earned }" transform="rotate(-90 60 60)" />
+              <circle cx="85" cy="85" r="75" fill="none" :stroke="achievement.color" stroke-width="10"
+                stroke-linecap="round" :stroke-dasharray="471" :stroke-dashoffset="achievement.earned ? 0 : 471"
+                :class="{ 'ring-animate': achievement.earned }" transform="rotate(-90 85 85)" />
             </svg>
             <div class="ring-center">
               <div class="achievement-icon" :style="{ color: achievement.color }">
