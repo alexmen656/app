@@ -18,6 +18,7 @@ def capacitor_pods
   pod 'CapacitorSplashScreen', :path => '../../node_modules/@capacitor/splash-screen'
   pod 'CapacitorStatusBar', :path => '../../node_modules/@capacitor/status-bar'
   pod 'CapawesomeCapacitorTorch', :path => '../../node_modules/@capawesome/capacitor-torch'
+  pod 'RevenuecatPurchasesCapacitor', :path => '../../node_modules/@revenuecat/purchases-capacitor'
 end
 
 target 'App' do

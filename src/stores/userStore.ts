@@ -79,20 +79,29 @@ export const userPreferences = reactive<UserPreferences>({ ...defaultPreferences
 // Reactive onboarding completion state
 const onboardingCompleted = ref(false)
 
+// Reactive subscription status
+const subscriptionStatus = reactive({
+  isActive: false,
+  plan: '',
+  expiresAt: null as Date | null
+})
+
 // Load data from storage on initialization
 async function initializeStore() {
   try {
-    const [loadedProfile, loadedGoals, loadedPreferences, loadedOnboarding] = await Promise.all([
+    const [loadedProfile, loadedGoals, loadedPreferences, loadedOnboarding, loadedSubscription] = await Promise.all([
       loadFromStorage('userProfile', defaultUserProfile),
       loadFromStorage('dailyGoals', defaultGoals),
       loadFromStorage('userPreferences', defaultPreferences),
-      Storage.get('onboardingCompleted')
+      Storage.get('onboardingCompleted'),
+      loadFromStorage('subscriptionStatus', { isActive: false, plan: '', expiresAt: null })
     ])
 
     Object.assign(userProfile, loadedProfile)
     Object.assign(dailyGoals, loadedGoals)
     Object.assign(userPreferences, loadedPreferences)
     onboardingCompleted.value = loadedOnboarding === true || loadedOnboarding === 'true'
+    Object.assign(subscriptionStatus, loadedSubscription)
   } catch (error) {
     console.error('Failed to initialize store:', error)
   }
@@ -111,6 +120,15 @@ export const hasValidProfile = computed(() => {
          userProfile.height && userProfile.weight
 })
 
+// Export subscription status
+export const isSubscriptionActive = computed(() => {
+  return subscriptionStatus.isActive
+})
+
+export const subscriptionPlan = computed(() => {
+  return subscriptionStatus.plan
+})
+
 // Actions
 export async function updateUserProfile(updates: Partial<UserProfile>) {
   Object.assign(userProfile, updates)
@@ -124,6 +142,13 @@ export async function updateDailyGoals(updates: Partial<DailyGoals>) {
 export async function updateUserPreferences(updates: Partial<UserPreferences>) {
   Object.assign(userPreferences, updates)
   await saveToStorage('userPreferences', userPreferences)
+}
+
+export async function updateSubscriptionStatus(isActive: boolean, plan: string = '', expiresAt: Date | null = null) {
+  subscriptionStatus.isActive = isActive
+  subscriptionStatus.plan = plan
+  subscriptionStatus.expiresAt = expiresAt
+  await saveToStorage('subscriptionStatus', subscriptionStatus)
 }
 
 export async function completeOnboarding() {

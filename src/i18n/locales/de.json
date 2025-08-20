@@ -121,6 +121,30 @@
     "whatIsYourGoal": "Was ist Ihr Ziel?",
     "goalSubtitle": "Wählen Sie Ihr Hauptziel aus, damit wir Ihre Ernährung optimal anpassen können"
   },
+  "paywall": {
+    "title": "Upgrade auf Kaloriq Pro",
+    "subtitle": "Schalten Sie alle Premium-Funktionen frei und bringen Sie Ihr Ernährungs-Tracking auf die nächste Stufe",
+    "choosePlan": "Wählen Sie Ihren Plan",
+    "mostPopular": "Am beliebtesten",
+    "features": {
+      "unlimitedScans": "Unbegrenzte Lebensmittel-Scans",
+      "unlimitedScansDesc": "Scannen Sie so viele Mahlzeiten wie Sie möchten mit KI-Erkennung",
+      "advancedAnalytics": "Erweiterte Analysen",
+      "advancedAnalyticsDesc": "Detaillierte Einblicke in Ihre Ernährungsmuster und Trends",
+      "customGoals": "Individuelle Ziele",
+      "customGoalsDesc": "Setzen Sie personalisierte Makro- und Kalorienziele",
+      "mealPlanning": "Mahlzeitenplanung",
+      "mealPlanningDesc": "Planen Sie Ihre Mahlzeiten im Voraus und verfolgen Sie die wöchentliche Ernährung",
+      "exportData": "Daten exportieren",
+      "exportDataDesc": "Exportieren Sie Ihre Ernährungsdaten und teilen Sie sie mit Fachleuten",
+      "prioritySupport": "Vorrangiger Support",
+      "prioritySupportDesc": "Erhalten Sie schneller Hilfe mit Premium-Kundensupport"
+    },
+    "restorePurchases": "Käufe wiederherstellen",
+    "termsOfService": "Nutzungsbedingungen",
+    "privacyPolicy": "Datenschutzrichtlinie",
+    "savingsText": "Sparen Sie 50% im Vergleich zu monatlich"
+  },
   "common": {
     "save": "Speichern",
     "cancel": "Abbrechen",

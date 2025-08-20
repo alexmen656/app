@@ -121,6 +121,30 @@
     "whatIsYourGoal": "What is your goal?",
     "goalSubtitle": "Choose your main goal so we can optimize your nutrition plan"
   },
+  "paywall": {
+    "title": "Upgrade to Kaloriq Pro",
+    "subtitle": "Unlock all premium features and take your nutrition tracking to the next level",
+    "choosePlan": "Choose Your Plan",
+    "mostPopular": "Most Popular",
+    "features": {
+      "unlimitedScans": "Unlimited Food Scans",
+      "unlimitedScansDesc": "Scan as many meals as you want with AI recognition",
+      "advancedAnalytics": "Advanced Analytics",
+      "advancedAnalyticsDesc": "Detailed insights into your nutrition patterns and trends",
+      "customGoals": "Custom Goals",
+      "customGoalsDesc": "Set personalized macro and calorie targets",
+      "mealPlanning": "Meal Planning",
+      "mealPlanningDesc": "Plan your meals ahead and track weekly nutrition",
+      "exportData": "Export Data",
+      "exportDataDesc": "Export your nutrition data and share with professionals",
+      "prioritySupport": "Priority Support",
+      "prioritySupportDesc": "Get help faster with premium customer support"
+    },
+    "restorePurchases": "Restore Purchases",
+    "termsOfService": "Terms of Service",
+    "privacyPolicy": "Privacy Policy",
+    "savingsText": "Save 50% compared to monthly"
+  },
   "common": {
     "save": "Save",
     "cancel": "Cancel",

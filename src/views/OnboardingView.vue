@@ -504,8 +504,8 @@ async function finishOnboarding() {
     await updateDailyGoals(goals)
     await completeOnboarding()
     
-    // Navigate to home
-    router.push('/')
+    // Navigate to paywall instead of home
+    router.push('/paywall')
 }
 </script>
 

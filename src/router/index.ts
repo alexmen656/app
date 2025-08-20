@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import YesterdayView from "../views/YesterdayView.vue";
 import OnboardingView from "../views/OnboardingView.vue";
+import PaywallView from "../views/PaywallView.vue";
 import ScanView from "../views/ScanView.vue";
 import NutritionView from "../views/NutritionView.vue";
 import AnalyticsView from "../views/AnalyticsView.vue";
@@ -24,6 +25,11 @@ const routes = [
     path: "/onboarding",
     name: "Onboarding",
     component: OnboardingView,
+  },
+  {
+    path: "/paywall",
+    name: "Paywall",
+    component: PaywallView,
   },
   {
     path: "/scan",
