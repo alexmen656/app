@@ -173,8 +173,59 @@
             </div>
         </div>
 
-        <!-- Goals Step -->
+        <!-- Target Weight Step -->
         <div v-if="currentStep === 5" class="step-container">
+            <div class="content-section">
+                <h2 class="step-title">Set Your Weight Goal</h2>
+                <p class="step-subtitle">What is your target weight to achieve your goal?</p>
+                
+                <div class="weight-goal-container">
+                    <div class="current-weight-display">
+                        <div class="weight-info">
+                            <span class="weight-label">Current Weight</span>
+                            <span class="weight-value">{{ userInfo.weight || 0 }} kg</span>
+                        </div>
+                    </div>
+
+                    <div class="arrow-down">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M7.41 8.84L12 13.42l4.59-4.58L18 10.25l-6 6-6-6z"/>
+                        </svg>
+                    </div>
+
+                    <div class="target-weight-input">
+                        <label class="form-label">Target Weight (kg)</label>
+                        <input 
+                            v-model="userInfo.targetWeight" 
+                            type="number" 
+                            placeholder="Enter your target weight"
+                            class="form-input weight-input"
+                            min="30"
+                            max="300"
+                            step="0.1"
+                        />
+                    </div>
+
+                    <div v-if="userInfo.weight && userInfo.targetWeight" class="weight-goal-summary">
+                        <div class="goal-calculation">
+                            <div class="calculation-item">
+                                <span class="calc-label">Weight Change</span>
+                                <span class="calc-value" :class="weightChangeClass">
+                                    {{ weightChangeText }}
+                                </span>
+                            </div>
+                            <div class="calculation-item">
+                                <span class="calc-label">Goal Type</span>
+                                <span class="calc-value">{{ goalTypeText }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Goals Step -->
+        <div v-if="currentStep === 6" class="step-container">
             <div class="content-section">
                 <h2 class="step-title">Set your daily goals</h2>
                 <p class="step-subtitle">Based on your profile, we recommend these targets</p>
@@ -343,11 +394,12 @@
 import { ref, computed, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { updateUserProfile, updateDailyGoals, completeOnboarding } from '../stores/userStore'
+import { WeightTracker } from '../utils/weightTracking'
 
 const router = useRouter()
 
 const currentStep = ref(1)
-const totalSteps = 5
+const totalSteps = 6
 
 const userInfo = reactive({
     name: '',
@@ -356,6 +408,7 @@ const userInfo = reactive({
     gender: '' as '' | 'male' | 'female',
     height: null as number | null,
     weight: null as number | null,
+    targetWeight: null as number | null,
     activityLevel: '',
     goal: ''
 })
@@ -435,10 +488,41 @@ const canProceed = computed(() => {
         case 4:
             return userInfo.goal
         case 5:
+            return userInfo.targetWeight
+        case 6:
             return true
         default:
             return false
     }
+})
+
+const weightChangeText = computed(() => {
+    if (!userInfo.weight || !userInfo.targetWeight) return ''
+    const change = userInfo.targetWeight - userInfo.weight
+    const absChange = Math.abs(change)
+    if (change > 0) {
+        return `+${absChange.toFixed(1)} kg`
+    } else if (change < 0) {
+        return `-${absChange.toFixed(1)} kg`
+    } else {
+        return 'Maintain current weight'
+    }
+})
+
+const weightChangeClass = computed(() => {
+    if (!userInfo.weight || !userInfo.targetWeight) return ''
+    const change = userInfo.targetWeight - userInfo.weight
+    if (change > 0) return 'weight-gain'
+    if (change < 0) return 'weight-loss'
+    return 'weight-maintain'
+})
+
+const goalTypeText = computed(() => {
+    if (!userInfo.weight || !userInfo.targetWeight) return ''
+    const change = userInfo.targetWeight - userInfo.weight
+    if (Math.abs(change) <= 1) return 'Maintain Weight'
+    if (change > 0) return 'Weight Gain'
+    return 'Weight Loss'
 })
 
 function calculateRecommendedCalories() {
@@ -502,6 +586,24 @@ async function finishOnboarding() {
     // Update user store with data
     await updateUserProfile(userInfo)
     await updateDailyGoals(goals)
+    
+    // Set up weight tracking if target weight is provided
+    if (userInfo.weight && userInfo.targetWeight) {
+        // Add initial weight entry
+        await WeightTracker.addWeightEntry(userInfo.weight, 'Initial weight from onboarding')
+        
+        // Set weight goal
+        const goalType = userInfo.targetWeight > userInfo.weight ? 'gain' : 
+                        userInfo.targetWeight < userInfo.weight ? 'lose' : 'maintain'
+        
+        await WeightTracker.setWeightGoal({
+            startWeight: userInfo.weight,
+            targetWeight: userInfo.targetWeight,
+            goalType,
+            startDate: new Date().toISOString().split('T')[0]
+        })
+    }
+    
     await completeOnboarding()
     
     // Navigate to paywall instead of home
@@ -1012,5 +1114,106 @@ async function finishOnboarding() {
         width: 100px;
         font-size: 20px;
     }
+}
+
+/* Weight Goal Step Styles */
+.weight-goal-container {
+    max-width: 400px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.current-weight-display {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.weight-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.weight-label {
+    font-size: 14px;
+    opacity: 0.7;
+    font-weight: 500;
+}
+
+.weight-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: #007052;
+}
+
+.arrow-down {
+    color: rgba(255, 255, 255, 0.5);
+    margin: 16px 0;
+}
+
+.target-weight-input {
+    margin-bottom: 24px;
+}
+
+.weight-input {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.weight-input:focus {
+    border-color: #007052;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.weight-goal-summary {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.goal-calculation {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.calculation-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.calc-label {
+    font-size: 14px;
+    opacity: 0.7;
+    font-weight: 500;
+}
+
+.calc-value {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.calc-value.weight-loss {
+    color: #ff6b6b;
+}
+
+.calc-value.weight-gain {
+    color: #4caf50;
+}
+
+.calc-value.weight-maintain {
+    color: #ffa726;
 }
 </style>

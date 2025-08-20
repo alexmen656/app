@@ -1,5 +1,6 @@
 import { Storage, ScanHistory } from './storage';
-import { dailyGoals } from '../stores/userStore';
+import { dailyGoals, userProfile } from '../stores/userStore';
+import { WeightTracker } from './weightTracking';
 
 export interface DayData {
   date: string;
@@ -36,7 +37,14 @@ export interface AnalyticsData {
     calories: { current: number; target: number; percentage: number };
     exercise: { current: number; target: number; percentage: number };
     water: { current: number; target: number; percentage: number };
+    weight: { current: number | null; target: number | null; percentage: number; change: number | null };
   };
+  bmiData: {
+    value: number | null;
+    category: string | null;
+    categoryColor: string | null;
+  };
+  weightChartData: { date: string; weight: number }[];
 }
 
 export class AnalyticsManager {
@@ -158,6 +166,32 @@ export class AnalyticsManager {
     const exerciseData = await Storage.get('exerciseData') || { current: 4, target: 5 };
     const waterData = await Storage.get('waterData') || { current: 1.8, target: 2.5 };
 
+    // Get weight and BMI data
+    const weightStats = await WeightTracker.getWeightStats();
+    const weightGoal = await WeightTracker.getWeightGoal();
+    const weightChartData = await WeightTracker.getWeightChartData();
+    
+    // Calculate BMI if we have current weight and height
+    let bmiData: { value: number | null; category: string | null; categoryColor: string | null } = { 
+      value: null, 
+      category: null, 
+      categoryColor: null 
+    };
+    if (weightStats.currentWeight && userProfile.height) {
+      const bmi = WeightTracker.calculateBMI(weightStats.currentWeight, userProfile.height);
+      bmiData = {
+        value: bmi.value,
+        category: WeightTracker.getBMICategoryText(bmi.category),
+        categoryColor: bmi.categoryColor
+      };
+    }
+
+    // Calculate weight progress
+    let weightProgress = 0;
+    if (weightStats.currentWeight && weightGoal) {
+      weightProgress = WeightTracker.calculateWeightProgress(weightStats.currentWeight, weightGoal);
+    }
+
     return {
       weeklyData,
       avgCalories,
@@ -178,8 +212,16 @@ export class AnalyticsManager {
           current: waterData.current,
           target: waterData.target,
           percentage: Math.round((waterData.current / waterData.target) * 100)
+        },
+        weight: {
+          current: weightStats.currentWeight,
+          target: weightGoal?.targetWeight || null,
+          percentage: Math.round(weightProgress),
+          change: weightStats.weightChange
         }
-      }
+      },
+      bmiData,
+      weightChartData
     };
   }
 

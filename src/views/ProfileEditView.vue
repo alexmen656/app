@@ -325,7 +325,8 @@ const calculatedGoals = computed(() => {
     height: form.value.height,
     weight: form.value.weight,
     activityLevel: form.value.activityLevel,
-    goal: form.value.goal
+    goal: form.value.goal,
+    targetWeight: userProfile.targetWeight
   })
 })
 

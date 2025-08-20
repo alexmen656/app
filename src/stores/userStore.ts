@@ -8,6 +8,7 @@ interface UserProfile {
   gender: 'male' | 'female' | ''
   height: number | null
   weight: number | null
+  targetWeight: number | null
   activityLevel: string
   goal?: string
 }
@@ -34,6 +35,7 @@ const defaultUserProfile: UserProfile = {
   gender: '',
   height: null,
   weight: null,
+  targetWeight: null,
   activityLevel: '',
   goal: ''
 }
