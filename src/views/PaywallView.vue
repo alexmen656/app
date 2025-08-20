@@ -1,17 +1,36 @@
 <template>
     <div class="paywall-view">
-        <!-- Close Button -->
-        <button @click="skipPaywall" class="close-button" v-if="showCloseButton">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                <path
-                    d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-            </svg>
-        </button>
+        <!-- Menu Button -->
+        <div class="menu-container">
+            <button @click="toggleMenu" class="menu-button" v-if="showMenuButton">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <circle cx="12" cy="5" r="2"/>
+                    <circle cx="12" cy="12" r="2"/>
+                    <circle cx="12" cy="19" r="2"/>
+                </svg>
+            </button>
+            
+            <!-- Dropdown Menu -->
+            <div v-if="showMenu" class="dropdown-menu" @click.stop>
+                <button @click="openCouponFromMenu" class="menu-item">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    🎫 {{ $t('paywall.redeemCoupon') }}
+                </button>
+                <button @click="skipPaywall" class="menu-item" v-if="dev">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                    </svg>
+                    Skip (Dev)
+                </button>
+            </div>
+        </div>
 
         <!-- Header Section -->
         <div class="header-section">
             <div class="app-icon">
-                <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                     <path
                         d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z" />
                 </svg>
@@ -40,7 +59,7 @@
 
         <!-- Pricing Plans -->
         <div class="pricing-section" v-if="subscriptionPlans.length > 0">
-            <h2 class="pricing-title">{{ $t('paywall.choosePlan') }}</h2>
+            <!--<h2 class="pricing-title">{{ $t('paywall.choosePlan') }}</h2>-->
 
             <div class="plans-container">
                 <div v-for="plan in subscriptionPlans" :key="plan.id" class="plan-card" :class="{
@@ -102,10 +121,6 @@
                 {{ $t('paywall.restorePurchases') }}
             </button>
 
-            <button @click="openCouponView" class="coupon-button" :disabled="isLoading">
-                🎫 Have a coupon code?
-            </button>
-
             <!-- Terms and Privacy -->
             <div class="legal-links">
                 <a href="#" @click.prevent="openTerms" class="legal-link">{{ $t('paywall.termsOfService') }}</a>
@@ -139,8 +154,10 @@ const selectedPlan = ref<string>('annual')
 const subscriptionPlans = ref<SubscriptionPlan[]>([])
 const isLoading = ref(false)
 const errorMessage = ref('')
-const showCloseButton = ref(true)
+const showMenuButton = ref(true)
+const showMenu = ref(false)
 
+const dev = import.meta.env.DEV;
 /*const features: Feature[] = [
     {
         title: 'paywall.features.unlimitedScans',
@@ -187,9 +204,7 @@ const getPurchaseButtonText = computed(() => {
     return `Start ${plan.title} Plan - ${plan.price}`
 })
 
-onMounted(async () => {
-    await loadSubscriptionPlans()
-})
+
 
 async function loadSubscriptionPlans() {
     try {
@@ -310,9 +325,24 @@ function openPrivacy() {
     console.log('Open Privacy Policy')
 }
 
-function openCouponView() {
+function toggleMenu() {
+    showMenu.value = !showMenu.value
+}
+
+function openCouponFromMenu() {
+    showMenu.value = false
     router.push('/coupon')
 }
+
+// Close menu when clicking outside
+onMounted(async () => {
+    await loadSubscriptionPlans()
+    
+    // Add click listener to close menu when clicking outside
+    document.addEventListener('click', () => {
+        showMenu.value = false
+    })
+})
 </script>
 
 <style scoped>
@@ -332,10 +362,14 @@ function openCouponView() {
     position: relative;
 }
 
-.close-button {
+.menu-container {
     position: absolute;
     top: max(54px, env(safe-area-inset-top, 54px));
     right: 20px;
+    z-index: 20;
+}
+
+.menu-button {
     width: 40px;
     height: 40px;
     background: rgba(255, 255, 255, 0.1);
@@ -347,47 +381,101 @@ function openCouponView() {
     justify-content: center;
     cursor: pointer;
     transition: background-color 0.2s;
-    z-index: 10;
 }
 
-.close-button:hover {
+.menu-button:hover {
     background: rgba(255, 255, 255, 0.2);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 48px;
+    right: 0;
+    min-width: 200px;
+    background: rgba(30, 30, 46, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.2s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.menu-item {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-align: left;
+}
+
+.menu-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.menu-item svg {
+    width: 16px;
+    height: 16px;
+    opacity: 0.7;
 }
 
 .header-section {
     text-align: center;
-    margin-bottom: 32px;
-    margin-top: 20px;
+    margin-bottom: 30px;
+    margin-top: 40px;
+    padding: 0 12px;
 }
 
 .app-icon {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     background: linear-gradient(135deg, #007052, #00a86b);
-    border-radius: 40px;
+    border-radius: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 20px;
+    margin: 0 auto 24px;
     color: white;
+    box-shadow: 0 12px 40px rgba(0, 112, 82, 0.3);
 }
 
 .title {
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 12px;
-}
-
-.brand {
-    color: #007052;
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #ffffff, #e0e0e0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .subtitle {
-    font-size: 16px;
+    font-size: 18px;
     opacity: 0.8;
-    line-height: 1.4;
-    max-width: 350px;
+    line-height: 1.5;
+   /* max-width: 280px; */
     margin: 0 auto;
+    font-weight: 400;
 }
 
 .features-section {
@@ -694,31 +782,6 @@ function openCouponView() {
     cursor: not-allowed;
 }
 
-.coupon-button {
-    width: 100%;
-    background: transparent;
-    color: rgba(255, 255, 255, 0.8);
-    border: 2px solid rgba(255, 107, 53, 0.3);
-    border-radius: 16px;
-    padding: 16px 24px;
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-bottom: 20px;
-}
-
-.coupon-button:hover:not(:disabled) {
-    background: rgba(255, 107, 53, 0.1);
-    border-color: rgba(255, 107, 53, 0.5);
-    color: white;
-}
-
-.coupon-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
 .legal-links {
     display: flex;
     justify-content: center;
@@ -760,7 +823,7 @@ function openCouponView() {
     }
 */
     .title {
-        font-size: 24px;
+        font-size: 28px;
     }
 
     .subtitle {

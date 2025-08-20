@@ -122,8 +122,8 @@
     "goalSubtitle": "Choose your main goal so we can optimize your nutrition plan"
   },
   "paywall": {
-    "title": "Upgrade to Kaloriq Pro",
-    "subtitle": "Unlock all premium features and take your nutrition tracking to the next level",
+    "title": "Premium Access Required",
+    "subtitle": "Subscribe to unlock all features and start tracking your nutrition journey",
     "choosePlan": "Choose Your Plan",
     "mostPopular": "Most Popular",
     "features": {
@@ -141,6 +141,7 @@
       "prioritySupportDesc": "Get help faster with premium customer support"
     },
     "restorePurchases": "Restore Purchases",
+    "redeemCoupon": "Redeem Coupon",
     "termsOfService": "Terms of Service",
     "privacyPolicy": "Privacy Policy",
     "savingsText": "Save 50% compared to monthly"

@@ -122,8 +122,8 @@
     "goalSubtitle": "Wählen Sie Ihr Hauptziel aus, damit wir Ihre Ernährung optimal anpassen können"
   },
   "paywall": {
-    "title": "Upgrade auf Kaloriq Pro",
-    "subtitle": "Schalten Sie alle Premium-Funktionen frei und bringen Sie Ihr Ernährungs-Tracking auf die nächste Stufe",
+    "title": "Premium-Zugang erforderlich",
+    "subtitle": "Abonnieren Sie, um alle Funktionen freizuschalten und Ihre Ernährungsreise zu beginnen",
     "choosePlan": "Wählen Sie Ihren Plan",
     "mostPopular": "Am beliebtesten",
     "features": {
@@ -141,6 +141,7 @@
       "prioritySupportDesc": "Erhalten Sie schneller Hilfe mit Premium-Kundensupport"
     },
     "restorePurchases": "Käufe wiederherstellen",
+    "redeemCoupon": "Gutschein einlösen",
     "termsOfService": "Nutzungsbedingungen",
     "privacyPolicy": "Datenschutzrichtlinie",
     "savingsText": "Sparen Sie 50% im Vergleich zu monatlich"
