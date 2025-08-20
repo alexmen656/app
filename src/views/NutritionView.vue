@@ -23,11 +23,14 @@
             <div class="nutrition-content">
                 <div class="nutrition-time">{{ time }}</div>
                 <div class="product-header">
-                    <h1 class="nutrition-name">{{ product.name }}</h1>
-                    <!--<div v-if="product.brand" class="nutrition-brand">{{ product.brand }}</div>
-                    <div v-if="product.servingSize && product.servingUnit" class="nutrition-serving">
-                        Serving: {{ product.servingSize }} {{ product.servingUnit }}
-                    </div>-->
+                    <div class="product-info">
+                        <h1 class="nutrition-name">{{ product.name }}</h1>
+                        <div v-if="product.brand" class="nutrition-brand">{{ product.brand }}</div>
+                        <div v-if="product.servingSize && product.servingUnit" class="nutrition-serving">
+                            Serving: {{ product.servingSize }}{{ product.servingUnit }}
+                            <span v-if="product.packageSize" class="package-size">({{ product.packageSize }})</span>
+                        </div>
+                    </div>
                     <div class="nutrition-amount">
                         <button class="amount-btn minus" @click="decreaseAmount">−</button>
                         <span class="amount-number">{{ amount }}</span>
@@ -116,6 +119,48 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Additional Nutrition Information -->
+                <div v-if="hasAdditionalNutrition" class="nutrition-additional">
+                    <h3>Additional Nutrition</h3>
+                    <div class="additional-grid">
+                        <div v-if="product.fiber > 0" class="additional-item">
+                            <div class="additional-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="#8b5cf6">
+                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                </svg>
+                            </div>
+                            <div class="additional-info">
+                                <div class="additional-label">Fiber</div>
+                                <div class="additional-value">{{ Math.round(product.fiber * amount) }}g</div>
+                            </div>
+                        </div>
+                        <div v-if="product.sugar > 0" class="additional-item">
+                            <div class="additional-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="#f59e0b">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                </svg>
+                            </div>
+                            <div class="additional-info">
+                                <div class="additional-label">Sugar</div>
+                                <div class="additional-value">{{ Math.round(product.sugar * amount) }}g</div>
+                            </div>
+                        </div>
+                        <div v-if="product.salt > 0" class="additional-item">
+                            <div class="additional-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="#64748b">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <path d="M16.2 7.8l-2 6.3-6.3 2 2-6.3 6.3-2z"/>
+                                </svg>
+                            </div>
+                            <div class="additional-info">
+                                <div class="additional-label">Salt</div>
+                                <div class="additional-value">{{ Math.round(product.salt * amount * 100) / 100 }}g</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="nutrition-health">
                     <div class="health-icon">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="#22c55e">
@@ -215,6 +260,18 @@
                         <label>Fats (g)</label>
                         <input v-model.number="editedProduct.fats" type="number" step="0.1">
                     </div>
+                    <div class="form-group">
+                        <label>Fiber (g)</label>
+                        <input v-model.number="editedProduct.fiber" type="number" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>Sugar (g)</label>
+                        <input v-model.number="editedProduct.sugar" type="number" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>Salt (g)</label>
+                        <input v-model.number="editedProduct.salt" type="number" step="0.01">
+                    </div>
                 </div>
                 <div class="modal-actions">
                     <button class="cancel-btn" @click="showFixModal = false">Cancel</button>
@@ -245,20 +302,41 @@ const fetchProduct = async (barcode) => {
         const cachedProduct = await BarcodeCache.get(barcode);
         if (cachedProduct) {
             console.log('Using cached product data for barcode:', barcode);
+            
+            // Handle both old and new format in cache
+            let calories, protein, carbs, fats;
+            if (cachedProduct.nutrition?.per100g) {
+                // New format
+                const nutrition = cachedProduct.nutrition.per100g;
+                calories = nutrition.calories || 0;
+                protein = nutrition.protein || 0;
+                carbs = nutrition.carbs || 0;
+                fats = nutrition.fats || 0;
+            } else {
+                // Old format (backward compatibility)
+                calories = cachedProduct.calories || 0;
+                protein = cachedProduct.protein || 0;
+                carbs = cachedProduct.carbs || 0;
+                fats = cachedProduct.fats || 0;
+            }
+            
             product.value = {
-                ...cachedProduct,
-                // Ensure all required fields are present
                 name: cachedProduct.name || 'Unknown Product',
-                calories: cachedProduct.calories || 0,
-                protein: cachedProduct.protein || 0,
-                carbs: cachedProduct.carbs || 0,
-                fats: cachedProduct.fats || 0,
+                calories,
+                protein,
+                carbs,
+                fats,
                 healthScore: cachedProduct.healthScore || 5,
                 ingredients: cachedProduct.ingredients || [],
                 barcode: cachedProduct.barcode || barcode,
                 source: cachedProduct.source || 'Cache',
                 brand: cachedProduct.brand || null,
-                image: cachedProduct.image || null
+                image: cachedProduct.image || null,
+                servingSize: cachedProduct.servingSize || null,
+                servingUnit: cachedProduct.servingUnit || null,
+                packageSize: cachedProduct.packageSize || null,
+                nutritionPer100g: cachedProduct.nutritionPer100g || null,
+                nutritionPerServing: cachedProduct.nutritionPerServing || null
             };
             editedProduct.value = { ...product.value };
             return;
@@ -278,21 +356,29 @@ const fetchProduct = async (barcode) => {
             throw new Error('Product not found in KaloriQ API');
         }
 
-        // KaloriQ API already provides data in the correct format
+        // Map new API response format to internal format
+        const nutrition = data.product.nutrition?.perServing || data.product.nutrition?.per100g || {};
         const productData = {
-            ...data.product,
-            // Ensure all required fields are present
             name: data.product.name || 'Unknown Product',
-            calories: data.product.calories || 0,
-            protein: data.product.protein || 0,
-            carbs: data.product.carbs || 0,
-            fats: data.product.fats || 0,
+            calories: nutrition.calories || 0,
+            protein: nutrition.protein || 0,
+            carbs: nutrition.carbs || 0,
+            fats: nutrition.fats || 0,
+            fiber: nutrition.fiber || 0,
+            sugar: nutrition.sugar || 0,
+            salt: nutrition.salt || 0,
             healthScore: data.product.healthScore || 5,
             ingredients: data.product.ingredients || [],
             barcode: data.product.barcode || barcode,
             source: data.product.source || 'KaloriQ',
             brand: data.product.brand || null,
-            image: data.product.image || null
+            image: data.product.image || null,
+            servingSize: data.product.servingSize || null,
+            servingUnit: data.product.servingUnit || null,
+            packageSize: data.product.packageSize || null,
+            // Store both nutrition formats for potential future use
+            nutritionPer100g: data.product.nutrition?.per100g || null,
+            nutritionPerServing: data.product.nutrition?.perServing || null
         };
 
         product.value = productData;
@@ -314,11 +400,17 @@ const fetchProduct = async (barcode) => {
             protein: 0,
             carbs: 0,
             fats: 0,
+            fiber: 0,
+            sugar: 0,
+            salt: 0,
             healthScore: 5,
             ingredients: [],
             barcode: barcode,
             source: 'Manual',
-            brand: null
+            brand: null,
+            servingSize: null,
+            servingUnit: null,
+            packageSize: null
         };
         editedProduct.value = { ...product.value };
     }
@@ -348,6 +440,9 @@ onMounted(() => {
                     protein: total.protein || firstFood.protein || 0,
                     carbs: total.carbs || firstFood.carbs || 0,
                     fats: total.fat || firstFood.fats || firstFood.fat || 0,
+                    fiber: total.fiber || firstFood.fiber || 0,
+                    sugar: total.sugar || firstFood.sugar || 0,
+                    salt: total.salt || firstFood.salt || 0,
                     healthScore: foodData.healthScore || 7,
                     ingredients: foodData.foods.map(f => `${f.name} (${f.amount || 'ca. 100g'})`),
                     type: 'food',
@@ -365,6 +460,9 @@ onMounted(() => {
                     protein: foodData.protein || 0,
                     carbs: foodData.carbs || 0,
                     fats: foodData.fats || 0,
+                    fiber: foodData.fiber || 0,
+                    sugar: foodData.sugar || 0,
+                    salt: foodData.salt || 0,
                     healthScore: foodData.healthScore || 7,
                     ingredients: foodData.ingredients || [],
                     type: 'food'
@@ -383,6 +481,9 @@ onMounted(() => {
                 protein: 0,
                 carbs: 0,
                 fats: 0,
+                fiber: 0,
+                sugar: 0,
+                salt: 0,
                 healthScore: 5,
                 ingredients: [],
                 type: 'food',
@@ -414,6 +515,14 @@ const backgroundStyle = computed(() => {
             position: 'relative',
             zIndex: 1,
         };
+});
+
+const hasAdditionalNutrition = computed(() => {
+    return product.value && (
+        (product.value.fiber && product.value.fiber > 0) ||
+        (product.value.sugar && product.value.sugar > 0) ||
+        (product.value.salt && product.value.salt > 0)
+    );
 });
 // /        borderBottomLeftRadius: '32px',
 //    borderBottomRightRadius: '32px',
@@ -587,10 +696,17 @@ async function saveAndReturn() {
 
 .product-header {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     margin-bottom: 24px;
     gap: 16px;
+}
+
+.product-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .nutrition-name {
@@ -599,7 +715,27 @@ async function saveAndReturn() {
     margin: 0;
     word-break: break-word;
     color: #1a1a1a;
-    flex: 1;
+    line-height: 1.2;
+}
+
+.nutrition-brand {
+    font-size: 16px;
+    font-weight: 500;
+    color: #666;
+    margin: 0;
+}
+
+.nutrition-serving {
+    font-size: 14px;
+    font-weight: 500;
+    color: #007aff;
+    margin: 0;
+}
+
+.package-size {
+    color: #666;
+    font-weight: 400;
+    margin-left: 4px;
 }
 
 .nutrition-amount {
@@ -730,6 +866,62 @@ async function saveAndReturn() {
     display: flex;
     align-items: center;
     gap: 16px;
+}
+
+/* Additional Nutrition */
+.nutrition-additional {
+    margin-bottom: 24px;
+}
+
+.nutrition-additional h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #1a1a1a;
+}
+
+.additional-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+}
+
+.additional-item {
+    background: #f8f9fa;
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 60px;
+}
+
+.additional-icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.additional-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.additional-label {
+    color: #666;
+    font-size: 12px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.additional-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0;
 }
 
 .health-icon {
@@ -1135,6 +1327,20 @@ async function saveAndReturn() {
     .nutrition-actions {
         margin-bottom: 24px;
     }
+
+    .additional-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .additional-item {
+        padding: 12px;
+        min-height: 50px;
+    }
+
+    .additional-value {
+        font-size: 14px;
+    }
 }
 
 @media (max-width: 360px) {
@@ -1150,6 +1356,14 @@ async function saveAndReturn() {
 
     .macro-value {
         font-size: 16px;
+    }
+
+    .nutrition-brand {
+        font-size: 14px;
+    }
+
+    .nutrition-serving {
+        font-size: 12px;
     }
 }
 </style>
