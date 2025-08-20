@@ -25,9 +25,11 @@
 	<key>NSCameraUsageDescription</key>
 	<string>pls</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>pls</string>
+	<string>Allow camera access to scan meals and barcodes.
+</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>pls</string>
+	<string>Allow camera access to scan meals and barcodes.
+</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

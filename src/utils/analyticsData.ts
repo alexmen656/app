@@ -117,40 +117,104 @@ export class AnalyticsManager {
     };
   }
 
-  // Get data for the last 7 days
+  // Get data for the last N days
   static async getWeeklyData(): Promise<WeeklyData[]> {
-    const weekData: WeeklyData[] = [];
+    return this.getPeriodData('week');
+  }
+
+  // Get data for different periods
+  static async getPeriodData(period: 'week' | 'month' | 'year'): Promise<WeeklyData[]> {
+    const periodData: WeeklyData[] = [];
     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     
-    for (let i = 6; i >= 0; i--) {
-      const date = new Date();
-      date.setDate(date.getDate() - i);
-      
-      const dayData = await this.getDayData(date);
-      const dayName = dayNames[date.getDay()];
-      
-      weekData.push({
-        day: dayName,
-        calories: dayData.calories
-      });
+    switch (period) {
+      case 'week':
+        // 7 days
+        for (let i = 6; i >= 0; i--) {
+          const date = new Date();
+          date.setDate(date.getDate() - i);
+          const dayData = await this.getDayData(date);
+          periodData.push({
+            day: dayNames[date.getDay()],
+            calories: dayData.calories
+          });
+        }
+        break;
+        
+      case 'month':
+        // 4 weeks (show weekly averages)
+        for (let i = 3; i >= 0; i--) {
+          const endDate = new Date();
+          endDate.setDate(endDate.getDate() - (i * 7));
+          const startDate = new Date(endDate);
+          startDate.setDate(startDate.getDate() - 6);
+          
+          let totalCalories = 0;
+          let daysCount = 0;
+          
+          for (let j = 0; j < 7; j++) {
+            const date = new Date(startDate);
+            date.setDate(startDate.getDate() + j);
+            const dayData = await this.getDayData(date);
+            totalCalories += dayData.calories;
+            if (dayData.calories > 0) daysCount++;
+          }
+          
+          const avgCalories = daysCount > 0 ? Math.round(totalCalories / 7) : 0;
+          const weekLabel = `W${4-i}`;
+          
+          periodData.push({
+            day: weekLabel,
+            calories: avgCalories
+          });
+        }
+        break;
+        
+      case 'year':
+        // 12 months
+        for (let i = 11; i >= 0; i--) {
+          const date = new Date();
+          date.setMonth(date.getMonth() - i);
+          date.setDate(1);
+          
+          // Calculate average for the month
+          const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+          let totalCalories = 0;
+          let daysCount = 0;
+          
+          for (let day = 1; day <= daysInMonth; day++) {
+            const dayDate = new Date(date.getFullYear(), date.getMonth(), day);
+            if (dayDate <= new Date()) { // Only include past days
+              const dayData = await this.getDayData(dayDate);
+              totalCalories += dayData.calories;
+              if (dayData.calories > 0) daysCount++;
+            }
+          }
+          
+          const avgCalories = daysCount > 0 ? Math.round(totalCalories / Math.max(daysCount, 1)) : 0;
+          
+          periodData.push({
+            day: monthNames[date.getMonth()],
+            calories: avgCalories
+          });
+        }
+        break;
     }
 
-    return weekData;
+    return periodData;
   }
 
   // Calculate analytics data
-  static async getAnalyticsData(): Promise<AnalyticsData> {
-    const weeklyData = await this.getWeeklyData();
+  static async getAnalyticsData(period: 'week' | 'month' | 'year' = 'week'): Promise<AnalyticsData> {
+    const weeklyData = await this.getPeriodData(period);
     
     // Calculate average calories
     const totalCalories = weeklyData.reduce((sum, day) => sum + day.calories, 0);
-    const avgCalories = Math.round(totalCalories / 7);
+    const avgCalories = Math.round(totalCalories / weeklyData.length);
 
-    // Calculate days on track (within 200 calories of goal)
-    const tolerance = 200;
-    const daysOnTrack = weeklyData.filter(day => 
-      Math.abs(day.calories - dailyGoals.calories) <= tolerance
-    ).length;
+    // Calculate days on track (days with at least some calories logged)
+    const daysOnTrack = weeklyData.filter(day => day.calories > 0).length;
 
     // Get today's data for macro breakdown
     const todayData = await this.getDayData(new Date());

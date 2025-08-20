@@ -28,7 +28,7 @@
                         <h1 class="nutrition-name">{{ capitalizeIfLetter(product.name) }}</h1>
                         <!--<div v-if="product.brand" class="nutrition-brand">{{ product.brand }}</div>-->
                         <div v-if="product.servingSize && product.servingUnit" class="nutrition-serving">
-                            Serving: {{ product.servingSize }}{{ product.servingUnit }}
+                            {{ $t('nutrition.serving') }}: {{ product.servingSize }}{{ product.servingUnit }}
                             <!--<span v-if="product.packageSize" class="package-size">({{ product.packageSize }})</span>-->
                         </div>
                     </div>
@@ -47,7 +47,7 @@
                             </svg>
                         </div>
                         <div class="macro-info">
-                            <div class="macro-label">Calories</div>
+                            <div class="macro-label">{{ $t('nutrition.calories') }}</div>
                             <div class="macro-value">{{ Math.round(product.calories * amount) }}</div>
                             <button class="macro-edit" @click="editMacro('calories')">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -67,7 +67,7 @@
                             </svg>
                         </div>
                         <div class="macro-info">
-                            <div class="macro-label">Protein</div>
+                            <div class="macro-label">{{ $t('nutrition.protein') }}</div>
                             <div class="macro-value">{{ Math.round(product.protein * amount) }}g</div>
                             <button class="macro-edit" @click="editMacro('protein')">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -87,7 +87,7 @@
                             </svg>
                         </div>
                         <div class="macro-info">
-                            <div class="macro-label">Carbs</div>
+                            <div class="macro-label">{{ $t('nutrition.carbs') }}</div>
                             <div class="macro-value">{{ Math.round(product.carbs * amount) }}g</div>
                             <button class="macro-edit" @click="editMacro('carbs')">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -107,7 +107,7 @@
                             </svg>
                         </div>
                         <div class="macro-info">
-                            <div class="macro-label">Fat</div>
+                            <div class="macro-label">{{ $t('nutrition.fat') }}</div>
                             <div class="macro-value">{{ Math.round(product.fats * amount) }}g</div>
                             <button class="macro-edit" @click="editMacro('fats')">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -123,7 +123,7 @@
                 
                 <!-- Additional Nutrition Information -->
                 <div v-if="hasAdditionalNutrition" class="nutrition-additional">
-                    <h3>Zusätzliche Nährstoffe</h3>
+                    <h3>{{ $t('nutrition.additionalNutrients') }}</h3>
                     <div class="additional-grid">
                         <div v-if="product.fiber > 0" class="additional-item">
                             <div class="additional-icon">
@@ -132,7 +132,7 @@
                                 </svg>
                             </div>
                             <div class="additional-info">
-                                <div class="additional-label">Ballaststoffe</div>
+                                <div class="additional-label">{{ $t('nutrition.fiber') }}</div>
                                 <div class="additional-value">{{ Math.round(product.fiber * amount) }}g</div>
                             </div>
                         </div>
@@ -143,7 +143,7 @@
                                 </svg>
                             </div>
                             <div class="additional-info">
-                                <div class="additional-label">Zucker</div>
+                                <div class="additional-label">{{ $t('nutrition.sugar') }}</div>
                                 <div class="additional-value">{{ Math.round(product.sugar * amount) }}g</div>
                             </div>
                         </div>
@@ -158,7 +158,7 @@
                         </svg>
                     </div>
                     <div class="health-info">
-                        <div class="health-label">Health Score</div>
+                        <div class="health-label">{{ $t('nutrition.healthScore') }}</div>
                         <div class="health-score">{{ product.healthScore }}/10</div>
                     </div>
                     <div class="health-bar">
@@ -166,13 +166,13 @@
                     </div>
                 </div>
                 <div class="nutrition-ingredients" v-if="product.ingredients && product.ingredients.length > 0">
-                    <h3>Ingredients</h3>
+                    <h3>{{ $t('nutrition.ingredients') }}</h3>
                     <div class="ingredient-text">{{ product.ingredients.join(', ') }}</div>
                 </div>
                 
                 <!-- Detailed food breakdown for analyzed dishes -->
                 <div class="nutrition-foods" v-if="product.foods && product.foods.length > 1">
-                    <h3>Erkannte Zutaten</h3>
+                    <h3>{{ $t('nutrition.detectedIngredients') }}</h3>
                     <div class="foods-list">
                         <div v-for="food in product.foods" :key="food.name" class="food-item">
                             <div class="food-name">{{ food.name }}</div>
@@ -190,18 +190,18 @@
                 <!-- Analysis confidence and notes -->
                 <div class="nutrition-analysis" v-if="product.type === 'food' && (product.confidence || product.notes)">
                     <div class="analysis-confidence" v-if="product.confidence">
-                        <div class="confidence-label">Analyse-Vertrauen</div>
+                        <div class="confidence-label">{{ $t('nutrition.analysisConfidence') }}</div>
                         <div class="confidence-badge" :class="product.confidence">
-                            {{ product.confidence === 'hoch' ? 'Hoch' : product.confidence === 'medium' ? 'Mittel' : 'Niedrig' }}
+                            {{ product.confidence === 'hoch' ? $t('nutrition.high') : product.confidence === 'medium' ? $t('nutrition.medium') : $t('nutrition.low') }}
                         </div>
                     </div>
                     <div class="analysis-notes" v-if="product.notes">
-                        <div class="notes-label">Hinweise</div>
+                        <div class="notes-label">{{ $t('nutrition.notes') }}</div>
                         <div class="notes-text">{{ product.notes }}</div>
                     </div>
                     <div class="analysis-error" v-if="product.analysisError">
                         <div class="error-icon">⚠️</div>
-                        <div class="error-text">Die automatische Analyse konnte nicht durchgeführt werden. Bitte korrigiere die Werte manuell.</div>
+                        <div class="error-text">{{ $t('nutrition.analysisError') }}</div>
                     </div>
                 </div>
                 <div class="nutrition-actions">
@@ -211,9 +211,9 @@
                             <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
-                        Fix Results
+                        {{ $t('nutrition.fixResults') }}
                     </button>
-                    <button class="done-btn" @click="saveAndReturn">Done</button>
+                    <button class="done-btn" @click="saveAndReturn">{{ $t('nutrition.done') }}</button>
                 </div>
             </div>
         </div>
@@ -221,47 +221,47 @@
         <!-- Loading State -->
         <div v-else class="nutrition-loading">
             <div class="loading-spinner"></div>
-            <span>Loading...</span>
+            <span>{{ $t('nutrition.loading') }}</span>
         </div>
 
         <!-- Details Modal -->
         <div v-if="showDetailsModal" class="modal-overlay" @click="showDetailsModal = false">
             <div class="details-modal" @click.stop>
                 <div class="details-header">
-                    <h3>Alle Nährstoffinformationen</h3>
+                    <h3>{{ $t('nutrition.allNutritionInfo') }}</h3>
                     <button @click="showDetailsModal = false" class="close-btn">×</button>
                 </div>
                 <div class="details-content">
                     <!-- Main Nutrition Values -->
                     <div class="details-section">
-                        <h4>Hauptnährstoffe ({{ amount }}x Portion)</h4>
+                        <h4>{{ $t('nutrition.mainNutrients') }} ({{ amount }}x {{ $t('nutrition.portion') }})</h4>
                         <div class="details-grid">
                             <div class="detail-item">
-                                <span class="detail-label">Kalorien</span>
+                                <span class="detail-label">{{ $t('nutrition.calories') }}</span>
                                 <span class="detail-value">{{ Math.round(product.calories * amount) }} kcal</span>
                             </div>
                             <div class="detail-item">
-                                <span class="detail-label">Protein</span>
+                                <span class="detail-label">{{ $t('nutrition.protein') }}</span>
                                 <span class="detail-value">{{ Math.round(product.protein * amount) }}g</span>
                             </div>
                             <div class="detail-item">
-                                <span class="detail-label">Kohlenhydrate</span>
+                                <span class="detail-label">{{ $t('nutrition.carbs') }}</span>
                                 <span class="detail-value">{{ Math.round(product.carbs * amount) }}g</span>
                             </div>
                             <div class="detail-item">
-                                <span class="detail-label">Fett</span>
+                                <span class="detail-label">{{ $t('nutrition.fat') }}</span>
                                 <span class="detail-value">{{ Math.round(product.fats * amount) }}g</span>
                             </div>
                             <div v-if="product.fiber > 0" class="detail-item">
-                                <span class="detail-label">Ballaststoffe</span>
+                                <span class="detail-label">{{ $t('nutrition.fiber') }}</span>
                                 <span class="detail-value">{{ Math.round(product.fiber * amount) }}g</span>
                             </div>
                             <div v-if="product.sugar > 0" class="detail-item">
-                                <span class="detail-label">Zucker</span>
+                                <span class="detail-label">{{ $t('nutrition.sugar') }}</span>
                                 <span class="detail-value">{{ Math.round(product.sugar * amount) }}g</span>
                             </div>
                             <div v-if="product.salt > 0" class="detail-item">
-                                <span class="detail-label">Salz</span>
+                                <span class="detail-label">{{ $t('nutrition.salt') }}</span>
                                 <span class="detail-value">{{ Math.round(product.salt * amount * 100) / 100 }}g</span>
                             </div>
                         </div>
@@ -269,34 +269,34 @@
 
                     <!-- Per 100g Values -->
                     <div v-if="product.nutritionPer100g" class="details-section">
-                        <h4>Pro 100g</h4>
+                        <h4>{{ $t('nutrition.per100g') }}</h4>
                         <div class="details-grid">
                             <div class="detail-item">
-                                <span class="detail-label">Kalorien</span>
+                                <span class="detail-label">{{ $t('nutrition.calories') }}</span>
                                 <span class="detail-value">{{ product.nutritionPer100g.calories || 0 }} kcal</span>
                             </div>
                             <div class="detail-item">
-                                <span class="detail-label">Protein</span>
+                                <span class="detail-label">{{ $t('nutrition.protein') }}</span>
                                 <span class="detail-value">{{ product.nutritionPer100g.protein || 0 }}g</span>
                             </div>
                             <div class="detail-item">
-                                <span class="detail-label">Kohlenhydrate</span>
+                                <span class="detail-label">{{ $t('nutrition.carbs') }}</span>
                                 <span class="detail-value">{{ product.nutritionPer100g.carbs || 0 }}g</span>
                             </div>
                             <div class="detail-item">
-                                <span class="detail-label">Fett</span>
+                                <span class="detail-label">{{ $t('nutrition.fat') }}</span>
                                 <span class="detail-value">{{ product.nutritionPer100g.fats || 0 }}g</span>
                             </div>
                             <div v-if="product.nutritionPer100g.fiber > 0" class="detail-item">
-                                <span class="detail-label">Ballaststoffe</span>
+                                <span class="detail-label">{{ $t('nutrition.fiber') }}</span>
                                 <span class="detail-value">{{ product.nutritionPer100g.fiber }}g</span>
                             </div>
                             <div v-if="product.nutritionPer100g.sugar > 0" class="detail-item">
-                                <span class="detail-label">Zucker</span>
+                                <span class="detail-label">{{ $t('nutrition.sugar') }}</span>
                                 <span class="detail-value">{{ product.nutritionPer100g.sugar }}g</span>
                             </div>
                             <div v-if="product.nutritionPer100g.salt > 0" class="detail-item">
-                                <span class="detail-label">Salz</span>
+                                <span class="detail-label">{{ $t('nutrition.salt') }}</span>
                                 <span class="detail-value">{{ product.nutritionPer100g.salt }}g</span>
                             </div>
                         </div>
@@ -304,34 +304,34 @@
 
                     <!-- Per Serving Values -->
                     <div v-if="product.nutritionPerServing" class="details-section">
-                        <h4>Pro Portion ({{ product.servingSize }}{{ product.servingUnit }})</h4>
+                        <h4>{{ $t('nutrition.perServing') }} ({{ product.servingSize }}{{ product.servingUnit }})</h4>
                         <div class="details-grid">
                             <div class="detail-item">
-                                <span class="detail-label">Kalorien</span>
+                                <span class="detail-label">{{ $t('nutrition.calories') }}</span>
                                 <span class="detail-value">{{ product.nutritionPerServing.calories || 0 }} kcal</span>
                             </div>
                             <div class="detail-item">
-                                <span class="detail-label">Protein</span>
+                                <span class="detail-label">{{ $t('nutrition.protein') }}</span>
                                 <span class="detail-value">{{ product.nutritionPerServing.protein || 0 }}g</span>
                             </div>
                             <div class="detail-item">
-                                <span class="detail-label">Kohlenhydrate</span>
+                                <span class="detail-label">{{ $t('nutrition.carbs') }}</span>
                                 <span class="detail-value">{{ product.nutritionPerServing.carbs || 0 }}g</span>
                             </div>
                             <div class="detail-item">
-                                <span class="detail-label">Fett</span>
+                                <span class="detail-label">{{ $t('nutrition.fat') }}</span>
                                 <span class="detail-value">{{ product.nutritionPerServing.fats || 0 }}g</span>
                             </div>
                             <div v-if="product.nutritionPerServing.fiber > 0" class="detail-item">
-                                <span class="detail-label">Ballaststoffe</span>
+                                <span class="detail-label">{{ $t('nutrition.fiber') }}</span>
                                 <span class="detail-value">{{ product.nutritionPerServing.fiber }}g</span>
                             </div>
                             <div v-if="product.nutritionPerServing.sugar > 0" class="detail-item">
-                                <span class="detail-label">Zucker</span>
+                                <span class="detail-label">{{ $t('nutrition.sugar') }}</span>
                                 <span class="detail-value">{{ product.nutritionPerServing.sugar }}g</span>
                             </div>
                             <div v-if="product.nutritionPerServing.salt > 0" class="detail-item">
-                                <span class="detail-label">Salz</span>
+                                <span class="detail-label">{{ $t('nutrition.salt') }}</span>
                                 <span class="detail-value">{{ product.nutritionPerServing.salt }}g</span>
                             </div>
                         </div>
@@ -339,26 +339,26 @@
 
                     <!-- Product Information -->
                     <div class="details-section">
-                        <h4>Produktinformationen</h4>
+                        <h4>{{ $t('nutrition.productInfo') }}</h4>
                         <div class="product-details">
                             <div v-if="product.brand" class="product-detail">
-                                <span class="detail-label">Marke</span>
+                                <span class="detail-label">{{ $t('nutrition.brand') }}</span>
                                 <span class="detail-value">{{ product.brand }}</span>
                             </div>
                             <div v-if="product.packageSize" class="product-detail">
-                                <span class="detail-label">Packungsgröße</span>
+                                <span class="detail-label">{{ $t('nutrition.packageSize') }}</span>
                                 <span class="detail-value">{{ product.packageSize }}</span>
                             </div>
                             <div v-if="product.barcode" class="product-detail">
-                                <span class="detail-label">Barcode</span>
+                                <span class="detail-label">{{ $t('nutrition.barcode') }}</span>
                                 <span class="detail-value">{{ product.barcode }}</span>
                             </div>
                             <div class="product-detail">
-                                <span class="detail-label">Health Score</span>
+                                <span class="detail-label">{{ $t('nutrition.healthScore') }}</span>
                                 <span class="detail-value">{{ product.healthScore }}/10</span>
                             </div>
                             <div class="product-detail">
-                                <span class="detail-label">Quelle</span>
+                                <span class="detail-label">{{ $t('nutrition.source') }}</span>
                                 <span class="detail-value">{{ product.source }}</span>
                             </div>
                         </div>
@@ -417,11 +417,13 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { BarcodeCache, ScanHistory } from '../utils/storage';
 import { WidgetDataManager, StreakManager } from '../utils/widgetData';
 
 const route = useRoute();
 const router = useRouter();
+const { t } = useI18n();
 const product = ref(null);
 const amount = ref(1);
 const showFixModal = ref(false);

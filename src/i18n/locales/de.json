@@ -38,6 +38,7 @@
     }
   },
   "nutrition": {
+    "source": "Quelle",
     "calories": "Kalorien",
     "protein": "Protein",
     "carbs": "Kohlenhydrate",
@@ -56,7 +57,32 @@
       "high": "Hohe Sicherheit",
       "medium": "Mittlere Sicherheit",
       "low": "Niedrige Sicherheit"
-    }
+    },
+    "additionalNutrients": "Zusätzliche Nährstoffe",
+    "healthScore": "Gesundheitswert",
+    "detectedIngredients": "Erkannte Zutaten",
+    "analysisConfidence": "Analyse-Vertrauen",
+    "high": "Hoch",
+    "medium": "Mittel",
+    "low": "Niedrig",
+    "notes": "Hinweise",
+    "analysisError": "Die automatische Analyse konnte nicht durchgeführt werden. Bitte korrigiere die Werte manuell.",
+    "fixResults": "Ergebnisse korrigieren",
+    "done": "Fertig",
+    "loading": "Lädt...",
+    "allNutritionInfo": "Alle Nährstoffinformationen",
+    "mainNutrients": "Hauptnährstoffe",
+    "portion": "Portion",
+    "per100g": "Pro 100g",
+    "perServing": "Pro Portion",
+    "fat": "Fett",
+    "salt": "Salz",
+    "productInfo": "Produktinformationen",
+    "brand": "Marke",
+    "packageSize": "Packungsgröße",
+    "barcode": "Barcode",
+    "category": "Kategorie",
+    "origin": "Herkunft"
   },
   "settings": {
     "dailyGoals": "Tagesziele",
