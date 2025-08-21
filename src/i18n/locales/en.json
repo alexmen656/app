@@ -148,8 +148,8 @@
     "goalSubtitle": "Choose your main goal so we can optimize your nutrition plan"
   },
   "paywall": {
-    "title": "Premium Access Required",
-    "subtitle": "Subscribe to unlock all features and start tracking your nutrition journey",
+    "title": "Get Started",
+    "subtitle": "A subscription gives you full access to meal tracking and nutrition insights.",
     "choosePlan": "Choose Your Plan",
     "mostPopular": "Most Popular",
     "features": {
@@ -170,7 +170,8 @@
     "redeemCoupon": "Redeem Coupon",
     "termsOfService": "Terms of Service",
     "privacyPolicy": "Privacy Policy",
-    "savingsText": "Save 50% compared to monthly"
+    "savingsText": "Save 50% compared to monthly",
+    "redeemCode": "Redeem Code"
   },
   "coupon": {
     "title": "Redeem Coupon",

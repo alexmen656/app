@@ -148,8 +148,8 @@
     "goalSubtitle": "Wählen Sie Ihr Hauptziel aus, damit wir Ihre Ernährung optimal anpassen können"
   },
   "paywall": {
-    "title": "Premium-Zugang erforderlich",
-    "subtitle": "Abonnieren Sie, um alle Funktionen freizuschalten und Ihre Ernährungsreise zu beginnen",
+    "title": "Jetzt starten",
+    "subtitle": "Mit einem Abo erhältst du vollen Zugriff auf alle Funktionen der App.",
     "choosePlan": "Wählen Sie Ihren Plan",
     "mostPopular": "Am beliebtesten",
     "features": {
@@ -170,7 +170,8 @@
     "redeemCoupon": "Gutschein einlösen",
     "termsOfService": "Nutzungsbedingungen",
     "privacyPolicy": "Datenschutzrichtlinie",
-    "savingsText": "Sparen Sie 50% im Vergleich zu monatlich"
+    "savingsText": "Sparen Sie 50% im Vergleich zu monatlich",
+    "redeemCode": "Gutschein einlösen"
   },
   "coupon": {
     "title": "Gutschein einlösen",
