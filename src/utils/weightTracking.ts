@@ -98,15 +98,23 @@ export class WeightTracker {
     }
   }
 
-  // Get BMI category text in German
-  static getBMICategoryText(category: BMIData['category']): string {
+  // Get BMI category text
+  static getBMICategoryText(category: BMIData['category'], language: 'en' | 'de' = 'de'): string {
     const categories = {
-      underweight: 'Untergewicht',
-      normal: 'Normalgewicht',
-      overweight: 'Übergewicht',
-      obese: 'Adipositas'
+      en: {
+        underweight: 'Underweight',
+        normal: 'Normal weight',
+        overweight: 'Overweight',
+        obese: 'Obesity'
+      },
+      de: {
+        underweight: 'Untergewicht',
+        normal: 'Normalgewicht',
+        overweight: 'Übergewicht',
+        obese: 'Adipositas'
+      }
     }
-    return categories[category]
+    return categories[language][category]
   }
 
   // Calculate weight progress percentage

@@ -222,80 +222,132 @@
       </div>
       
       <div v-if="analyticsData?.weightChartData && analyticsData.weightChartData.length > 1" class="weight-chart-container">
+        <!-- Period Selector -->
+        <div class="weight-period-selector">
+          <button 
+            v-for="period in weightPeriods" 
+            :key="period.value"
+            @click="selectedWeightPeriod = period.value"
+            :class="['period-btn', { active: selectedWeightPeriod === period.value }]"
+          >
+            {{ period.label }}
+          </button>
+        </div>
+
+        <!-- Goal Progress Card -->
+        <div v-if="analyticsData?.goalProgress.weight.target" class="weight-goal-card">
+          <div class="goal-header">
+            <h4>{{ $t('analytics.goalProgress') }}</h4>
+            <div class="goal-percentage">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              {{ Math.round(analyticsData?.goalProgress.weight.percentage || 0) }}% {{ $t('common.current').toLowerCase() }}
+            </div>
+          </div>
+          
+          <div class="weight-progress-line">
+            <div class="progress-track">
+              <div 
+                class="progress-fill" 
+                :style="{ width: Math.min(analyticsData?.goalProgress.weight.percentage || 0, 100) + '%' }"
+              ></div>
+              <div class="progress-indicator" :style="{ left: Math.min(analyticsData?.goalProgress.weight.percentage || 0, 100) + '%' }"></div>
+            </div>
+            <div class="weight-labels">
+              <span class="start-weight">{{ analyticsData?.goalProgress.weight.current || 0 }}{{ $t('analytics.kg') }}</span>
+              <span class="target-weight">{{ analyticsData?.goalProgress.weight.target || 0 }}{{ $t('analytics.kg') }}</span>
+            </div>
+          </div>
+          
+          <div class="motivational-text">
+            {{ getMotivationalMessage(analyticsData?.goalProgress.weight.percentage || 0) }}
+          </div>
+        </div>
+
+        <!-- Enhanced Chart -->
         <div class="weight-chart">
-          <div class="weight-chart-grid">
-            <!-- Grid lines for better readability -->
-            <div class="chart-grid-lines">
-              <div v-for="i in 4" :key="i" class="grid-line" :style="{ bottom: (i * 25) + '%' }"></div>
+          <div class="chart-y-axis">
+            <div v-for="(label, index) in getYAxisLabels()" :key="index" class="y-axis-label">
+              {{ label }}{{ $t('analytics.kg') }}
+            </div>
+          </div>
+          
+          <div class="weight-chart-main">
+            <div class="chart-grid">
+              <div v-for="i in 5" :key="i" class="grid-line-horizontal"></div>
+              <div v-for="i in Math.min(analyticsData.weightChartData.length, 8)" :key="i" class="grid-line-vertical"></div>
             </div>
             
-            <!-- SVG for the chart lines and points -->
             <svg class="weight-chart-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
-              <!-- Chart area background -->
-              <rect x="0" y="0" width="100" height="100" fill="rgba(255,255,255,0.02)" rx="2"/>
-              
-              <!-- Chart lines -->
-              <polyline
-                :points="getWeightChartPoints()"
-                stroke="#42a5f5"
-                stroke-width="0.8"
-                fill="none"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
+              <!-- Gradient definitions -->
+              <defs>
+                <linearGradient id="weightAreaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" style="stop-color:#42a5f5;stop-opacity:0.3" />
+                  <stop offset="50%" style="stop-color:#42a5f5;stop-opacity:0.1" />
+                  <stop offset="100%" style="stop-color:#42a5f5;stop-opacity:0" />
+                </linearGradient>
+                <filter id="glow">
+                  <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+                  <feMerge> 
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
               
               <!-- Chart area fill -->
               <polygon
                 :points="getWeightChartAreaPoints()"
-                fill="url(#weightGradient)"
-                opacity="0.3"
+                fill="url(#weightAreaGradient)"
               />
               
-              <!-- Gradient definition -->
-              <defs>
-                <linearGradient id="weightGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" style="stop-color:#42a5f5;stop-opacity:0.4" />
-                  <stop offset="100%" style="stop-color:#42a5f5;stop-opacity:0" />
-                </linearGradient>
-              </defs>
+              <!-- Main line -->
+              <polyline
+                :points="getWeightChartPoints()"
+                stroke="#42a5f5"
+                stroke-width="1.2"
+                fill="none"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                filter="url(#glow)"
+              />
               
-              <!-- Chart points -->
+              <!-- Data points -->
               <circle
-                v-for="(point, index) in analyticsData.weightChartData"
+                v-for="(point, index) in getFilteredWeightData()"
                 :key="index"
-                :cx="(index / Math.max(analyticsData.weightChartData.length - 1, 1)) * 100"
+                :cx="(index / Math.max(getFilteredWeightData().length - 1, 1)) * 100"
                 :cy="100 - getWeightPosition(point.weight)"
-                r="1.8"
-                fill="#42a5f5"
-                stroke="#1e1e2e"
-                stroke-width="0.5"
-                class="weight-point-svg"
+                r="2"
+                fill="#ffffff"
+                stroke="#42a5f5"
+                stroke-width="2"
+                class="weight-point"
+                @click="showWeightDetails(point)"
               >
                 <title>{{ point.weight }}{{ $t('analytics.kg') }} - {{ formatChartDate(point.date) }}</title>
               </circle>
+              
+              <!-- Trend line (if showing trend) -->
+              <polyline
+                v-if="showTrendLine"
+                :points="getTrendLinePoints()"
+                stroke="#ffa726"
+                stroke-width="1"
+                stroke-dasharray="4,4"
+                fill="none"
+                opacity="0.7"
+              />
             </svg>
-            
-            <!-- Weight value labels (show only first, middle, and last) -->
-            <div class="weight-value-labels">
-              <div 
-                v-for="point in (analyticsData?.weightChartData || []).filter((_, i) => i === 0 || i === Math.floor((analyticsData?.weightChartData?.length || 0) / 2) || i === (analyticsData?.weightChartData?.length || 0) - 1)" 
-                :key="point.date"
-                class="weight-value-label"
-                :style="{ 
-                  left: ((analyticsData?.weightChartData || []).findIndex(p => p.date === point.date) / Math.max((analyticsData?.weightChartData?.length || 1) - 1, 1)) * 100 + '%',
-                  bottom: (getWeightPosition(point.weight) + 8) + '%'
-                }"
-              >
-                {{ point.weight }}{{ $t('analytics.kg') }}
-              </div>
-            </div>
           </div>
-          
-          <div class="weight-chart-labels">
-            <span v-for="(point, index) in analyticsData.weightChartData" :key="index">
-              {{ formatChartDate(point.date) }}
-            </span>
-          </div>
+        </div>
+        
+        <!-- Chart Labels -->
+        <div class="weight-chart-labels">
+          <span v-for="(point, index) in getFilteredWeightData()" :key="index" class="chart-label">
+            {{ formatChartDateShort(point.date) }}
+          </span>
         </div>
       </div>
       
@@ -389,6 +441,18 @@ const previousAnalyticsData = ref<AnalyticsData | null>(null)
 const showWeightLogModal = ref(false)
 const newWeight = ref<number | null>(null)
 const weightNote = ref('')
+
+// Weight chart specific properties
+const selectedWeightPeriod = ref('month')
+const showTrendLine = ref(true)
+
+// Weight period options
+const weightPeriods = [
+    { label: 'Week', value: 'week' },
+    { label: 'Month', value: 'month' },
+    { label: '3M', value: '3months' },
+    { label: 'Year', value: 'year' }
+]
 
 // Load analytics data
 async function loadAnalyticsData() {
@@ -516,6 +580,105 @@ function getWeightChartAreaPoints(): string {
 function formatChartDate(dateString: string): string {
     const date = new Date(dateString)
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+}
+
+// Format date for chart labels (shorter version)
+function formatChartDateShort(dateString: string): string {
+    const date = new Date(dateString)
+    return date.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })
+}
+
+// Get motivational message based on progress percentage
+function getMotivationalMessage(percentage: number): string {
+    if (percentage >= 90) return "Amazing progress! You're almost there!"
+    if (percentage >= 70) return "Great job! Keep pushing forward!"
+    if (percentage >= 50) return "You're doing well! Stay consistent!"
+    if (percentage >= 25) return "Good start! Every step counts!"
+    return "Let's begin this journey together!"
+}
+
+// Get Y-axis labels for weight chart
+function getYAxisLabels(): string[] {
+    if (!analyticsData.value?.weightChartData || analyticsData.value.weightChartData.length === 0) return []
+    
+    const weights = analyticsData.value.weightChartData.map(p => p.weight)
+    const minWeight = Math.min(...weights) - 2
+    const maxWeight = Math.max(...weights) + 2
+    
+    const step = (maxWeight - minWeight) / 4
+    return [
+        Math.round(maxWeight).toString(),
+        Math.round(maxWeight - step).toString(), 
+        Math.round(maxWeight - step * 2).toString(),
+        Math.round(maxWeight - step * 3).toString(),
+        Math.round(minWeight).toString()
+    ]
+}
+
+// Get filtered weight data based on selected period
+function getFilteredWeightData() {
+    if (!analyticsData.value?.weightChartData) return []
+    
+    const now = new Date()
+    let cutoffDate = new Date()
+    
+    switch (selectedWeightPeriod.value) {
+        case 'week':
+            cutoffDate.setDate(now.getDate() - 7)
+            break
+        case 'month':
+            cutoffDate.setMonth(now.getMonth() - 1)
+            break
+        case '3months':
+            cutoffDate.setMonth(now.getMonth() - 3)
+            break
+        case 'year':
+            cutoffDate.setFullYear(now.getFullYear() - 1)
+            break
+        default:
+            cutoffDate.setMonth(now.getMonth() - 1)
+    }
+    
+    return analyticsData.value.weightChartData.filter(point => 
+        new Date(point.date) >= cutoffDate
+    )
+}
+
+// Show weight details (placeholder for future modal/tooltip)
+function showWeightDetails(point: { date: string; weight: number; note?: string }) {
+    console.log('Weight details:', point)
+    // Future: show modal or tooltip with weight details
+}
+
+// Get trend line points for SVG polyline
+function getTrendLinePoints(): string {
+    const filteredData = getFilteredWeightData()
+    if (filteredData.length < 2) return ''
+    
+    // Simple linear regression for trend line
+    const n = filteredData.length
+    let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0
+    
+    filteredData.forEach((point, index) => {
+        const x = index
+        const y = point.weight
+        sumX += x
+        sumY += y
+        sumXY += x * y
+        sumXX += x * x
+    })
+    
+    const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX)
+    const intercept = (sumY - slope * sumX) / n
+    
+    return filteredData
+        .map((_, index) => {
+            const x = (index / Math.max(filteredData.length - 1, 1)) * 100
+            const trendWeight = slope * index + intercept
+            const y = 100 - getWeightPosition(trendWeight)
+            return `${x},${y}`
+        })
+        .join(' ')
 }
 
 // Get quarterly data for yearly view (group months into quarters)
@@ -1322,5 +1485,212 @@ function handleTouchEnd(event: TouchEvent) {
 
 .modal-btn:disabled:hover {
   background: #007052;
+}
+
+/* New Weight Chart Styles */
+.weight-chart-container {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 24px;
+  backdrop-filter: blur(10px);
+}
+
+.weight-period-selector {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.period-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0.6;
+}
+
+.period-btn.active {
+  background: #007052;
+  opacity: 1;
+}
+
+.period-btn:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.period-btn.active:hover {
+  background: #005a42;
+}
+
+.weight-goal-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.weight-goal-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 16px;
+  backdrop-filter: blur(10px);
+}
+
+.goal-card-label {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-bottom: 4px;
+}
+
+.goal-card-value {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.goal-card-progress {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.goal-card-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #42a5f5, #64b5f6);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.weight-motivation {
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 12px;
+  background: rgba(76, 175, 80, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(76, 175, 80, 0.2);
+}
+
+.motivation-text {
+  font-size: 14px;
+  color: #4caf50;
+  font-weight: 500;
+}
+
+.enhanced-weight-chart {
+  position: relative;
+  height: 300px;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.chart-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    rgba(66, 165, 245, 0.1) 0%, 
+    rgba(100, 181, 246, 0.05) 50%, 
+    rgba(144, 202, 249, 0.1) 100%);
+}
+
+.y-axis {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px 0;
+}
+
+.y-axis-label {
+  font-size: 10px;
+  opacity: 0.6;
+  text-align: right;
+  padding-right: 8px;
+}
+
+.chart-svg {
+  position: absolute;
+  left: 40px;
+  right: 0;
+  top: 20px;
+  bottom: 40px;
+}
+
+.weight-chart-area {
+  fill: url(#weightGradient);
+  opacity: 0.3;
+}
+
+.weight-chart-line {
+  fill: none;
+  stroke: #42a5f5;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.trend-line {
+  fill: none;
+  stroke: #ff9800;
+  stroke-width: 2;
+  stroke-dasharray: 5,5;
+  opacity: 0.7;
+}
+
+.weight-point {
+  fill: #42a5f5;
+  stroke: white;
+  stroke-width: 2;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.weight-point:hover {
+  fill: #1976d2;
+  r: 6;
+  stroke-width: 3;
+}
+
+.chart-labels {
+  position: absolute;
+  bottom: 0;
+  left: 40px;
+  right: 0;
+  height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.chart-label {
+  font-size: 10px;
+  opacity: 0.6;
+  flex: 1;
+  text-align: center;
+}
+
+#weightGradient stop:first-child {
+  stop-color: #42a5f5;
+  stop-opacity: 0.8;
+}
+
+#weightGradient stop:last-child {
+  stop-color: #42a5f5;
+  stop-opacity: 0.1;
 }
 </style>
