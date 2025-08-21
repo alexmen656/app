@@ -16,6 +16,7 @@ export interface DayData {
     fats: number;
     time: string;
     type: string;
+    image?: string;
   }>;
 }
 
@@ -103,7 +104,8 @@ export class AnalyticsManager {
         carbs: Math.round(carbs),
         fats: Math.round(fats),
         time: scan.time,
-        type: scan.type
+        type: scan.type,
+        image: scan.image
       });
     });
 

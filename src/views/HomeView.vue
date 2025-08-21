@@ -218,7 +218,6 @@ function onFocus() {
 }
 
 onMounted(async () => {
-    // Wait until store has loaded persisted values
     await storeReady
 
     if (!isOnboardingCompleted.value) {
@@ -229,20 +228,15 @@ onMounted(async () => {
     loadScanHistory()
     loadStreak()
 
-    // Listen for scan history updates from custom events
     window.addEventListener('scanHistoryUpdated', onScanHistoryUpdated)
-
-    // Also listen for focus events to refresh when returning to app
     window.addEventListener('focus', onFocus)
 })
 
 onUnmounted(() => {
-    // Clean up event listeners
     window.removeEventListener('scanHistoryUpdated', onScanHistoryUpdated)
     window.removeEventListener('focus', onFocus)
 })
 
-// Type definitions
 interface ScanData {
     id: number
     type: 'food' | 'barcode'
@@ -264,28 +258,22 @@ interface FoodItem {
     type: string
 }
 
-// Daily targets from store
 const dailyCalories = computed(() => dailyGoals.calories)
 const dailyProtein = computed(() => dailyGoals.protein)
 const dailyCarbs = computed(() => dailyGoals.carbs)
 const dailyFats = computed(() => dailyGoals.fats)
 
-// Consumed amounts - calculated from scanned items
-const consumedCalories = computed(() => {
-    return recentFoods.value.reduce((total, item) => total + item.calories, 0)
-})
+// Today's nutrition data (from all today's scans, not just recent 10)
+const todaysNutrition = ref({ calories: 0, protein: 0, carbs: 0, fats: 0 })
 
-const consumedProtein = computed(() => {
-    return recentFoods.value.reduce((total, item) => total + item.protein, 0)
-})
+// Consumed amounts - calculated from ALL today's scanned items
+const consumedCalories = computed(() => todaysNutrition.value.calories)
 
-const consumedCarbs = computed(() => {
-    return recentFoods.value.reduce((total, item) => total + item.carbs, 0)
-})
+const consumedProtein = computed(() => todaysNutrition.value.protein)
 
-const consumedFats = computed(() => {
-    return recentFoods.value.reduce((total, item) => total + item.fats, 0)
-})
+const consumedCarbs = computed(() => todaysNutrition.value.carbs)
+
+const consumedFats = computed(() => todaysNutrition.value.fats)
 
 // Scan history from Capacitor Preferences
 const scanHistory = ref<ScanData[]>([])
@@ -295,13 +283,60 @@ const currentStreak = ref<number>(0)
 async function loadScanHistory() {
     try {
         const history = await ScanHistory.get()
-        scanHistory.value = history.slice(0, 10) // Show only last 10 items
+        scanHistory.value = history.slice(0, 10) // Show only last 10 items for display
+
+        // Calculate today's nutrition from ALL today's scans
+        await calculateTodaysNutrition()
 
         // Update widget data when scan history changes
         await WidgetDataManager.updateWidgetData()
     } catch (error) {
         console.error('Error loading scan history:', error)
         scanHistory.value = []
+        todaysNutrition.value = { calories: 0, protein: 0, carbs: 0, fats: 0 }
+    }
+}
+
+// Calculate nutrition from all today's scans (not just recent 10)
+async function calculateTodaysNutrition() {
+    try {
+        const history = await ScanHistory.get()
+        const today = new Date().toISOString().split('T')[0]
+        
+        // Filter scans for today only
+        const todaysScans = history.filter(scan => {
+            const scanDate = new Date(scan.timestamp).toISOString().split('T')[0]
+            return scanDate === today
+        })
+
+        let totalCalories = 0
+        let totalProtein = 0
+        let totalCarbs = 0
+        let totalFats = 0
+
+        todaysScans.forEach(scan => {
+            if (scan.type === 'food' && scan.data.total) {
+                totalCalories += scan.data.total.calories || 0
+                totalProtein += scan.data.total.protein || 0
+                totalCarbs += scan.data.total.carbs || 0
+                totalFats += scan.data.total.fat || 0
+            } else if (scan.type === 'barcode' && scan.data.nutriments) {
+                totalCalories += scan.data.nutriments.energy_kcal_100g || 0
+                totalProtein += scan.data.nutriments.proteins_100g || 0
+                totalCarbs += scan.data.nutriments.carbohydrates_100g || 0
+                totalFats += scan.data.nutriments.fat_100g || 0
+            }
+        })
+
+        todaysNutrition.value = {
+            calories: Math.round(totalCalories),
+            protein: Math.round(totalProtein),
+            carbs: Math.round(totalCarbs),
+            fats: Math.round(totalFats)
+        }
+    } catch (error) {
+        console.error('Error calculating today\'s nutrition:', error)
+        todaysNutrition.value = { calories: 0, protein: 0, carbs: 0, fats: 0 }
     }
 }
 

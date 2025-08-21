@@ -260,7 +260,7 @@ const yesterdayFoods = computed((): FoodItem[] => {
         carbs: food.carbs,
         fats: food.fats,
         time: food.time,
-        image: "/api/placeholder/60/60",
+        image: food.image || "/api/placeholder/60/60",
         type: food.type
     }))
 })
