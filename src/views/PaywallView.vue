@@ -99,8 +99,8 @@
                 <a href="#" @click.prevent="openTerms" class="legal-link">{{ $t('paywall.termsOfService') }}</a>
                 <span class="separator">•</span>
                 <a href="#" @click.prevent="openPrivacy" class="legal-link">{{ $t('paywall.privacyPolicy') }}</a>
-                <span class="separator">•</span>
-                <a href="#" @click.prevent="openMore" class="legal-link">{{ $t('paywall.redeemCode') }}</a>
+                <span v-if="isIOS" class="separator">•</span>
+                <a v-if="isIOS" href="#" @click.prevent="openMore" class="legal-link">{{ $t('paywall.redeemCode') }}</a>
             </div>
         </div>
 
@@ -116,6 +116,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { revenueCatService, type SubscriptionPlan } from '../services/revenuecat'
 import { updateSubscriptionStatus } from '../stores/userStore'
+import { Capacitor } from '@capacitor/core'
 
 /*interface Feature {
     title: string
@@ -130,6 +131,7 @@ const subscriptionPlans = ref<SubscriptionPlan[]>([])
 const isLoading = ref(false)
 const errorMessage = ref('')
 const showMenu = ref(false)
+const isIOS = Capacitor.getPlatform() === 'ios'
 
 /*const features: Feature[] = [
     {

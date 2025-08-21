@@ -4,16 +4,18 @@
     <div class="header-section">
       <button @click="goBack" class="back-button">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+          <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
         </svg>
       </button>
-      
+
       <div class="header-content">
         <div class="coupon-icon">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12.79 21L3 11.21v2c0 .53.21 1.04.59 1.41l7.79 7.79c.78.78 2.05.78 2.83 0l6.21-6.21c.78-.78.78-2.05 0-2.83L12.79 21z"/>
-            <path d="M11.38 17.41c.78.78 2.05.78 2.83 0l6.21-6.21c.78-.78.78-2.05 0-2.83L12.63.58C12.25.21 11.74 0 11.21 0H5C3.9 0 3 .9 3 2v6.21c0 .53.21 1.04.59 1.41l7.79 7.79z"/>
-            <circle cx="7.5" cy="6.5" r="1.5"/>
+            <path
+              d="M12.79 21L3 11.21v2c0 .53.21 1.04.59 1.41l7.79 7.79c.78.78 2.05.78 2.83 0l6.21-6.21c.78-.78.78-2.05 0-2.83L12.79 21z" />
+            <path
+              d="M11.38 17.41c.78.78 2.05.78 2.83 0l6.21-6.21c.78-.78.78-2.05 0-2.83L12.63.58C12.25.21 11.74 0 11.21 0H5C3.9 0 3 .9 3 2v6.21c0 .53.21 1.04.59 1.41l7.79 7.79z" />
+            <circle cx="7.5" cy="6.5" r="1.5" />
           </svg>
         </div>
         <h1 class="title">{{ $t('coupon.title') }}</h1>
@@ -26,7 +28,8 @@
       <button @click="openAppleRedemption" class="apple-redemption-button" :disabled="isLoading">
         <div class="apple-icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+            <path
+              d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
           </svg>
         </div>
         <div class="apple-text">
@@ -34,13 +37,13 @@
           <span class="apple-subtitle">{{ $t('coupon.appleSubtitle') }}</span>
         </div>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="arrow-icon">
-          <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+          <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
         </svg>
       </button>
     </div>
 
     <!-- Manual Coupon Input Section -->
-    <div class="coupon-section">
+    <!-- <div class="coupon-section">
       <div class="section-divider" v-if="isIOS">
         <span class="divider-text">{{ $t('coupon.orEnterManually') }}</span>
       </div>
@@ -72,7 +75,7 @@
       </div>
     </div>
 
-    <!-- Available Offers Section -->
+    <-- Available Offers Section --
     <div class="offers-section" v-if="availableOffers.length > 0">
       <h2 class="section-title">{{ $t('coupon.availableOffers') }}</h2>
       
@@ -93,7 +96,7 @@
       </div>
     </div>
 
-    <!-- Success Message -->
+    <-- Success Message --
     <div v-if="successMessage" class="success-message">
       <div class="success-icon">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -106,7 +109,7 @@
       </div>
     </div>
 
-    <!-- Error Message -->
+    <-- Error Message --
     <div v-if="errorMessage" class="error-message">
       <div class="error-icon">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -116,7 +119,7 @@
       <p>{{ errorMessage }}</p>
     </div>
 
-    <!-- FAQ Section -->
+    <-- FAQ Section --
     <div class="faq-section">
       <h2 class="section-title">{{ $t('coupon.faq.title') }}</h2>
       
@@ -136,7 +139,7 @@
           <p>{{ $t(faq.answer) }}</p>
         </div>
       </div>
-    </div>
+    </div>-->
   </div>
 </template>
 
@@ -147,7 +150,7 @@ import { updateSubscriptionStatus } from '../stores/userStore'
 import { Capacitor } from '@capacitor/core'
 import { revenueCatService } from '../services/revenuecat'
 
-interface CouponOffer {
+/*interface CouponOffer {
   id: string
   title: string
   description: string
@@ -155,21 +158,21 @@ interface CouponOffer {
   type: 'discount' | 'trial' | 'bonus'
   validity: string
   code?: string
-}
+}*/
 
 const router = useRouter()
 
-const couponCode = ref('')
+//const couponCode = ref('')
 const isLoading = ref(false)
 const successMessage = ref('')
 const errorMessage = ref('')
-const activeFaq = ref<number | null>(null)
+//const activeFaq = ref<number | null>(null)
 
 // Check if running on iOS
 const isIOS = Capacitor.getPlatform() === 'ios'
 
 // Mock available offers - in production, these would come from your backend
-const availableOffers = ref<CouponOffer[]>([
+/*const availableOffers = ref<CouponOffer[]>([
   {
     id: 'welcome50',
     title: '50% Off First Month',
@@ -216,13 +219,13 @@ const faqItems = [
     question: 'coupon.faq.multipleUse',
     answer: 'coupon.faq.multipleUseAnswer'
   }
-]
+]*/
 
 function goBack() {
   router.back()
 }
 
-function formatCouponCode() {
+/*function formatCouponCode() {
   // Convert to uppercase and remove special characters
   couponCode.value = couponCode.value.toUpperCase().replace(/[^A-Z0-9]/g, '')
 }
@@ -237,20 +240,20 @@ async function redeemCoupon() {
   try {
     // In a real app, you would validate the coupon with your backend first
     const isValidCoupon = await validateCouponCode(couponCode.value)
-    
+
     if (!isValidCoupon) {
       throw new Error('Invalid or expired coupon code')
     }
 
     // Apply the coupon through RevenueCat
     const result = await applyCouponToRevenueCat(couponCode.value)
-    
+
     if (result.success) {
       if (result.type === 'subscription') {
         // Grant subscription access
         await updateSubscriptionStatus(true, result.planName || 'Premium')
         successMessage.value = `Coupon redeemed! ${result.message}`
-        
+
         // Redirect to home after success
         setTimeout(() => {
           router.push('/')
@@ -258,14 +261,14 @@ async function redeemCoupon() {
       } else {
         successMessage.value = result.message
       }
-      
+
       couponCode.value = ''
     } else {
       throw new Error(result.message || 'Failed to redeem coupon')
     }
   } catch (error: any) {
     console.error('Coupon redemption failed:', error)
-    
+
     if (error.message?.includes('already used')) {
       errorMessage.value = 'This coupon has already been used.'
     } else if (error.message?.includes('expired')) {
@@ -278,9 +281,9 @@ async function redeemCoupon() {
   } finally {
     isLoading.value = false
   }
-}
+}*/
 
-async function validateCouponCode(code: string): Promise<boolean> {
+/*async function validateCouponCode(code: string): Promise<boolean> {
   // Mock validation - in production, this would be a backend call
   const validCoupons = ['WELCOME50', 'FREETRIAL7', 'STUDENT30', 'SAVE20', 'PREMIUM1MONTH']
   return validCoupons.includes(code)
@@ -294,7 +297,7 @@ async function applyCouponToRevenueCat(code: string): Promise<{
 }> {
   // Mock implementation - in production, integrate with RevenueCat promotional offers
   await new Promise(resolve => setTimeout(resolve, 1500)) // Simulate API call
-  
+
   const couponEffects: Record<string, any> = {
     'WELCOME50': {
       success: true,
@@ -319,7 +322,7 @@ async function applyCouponToRevenueCat(code: string): Promise<{
       planName: 'Monthly Premium'
     }
   }
-  
+
   return couponEffects[code] || {
     success: false,
     message: 'Invalid coupon code',
@@ -336,23 +339,23 @@ function selectOffer(offer: CouponOffer) {
 function toggleFaq(index: number) {
   activeFaq.value = activeFaq.value === index ? null : index
 }
-
+*/
 async function openAppleRedemption() {
   if (!isIOS || isLoading.value) return
 
   try {
     isLoading.value = true
     errorMessage.value = ''
-    
+
     // Use RevenueCat's presentCodeRedemptionSheet for iOS
     await revenueCatService.presentCodeRedemptionSheet()
-    
+
     // After redemption, check subscription status
     const isSubscribed = await revenueCatService.checkSubscriptionStatus()
     if (isSubscribed) {
       await updateSubscriptionStatus(true, 'Premium')
       successMessage.value = 'Code successfully redeemed! Premium access activated.'
-      
+
       // Redirect to home after success
       setTimeout(() => {
         router.push('/')
@@ -360,7 +363,7 @@ async function openAppleRedemption() {
     }
   } catch (error: any) {
     console.error('Apple redemption failed:', error)
-    
+
     if (error.message?.includes('cancelled')) {
       // User cancelled the redemption sheet - don't show error
       return
@@ -621,8 +624,13 @@ async function openAppleRedemption() {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .input-hint {
@@ -818,15 +826,15 @@ async function openAppleRedemption() {
   .coupon-input-container {
     flex-direction: column;
   }
-  
+
   .offers-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .title {
     font-size: 24px;
   }
-  
+
   .subtitle {
     font-size: 14px;
   }
