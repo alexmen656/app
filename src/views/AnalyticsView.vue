@@ -39,18 +39,38 @@
       <h3 class="section-title">{{ chartTitle }}</h3>
       <div class="chart-container">
         <div class="chart">
-          <div class="chart-bars">
-            <div 
-              v-for="(day, index) in (analyticsData?.weeklyData || [])" 
-              :key="index"
-              class="chart-bar"
-              :style="{ height: (day.calories / 3000) * 100 + '%' }"
-            >
-              <div class="bar-value">{{ day.calories }}</div>
+          <div v-if="selectedPeriod === 'year'" class="yearly-chart">
+            <!-- Yearly chart with 4 quarters instead of 12 months -->
+            <div class="chart-bars">
+              <div 
+                v-for="(quarter, index) in getQuarterlyData(analyticsData?.weeklyData || [])" 
+                :key="index"
+                class="chart-bar quarterly-bar"
+                :style="{ height: Math.max((quarter.calories / 2500) * 100, 5) + '%' }"
+              >
+                <div class="bar-value">{{ quarter.calories }}</div>
+              </div>
+            </div>
+            <div class="chart-labels">
+              <span v-for="(quarter, index) in getQuarterlyData(analyticsData?.weeklyData || [])" :key="index">{{ quarter.label }}</span>
             </div>
           </div>
-          <div class="chart-labels">
-            <span v-for="day in (analyticsData?.weeklyData || [])" :key="day.day">{{ day.day }}</span>
+          
+          <div v-else class="standard-chart">
+            <!-- Week/Month chart -->
+            <div class="chart-bars">
+              <div 
+                v-for="(day, index) in (analyticsData?.weeklyData || [])" 
+                :key="index"
+                class="chart-bar"
+                :style="{ height: Math.max((day.calories / 3000) * 100, 5) + '%' }"
+              >
+                <div class="bar-value">{{ day.calories }}</div>
+              </div>
+            </div>
+            <div class="chart-labels">
+              <span v-for="day in (analyticsData?.weeklyData || [])" :key="day.day">{{ day.day }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -58,7 +78,7 @@
 
     <!-- Macro Breakdown -->
     <div class="macro-breakdown">
-      <h3 class="section-title">Macro Distribution</h3>
+      <h3 class="section-title">{{ $t('analytics.macroDistribution') }}</h3>
       <div class="macro-charts">
         <div class="macro-chart">
           <div class="macro-ring">
@@ -72,7 +92,7 @@
                 stroke-width="8" 
                 fill="none"
                 stroke-dasharray="188"
-                stroke-dashoffset="50"
+                :stroke-dashoffset="188 - (188 * (analyticsData?.macroBreakdown.protein || 0) / 100)"
                 stroke-linecap="round"
               />
             </svg>
@@ -80,7 +100,7 @@
               <span class="macro-percentage">{{ analyticsData?.macroBreakdown.protein || 0 }}%</span>
             </div>
           </div>
-          <span class="macro-label">Protein</span>
+          <span class="macro-label">{{ $t('analytics.protein') }}</span>
         </div>
 
         <div class="macro-chart">
@@ -95,7 +115,7 @@
                 stroke-width="8" 
                 fill="none"
                 stroke-dasharray="188"
-                stroke-dashoffset="75"
+                :stroke-dashoffset="188 - (188 * (analyticsData?.macroBreakdown.carbs || 0) / 100)"
                 stroke-linecap="round"
               />
             </svg>
@@ -103,7 +123,7 @@
               <span class="macro-percentage">{{ analyticsData?.macroBreakdown.carbs || 0 }}%</span>
             </div>
           </div>
-          <span class="macro-label">Carbs</span>
+          <span class="macro-label">{{ $t('analytics.carbs') }}</span>
         </div>
 
         <div class="macro-chart">
@@ -118,7 +138,7 @@
                 stroke-width="8" 
                 fill="none"
                 stroke-dasharray="188"
-                stroke-dashoffset="141"
+                :stroke-dashoffset="188 - (188 * (analyticsData?.macroBreakdown.fats || 0) / 100)"
                 stroke-linecap="round"
               />
             </svg>
@@ -126,54 +146,34 @@
               <span class="macro-percentage">{{ analyticsData?.macroBreakdown.fats || 0 }}%</span>
             </div>
           </div>
-          <span class="macro-label">Fats</span>
+          <span class="macro-label">{{ $t('analytics.fats') }}</span>
         </div>
       </div>
     </div>
 
     <!-- Goals Section -->
     <div class="goals-section">
-      <h3 class="section-title">Goal Progress</h3>
+      <h3 class="section-title">{{ $t('analytics.goalProgress') }}</h3>
       <div class="goal-items">
         <div class="goal-item">
           <div class="goal-info">
-            <span class="goal-name">Daily Calorie Goal</span>
-            <span class="goal-progress">{{ analyticsData?.goalProgress.calories.current || 0 }} / {{ analyticsData?.goalProgress.calories.target || 0 }} kcal</span>
+            <span class="goal-name">{{ $t('analytics.dailyCalorieGoal') }}</span>
+            <span class="goal-progress">{{ analyticsData?.goalProgress.calories.current || 0 }} / {{ analyticsData?.goalProgress.calories.target || 0 }} {{ $t('analytics.kcal') }}</span>
           </div>
           <div class="goal-bar">
             <div class="goal-fill" :style="{ width: Math.min((analyticsData?.goalProgress.calories.percentage || 0), 100) + '%' }"></div>
           </div>
         </div>
 
+        <!-- Weight Goal Progress - Remove target display to avoid confusion -->
         <div class="goal-item">
           <div class="goal-info">
-            <span class="goal-name">Weekly Exercise</span>
-            <span class="goal-progress">{{ analyticsData?.goalProgress.exercise.current || 0 }} / {{ analyticsData?.goalProgress.exercise.target || 0 }} days</span>
-          </div>
-          <div class="goal-bar">
-            <div class="goal-fill" :style="{ width: Math.min((analyticsData?.goalProgress.exercise.percentage || 0), 100) + '%' }"></div>
-          </div>
-        </div>
-
-        <div class="goal-item">
-          <div class="goal-info">
-            <span class="goal-name">Water Intake</span>
-            <span class="goal-progress">{{ analyticsData?.goalProgress.water.current || 0 }} / {{ analyticsData?.goalProgress.water.target || 0 }} L</span>
-          </div>
-          <div class="goal-bar">
-            <div class="goal-fill" :style="{ width: Math.min((analyticsData?.goalProgress.water.percentage || 0), 100) + '%' }"></div>
-          </div>
-        </div>
-
-        <!-- Weight Goal Progress -->
-        <div v-if="analyticsData?.goalProgress.weight.target" class="goal-item">
-          <div class="goal-info">
-            <span class="goal-name">Weight Goal</span>
+            <span class="goal-name">{{ $t('analytics.weightProgress') }}</span>
             <span class="goal-progress">
-              {{ analyticsData?.goalProgress.weight.current || 0 }} / {{ analyticsData?.goalProgress.weight.target || 0 }} kg
+              {{ $t('common.current') }}: {{ analyticsData?.goalProgress.weight.current || 0 }} {{ $t('analytics.kg') }}
               <span v-if="analyticsData?.goalProgress.weight.change !== null" class="weight-change" 
                     :class="{ 'positive': (analyticsData?.goalProgress.weight.change || 0) >= 0, 'negative': (analyticsData?.goalProgress.weight.change || 0) < 0 }">
-                ({{ (Math.round(analyticsData?.goalProgress.weight.change * 10)/10 || 0) >= 0 ? '+' : '' }}{{ Math.round(analyticsData?.goalProgress.weight.change * 10)/10 || 0 }}kg)
+                ({{ (analyticsData?.goalProgress.weight.change || 0) >= 0 ? '+' : '' }}{{ Math.round((analyticsData?.goalProgress.weight.change || 0) * 10)/10 }}{{ $t('analytics.kg') }})
               </span>
             </span>
           </div>
@@ -186,7 +186,7 @@
 
     <!-- BMI Section -->
     <div v-if="analyticsData?.bmiData.value" class="bmi-section">
-      <h3 class="section-title">BMI & Health Status</h3>
+      <h3 class="section-title">{{ $t('analytics.bmiHealthStatus') }}</h3>
       <div class="bmi-container">
         <div class="bmi-display">
           <div class="bmi-value" :style="{ color: analyticsData?.bmiData.categoryColor || '#ffffff' }">
@@ -212,12 +212,12 @@
     <!-- Weight Chart Section -->
     <div class="weight-section">
       <div class="section-header">
-        <h3 class="section-title">Weight Progress</h3>
+        <h3 class="section-title">{{ $t('analytics.weightProgress') }}</h3>
         <button @click="showWeightLogModal = true" class="log-weight-btn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
             <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
           </svg>
-          Log Weight
+          {{ $t('analytics.logWeight') }}
         </button>
       </div>
       
@@ -265,28 +265,28 @@
                 :key="index"
                 :cx="(index / Math.max(analyticsData.weightChartData.length - 1, 1)) * 100"
                 :cy="100 - getWeightPosition(point.weight)"
-                r="1.5"
+                r="1.8"
                 fill="#42a5f5"
-                stroke="#fff"
-                stroke-width="0.8"
+                stroke="#1e1e2e"
+                stroke-width="0.5"
                 class="weight-point-svg"
               >
-                <title>{{ point.weight }}kg - {{ formatChartDate(point.date) }}</title>
+                <title>{{ point.weight }}{{ $t('analytics.kg') }} - {{ formatChartDate(point.date) }}</title>
               </circle>
             </svg>
             
-            <!-- Weight value labels -->
+            <!-- Weight value labels (show only first, middle, and last) -->
             <div class="weight-value-labels">
               <div 
-                v-for="(point, index) in analyticsData.weightChartData" 
-                :key="index"
+                v-for="point in (analyticsData?.weightChartData || []).filter((_, i) => i === 0 || i === Math.floor((analyticsData?.weightChartData?.length || 0) / 2) || i === (analyticsData?.weightChartData?.length || 0) - 1)" 
+                :key="point.date"
                 class="weight-value-label"
                 :style="{ 
-                  left: (index / Math.max(analyticsData.weightChartData.length - 1, 1)) * 100 + '%',
-                  bottom: (getWeightPosition(point.weight) + 5) + '%'
+                  left: ((analyticsData?.weightChartData || []).findIndex(p => p.date === point.date) / Math.max((analyticsData?.weightChartData?.length || 1) - 1, 1)) * 100 + '%',
+                  bottom: (getWeightPosition(point.weight) + 8) + '%'
                 }"
               >
-                {{ point.weight }}kg
+                {{ point.weight }}{{ $t('analytics.kg') }}
               </div>
             </div>
           </div>
@@ -302,13 +302,11 @@
       <div v-else class="no-weight-data">
         <div class="no-data-icon">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M21 21l-16.5-16.5"/>
-            <path d="M4.5 12a7.5 7.5 0 0115 0"/>
-            <path d="M4.5 12h15"/>
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
           </svg>
         </div>
-        <p class="no-data-text">No weight data available</p>
-        <p class="no-data-subtitle">Start logging your weight to track progress</p>
+        <p class="no-data-text">{{ $t('analytics.noWeightData') }}</p>
+        <p class="no-data-subtitle">{{ $t('analytics.startLoggingWeight') }}</p>
       </div>
     </div>
 
@@ -316,12 +314,12 @@
     <div v-if="showWeightLogModal" class="modal-overlay" @click="showWeightLogModal = false">
       <div class="modal-content" @click.stop>
         <div class="modal-header">
-          <h3>Log Your Weight</h3>
+          <h3>{{ $t('analytics.logYourWeight') }}</h3>
           <button @click="showWeightLogModal = false" class="close-btn">×</button>
         </div>
         <div class="modal-body">
           <div class="weight-input-section">
-            <label class="modal-label">Weight (kg)</label>
+            <label class="modal-label">{{ $t('analytics.weightKg') }}</label>
             <input 
               v-model="newWeight" 
               type="number" 
@@ -329,22 +327,22 @@
               min="30"
               max="300"
               class="modal-input"
-              placeholder="Enter your current weight"
+              :placeholder="$t('analytics.enterCurrentWeight')"
             />
           </div>
           <div class="weight-input-section">
-            <label class="modal-label">Note (optional)</label>
+            <label class="modal-label">{{ $t('analytics.noteOptional') }}</label>
             <input 
               v-model="weightNote" 
               type="text"
               class="modal-input"
-              placeholder="e.g., Morning weight, after workout..."
+              :placeholder="$t('analytics.morningWeight')"
             />
           </div>
         </div>
         <div class="modal-footer">
-          <button @click="showWeightLogModal = false" class="modal-btn secondary">Cancel</button>
-          <button @click="logWeight" class="modal-btn primary" :disabled="!newWeight">Save</button>
+          <button @click="showWeightLogModal = false" class="modal-btn secondary">{{ $t('common.cancel') }}</button>
+          <button @click="logWeight" class="modal-btn primary" :disabled="!newWeight">{{ $t('common.save') }}</button>
         </div>
       </div>
     </div>
@@ -376,13 +374,11 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
-//import { useI18n } from 'vue-i18n'
 import { AnalyticsManager, type AnalyticsData } from '../utils/analyticsData'
 import { WeightTracker } from '../utils/weightTracking'
 import { StreakManager } from '../utils/widgetData'
 
 const router = useRouter()
-//const { t } = useI18n()
 
 const selectedPeriod = ref('week')
 const analyticsData = ref<AnalyticsData | null>(null)
@@ -440,13 +436,13 @@ const daysOnTrackTrend = computed(() => {
 const chartTitle = computed(() => {
     switch (selectedPeriod.value) {
         case 'week':
-            return 'Weekly Progress'
+            return 'Weekly Progress' // $t('analytics.weeklyProgress')
         case 'month':
-            return 'Monthly Progress'
+            return 'Monthly Progress' // $t('analytics.monthlyProgress')
         case 'year':
-            return 'Yearly Progress'
+            return 'Yearly Progress' // $t('analytics.yearlyProgress')
         default:
-            return 'Weekly Progress'
+            return 'Weekly Progress' // $t('analytics.weeklyProgress')
     }
 })
 
@@ -520,6 +516,33 @@ function getWeightChartAreaPoints(): string {
 function formatChartDate(dateString: string): string {
     const date = new Date(dateString)
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+}
+
+// Get quarterly data for yearly view (group months into quarters)
+function getQuarterlyData(weeklyData: { day: string; calories: number }[]) {
+    if (selectedPeriod.value !== 'year' || !weeklyData.length) return []
+    
+    // Group months into quarters
+    const quarters = [
+        { label: 'Q1', calories: 0, months: ['Jan', 'Feb', 'Mar'] },
+        { label: 'Q2', calories: 0, months: ['Apr', 'May', 'Jun'] },
+        { label: 'Q3', calories: 0, months: ['Jul', 'Aug', 'Sep'] },
+        { label: 'Q4', calories: 0, months: ['Oct', 'Nov', 'Dec'] }
+    ]
+    
+    weeklyData.forEach(data => {
+        quarters.forEach(quarter => {
+            if (quarter.months.includes(data.day)) {
+                quarter.calories += data.calories
+            }
+        })
+    })
+    
+    // Average calories per quarter (divide by number of months in quarter)
+    return quarters.map(quarter => ({
+        label: quarter.label,
+        calories: Math.round(quarter.calories / 3)
+    }))
 }
 
 // Weight logging function
@@ -702,6 +725,16 @@ function handleTouchEnd(event: TouchEvent) {
   display: flex;
   align-items: end;
   justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.chart-bar:hover {
+  transform: scale(1.05);
+}
+
+.quarterly-bar {
+  width: 60px;
+  background: linear-gradient(to top, #42a5f5, #64b5f6);
 }
 
 .bar-value {
@@ -709,6 +742,7 @@ function handleTouchEnd(event: TouchEvent) {
   top: -20px;
   font-size: 10px;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .chart-labels {
@@ -950,11 +984,24 @@ function handleTouchEnd(event: TouchEvent) {
   padding: 40px 24px;
   backdrop-filter: blur(10px);
   text-align: center;
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.no-weight-data:hover {
+  border-color: rgba(66, 165, 245, 0.4);
+  background: rgba(66, 165, 245, 0.02);
 }
 
 .no-data-icon {
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(66, 165, 245, 0.6);
   margin-bottom: 16px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.8; }
 }
 
 .no-data-text {
@@ -975,17 +1022,34 @@ function handleTouchEnd(event: TouchEvent) {
   border-radius: 16px;
   padding: 24px;
   backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.weight-chart-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(66, 165, 245, 0.1) 0%, rgba(66, 165, 245, 0.05) 100%);
+  pointer-events: none;
 }
 
 .weight-chart {
   height: 200px;
   position: relative;
+  z-index: 1;
 }
 
 .weight-chart-grid {
   position: relative;
   height: 160px;
   margin-bottom: 16px;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .chart-grid-lines {
@@ -1011,16 +1075,19 @@ function handleTouchEnd(event: TouchEvent) {
   left: 0;
   width: 100%;
   height: 100%;
+  filter: drop-shadow(0 2px 4px rgba(66, 165, 245, 0.3));
 }
 
 .weight-point-svg {
   cursor: pointer;
   transition: all 0.2s ease;
+  filter: drop-shadow(0 2px 6px rgba(66, 165, 245, 0.4));
 }
 
 .weight-point-svg:hover {
   r: 2.5;
   stroke-width: 1.2;
+  filter: drop-shadow(0 4px 8px rgba(66, 165, 245, 0.6));
 }
 
 .weight-value-labels {
@@ -1037,11 +1104,13 @@ function handleTouchEnd(event: TouchEvent) {
   font-size: 10px;
   font-weight: 600;
   color: #42a5f5;
-  background: rgba(30, 30, 46, 0.8);
-  padding: 2px 4px;
-  border-radius: 4px;
+  background: rgba(30, 30, 46, 0.9);
+  padding: 3px 6px;
+  border-radius: 6px;
   transform: translateX(-50%);
   white-space: nowrap;
+  border: 1px solid rgba(66, 165, 245, 0.3);
+  backdrop-filter: blur(4px);
 }
 
 .weight-chart-labels {

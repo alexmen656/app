@@ -130,7 +130,30 @@
     "thisMonth": "This Month",
     "thisYear": "This Year",
     "avgDailyCalories": "Avg Daily Calories",
-    "daysOnTrack": "Days on Track"
+    "daysOnTrack": "Days on Track",
+    "weeklyProgress": "Weekly Progress",
+    "monthlyProgress": "Monthly Progress",
+    "yearlyProgress": "Yearly Progress",
+    "macroDistribution": "Macro Distribution",
+    "goalProgress": "Goal Progress",
+    "dailyCalorieGoal": "Daily Calorie Goal",
+    "weightGoal": "Weight Goal",
+    "bmiHealthStatus": "BMI & Health Status",
+    "weightProgress": "Weight Progress",
+    "logWeight": "Log Weight",
+    "noWeightData": "No weight data available",
+    "startLoggingWeight": "Start logging your weight to track progress",
+    "logYourWeight": "Log Your Weight",
+    "weightKg": "Weight (kg)",
+    "note": "Note",
+    "noteOptional": "Note (optional)",
+    "enterCurrentWeight": "Enter your current weight",
+    "morningWeight": "e.g., Morning weight, after workout...",
+    "kcal": "kcal",
+    "kg": "kg",
+    "protein": "Protein",
+    "carbs": "Carbs",
+    "fats": "Fats"
   },
   "onboarding": {
     "welcome": "Welcome to Kaloriq",
@@ -210,7 +233,8 @@
     "error": "Error",
     "success": "Success",
     "close": "Close",
-    "calculate": "Recalculate"
+    "calculate": "Recalculate",
+    "current": "Current"
   },
   "streak": {
     "title": "Streak Details",
