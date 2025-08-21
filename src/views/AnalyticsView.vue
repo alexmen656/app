@@ -173,7 +173,7 @@
               {{ analyticsData?.goalProgress.weight.current || 0 }} / {{ analyticsData?.goalProgress.weight.target || 0 }} kg
               <span v-if="analyticsData?.goalProgress.weight.change !== null" class="weight-change" 
                     :class="{ 'positive': (analyticsData?.goalProgress.weight.change || 0) >= 0, 'negative': (analyticsData?.goalProgress.weight.change || 0) < 0 }">
-                ({{ (analyticsData?.goalProgress.weight.change || 0) >= 0 ? '+' : '' }}{{ analyticsData?.goalProgress.weight.change || 0 }}kg)
+                ({{ (Math.round(analyticsData?.goalProgress.weight.change * 10)/10 || 0) >= 0 ? '+' : '' }}{{ Math.round(analyticsData?.goalProgress.weight.change * 10)/10 || 0 }}kg)
               </span>
             </span>
           </div>
