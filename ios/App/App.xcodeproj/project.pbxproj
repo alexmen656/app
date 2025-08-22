@@ -103,10 +103,18 @@
 			);
 			target = D92BB67F2E53AA7300877E99 /* KaloriqWidget2Extension */;
 		};
-		D92BB6B02E53AA8600877E99 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		D9AB64092E5768E7006E874C /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				KaloriqWidget2LiveActivity.swift,
+			);
+			target = D92BB67F2E53AA7300877E99 /* KaloriqWidget2Extension */;
+		};
+		D9AB640A2E5768E7006E874C /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
+				KaloriqWidget2LiveActivity.swift,
 			);
 			target = D92BB69B2E53AA8500877E99 /* KaloriqWidget3Extension */;
 		};
@@ -115,7 +123,7 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		D92BB6482E53AA2300877E99 /* KaloriqWidget */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (D92BB65C2E53AA2400877E99 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = KaloriqWidget; sourceTree = "<group>"; };
 		D92BB6832E53AA7300877E99 /* KaloriqWidget2 */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (D92BB6942E53AA7300877E99 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = KaloriqWidget2; sourceTree = "<group>"; };
-		D92BB69F2E53AA8500877E99 /* KaloriqWidget3 */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (D92BB6B02E53AA8600877E99 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = KaloriqWidget3; sourceTree = "<group>"; };
+		D92BB69F2E53AA8500877E99 /* KaloriqWidget3 */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (D9AB64092E5768E7006E874C /* PBXFileSystemSynchronizedBuildFileExceptionSet */, D9AB640A2E5768E7006E874C /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = KaloriqWidget3; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */

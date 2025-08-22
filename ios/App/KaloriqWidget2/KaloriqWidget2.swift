@@ -123,8 +123,15 @@ struct Provider: TimelineProvider {
 // MARK: - Widget View (Medium Focus)
 struct KaloriqWidget2EntryView: View {
     var entry: Provider.Entry
-    
+    @Environment(\.widgetFamily) var family
+
     var body: some View {
+        switch family {
+        case .systemSmall:
+            SmallCaloriesWidget2(entry: entry)
+        default:
+        
+        
         let calories = entry.widgetData?.calories.current ?? 0
         let target = entry.widgetData?.calories.target ?? 2500
         let calorieProgress = entry.widgetData?.calories.progress ?? 0.0
@@ -250,6 +257,41 @@ struct KaloriqWidget2EntryView: View {
         }
     }
 }
+}
+
+// MARK: - Small Widget
+struct SmallCaloriesWidget2: View {
+    let entry: KaloriqEntry
+    
+    var body: some View {
+        let calories = entry.widgetData?.calories.current ?? 0
+        let target = entry.widgetData?.calories.target ?? 2500
+        let progress = entry.widgetData?.calories.progress ?? 0.0
+        
+        ZStack {
+            
+            VStack(spacing: 8) {
+                // Progress Ring
+                ZStack {
+                    Circle()
+                        .stroke(Color.white.opacity(0.2), lineWidth: 10)
+                        .frame(width: 90, height: 90)
+                    
+                    Circle()
+                        .trim(from: 0, to: min(progress, 1.0))
+                        .stroke(Color.white, style: StrokeStyle(lineWidth: 10, lineCap: .round))
+                        .frame(width: 90, height: 90)
+                        .rotationEffect(.degrees(-90))
+                        .animation(.easeInOut(duration: 1.0), value: progress)
+                    
+                    Image(systemName: "flame.fill")
+                        .foregroundColor(.white)
+                        .font(.system(size: 16))
+                }
+            }
+        }
+    }
+}
 
 // MARK: - Helper Views
 struct MacroDetailView: View {
@@ -294,8 +336,8 @@ struct KaloriqWidget2: Widget {
                 .containerBackground(.fill.tertiary, for: .widget)
         }
         .configurationDisplayName("Kaloriq Macros")
-        .description("Track your daily macronutrients with detailed protein, carbs, and fats progress.")
-        .supportedFamilies([.systemMedium])
+        .description("Track your daily macronutrients with detailed protein, carbs, and fats progress. 222")
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }
 

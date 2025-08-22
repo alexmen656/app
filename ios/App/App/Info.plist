@@ -23,7 +23,8 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>pls</string>
+	<string>Allow camera access to scan meals and barcodes.
+</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Allow camera access to scan meals and barcodes.
 </string>

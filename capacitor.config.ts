@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'eu.control-center.sites.kaloriq',
+  appId: 'eu.controlcenter.sites.kaloriq',
   appName: 'Kaloriq',
   webDir: 'dist',
   server: {

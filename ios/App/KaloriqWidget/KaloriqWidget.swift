@@ -150,7 +150,7 @@ struct SmallCaloriesWidget: View {
         let progress = entry.widgetData?.calories.progress ?? 0.0
         
         ZStack {
-            ContainerRelativeShape()
+          /*  ContainerRelativeShape()
                 .fill(LinearGradient(
                     gradient: Gradient(colors: [
                         Color(red: 0.12, green: 0.12, blue: 0.18),
@@ -158,19 +158,19 @@ struct SmallCaloriesWidget: View {
                     ]),
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
-                ))
+                )) */
             
             VStack(spacing: 8) {
                 // Progress Ring
                 ZStack {
                     Circle()
-                        .stroke(Color.white.opacity(0.2), lineWidth: 6)
-                        .frame(width: 60, height: 60)
+                        .stroke(Color.white.opacity(0.2), lineWidth: 7)
+                        .frame(width: 70, height: 70)
                     
                     Circle()
                         .trim(from: 0, to: min(progress, 1.0))
-                        .stroke(Color.white, style: StrokeStyle(lineWidth: 6, lineCap: .round))
-                        .frame(width: 60, height: 60)
+                        .stroke(Color.white, style: StrokeStyle(lineWidth: 7, lineCap: .round))
+                        .frame(width: 70, height: 70)
                         .rotationEffect(.degrees(-90))
                         .animation(.easeInOut(duration: 1.0), value: progress)
                     
@@ -181,11 +181,11 @@ struct SmallCaloriesWidget: View {
                 
                 VStack(spacing: 2) {
                     Text("\(calories)")
-                        .font(.system(size: 18, weight: .bold, design: .rounded))
+                        .font(.system(size: 22, weight: .bold, design: .rounded))
                         .foregroundColor(.white)
                     
                     Text("of \(target) kcal")
-                        .font(.system(size: 10, weight: .medium))
+                        .font(.system(size: 12, weight: .medium))
                         .foregroundColor(.white.opacity(0.7))
                 }
             }
