@@ -8,6 +8,17 @@
 import WidgetKit
 import SwiftUI
 
+// MARK: - Extension to disable content margins
+extension WidgetConfiguration {
+    func contentMarginsDisabledIfAvailable() -> some WidgetConfiguration {
+        if #available(iOSApplicationExtension 17.0, *) {
+            return self.contentMarginsDisabled()
+        } else {
+            return self
+        }
+    }
+}
+
 // MARK: - Data Models
 struct WidgetData: Codable {
     let calories: CalorieData
@@ -223,7 +234,7 @@ struct MediumMacrosWidget: View {
             
             HStack(spacing: 16) {
                 // Calories Section
-                VStack(spacing: 8) {
+             /*   VStack(spacing: 8) {
                     ZStack {
                         Circle()
                             .stroke(Color.white.opacity(0.2), lineWidth: 4)
@@ -249,11 +260,17 @@ struct MediumMacrosWidget: View {
                             .font(.system(size: 10))
                             .foregroundColor(.white.opacity(0.7))
                     }
-                }
+                }*/
                 
                 // Macros Section
                 VStack(spacing: 12) {
                     HStack(spacing: 16) {
+                        MacroRing(
+                            value: calories,
+                            progress: calorieProgress,
+                            color: Color(red: 1.0, green: 1.0, blue: 1.0),
+                            label: "kcal"
+                        )
                         MacroRing(
                             value: protein,
                             progress: proteinProgress,
@@ -437,23 +454,23 @@ struct MacroRing: View {
         VStack(spacing: 4) {
             ZStack {
                 Circle()
-                    .stroke(Color.white.opacity(0.2), lineWidth: 3)
-                    .frame(width: 30, height: 30)
+                    .stroke(Color.white.opacity(0.2), lineWidth: 6)
+                    .frame(width: 60, height: 60)
                 
                 Circle()
                     .trim(from: 0, to: min(progress, 1.0))
-                    .stroke(color, style: StrokeStyle(lineWidth: 3, lineCap: .round))
-                    .frame(width: 30, height: 30)
+                    .stroke(color, style: StrokeStyle(lineWidth: 6, lineCap: .round))
+                    .frame(width: 60, height: 60)
                     .rotationEffect(.degrees(-90))
                     .animation(.easeInOut(duration: 1.0), value: progress)
                 
                 Text(label)
-                    .font(.system(size: 8, weight: .bold))
+                    .font(.system(size: 16, weight: .bold))
                     .foregroundColor(color)
             }
             
             Text("\(value)g")
-                .font(.system(size: 8, weight: .medium))
+                .font(.system(size: 16, weight: .medium))
                 .foregroundColor(.white)
         }
     }
@@ -489,6 +506,7 @@ struct KaloriqWidget: Widget {
         .configurationDisplayName("Kaloriq")
         .description("Track your daily nutrition goals with live calorie and macro progress.")
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+        .contentMarginsDisabledIfAvailable() // <- Das ist der wichtige Teil!
     }
 }
 
