@@ -12,20 +12,25 @@
         <div v-if="currentStep === 1" class="step-container">
             <div class="hero-section">
                 <div class="hero-icon">
-                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z"/>
+                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5">
+                        <path
+                            d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z" />
                     </svg>
                 </div>
                 <h1 class="hero-title">Welcome to <span class="brand">Kaloriq</span></h1>
-                <p class="hero-subtitle">Track your nutrition with AI-powered food recognition and achieve your health goals with personalized insights.</p>
+                <p class="hero-subtitle">Track your nutrition with AI-powered food recognition and achieve your health
+                    goals with personalized insights.</p>
             </div>
-            
+
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
-                            <circle cx="12" cy="13" r="3"/>
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
+                            <circle cx="12" cy="13" r="3" />
                         </svg>
                     </div>
                     <h3>AI Food Recognition</h3>
@@ -33,10 +38,11 @@
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 20V10"/>
-                            <path d="M12 20V4"/>
-                            <path d="M6 20v-6"/>
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M18 20V10" />
+                            <path d="M12 20V4" />
+                            <path d="M6 20v-6" />
                         </svg>
                     </div>
                     <h3>Smart Analytics</h3>
@@ -44,9 +50,10 @@
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <path d="M16.2 7.8l-2 6.3-6.3 2 2-6.3 6.3-2z"/>
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M16.2 7.8l-2 6.3-6.3 2 2-6.3 6.3-2z" />
                         </svg>
                     </div>
                     <h3>Personal Goals</h3>
@@ -60,26 +67,16 @@
             <div class="content-section">
                 <h2 class="step-title">Tell us about yourself</h2>
                 <p class="step-subtitle">This helps us personalize your experience</p>
-                
+
                 <div class="form-group">
                     <label class="form-label">Name</label>
-                    <input 
-                        v-model="userInfo.name" 
-                        type="text" 
-                        class="form-input"
-                        placeholder="Enter your name"
-                    />
+                    <input v-model="userInfo.name" type="text" class="form-input" placeholder="Enter your name" />
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Age</label>
-                        <input 
-                            v-model="userInfo.age" 
-                            type="number" 
-                            class="form-input"
-                            placeholder="25"
-                        />
+                        <input v-model="userInfo.age" type="number" class="form-input" placeholder="25" />
                     </div>
                     <div class="form-group">
                         <label class="form-label">Gender</label>
@@ -96,24 +93,14 @@
                     <div class="form-group">
                         <label class="form-label">Height</label>
                         <div class="input-with-unit">
-                            <input 
-                                v-model="userInfo.height" 
-                                type="number" 
-                                class="form-input"
-                                placeholder="175"
-                            />
+                            <input v-model="userInfo.height" type="number" class="form-input" placeholder="175" />
                             <span class="unit">cm</span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Weight</label>
                         <div class="input-with-unit">
-                            <input 
-                                v-model="userInfo.weight" 
-                                type="number" 
-                                class="form-input"
-                                placeholder="70"
-                            />
+                            <input v-model="userInfo.weight" type="number" class="form-input" placeholder="70" />
                             <span class="unit">kg</span>
                         </div>
                     </div>
@@ -126,15 +113,11 @@
             <div class="content-section">
                 <h2 class="step-title">What's your activity level?</h2>
                 <p class="step-subtitle">This helps us calculate your calorie needs</p>
-                
+
                 <div class="activity-options">
-                    <div 
-                        v-for="activity in activityLevels" 
-                        :key="activity.value"
-                        class="activity-card"
+                    <div v-for="activity in activityLevels" :key="activity.value" class="activity-card"
                         :class="{ active: userInfo.activityLevel === activity.value }"
-                        @click="userInfo.activityLevel = activity.value"
-                    >
+                        @click="userInfo.activityLevel = activity.value">
                         <div class="activity-icon">{{ activity.icon }}</div>
                         <h3 class="activity-title">{{ activity.title }}</h3>
                         <p class="activity-description">{{ activity.description }}</p>
@@ -150,13 +133,9 @@
                 <p class="step-subtitle">{{ $t('onboarding.goalSubtitle') }}</p>
 
                 <div class="goal-options">
-                    <div 
-                        v-for="goalOption in goalOptions" 
-                        :key="goalOption.value"
-                        class="goal-option"
+                    <div v-for="goalOption in goalOptions" :key="goalOption.value" class="goal-option"
                         :class="{ active: userInfo.goal === goalOption.value }"
-                        @click="userInfo.goal = goalOption.value"
-                    >
+                        @click="userInfo.goal = goalOption.value">
                         <div class="goal-icon-large">{{ goalOption.icon }}</div>
                         <div class="goal-content">
                             <h3 class="goal-name">{{ goalOption.name }}</h3>
@@ -165,7 +144,7 @@
                         </div>
                         <div class="goal-arrow">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
                             </svg>
                         </div>
                     </div>
@@ -178,7 +157,7 @@
             <div class="content-section">
                 <h2 class="step-title">Set Your Weight Goal</h2>
                 <p class="step-subtitle">What is your target weight to achieve your goal?</p>
-                
+
                 <div class="weight-goal-container">
                     <div class="current-weight-display">
                         <div class="weight-info">
@@ -189,21 +168,14 @@
 
                     <div class="arrow-down">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M7.41 8.84L12 13.42l4.59-4.58L18 10.25l-6 6-6-6z"/>
+                            <path d="M7.41 8.84L12 13.42l4.59-4.58L18 10.25l-6 6-6-6z" />
                         </svg>
                     </div>
 
                     <div class="target-weight-input">
                         <label class="form-label">Target Weight (kg)</label>
-                        <input 
-                            v-model="userInfo.targetWeight" 
-                            type="number" 
-                            placeholder="Enter your target weight"
-                            class="form-input weight-input"
-                            min="30"
-                            max="300"
-                            step="0.1"
-                        />
+                        <input v-model="userInfo.targetWeight" type="number" placeholder="Enter your target weight"
+                            class="form-input weight-input" min="30" max="300" step="0.1" />
                     </div>
 
                     <div v-if="userInfo.weight && userInfo.targetWeight" class="weight-goal-summary">
@@ -229,14 +201,15 @@
             <div class="content-section">
                 <h2 class="step-title">Set your daily goals</h2>
                 <p class="step-subtitle">Based on your profile, we recommend these targets</p>
-                
+
                 <div class="goals-container">
                     <!-- Calories Goal -->
                     <div class="goal-card calories-goal">
                         <div class="goal-header">
                             <div class="goal-icon">
                                 <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z"/>
+                                    <path
+                                        d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z" />
                                 </svg>
                             </div>
                             <div class="goal-info">
@@ -245,23 +218,12 @@
                             </div>
                         </div>
                         <div class="goal-input-container">
-                            <input 
-                                v-model="goals.calories" 
-                                type="number" 
-                                class="goal-input"
-                                step="50"
-                            />
+                            <input v-model="goals.calories" type="number" class="goal-input" step="50" />
                             <span class="goal-unit">kcal</span>
                         </div>
                         <div class="goal-slider">
-                            <input 
-                                v-model="goals.calories" 
-                                type="range" 
-                                min="1200" 
-                                max="4000" 
-                                step="50"
-                                class="slider calories-slider"
-                            />
+                            <input v-model="goals.calories" type="range" min="1200" max="4000" step="50"
+                                class="slider calories-slider" />
                         </div>
                     </div>
 
@@ -270,7 +232,8 @@
                         <div class="goal-header">
                             <div class="goal-icon">
                                 <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M11 21h-1l1-7H7.5c-.58 0-.57-.32-.38-.66.19-.34.05-.08.07-.12C8.48 10.94 10.42 7.54 13 3h1l-1 7h3.5c.49 0 .56.33.47.51l-.07.15C12.96 17.55 11 21 11 21z"/>
+                                    <path
+                                        d="M11 21h-1l1-7H7.5c-.58 0-.57-.32-.38-.66.19-.34.05-.08.07-.12C8.48 10.94 10.42 7.54 13 3h1l-1 7h3.5c.49 0 .56.33.47.51l-.07.15C12.96 17.55 11 21 11 21z" />
                                 </svg>
                             </div>
                             <div class="goal-info">
@@ -279,23 +242,12 @@
                             </div>
                         </div>
                         <div class="goal-input-container">
-                            <input 
-                                v-model="goals.protein" 
-                                type="number" 
-                                class="goal-input"
-                                step="5"
-                            />
+                            <input v-model="goals.protein" type="number" class="goal-input" step="5" />
                             <span class="goal-unit">g</span>
                         </div>
                         <div class="goal-slider">
-                            <input 
-                                v-model="goals.protein" 
-                                type="range" 
-                                min="50" 
-                                max="300" 
-                                step="5"
-                                class="slider protein-slider"
-                            />
+                            <input v-model="goals.protein" type="range" min="50" max="300" step="5"
+                                class="slider protein-slider" />
                         </div>
                     </div>
 
@@ -304,7 +256,8 @@
                         <div class="goal-header">
                             <div class="goal-icon">
                                 <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M12 2c1.1 0 2 .9 2 2 0 .74-.4 1.38-1 1.72v2.56l7 7V17c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2v-1.72l7-7V5.72c-.6-.34-1-.98-1-1.72 0-1.1.9-2 2-2z"/>
+                                    <path
+                                        d="M12 2c1.1 0 2 .9 2 2 0 .74-.4 1.38-1 1.72v2.56l7 7V17c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2v-1.72l7-7V5.72c-.6-.34-1-.98-1-1.72 0-1.1.9-2 2-2z" />
                                 </svg>
                             </div>
                             <div class="goal-info">
@@ -313,23 +266,12 @@
                             </div>
                         </div>
                         <div class="goal-input-container">
-                            <input 
-                                v-model="goals.carbs" 
-                                type="number" 
-                                class="goal-input"
-                                step="10"
-                            />
+                            <input v-model="goals.carbs" type="number" class="goal-input" step="10" />
                             <span class="goal-unit">g</span>
                         </div>
                         <div class="goal-slider">
-                            <input 
-                                v-model="goals.carbs" 
-                                type="range" 
-                                min="100" 
-                                max="500" 
-                                step="10"
-                                class="slider carbs-slider"
-                            />
+                            <input v-model="goals.carbs" type="range" min="100" max="500" step="10"
+                                class="slider carbs-slider" />
                         </div>
                     </div>
 
@@ -338,7 +280,8 @@
                         <div class="goal-header">
                             <div class="goal-icon">
                                 <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7z"/>
+                                    <path
+                                        d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7z" />
                                 </svg>
                             </div>
                             <div class="goal-info">
@@ -347,23 +290,12 @@
                             </div>
                         </div>
                         <div class="goal-input-container">
-                            <input 
-                                v-model="goals.fats" 
-                                type="number" 
-                                class="goal-input"
-                                step="5"
-                            />
+                            <input v-model="goals.fats" type="number" class="goal-input" step="5" />
                             <span class="goal-unit">g</span>
                         </div>
                         <div class="goal-slider">
-                            <input 
-                                v-model="goals.fats" 
-                                type="range" 
-                                min="30" 
-                                max="200" 
-                                step="5"
-                                class="slider fats-slider"
-                            />
+                            <input v-model="goals.fats" type="range" min="30" max="200" step="5"
+                                class="slider fats-slider" />
                         </div>
                     </div>
                 </div>
@@ -372,18 +304,10 @@
 
         <!-- Navigation Buttons -->
         <div class="navigation-buttons">
-            <button 
-                v-if="currentStep > 1" 
-                @click="previousStep" 
-                class="nav-button secondary"
-            >
+            <button v-if="currentStep > 1" @click="previousStep" class="nav-button secondary">
                 Back
             </button>
-            <button 
-                @click="nextStep" 
-                class="nav-button primary"
-                :disabled="!canProceed"
-            >
+            <button @click="nextStep" class="nav-button primary" :disabled="!canProceed">
                 {{ currentStep === totalSteps ? 'Get Started' : 'Continue' }}
             </button>
         </div>
@@ -429,7 +353,6 @@ onMounted(async () => {
         console.log('Offerings prefetched successfully')
     } catch (error) {
         console.warn('Failed to prefetch offerings:', error)
-        // Don't block onboarding if prefetch fails
     }
 })
 
@@ -581,7 +504,7 @@ function nextStep() {
     if (currentStep.value === 4) {
         calculateRecommendedCalories()
     }
-    
+
     if (currentStep.value < totalSteps) {
         currentStep.value++
     } else {
@@ -599,16 +522,16 @@ async function finishOnboarding() {
     // Update user store with data
     await updateUserProfile(userInfo)
     await updateDailyGoals(goals)
-    
+
     // Set up weight tracking if target weight is provided
     if (userInfo.weight && userInfo.targetWeight) {
         // Add initial weight entry
         await WeightTracker.addWeightEntry(userInfo.weight, 'Initial weight from onboarding')
-        
+
         // Set weight goal
-        const goalType = userInfo.targetWeight > userInfo.weight ? 'gain' : 
-                        userInfo.targetWeight < userInfo.weight ? 'lose' : 'maintain'
-        
+        const goalType = userInfo.targetWeight > userInfo.weight ? 'gain' :
+            userInfo.targetWeight < userInfo.weight ? 'lose' : 'maintain'
+
         await WeightTracker.setWeightGoal({
             startWeight: userInfo.weight,
             targetWeight: userInfo.targetWeight,
@@ -616,9 +539,9 @@ async function finishOnboarding() {
             startDate: new Date().toISOString().split('T')[0]
         })
     }
-    
+
     await completeOnboarding()
-    
+
     // Navigate to paywall instead of home
     router.push('/paywall')
 }
@@ -786,7 +709,8 @@ async function finishOnboarding() {
     margin-bottom: 8px;
 }
 
-.form-input, .form-select {
+.form-input,
+.form-select {
     width: 100%;
     background: rgba(255, 255, 255, 0.1);
     border: 2px solid rgba(255, 255, 255, 0.2);
@@ -797,7 +721,8 @@ async function finishOnboarding() {
     transition: border-color 0.2s;
 }
 
-.form-input:focus, .form-select:focus {
+.form-input:focus,
+.form-select:focus {
     outline: none;
     border-color: #007052;
 }
@@ -1110,19 +1035,19 @@ async function finishOnboarding() {
     .hero-title {
         font-size: 28px;
     }
-    
+
     .hero-subtitle {
         font-size: 16px;
     }
-    
+
     .features-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .form-row {
         grid-template-columns: 1fr;
     }
-    
+
     .goal-input {
         width: 100px;
         font-size: 20px;

@@ -37,43 +37,11 @@
     <!-- Chart Section -->
     <div class="chart-section">
       <h3 class="section-title">{{ chartTitle }}</h3>
-      <div class="chart-container">
-        <div class="chart">
-          <div v-if="selectedPeriod === 'year'" class="yearly-chart">
-            <!-- Yearly chart with 4 quarters instead of 12 months -->
-            <div class="chart-bars">
-              <div 
-                v-for="(quarter, index) in getQuarterlyData(analyticsData?.weeklyData || [])" 
-                :key="index"
-                class="chart-bar quarterly-bar"
-                :style="{ height: Math.max((quarter.calories / 2500) * 100, 5) + '%' }"
-              >
-                <div class="bar-value">{{ quarter.calories }}</div>
-              </div>
-            </div>
-            <div class="chart-labels">
-              <span v-for="(quarter, index) in getQuarterlyData(analyticsData?.weeklyData || [])" :key="index">{{ quarter.label }}</span>
-            </div>
-          </div>
-          
-          <div v-else class="standard-chart">
-            <!-- Week/Month chart -->
-            <div class="chart-bars">
-              <div 
-                v-for="(day, index) in (analyticsData?.weeklyData || [])" 
-                :key="index"
-                class="chart-bar"
-                :style="{ height: Math.max((day.calories / 3000) * 100, 5) + '%' }"
-              >
-                <div class="bar-value">{{ day.calories }}</div>
-              </div>
-            </div>
-            <div class="chart-labels">
-              <span v-for="day in (analyticsData?.weeklyData || [])" :key="day.day">{{ day.day }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      <CalorieChart 
+        :data="getChartData()" 
+        :period="selectedPeriod" 
+        :goal="2500"
+      />
     </div>
 
     <!-- Macro Breakdown -->
@@ -266,89 +234,11 @@
         </div>
 
         <!-- Enhanced Chart -->
-        <div class="weight-chart">
-          <div class="chart-y-axis">
-            <div v-for="(label, index) in getYAxisLabels()" :key="index" class="y-axis-label">
-              {{ label }}{{ $t('analytics.kg') }}
-            </div>
-          </div>
-          
-          <div class="weight-chart-main">
-            <div class="chart-grid">
-              <div v-for="i in 5" :key="i" class="grid-line-horizontal"></div>
-              <div v-for="i in Math.min(analyticsData.weightChartData.length, 8)" :key="i" class="grid-line-vertical"></div>
-            </div>
-            
-            <svg class="weight-chart-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
-              <!-- Gradient definitions -->
-              <defs>
-                <linearGradient id="weightAreaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" style="stop-color:#42a5f5;stop-opacity:0.3" />
-                  <stop offset="50%" style="stop-color:#42a5f5;stop-opacity:0.1" />
-                  <stop offset="100%" style="stop-color:#42a5f5;stop-opacity:0" />
-                </linearGradient>
-                <filter id="glow">
-                  <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
-                  <feMerge> 
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="SourceGraphic"/>
-                  </feMerge>
-                </filter>
-              </defs>
-              
-              <!-- Chart area fill -->
-              <polygon
-                :points="getWeightChartAreaPoints()"
-                fill="url(#weightAreaGradient)"
-              />
-              
-              <!-- Main line -->
-              <polyline
-                :points="getWeightChartPoints()"
-                stroke="#42a5f5"
-                stroke-width="1.2"
-                fill="none"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                filter="url(#glow)"
-              />
-              
-              <!-- Data points -->
-              <circle
-                v-for="(point, index) in getFilteredWeightData()"
-                :key="index"
-                :cx="(index / Math.max(getFilteredWeightData().length - 1, 1)) * 100"
-                :cy="100 - getWeightPosition(point.weight)"
-                r="2"
-                fill="#ffffff"
-                stroke="#42a5f5"
-                stroke-width="2"
-                class="weight-point"
-                @click="showWeightDetails(point)"
-              >
-                <title>{{ point.weight }}{{ $t('analytics.kg') }} - {{ formatChartDate(point.date) }}</title>
-              </circle>
-              
-              <!-- Trend line (if showing trend) -->
-              <polyline
-                v-if="showTrendLine"
-                :points="getTrendLinePoints()"
-                stroke="#ffa726"
-                stroke-width="1"
-                stroke-dasharray="4,4"
-                fill="none"
-                opacity="0.7"
-              />
-            </svg>
-          </div>
-        </div>
-        
-        <!-- Chart Labels -->
-        <div class="weight-chart-labels">
-          <span v-for="(point, index) in getFilteredWeightData()" :key="index" class="chart-label">
-            {{ formatChartDateShort(point.date) }}
-          </span>
-        </div>
+        <WeightChart 
+          :data="analyticsData?.weightChartData || []"
+          :goal-weight="analyticsData?.goalProgress.weight.target || undefined"
+          :current-weight="analyticsData?.goalProgress.weight.current || undefined"
+        />
       </div>
       
       <div v-else class="no-weight-data">
@@ -429,10 +319,12 @@ import { useRouter } from 'vue-router'
 import { AnalyticsManager, type AnalyticsData } from '../utils/analyticsData'
 import { WeightTracker } from '../utils/weightTracking'
 import { StreakManager } from '../utils/widgetData'
+import CalorieChart from '../components/charts/CalorieChart.vue'
+import WeightChart from '../components/charts/WeightChart.vue'
 
 const router = useRouter()
 
-const selectedPeriod = ref('week')
+const selectedPeriod = ref<'week' | 'month' | 'year'>('week')
 const analyticsData = ref<AnalyticsData | null>(null)
 const loading = ref(true)
 const previousAnalyticsData = ref<AnalyticsData | null>(null)
@@ -444,7 +336,6 @@ const weightNote = ref('')
 
 // Weight chart specific properties
 const selectedWeightPeriod = ref('month')
-const showTrendLine = ref(true)
 
 // Weight period options
 const weightPeriods = [
@@ -513,6 +404,28 @@ const chartTitle = computed(() => {
 // Get actual streak value
 const streakCount = ref(0)
 
+function getChartData() {
+    console.log('getChartData called', analyticsData.value?.weeklyData)
+    
+    if (!analyticsData.value?.weeklyData) {
+        console.log('No weeklyData available')
+        return []
+    }
+    
+    if (selectedPeriod.value === 'year') {
+        const quarterlyData = getQuarterlyData(analyticsData.value.weeklyData)
+        console.log('Returning quarterly data:', quarterlyData)
+        return quarterlyData
+    } else {
+        const mappedData = analyticsData.value.weeklyData.map(day => ({
+            label: day.day,
+            calories: day.calories
+        }))
+        console.log('Returning weekly/monthly data:', mappedData)
+        return mappedData
+    }
+}
+
 async function loadStreakData() {
     try {
         streakCount.value = await StreakManager.getCurrentStreak()
@@ -536,58 +449,6 @@ function getBMIPosition(bmi: number | null): number {
     return Math.max(0, Math.min(100, position))
 }
 
-function getWeightPosition(weight: number): number {
-    if (!analyticsData.value?.weightChartData) return 0
-    const weights = analyticsData.value.weightChartData.map(p => p.weight)
-    const minWeight = Math.min(...weights) - 2
-    const maxWeight = Math.max(...weights) + 2
-    if (maxWeight === minWeight) return 50
-    return ((weight - minWeight) / (maxWeight - minWeight)) * 100
-}
-
-// Generate SVG points for the weight chart line
-function getWeightChartPoints(): string {
-    if (!analyticsData.value?.weightChartData || analyticsData.value.weightChartData.length === 0) return ''
-    
-    return analyticsData.value.weightChartData
-        .map((point, index) => {
-            const x = (index / Math.max(analyticsData.value!.weightChartData.length - 1, 1)) * 100
-            const y = 100 - getWeightPosition(point.weight)
-            return `${x},${y}`
-        })
-        .join(' ')
-}
-
-// Generate SVG points for the weight chart area fill
-function getWeightChartAreaPoints(): string {
-    if (!analyticsData.value?.weightChartData || analyticsData.value.weightChartData.length === 0) return ''
-    
-    const points = analyticsData.value.weightChartData
-        .map((point, index) => {
-            const x = (index / Math.max(analyticsData.value!.weightChartData.length - 1, 1)) * 100
-            const y = 100 - getWeightPosition(point.weight)
-            return `${x},${y}`
-        })
-        .join(' ')
-    
-    // Add bottom corners to close the area
-    const lastIndex = analyticsData.value.weightChartData.length - 1
-    const rightX = (lastIndex / Math.max(lastIndex, 1)) * 100
-    return `0,100 ${points} ${rightX},100`
-}
-
-// Format date for chart tooltips
-function formatChartDate(dateString: string): string {
-    const date = new Date(dateString)
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-}
-
-// Format date for chart labels (shorter version)
-function formatChartDateShort(dateString: string): string {
-    const date = new Date(dateString)
-    return date.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })
-}
-
 // Get motivational message based on progress percentage
 function getMotivationalMessage(percentage: number): string {
     if (percentage >= 90) return "Amazing progress! You're almost there!"
@@ -595,90 +456,6 @@ function getMotivationalMessage(percentage: number): string {
     if (percentage >= 50) return "You're doing well! Stay consistent!"
     if (percentage >= 25) return "Good start! Every step counts!"
     return "Let's begin this journey together!"
-}
-
-// Get Y-axis labels for weight chart
-function getYAxisLabels(): string[] {
-    if (!analyticsData.value?.weightChartData || analyticsData.value.weightChartData.length === 0) return []
-    
-    const weights = analyticsData.value.weightChartData.map(p => p.weight)
-    const minWeight = Math.min(...weights) - 2
-    const maxWeight = Math.max(...weights) + 2
-    
-    const step = (maxWeight - minWeight) / 4
-    return [
-        Math.round(maxWeight).toString(),
-        Math.round(maxWeight - step).toString(), 
-        Math.round(maxWeight - step * 2).toString(),
-        Math.round(maxWeight - step * 3).toString(),
-        Math.round(minWeight).toString()
-    ]
-}
-
-// Get filtered weight data based on selected period
-function getFilteredWeightData() {
-    if (!analyticsData.value?.weightChartData) return []
-    
-    const now = new Date()
-    let cutoffDate = new Date()
-    
-    switch (selectedWeightPeriod.value) {
-        case 'week':
-            cutoffDate.setDate(now.getDate() - 7)
-            break
-        case 'month':
-            cutoffDate.setMonth(now.getMonth() - 1)
-            break
-        case '3months':
-            cutoffDate.setMonth(now.getMonth() - 3)
-            break
-        case 'year':
-            cutoffDate.setFullYear(now.getFullYear() - 1)
-            break
-        default:
-            cutoffDate.setMonth(now.getMonth() - 1)
-    }
-    
-    return analyticsData.value.weightChartData.filter(point => 
-        new Date(point.date) >= cutoffDate
-    )
-}
-
-// Show weight details (placeholder for future modal/tooltip)
-function showWeightDetails(point: { date: string; weight: number; note?: string }) {
-    console.log('Weight details:', point)
-    // Future: show modal or tooltip with weight details
-}
-
-// Get trend line points for SVG polyline
-function getTrendLinePoints(): string {
-    const filteredData = getFilteredWeightData()
-    if (filteredData.length < 2) return ''
-    
-    // Simple linear regression for trend line
-    const n = filteredData.length
-    let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0
-    
-    filteredData.forEach((point, index) => {
-        const x = index
-        const y = point.weight
-        sumX += x
-        sumY += y
-        sumXY += x * y
-        sumXX += x * x
-    })
-    
-    const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX)
-    const intercept = (sumY - slope * sumX) / n
-    
-    return filteredData
-        .map((_, index) => {
-            const x = (index / Math.max(filteredData.length - 1, 1)) * 100
-            const trendWeight = slope * index + intercept
-            const y = 100 - getWeightPosition(trendWeight)
-            return `${x},${y}`
-        })
-        .join(' ')
 }
 
 // Get quarterly data for yearly view (group months into quarters)
@@ -863,7 +640,7 @@ function handleTouchEnd(event: TouchEvent) {
 .chart-container {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 16px;
-  padding: 24px;
+  /*padding: 24px;*/
   backdrop-filter: blur(10px);
 }
 
