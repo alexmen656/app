@@ -1,9 +1,6 @@
 PODS:
   - Capacitor (7.4.2):
     - CapacitorCordova
-  - CapacitorBarcodeScanner (2.0.3):
-    - Capacitor
-    - OSBarcodeLib (~> 1.1.3)
   - CapacitorCamera (7.0.2):
     - Capacitor
   - CapacitorCordova (7.4.2)
@@ -63,7 +60,6 @@ PODS:
     - nanopb/encode (= 3.30910.0)
   - nanopb/decode (3.30910.0)
   - nanopb/encode (3.30910.0)
-  - OSBarcodeLib (1.1.3)
   - PromisesObjC (2.4.0)
   - PurchasesHybridCommon (16.2.0):
     - RevenueCat (= 5.34.0)
@@ -74,7 +70,6 @@ PODS:
 
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
-  - "CapacitorBarcodeScanner (from `../../node_modules/@capacitor/barcode-scanner`)"
   - "CapacitorCamera (from `../../node_modules/@capacitor/camera`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorMlkitBarcodeScanning (from `../../node_modules/@capacitor-mlkit/barcode-scanning`)"
@@ -96,7 +91,6 @@ SPEC REPOS:
     - MLKitCommon
     - MLKitVision
     - nanopb
-    - OSBarcodeLib
     - PromisesObjC
     - PurchasesHybridCommon
     - RevenueCat
@@ -104,8 +98,6 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   Capacitor:
     :path: "../../node_modules/@capacitor/ios"
-  CapacitorBarcodeScanner:
-    :path: "../../node_modules/@capacitor/barcode-scanner"
   CapacitorCamera:
     :path: "../../node_modules/@capacitor/camera"
   CapacitorCordova:
@@ -125,7 +117,6 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Capacitor: 9d9e481b79ffaeacaf7a85d6a11adec32bd33b59
-  CapacitorBarcodeScanner: 29c88bf098adb0830975d4f14c107a6bb7722e3d
   CapacitorCamera: f9e54db0a18bb218a8dc360907d63aaefe9209ff
   CapacitorCordova: 5e58d04631bc5094894ac106e2bf1da18a9e6151
   CapacitorMlkitBarcodeScanning: 05b2dfc7a70099f6d4594365c521534d79a17b1d
@@ -143,12 +134,11 @@ SPEC CHECKSUMS:
   MLKitCommon: 07c2c33ae5640e5380beaaa6e4b9c249a205542d
   MLKitVision: 45e79d68845a2de77e2dd4d7f07947f0ed157b0e
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
-  OSBarcodeLib: f2e981270a64faf476cb790864262b29ab8cd68a
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   PurchasesHybridCommon: 55e97b4e090015ed138988e6559def2bd4c50ebe
   RevenueCat: eb2aa042789d9c99ad5172bd96e28b96286d6ada
   RevenuecatPurchasesCapacitor: 420b762736c2842bfb64436b7e0b88d2f672c943
 
-PODFILE CHECKSUM: 4029d4a02af06127de0d9a8cb7fa8c8b7df94bdb
+PODFILE CHECKSUM: 449bc0ed0e557cdcc6b1f05b505143711d9f8868
 
 COCOAPODS: 1.16.2

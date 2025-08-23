@@ -130,133 +130,121 @@ struct KaloriqWidget2EntryView: View {
         case .systemSmall:
             SmallCaloriesWidget2(entry: entry)
         default:
-        
-        
-        let calories = entry.widgetData?.calories.current ?? 0
-        let target = entry.widgetData?.calories.target ?? 2500
-        let calorieProgress = entry.widgetData?.calories.progress ?? 0.0
-        
-        let protein = entry.widgetData?.macros.protein.current ?? 0
-        let carbs = entry.widgetData?.macros.carbs.current ?? 0
-        let fats = entry.widgetData?.macros.fats.current ?? 0
-        
-        let proteinTarget = entry.widgetData?.macros.protein.target ?? 150
-        let carbsTarget = entry.widgetData?.macros.carbs.target ?? 300
-        let fatsTarget = entry.widgetData?.macros.fats.target ?? 80
-        
-        let proteinProgress = entry.widgetData?.macros.protein.progress ?? 0.0
-        let carbsProgress = entry.widgetData?.macros.carbs.progress ?? 0.0
-        let fatsProgress = entry.widgetData?.macros.fats.progress ?? 0.0
-        
-        ZStack {
-            ContainerRelativeShape()
-                .fill(LinearGradient(
+            let calories = entry.widgetData?.calories.current ?? 0
+            let target = entry.widgetData?.calories.target ?? 2500
+            let calorieProgress = entry.widgetData?.calories.progress ?? 0.0
+            
+            let protein = entry.widgetData?.macros.protein.current ?? 0
+            let carbs = entry.widgetData?.macros.carbs.current ?? 0
+            let fats = entry.widgetData?.macros.fats.current ?? 0
+            
+            let proteinTarget = entry.widgetData?.macros.protein.target ?? 150
+            let carbsTarget = entry.widgetData?.macros.carbs.target ?? 300
+            let fatsTarget = entry.widgetData?.macros.fats.target ?? 80
+            
+            let proteinProgress = entry.widgetData?.macros.protein.progress ?? 0.0
+            let carbsProgress = entry.widgetData?.macros.carbs.progress ?? 0.0
+            let fatsProgress = entry.widgetData?.macros.fats.progress ?? 0.0
+
+            ZStack {
+                // Full background
+                LinearGradient(
                     gradient: Gradient(colors: [
                         Color(red: 0.12, green: 0.12, blue: 0.18),
                         Color(red: 0.16, green: 0.18, blue: 0.22)
                     ]),
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
-                ))
-            
-            VStack(spacing: 12) {
-                // Header
-                HStack {
-                    HStack {
-                        Text("Kal")
-                            .foregroundColor(Color(red: 0.0, green: 0.44, blue: 0.32))
-                        Text("oriq")
-                            .foregroundColor(.white)
-                    }
-                    .font(.system(size: 16, weight: .bold))
-                    
-                    Spacer()
-                    
-                    Text("Macros")
-                        .font(.system(size: 12, weight: .medium))
-                        .foregroundColor(.white.opacity(0.8))
-                }
+                )
+                .ignoresSafeArea(.all)
+                       .frame(maxWidth: .infinity, maxHeight: .infinity)
+                       .clipped()
                 
-                // Main Content
-                HStack(spacing: 16) {
-                    // Calories Section
-                    VStack(spacing: 6) {
-                        ZStack {
-                            Circle()
-                                .stroke(Color.white.opacity(0.2), lineWidth: 5)
-                                .frame(width: 55, height: 55)
+                GeometryReader { geometry in
+                    HStack(spacing: 20) {
+                        // Calories Section - Left side
+                        VStack(spacing: 4) {
+                            let circleSize = min(geometry.size.height * 0.75, geometry.size.width * 0.4)
                             
-                            Circle()
-                                .trim(from: 0, to: min(calorieProgress, 1.0))
-                                .stroke(Color.white, style: StrokeStyle(lineWidth: 5, lineCap: .round))
-                                .frame(width: 55, height: 55)
-                                .rotationEffect(.degrees(-90))
-                                .animation(.easeInOut(duration: 1.0), value: calorieProgress)
-                            
-                            Image(systemName: "flame.fill")
-                                .foregroundColor(.white)
-                                .font(.system(size: 14))
-                        }
-                        
-                        VStack(spacing: 1) {
-                            Text("\(calories)")
-                                .font(.system(size: 14, weight: .bold))
-                                .foregroundColor(.white)
-                            Text("kcal")
-                                .font(.system(size: 9))
-                                .foregroundColor(.white.opacity(0.7))
-                        }
-                    }
-                    
-                    // Macros Grid
-                    VStack(spacing: 8) {
-                        // Top Row
-                        HStack(spacing: 12) {
-                            MacroDetailView(
-                                current: protein,
-                                target: proteinTarget,
-                                progress: proteinProgress,
-                                color: Color(red: 1.0, green: 0.42, blue: 0.42),
-                                label: "Protein"
-                            )
-                            MacroDetailView(
-                                current: carbs,
-                                target: carbsTarget,
-                                progress: carbsProgress,
-                                color: Color(red: 1.0, green: 0.65, blue: 0.15),
-                                label: "Carbs"
-                            )
-                        }
-                        
-                        // Bottom Row
-                        HStack(spacing: 12) {
-                            MacroDetailView(
-                                current: fats,
-                                target: fatsTarget,
-                                progress: fatsProgress,
-                                color: Color(red: 0.26, green: 0.65, blue: 0.96),
-                                label: "Fats"
-                            )
-                            
-                            // Progress Summary
-                            VStack(spacing: 2) {
-                                Text("Progress")
-                                    .font(.system(size: 8, weight: .medium))
-                                    .foregroundColor(.white.opacity(0.6))
+                            ZStack {
+                                Circle()
+                                    .stroke(Color.white.opacity(0.2), lineWidth: 8)
+                                    .frame(width: circleSize, height: circleSize)
                                 
-                                let avgProgress = (proteinProgress + carbsProgress + fatsProgress) / 3.0
-                                Text("\(Int(avgProgress * 100))%")
-                                    .font(.system(size: 12, weight: .bold))
-                                    .foregroundColor(.white)
+                                Circle()
+                                    .trim(from: 0, to: min(calorieProgress, 1.0))
+                                    .stroke(Color.white, style: StrokeStyle(lineWidth: 8, lineCap: .round))
+                                    .frame(width: circleSize, height: circleSize)
+                                    .rotationEffect(.degrees(-90))
+                                    .animation(.easeInOut(duration: 1.0), value: calorieProgress)
+                                
+                                VStack(spacing: 1) {
+                                    Text("\(calories)")
+                                        .font(.system(size: circleSize * 0.18, weight: .bold))
+                                        .foregroundColor(.white)
+                                    Text("kcal")
+                                        .font(.system(size: circleSize * 0.09))
+                                        .foregroundColor(.white.opacity(0.7))
+                                }
                             }
                         }
+                        
+                        // Macros Grid - Right side
+                        VStack(spacing: 16) {
+                            // Top Row
+                            HStack(spacing: 16) {
+                                MacroDetailView(
+                                    current: protein,
+                                    target: proteinTarget,
+                                    progress: proteinProgress,
+                                    color: Color(red: 1.0, green: 0.42, blue: 0.42),
+                                    label: "Protein",
+                                    size: geometry.size
+                                )
+                                MacroDetailView(
+                                    current: carbs,
+                                    target: carbsTarget,
+                                    progress: carbsProgress,
+                                    color: Color(red: 1.0, green: 0.65, blue: 0.15),
+                                    label: "Carbs",
+                                    size: geometry.size
+                                )
+                            }
+                            
+                            // Bottom Row
+                            HStack(spacing: 16) {
+                                MacroDetailView(
+                                    current: fats,
+                                    target: fatsTarget,
+                                    progress: fatsProgress,
+                                    color: Color(red: 0.26, green: 0.65, blue: 0.96),
+                                    label: "Fats",
+                                    size: geometry.size
+                                )
+                                
+                                // Progress Summary
+                                VStack(spacing: 4) {
+                                    Text("Progress")
+                                        .font(.system(size: 10, weight: .medium))
+                                        .foregroundColor(.white.opacity(0.6))
+                                    
+                                    let avgProgress = (proteinProgress + carbsProgress + fatsProgress) / 3.0
+                                    Text("\(Int(avgProgress * 100))%")
+                                        .font(.system(size: 16, weight: .bold))
+                                        .foregroundColor(.white)
+                                }
+                                .frame(minWidth: 50)
+                            }
+                        }
+                        .frame(maxWidth: .infinity)
                     }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 12)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             }
-            .padding()
         }
     }
-}
 }
 
 // MARK: - Small Widget
@@ -269,24 +257,48 @@ struct SmallCaloriesWidget2: View {
         let progress = entry.widgetData?.calories.progress ?? 0.0
         
         ZStack {
+      /*      LinearGradient(
+                gradient: Gradient(colors: [
+                    Color(red: 0.12, green: 0.12, blue: 0.18),
+                    Color(red: 0.16, green: 0.18, blue: 0.22)
+                ]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .containerBackground(for: .widget) {
+                LinearGradient(
+                    gradient: Gradient(colors: [
+                        Color(red: 0.12, green: 0.12, blue: 0.18),
+                        Color(red: 0.16, green: 0.18, blue: 0.22)
+                    ]),
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            }*/
             
             VStack(spacing: 8) {
                 // Progress Ring
                 ZStack {
                     Circle()
-                        .stroke(Color.white.opacity(0.2), lineWidth: 10)
-                        .frame(width: 90, height: 90)
+                        .stroke(Color.white.opacity(0.2), lineWidth: 16)
+                        .frame(width: 130, height: 130)
                     
                     Circle()
                         .trim(from: 0, to: min(progress, 1.0))
-                        .stroke(Color.white, style: StrokeStyle(lineWidth: 10, lineCap: .round))
-                        .frame(width: 90, height: 90)
+                        .stroke(Color.white, style: StrokeStyle(lineWidth: 16, lineCap: .round))
+                        .frame(width: 130, height: 130)
                         .rotationEffect(.degrees(-90))
                         .animation(.easeInOut(duration: 1.0), value: progress)
                     
-                    Image(systemName: "flame.fill")
-                        .foregroundColor(.white)
-                        .font(.system(size: 16))
+                    VStack(spacing: 2) {
+                        Text("\(calories)")
+                            .font(.system(size: 28, weight: .bold, design: .rounded))
+                            .foregroundColor(.white)
+                        
+                        Text("of \(target) kcal")
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundColor(.white.opacity(0.7))
+                    }
                 }
             }
         }
@@ -300,28 +312,42 @@ struct MacroDetailView: View {
     let progress: Double
     let color: Color
     let label: String
+    let size: CGSize
     
     var body: some View {
-        VStack(spacing: 3) {
+        VStack(spacing: 6) {
             Text(label)
-                .font(.system(size: 8, weight: .medium))
+                .font(.system(size: 11, weight: .medium))
                 .foregroundColor(.white.opacity(0.7))
             
             Text("\(current)g")
-                .font(.system(size: 12, weight: .bold))
+                .font(.system(size: 16, weight: .bold))
                 .foregroundColor(color)
             
-            // Mini progress bar
-            RoundedRectangle(cornerRadius: 2)
+            // Larger progress bar
+            RoundedRectangle(cornerRadius: 3)
                 .fill(Color.white.opacity(0.2))
-                .frame(width: 30, height: 3)
+                .frame(width: 50, height: 6)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 2)
+                    RoundedRectangle(cornerRadius: 3)
                         .fill(color)
-                        .frame(width: 30 * min(progress, 1.0), height: 3)
+                        .frame(width: 50 * min(progress, 1.0), height: 6)
                         .animation(.easeInOut(duration: 1.0), value: progress),
                     alignment: .leading
                 )
+        }
+        .frame(minWidth: 50)
+    }
+}
+
+
+// MARK: - Extension to disable content margins
+extension WidgetConfiguration {
+    func contentMarginsDisabledIfAvailable() -> some WidgetConfiguration {
+        if #available(iOSApplicationExtension 17.0, *) {
+            return self.contentMarginsDisabled()
+        } else {
+            return self
         }
     }
 }
@@ -338,6 +364,8 @@ struct KaloriqWidget2: Widget {
         .configurationDisplayName("Kaloriq Macros")
         .description("Track your daily macronutrients with detailed protein, carbs, and fats progress. 222")
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+        .contentMarginsDisabledIfAvailable() // <- Das ist der wichtige Teil!
+
     }
 }
 
