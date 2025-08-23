@@ -24,8 +24,8 @@
 
         <div class="main-card">
             <div class="calories-section">
-                <h2 class="calories-number">{{ caloriesLeft }}</h2>
-                <p class="calories-label">{{ $t('home.caloriesLeft') }}</p>
+                <h2 class="calories-number">{{ caloriesNumberDisplay }}</h2>
+                <p class="calories-label">{{ caloriesLabelDisplay }}</p>
             </div>
             <div class="progress-ring">
                 <svg class="progress-svg" width="100" height="100" viewBox="0 0 100 100">
@@ -46,8 +46,8 @@
         <!-- Macros Grid -->
         <div class="macros-grid">
             <div class="macro-card protein">
-                <div class="macro-amount">{{ proteinLeft }}g</div>
-                <div class="macro-label">{{ $t('home.proteinLeft') }}</div>
+                <div class="macro-amount">{{ proteinNumberDisplay }}</div>
+                <div class="macro-label">{{ proteinLabelDisplay }}</div>
                 <div class="macro-progress">
                     <svg width="60" height="60" viewBox="0 0 60 60">
                         <!-- Background circle -->
@@ -67,8 +67,8 @@
             </div>
 
             <div class="macro-card carbs">
-                <div class="macro-amount">{{ carbsLeft }}g</div>
-                <div class="macro-label">{{ $t('home.carbsLeft') }}</div>
+                <div class="macro-amount">{{ carbsNumberDisplay }}</div>
+                <div class="macro-label">{{ carbsLabelDisplay }}</div>
                 <div class="macro-progress">
                     <svg width="60" height="60" viewBox="0 0 60 60">
                         <!-- Background circle -->
@@ -88,8 +88,8 @@
             </div>
 
             <div class="macro-card fats">
-                <div class="macro-amount">{{ fatsLeft }}g</div>
-                <div class="macro-label">{{ $t('home.fatsLeft') }}</div>
+                <div class="macro-amount">{{ fatsNumberDisplay }}</div>
+                <div class="macro-label">{{ fatsLabelDisplay }}</div>
                 <div class="macro-progress">
                     <svg width="60" height="60" viewBox="0 0 60 60">
                         <!-- Background circle -->
@@ -392,11 +392,30 @@ const recentFoods = computed((): FoodItem[] => {
     }).filter((item): item is FoodItem => item !== null)
 })
 
-// Calculated remaining amounts
-const caloriesLeft = computed(() => dailyCalories.value - consumedCalories.value)
-const proteinLeft = computed(() => dailyProtein.value - consumedProtein.value)
-const carbsLeft = computed(() => dailyCarbs.value - consumedCarbs.value)
-const fatsLeft = computed(() => dailyFats.value - consumedFats.value)
+// Calculated remaining amounts (show left or over)
+const caloriesDiff = computed(() => Math.round(dailyCalories.value - consumedCalories.value))
+const caloriesIsOver = computed(() => caloriesDiff.value < 0)
+const caloriesAbs = computed(() => Math.abs(caloriesDiff.value))
+const caloriesNumberDisplay = computed(() => caloriesIsOver.value ? `${caloriesAbs.value}` : `${caloriesDiff.value}`)
+const caloriesLabelDisplay = computed(() => caloriesIsOver.value ? t('home.caloriesOver') : t('home.caloriesLeft'))
+
+const proteinDiff = computed(() => Math.round(dailyProtein.value - consumedProtein.value))
+const proteinIsOver = computed(() => proteinDiff.value < 0)
+const proteinAbs = computed(() => Math.abs(proteinDiff.value))
+const proteinNumberDisplay = computed(() => proteinIsOver.value ? `${proteinAbs.value}g` : `${proteinDiff.value}g`)
+const proteinLabelDisplay = computed(() => proteinIsOver.value ? t('home.proteinOver') : t('home.proteinLeft'))
+
+const carbsDiff = computed(() => Math.round(dailyCarbs.value - consumedCarbs.value))
+const carbsIsOver = computed(() => carbsDiff.value < 0)
+const carbsAbs = computed(() => Math.abs(carbsDiff.value))
+const carbsNumberDisplay = computed(() => carbsIsOver.value ? `${carbsAbs.value}g` : `${carbsDiff.value}g`)
+const carbsLabelDisplay = computed(() => carbsIsOver.value ? t('home.carbsOver') : t('home.carbsLeft'))
+
+const fatsDiff = computed(() => Math.round(dailyFats.value - consumedFats.value))
+const fatsIsOver = computed(() => fatsDiff.value < 0)
+const fatsAbs = computed(() => Math.abs(fatsDiff.value))
+const fatsNumberDisplay = computed(() => fatsIsOver.value ? `${fatsAbs.value}g` : `${fatsDiff.value}g`)
+const fatsLabelDisplay = computed(() => fatsIsOver.value ? t('home.fatsOver') : t('home.fatsLeft'))
 
 // Progress calculations (0 to 1)
 const caloriesProgress = computed(() => Math.min(consumedCalories.value / dailyCalories.value, 1))
