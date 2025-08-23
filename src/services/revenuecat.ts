@@ -119,13 +119,6 @@ class RevenueCatService {
       return this.checkPremiumAccess(purchaseResult.customerInfo);
     } catch (error) {
       console.error("Purchase failed:", error);
-
-      // For demo purposes, simulate successful purchase
-      if (import.meta.env.DEV) {
-        console.log("Demo mode: simulating successful purchase");
-        return true;
-      }
-
       throw error;
     }
   }
