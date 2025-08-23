@@ -391,10 +391,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, reactive } from 'vue'
+import { ref, computed, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { updateUserProfile, updateDailyGoals, completeOnboarding } from '../stores/userStore'
 import { WeightTracker } from '../utils/weightTracking'
+import { revenueCatService } from '../services/revenuecat'
 
 const router = useRouter()
 
@@ -418,6 +419,18 @@ const goals = reactive({
     protein: 125,
     carbs: 250,
     fats: 85
+})
+
+// Prefetch offerings on component mount
+onMounted(async () => {
+    try {
+        console.log('Prefetching RevenueCat offerings...')
+        await revenueCatService.prefetchOfferings()
+        console.log('Offerings prefetched successfully')
+    } catch (error) {
+        console.warn('Failed to prefetch offerings:', error)
+        // Don't block onboarding if prefetch fails
+    }
 })
 
 const activityLevels = [

@@ -12,6 +12,7 @@ export interface SubscriptionPlan {
 
 class RevenueCatService {
   private initialized = false;
+  private cachedOfferings: SubscriptionPlan[] | null = null;
 
   async initialize(): Promise<void> {
     if (this.initialized) return;
@@ -44,6 +45,11 @@ class RevenueCatService {
 
   async getOfferings(): Promise<SubscriptionPlan[]> {
     try {
+      if (this.cachedOfferings) {
+        console.log("Returning cached RevenueCat offerings");
+        return this.cachedOfferings;
+      }
+
       if (!this.initialized) {
         await this.initialize();
       }
@@ -84,10 +90,21 @@ class RevenueCatService {
       });
 
       console.log("Mapped subscription plans:", plans);
+      this.cachedOfferings = plans;
+      
       return plans;
     } catch (error) {
       console.error("Failed to get offerings:", error);
       throw error; // Re-throw the error instead of using mock data
+    }
+  }
+  
+  async prefetchOfferings(): Promise<void> {
+    try {
+      await this.getOfferings();
+      console.log("Offerings prefetched successfully");
+    } catch (error) {
+      console.warn("Failed to prefetch offerings:", error);
     }
   }
 
