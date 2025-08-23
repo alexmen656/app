@@ -304,6 +304,7 @@ const analyzeFoodPhoto = async (photoDataUrl) => {
 
     // Prepare food data for NutritionView
     const foodData = {
+      name: data.data.name || 'Unbekanntes Essen',
       foods: data.data.foods || [],
       total: data.data.total || { calories: 0, protein: 0, carbs: 0, fat: 0 },
       confidence: data.data.confidence || 'medium',

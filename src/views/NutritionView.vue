@@ -574,9 +574,9 @@ onMounted(() => {
                 const firstFood = foodData.foods[0] || {};
                 
                 product.value = {
-                    name: foodData.foods.length > 1 
+                    name: foodData.name,/*foodData.foods.length > 1 
                         ? `Gericht mit ${foodData.foods.length} Zutaten`
-                        : firstFood.name || 'Analysiertes Gericht',
+                        : firstFood.name || 'Analysiertes Gericht',*/
                     image: route.query.photo,
                     calories: total.calories || firstFood.calories || 0,
                     protein: total.protein || firstFood.protein || 0,
