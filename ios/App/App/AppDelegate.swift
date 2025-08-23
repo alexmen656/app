@@ -1,5 +1,6 @@
 import UIKit
 import Capacitor
+import WidgetKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -58,14 +59,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
           let groupDefaults = UserDefaults(suiteName: "group.com.kaloriq.shared")
           
           if let groupDefaults = groupDefaults {
-                  for key in userDefaults.dictionaryRepresentation().keys {
-                    if key == "CapacitorStorage.widgetData" {
-                      groupDefaults.set(userDefaults.dictionaryRepresentation()[key], forKey: "widgetData")//key
-                    }
-                  }
-                  groupDefaults.synchronize()
-                  print("Successfully migrated defaults")
               
+                     // 🔹 Einmalige Migration
+                     for key in userDefaults.dictionaryRepresentation().keys {
+                         if key == "CapacitorStorage.widgetData" {
+                             groupDefaults.set(userDefaults.dictionaryRepresentation()[key], forKey: "widgetData")
+                         }
+                     }
+                     groupDefaults.synchronize()
+                     WidgetCenter.shared.reloadAllTimelines()
+                     print("Successfully migrated defaults")
+                     
+                     // 🔹 Timer für regelmäßigen Sync alle 10 Sekunden
+                     Timer.scheduledTimer(withTimeInterval: 7.0, repeats: true) { _ in
+                         for key in userDefaults.dictionaryRepresentation().keys {
+                             if key == "CapacitorStorage.widgetData" {
+                                 groupDefaults.set(userDefaults.dictionaryRepresentation()[key], forKey: "widgetData")
+                             }
+                         }
+                         groupDefaults.synchronize()
+                         WidgetCenter.shared.reloadAllTimelines()
+                         print("Successfully migrated defaults in timer")
+                     }
+
           } else {
               print("Unable to create NSUserDefaults with given app group")
           }
