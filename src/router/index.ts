@@ -81,31 +81,44 @@ subscriptionGuard.setRouter(router)
 
 // Global navigation guard for subscription checking
 router.beforeEach(async (to, _from, next) => {
-  // Wait for user store to be ready
-  const { storeReady } = await import('../stores/userStore')
-  await storeReady
+  try {
+    // Wait for user store to be ready
+    const { storeReady } = await import('../stores/userStore')
+    await storeReady
 
-  // Check if onboarding is completed
-  if (!isOnboardingCompleted.value && to.name !== 'Onboarding') {
-    return next('/onboarding')
+    // Check if onboarding is completed
+    if (!isOnboardingCompleted.value && to.name !== 'Onboarding') {
+      return next('/onboarding')
+    }
+
+    // Routes that don't require subscription
+    const freeRoutes = ['Onboarding', 'Paywall', 'Coupon']
+
+    if (freeRoutes.includes(to.name as string)) {
+      return next()
+    }
+
+    // For protected routes, check subscription with RevenueCat
+    const hasSubscription = await subscriptionGuard.checkSubscriptionStatus()
+    
+    if (!hasSubscription) {
+      console.log('No active subscription, redirecting to paywall')
+      return next('/paywall')
+    }
+
+    // Update local store if subscription is valid
+    const { updateSubscriptionStatus } = await import('../stores/userStore')
+    await updateSubscriptionStatus(true, 'Premium')
+    
+    next()
+  } catch (error) {
+    console.error('Router guard error:', error)
+    // On error, redirect to paywall for safety
+    if (to.name !== 'Paywall' && to.name !== 'Onboarding') {
+      return next('/paywall')
+    }
+    next()
   }
-
-  // Routes that don't require subscription
-  const freeRoutes = ['Onboarding', 'Paywall', 'Coupon']
-  
-  if (freeRoutes.includes(to.name as string)) {
-    return next()
-  }
-
-  // Check subscription for protected routes
-  const hasSubscription = await subscriptionGuard.requireSubscription(to.name as string)
-  
-  if (!hasSubscription && to.name !== 'Paywall') {
-    // User will be redirected to paywall by the subscription guard
-    return
-  }
-
-  next()
 })
 
 export default router;

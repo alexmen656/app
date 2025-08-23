@@ -21,12 +21,7 @@ export class SubscriptionGuard {
 
   async checkSubscriptionStatus(): Promise<boolean> {
     try {
-      // First check local store
-      if (isSubscriptionActive.value) {
-        return true
-      }
-
-      // If not active locally, check with RevenueCat
+      // Always check with RevenueCat for the most up-to-date status
       const hasActiveSubscription = await revenueCatService.checkSubscriptionStatus()
       
       if (hasActiveSubscription) {
@@ -36,6 +31,9 @@ export class SubscriptionGuard {
         return true
       }
 
+      // If no active subscription, update local store accordingly
+      const { updateSubscriptionStatus } = await import('../stores/userStore')
+      await updateSubscriptionStatus(false, '')
       return false
     } catch (error) {
       console.error('Error checking subscription status:', error)
@@ -48,10 +46,10 @@ export class SubscriptionGuard {
     const hasSubscription = await this.checkSubscriptionStatus()
     
     if (!hasSubscription && this.router) {
-      // Exempt certain routes from subscription requirement
+      // Only exempt paywall and onboarding from subscription requirement
       const exemptRoutes = ['onboarding', 'paywall', 'coupon']
-      
-      if (!exemptRoutes.includes(currentRouteName || '')) {
+
+      if (!exemptRoutes.includes(currentRouteName?.toLowerCase() || '')) {
         console.log('No active subscription found, redirecting to paywall')
         this.router.push('/paywall')
         return false
@@ -64,11 +62,6 @@ export class SubscriptionGuard {
   // Check if premium features should be available
   canAccessPremiumFeatures(): boolean {
     return isSubscriptionActive.value
-  }
-
-  // For development: Allow bypassing subscription check
-  isDevelopmentMode(): boolean {
-    return import.meta.env.DEV
   }
 }
 

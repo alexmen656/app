@@ -65,21 +65,21 @@
             <p>Loading subscription plans...</p>
         </div>
 
-        <!-- No Plans Available Message -->
-        <div v-else-if="!errorMessage" class="no-plans-message">
-            <div class="no-plans-icon">
+        <!-- Critical Error State - Force Retry -->
+        <div v-else class="critical-error-state">
+            <div class="error-icon">
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="10" />
-                    <path d="M16 16s-1.5-2-4-2-4 2-4 2" />
-                    <line x1="9" y1="9" x2="9.01" y2="9" />
-                    <line x1="15" y1="9" x2="15.01" y2="9" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
                 </svg>
             </div>
-            <h3>No subscription plans available</h3>
-            <p>Please configure RevenueCat offerings and try again.</p>
-            <button @click="loadSubscriptionPlans" class="retry-button">
-                Retry
+            <h3>Subscription Required</h3>
+            <p>Unable to load subscription plans. Please check your internet connection and try again.</p>
+            <button @click="forceRetryWithFallback" class="retry-button critical">
+                Retry Loading Plans
             </button>
+            <p class="critical-notice">This app requires an active subscription to continue.</p>
         </div>
 
         <!-- Action Buttons -->
@@ -188,7 +188,7 @@ async function loadSubscriptionPlans() {
         subscriptionPlans.value = await revenueCatService.getOfferings()
 
         if (subscriptionPlans.value.length === 0) {
-            throw new Error('No subscription plans available')
+            throw new Error('No subscription plans available - subscription required')
         }
 
         // Auto-select the popular plan
@@ -200,18 +200,19 @@ async function loadSubscriptionPlans() {
         }
     } catch (error: any) {
         console.error('Failed to load subscription plans:', error)
-
-        if (error.message?.includes('No current offering')) {
-            errorMessage.value = 'RevenueCat not configured. Please configure offerings in RevenueCat dashboard.'
-        } else if (error.message?.includes('No subscription packages')) {
-            errorMessage.value = 'No subscription products available. Please configure products in RevenueCat dashboard.'
-        } else if (error.message?.includes('your_revenuecat_api_key_here')) {
-            errorMessage.value = 'RevenueCat API key not configured. Please update your .env file.'
-        } else {
-            errorMessage.value = `Failed to load subscription plans: ${error.message || 'Unknown error'}`
-        }
+        errorMessage.value = 'Subscription required to access this app. Please check your internet connection and try again.'
     } finally {
         isLoading.value = false
+    }
+}
+
+async function forceRetryWithFallback() {
+    // Force retry with no fallback - user must purchase
+    await loadSubscriptionPlans()
+    
+    // If still no plans after retry, show critical error but no bypass
+    if (subscriptionPlans.value.length === 0) {
+        errorMessage.value = 'Subscription required to continue. This app cannot be used without an active subscription.'
     }
 }
 
@@ -238,19 +239,19 @@ async function purchaseSelected() {
             // Navigate to home after successful purchase
             router.push('/')
         } else {
-            errorMessage.value = 'Purchase was not completed. Please try again.'
+            errorMessage.value = 'Purchase failed. Please try again to access the app.'
         }
     } catch (error: any) {
         console.error('Purchase failed:', error)
 
         if (error.message?.includes('user cancelled')) {
-            errorMessage.value = 'Purchase was cancelled.'
+            errorMessage.value = 'Purchase was cancelled. Subscription is required to access this app.'
         } else if (error.message?.includes('payment invalid')) {
             errorMessage.value = 'Payment method is invalid. Please check your payment information.'
         } else if (error.message?.includes('network')) {
-            errorMessage.value = 'Network error. Please check your internet connection.'
+            errorMessage.value = 'Network error. Please check your internet connection and try again.'
         } else {
-            errorMessage.value = 'Purchase failed. Please try again later.'
+            errorMessage.value = 'Purchase failed. Subscription is required to access this app.'
         }
     } finally {
         isLoading.value = false
@@ -273,11 +274,11 @@ async function restorePurchases() {
             // Navigate to home after successful restore
             router.push('/')
         } else {
-            errorMessage.value = 'No previous purchases found to restore.'
+            errorMessage.value = 'No previous purchases found. Please purchase a subscription to access the app.'
         }
     } catch (error) {
         console.error('Restore failed:', error)
-        errorMessage.value = 'Failed to restore purchases. Please try again.'
+        errorMessage.value = 'Failed to restore purchases. Please purchase a subscription to access the app.'
     } finally {
         isLoading.value = false
     }
@@ -294,8 +295,8 @@ function openPrivacy() {
 }
 
 function openMore() {
-    // Open more information
-    router.push('/coupon')
+    // Removed coupon access - no bypasses allowed
+    console.log('Feature not available - subscription required')
 }
 
 // Close menu when clicking outside
@@ -555,6 +556,61 @@ onMounted(async () => {
     text-align: center;
     padding: 60px 20px;
     margin-bottom: 32px;
+}
+
+.critical-error-state {
+    text-align: center;
+    padding: 60px 20px;
+    margin-bottom: 32px;
+    background: rgba(255, 69, 58, 0.1);
+    border: 2px solid rgba(255, 69, 58, 0.2);
+    border-radius: 16px;
+}
+
+.error-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    color: rgba(255, 69, 58, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.critical-error-state h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: rgba(255, 69, 58, 0.9);
+}
+
+.critical-error-state p {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.critical-notice {
+    font-size: 12px !important;
+    color: rgba(255, 69, 58, 0.7) !important;
+    font-weight: 600 !important;
+    margin-top: 16px !important;
+    padding: 8px 12px;
+    background: rgba(255, 69, 58, 0.05);
+    border-radius: 8px;
+}
+
+.retry-button.critical {
+    background: rgba(255, 69, 58, 0.8);
+    color: white;
+    border: 2px solid rgba(255, 69, 58, 0.9);
+    font-weight: 600;
+}
+
+.retry-button.critical:hover {
+    background: rgba(255, 69, 58, 0.9);
+    border-color: rgba(255, 69, 58, 1);
 }
 
 .loading-spinner-large {
