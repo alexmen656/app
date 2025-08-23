@@ -7,7 +7,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        migrateUserDefaultsToAppGroups()
         return true
     }
 
@@ -47,3 +47,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
 }
+
+// Workaround: cant access UserDefaults set by capacitor from an extension - only by using group
+  func migrateUserDefaultsToAppGroups() {
+          
+          // User Defaults - Old
+          let userDefaults = UserDefaults.standard
+          
+          // App Groups Default - New
+          let groupDefaults = UserDefaults(suiteName: "group.com.kaloriq.shared")
+          
+          if let groupDefaults = groupDefaults {
+                  for key in userDefaults.dictionaryRepresentation().keys {
+                    if key == "CapacitorStorage.widgetData" {
+                      groupDefaults.set(userDefaults.dictionaryRepresentation()[key], forKey: "widgetData")//key
+                    }
+                  }
+                  groupDefaults.synchronize()
+                  print("Successfully migrated defaults")
+              
+          } else {
+              print("Unable to create NSUserDefaults with given app group")
+          }
+          
+      }

@@ -84,9 +84,9 @@ export class WidgetDataManager {
       
       // 🚨 CRITICAL: Store in shared App Group UserDefaults for iOS widgets
       // This uses the 'group' parameter to specify the App Group
-      await Preferences.configure({
+      /*await Preferences.configure({
         group: 'group.com.kaloriq.shared'
-      });
+      });*/
       
       // Store widget data as JSON string in shared UserDefaults
       const widgetDataJson = JSON.stringify(widgetData);
@@ -98,9 +98,9 @@ export class WidgetDataManager {
       console.log('✅ Widget data stored in App Group UserDefaults:', widgetData);
       
       // Reset preferences back to default (app container)
-      await Preferences.configure({
+      /*await Preferences.configure({
         group: undefined
-      });
+      });*/
       
     } catch (error) {
       console.error('❌ Error storing widget data in App Group:', error);
