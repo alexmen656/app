@@ -111,7 +111,7 @@
     </div>
 
     <!-- Preferences Section -->
-    <div class="settings-section">
+    <div v-if="showDebugInfo" class="settings-section">
       <h3 class="section-title">{{ $t('settings.preferences') }}</h3>
       <div class="settings-card">
         <div class="setting-item">
@@ -122,30 +122,39 @@
           </select>
         </div>
 
-        <div class="setting-item">
+        <div v-if="showDebugInfo" class="setting-item">
           <label class="setting-label">{{ $t('settings.notifications') }}</label>
           <div class="toggle-switch">
             <input type="checkbox" v-model="userPreferences.notifications" @change="savePreferences"
-              class="toggle-input" />
-            <span class="toggle-slider"></span>
+              class="toggle-input" id="notifications-toggle" />
+            <label for="notifications-toggle" class="toggle-slider"></label>
           </div>
         </div>
 
-        <div class="setting-item">
+        <div v-if="showDebugInfo" class="setting-item">
           <label class="setting-label">{{ $t('settings.mealReminders') }}</label>
           <div class="toggle-switch">
             <input type="checkbox" v-model="userPreferences.mealReminders" @change="savePreferences"
-              class="toggle-input" />
-            <span class="toggle-slider"></span>
+              class="toggle-input" id="meal-reminders-toggle" />
+            <label for="meal-reminders-toggle" class="toggle-slider"></label>
           </div>
         </div>
 
-        <div class="setting-item">
+        <div v-if="showDebugInfo" class="setting-item">
           <label class="setting-label">{{ $t('settings.weeklyReports') }}</label>
           <div class="toggle-switch">
             <input type="checkbox" v-model="userPreferences.weeklyReports" @change="savePreferences"
-              class="toggle-input" />
-            <span class="toggle-slider"></span>
+              class="toggle-input" id="weekly-reports-toggle" />
+            <label for="weekly-reports-toggle" class="toggle-slider"></label>
+          </div>
+        </div>
+
+        <div v-if="showDebugInfo"class="setting-item">
+          <label class="setting-label">Mock Data (Screenshots)</label>
+          <div class="toggle-switch">
+            <input type="checkbox" v-model="mockDataEnabled" @change="toggleMockData"
+              class="toggle-input" id="mock-data-toggle" />
+            <label for="mock-data-toggle" class="toggle-slider"></label>
           </div>
         </div>
       </div>
@@ -305,11 +314,13 @@ import {
   dailyGoals,
   userPreferences,
   updateDailyGoals,
+  updateUserPreferences,
   //updateUserProfile,
   resetOnboarding,
   //calculateRecommendedMacros
 } from '../stores/userStore'
 import { BarcodeCache, ScanHistory } from '../utils/storage'
+import { MockDataManager } from '../utils/mockData'
 import { setLanguage, getCurrentLanguage } from '../i18n'
 
 const router = useRouter()
@@ -317,6 +328,9 @@ const router = useRouter()
 
 // Language functionality
 const currentLanguage = ref(getCurrentLanguage())
+
+// Mock data toggle
+const mockDataEnabled = ref(false)
 
 const changeLanguage = (event: Event) => {
   const target = event.target as HTMLSelectElement
@@ -368,7 +382,7 @@ const changeLanguage = (event: Event) => {
 }*/
 
 // Debug state
-const showDebugInfo = ref(false)
+const showDebugInfo = ref(true)
 const debugInfo = ref({
   migrationComplete: false,
   barcodeCache: { count: 0, totalSize: 0 },
@@ -378,12 +392,13 @@ const debugInfo = ref({
 })
 
 // Check if debug mode should be enabled (e.g., if in development)
-onMounted(() => {
-  // Enable debug mode in development or if localStorage has debug flag
-  showDebugInfo.value = localStorage.getItem('enableDebug') === 'true'
-  if (showDebugInfo.value) {
+onMounted(async () => {
+    if (showDebugInfo.value) {
     refreshDebugInfo()
   }
+  
+  // Load mock data state
+  mockDataEnabled.value = await MockDataManager.isEnabled()
 })
 
 // Use computed to display current user data with truncated name
@@ -411,9 +426,25 @@ async function saveGoals() {
   await updateDailyGoals(dailyGoals)
 }
 
-function savePreferences() {
+async function savePreferences() {
   console.log('Preferences saved:', userPreferences)
-  // Preferences are automatically saved via the store
+  // Save preferences using the store function
+  await updateUserPreferences(userPreferences)
+}
+
+// Simple Mock Data Toggle
+async function toggleMockData() {
+  try {
+    await MockDataManager.setEnabled(mockDataEnabled.value)
+    if (mockDataEnabled.value) {
+      alert('📦 Mock data activated! Perfect for screenshots.')
+    } else {
+      alert('🧹 Mock data removed! Back to real data.')
+    }
+  } catch (error) {
+    console.error('Error toggling mock data:', error)
+    alert('❌ Failed to toggle mock data.')
+  }
 }
 
 /*async function recalculateGoals() {
@@ -534,6 +565,7 @@ async function refreshDebugInfo() {
       capacitorPreferencesItems: 0, // No longer tracked
       localStorageItems: 0 // No longer tracked
     }
+
   } catch (error) {
     console.error('Error refreshing debug info:', error)
   }
@@ -804,6 +836,7 @@ function handleTouchEnd(event: TouchEvent) {
   opacity: 0;
   width: 0;
   height: 0;
+  position: absolute;
 }
 
 .toggle-slider {
@@ -816,6 +849,7 @@ function handleTouchEnd(event: TouchEvent) {
   background: rgba(255, 255, 255, 0.3);
   transition: 0.3s;
   border-radius: 13px;
+  display: block;
 }
 
 .toggle-slider:before {
@@ -830,11 +864,11 @@ function handleTouchEnd(event: TouchEvent) {
   border-radius: 50%;
 }
 
-.toggle-input:checked+.toggle-slider {
+.toggle-input:checked + .toggle-slider {
   background: #4caf50;
 }
 
-.toggle-input:checked+.toggle-slider:before {
+.toggle-input:checked + .toggle-slider:before {
   transform: translateX(24px);
 }
 
