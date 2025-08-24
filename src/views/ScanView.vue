@@ -12,12 +12,12 @@
         </svg>
       </button>
       <h1 class="header-title">{{ $t('app.scanner') }}</h1>
-      <button class="header-btn menu-btn">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <button class="header-btn menu-btn bg-trans">
+       <!-- <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <circle cx="12" cy="12" r="1" fill="currentColor" />
           <circle cx="12" cy="5" r="1" fill="currentColor" />
           <circle cx="12" cy="19" r="1" fill="currentColor" />
-        </svg>
+        </svg>-->
       </button>
     </div>
 
@@ -55,13 +55,13 @@
 
     <!-- Bottom controls -->
     <div class="bottom-controls">
-      <button class="control-btn gallery-btn" @click="switchCamera">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+      <button class="control-btn gallery-btn bg-trans" @click="switchCamera">
+       <!-- <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
           <path d="M17 17.5V15.5C17 14.1193 15.8807 13 14.5 13H9.5C8.11929 13 7 14.1193 7 15.5V17.5"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" />
           <path d="M12 7V3M12 3L9 6M12 3L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
             stroke-linejoin="round" />
-        </svg>
+        </svg>-->
       </button>
 
       <div class="capture-section">
@@ -769,5 +769,9 @@ onBeforeUnmount(() => stopCamera());
   .header {
     padding: 45px 15px 15px;
   }
+}
+
+.bg-trans {
+  background: transparent !important;
 }
 </style>
