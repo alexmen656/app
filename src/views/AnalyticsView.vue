@@ -189,57 +189,16 @@
         </button>
       </div>
       
-      <div v-if="analyticsData?.weightChartData && analyticsData.weightChartData.length > 1" class="weight-chart-container">
-        <!-- Period Selector -->
-        <div class="weight-period-selector">
-          <button 
-            v-for="period in weightPeriods" 
-            :key="period.value"
-            @click="selectedWeightPeriod = period.value"
-            :class="['period-btn', { active: selectedWeightPeriod === period.value }]"
-          >
-            {{ period.label }}
-          </button>
-        </div>
 
-        <!-- Goal Progress Card -->
-        <div v-if="analyticsData?.goalProgress.weight.target" class="weight-goal-card">
-          <div class="goal-header">
-            <h4>{{ $t('analytics.goalProgress') }}</h4>
-            <div class="goal-percentage">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-              {{ Math.round(analyticsData?.goalProgress.weight.percentage || 0) }}% {{ $t('common.current').toLowerCase() }}
-            </div>
-          </div>
-          
-          <div class="weight-progress-line">
-            <div class="progress-track">
-              <div 
-                class="progress-fill" 
-                :style="{ width: Math.min(analyticsData?.goalProgress.weight.percentage || 0, 100) + '%' }"
-              ></div>
-              <div class="progress-indicator" :style="{ left: Math.min(analyticsData?.goalProgress.weight.percentage || 0, 100) + '%' }"></div>
-            </div>
-            <div class="weight-labels">
-              <span class="start-weight">{{ analyticsData?.goalProgress.weight.current || 0 }}{{ $t('analytics.kg') }}</span>
-              <span class="target-weight">{{ analyticsData?.goalProgress.weight.target || 0 }}{{ $t('analytics.kg') }}</span>
-            </div>
-          </div>
-          
-          <div class="motivational-text">
-            {{ getMotivationalMessage(analyticsData?.goalProgress.weight.percentage || 0) }}
-          </div>
-        </div>
+
+    
 
         <!-- Enhanced Chart -->
-        <WeightChart 
+        <WeightChart v-if="analyticsData?.goalProgress.weight.target" 
           :data="analyticsData?.weightChartData || []"
           :goal-weight="analyticsData?.goalProgress.weight.target || undefined"
           :current-weight="analyticsData?.goalProgress.weight.current || undefined"
         />
-      </div>
       
       <div v-else class="no-weight-data">
         <div class="no-data-icon">
@@ -335,15 +294,15 @@ const newWeight = ref<number | null>(null)
 const weightNote = ref('')
 
 // Weight chart specific properties
-const selectedWeightPeriod = ref('month')
+//const selectedWeightPeriod = ref('month')
 
 // Weight period options
-const weightPeriods = [
+/*const weightPeriods = [
     { label: 'Week', value: 'week' },
     { label: 'Month', value: 'month' },
     { label: '3M', value: '3months' },
     { label: 'Year', value: 'year' }
-]
+]*/
 
 // Load analytics data
 async function loadAnalyticsData() {
@@ -450,13 +409,13 @@ function getBMIPosition(bmi: number | null): number {
 }
 
 // Get motivational message based on progress percentage
-function getMotivationalMessage(percentage: number): string {
+/*function getMotivationalMessage(percentage: number): string {
     if (percentage >= 90) return "Amazing progress! You're almost there!"
     if (percentage >= 70) return "Great job! Keep pushing forward!"
     if (percentage >= 50) return "You're doing well! Stay consistent!"
     if (percentage >= 25) return "Good start! Every step counts!"
     return "Let's begin this journey together!"
-}
+}*/
 
 // Get quarterly data for yearly view (group months into quarters)
 function getQuarterlyData(weeklyData: { day: string; calories: number }[]) {
@@ -967,16 +926,7 @@ function handleTouchEnd(event: TouchEvent) {
   overflow: hidden;
 }
 
-.weight-chart-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(66, 165, 245, 0.1) 0%, rgba(66, 165, 245, 0.05) 100%);
-  pointer-events: none;
-}
+/* removed blue overlay so weight card matches other cards */
 
 .weight-chart {
   height: 200px;

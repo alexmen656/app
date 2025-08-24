@@ -56,7 +56,7 @@ const chartSeries = computed(() => {
     }
   ]
 
-  if (props.goalWeight) {
+  /*if (props.goalWeight) {
     series.push({
       name: 'Zielgewicht',
       data: chartData.value.map(item => ({
@@ -64,116 +64,66 @@ const chartSeries = computed(() => {
         y: props.goalWeight!
       }))
     })
-  }
+  }*/
 
   return series
 })
 
-const chartOptions = computed(() => ({
-  chart: {
-    type: 'line',
-    background: 'transparent',
-    toolbar: {
-      show: false
+const chartOptions = computed(() => {
+  const values = chartData.value.map(d => d.weight)
+  const min = Math.floor(Math.min(...values) - 0.3)
+  const max = Math.ceil(Math.max(...values) + 0.3)
+  const tickAmount = 3
+
+  return {
+    chart: {
+      type: 'line',
+      background: 'transparent',
+      // disable toolbar and interactive zoom/selection
+      toolbar: { show: false, tools: { zoom: false, selection: false, zoomin: false, zoomout: false } },
+      zoom: { enabled: false },
+      animations: { enabled: true, easing: 'easeinout', speed: 600 }
     },
-    animations: {
-      enabled: true,
-      easing: 'easeinout',
-      speed: 800
-    }
-  },
-  theme: {
-    mode: 'dark'
-  },
-  colors: ['#00a86b', 'rgba(255, 167, 38, 0.8)'],
-  stroke: {
-    width: [3, 2],
-    curve: 'smooth',
-    dashArray: [0, 5]
-  },
-  markers: {
-    size: [6, 0],
-    colors: ['#00a86b'],
-    strokeColors: '#ffffff',
-    strokeWidth: 2,
-    hover: {
-      size: 8
-    }
-  },
-  fill: {
-    type: 'gradient',
-    gradient: {
-      shade: 'dark',
-      gradientToColors: ['rgba(0, 168, 107, 0.1)'],
-      shadeIntensity: 1,
-      type: 'vertical',
-      opacityFrom: 0.3,
-      opacityTo: 0,
-      stops: [0, 100]
-    }
-  },
-  dataLabels: {
-    enabled: false
-  },
-  xaxis: {
-    type: 'datetime',
-    labels: {
-      style: {
-        colors: 'rgba(255, 255, 255, 0.7)',
-        fontSize: '12px'
-      },
-      datetimeFormatter: {
-        day: 'dd.MM'
+    theme: { mode: 'dark' },
+    // primary series white, goal (if present) subtle orange
+    colors: ['#ffffff', 'rgba(255, 167, 38, 0.8)'],
+    stroke: { width: [3, 2], curve: 'smooth', dashArray: [0, 5] },
+    markers: { size: [5, 0], colors: ['#ffffff'], strokeColors: '#2b2b34', strokeWidth: 2, hover: { size: 7 } },
+    fill: {
+      type: 'gradient',
+      gradient: {
+        shade: 'dark',
+        type: 'vertical',
+        shadeIntensity: 1,
+        gradientToColors: ['rgba(255,255,255,0)'],
+        opacityFrom: 0.22,
+        opacityTo: 0,
+        stops: [0, 100]
       }
     },
-    axisBorder: {
-      show: false
+    dataLabels: { enabled: false },
+    xaxis: {
+      type: 'datetime',
+      labels: { style: { colors: 'rgba(255,255,255,0.75)', fontSize: '12px' }, datetimeFormatter: { day: 'dd.MM' } },
+      axisBorder: { show: false },
+      axisTicks: { show: false }
     },
-    axisTicks: {
-      show: false
-    }
-  },
-  yaxis: {
-    labels: {
-      style: {
-        colors: 'rgba(255, 255, 255, 0.7)',
-        fontSize: '12px'
-      },
-      formatter: (value: number) => `${value} kg`
-    }
-  },
-  grid: {
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-    strokeDashArray: 3
-  },
-  tooltip: {
-    theme: 'dark',
-    style: {
-      fontSize: '12px'
+    yaxis: {
+      min,
+      max,
+      tickAmount,
+      labels: { style: { colors: 'rgba(255,255,255,0.75)', fontSize: '12px' }, formatter: (v: number) => `${v} kg` }
     },
-    x: {
-      format: 'dd.MM.yyyy'
+    grid: { borderColor: 'rgba(255,255,255,0.08)', strokeDashArray: 4 },
+    tooltip: {
+      theme: 'dark',
+      style: { fontSize: '12px' },
+      x: { format: 'dd.MM.yyyy' },
+      y: { formatter: (val: number) => `${val} kg` }
     },
-    y: {
-      formatter: (value: number, { seriesIndex }: any) => {
-        if (seriesIndex === 0) {
-          let result = `${value} kg`
-          if (props.goalWeight) {
-            const diff = value - props.goalWeight
-            const diffText = diff > 0 ? `+${diff.toFixed(1)}` : `${diff.toFixed(1)}`
-            result += `<br/>Differenz: ${diffText} kg`
-          }
-          return result
-        } else {
-          return `Ziel: ${value} kg`
-        }
-      }
-    }
-  },
-  legend: {
-    show: false
+    legend: { show: false }
   }
-}))
+})
 </script>
 
 <style scoped>
