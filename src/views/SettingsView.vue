@@ -468,7 +468,7 @@ async function exportData() {
 
     const scanHistory = await ScanHistory.get()
     const barcodeStats = await BarcodeCache.getStats()
-    
+
     const data = {
       profile: userProfile,
       goals: dailyGoals,
@@ -484,19 +484,66 @@ async function exportData() {
       appVersion: '1.0.0'
     }
 
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `kaloriq-data-${new Date().toISOString().split('T')[0]}.json`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
-    
+    const jsonString = JSON.stringify(data, null, 2)
+    const blob = new Blob([jsonString], { type: 'application/json' })
+
+    // Helper: convert Blob to data URL (base64)
+    const blobToBase64 = (b: Blob) => new Promise<string>((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onloadend = () => resolve(reader.result as string)
+      reader.onerror = reject
+      reader.readAsDataURL(b)
+    })
+
+    const tryCapacitorExport = async () => {
+      try {
+        // Dynamic import to avoid bundling errors when plugins are not installed
+        const FilesystemModule: any = await import('@capacitor/filesystem')
+        const ShareModule: any = await import('@capacitor/share')
+
+        const Filesystem = FilesystemModule.Filesystem
+        const Directory = FilesystemModule.Directory
+        const Share = ShareModule.Share
+
+        const dateStr = new Date().toISOString().split('T')[0]
+        const fileName = `kaloriq-data-${dateStr}.json`
+
+        // Convert blob to base64 (data:<mime>;base64,xxxx)
+        const dataUrl = await blobToBase64(blob)
+        const base64 = dataUrl.includes(',') ? dataUrl.split(',')[1] : dataUrl
+
+        // Write file to app Documents (iOS) / Data (Android)
+        await Filesystem.writeFile({ path: fileName, data: base64, directory: Directory.Documents })
+
+        // Get a URI we can share
+        const uriResult = await Filesystem.getUri({ directory: Directory.Documents, path: fileName })
+        await Share.share({ title: 'Kaloriq Export', text: 'Exported Kaloriq data', url: uriResult.uri })
+
+        return true
+      } catch (err) {
+        console.warn('Capacitor filesystem/share export failed or not available:', err)
+        return false
+      }
+    }
+
+    // Try native export first (iOS/Android) — falls back to browser download
+    const usedNative = await tryCapacitorExport()
+
+    if (!usedNative) {
+      // Browser fallback (works in web preview)
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `kaloriq-data-${new Date().toISOString().split('T')[0]}.json`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+    }
+
     // Show success message
     alert('Data exported successfully!')
-    
+
   } catch (error) {
     console.error('Export failed:', error)
     alert('Failed to export data. Please try again.')
