@@ -242,7 +242,7 @@
           <a class="setting-link" href="https://kaloriq.sites.control-center.eu/privacy-policy.html" target="_blank" rel="noopener">{{ $t('settings.privacy') }}</a>
         </div>
         <div class="setting-item">
-          <a class="setting-link" href="https://kaloriq.sites.control-center.eu/terms-of-service.html" target="_blank" rel="noopener">{{ $t('settings.terms') }}</a>
+          <a class="setting-link" href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener">{{ $t('settings.terms') }}</a>
         </div>
       </div>
     </div>
@@ -981,7 +981,7 @@ function handleTouchEnd(event: TouchEvent) {
 
 a {
   color: white;
-  text-decoration: none;
+  /*text-decoration: none;*/
 }
 
 /* Goal options styling */

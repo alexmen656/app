@@ -286,16 +286,18 @@ async function restorePurchases() {
 
 function openTerms() {
     // Open terms of service
+    location.href = 'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/'
     console.log('Open Terms of Service')
 }
 
 function openPrivacy() {
     // Open privacy policy
+    location.href = 'https://kaloriq.sites.control-center.eu/privacy-policy.html'
     console.log('Open Privacy Policy')
 }
 
 function openMore() {
-    // Removed coupon access - no bypasses allowed
+    router.push('/coupon')
     console.log('Feature not available - subscription required')
 }
 
