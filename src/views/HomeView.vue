@@ -202,12 +202,12 @@ import { dailyGoals, isOnboardingCompleted, storeReady } from '../stores/userSto
 import { ScanHistory } from '../utils/storage'
 import { WidgetDataManager, StreakManager } from '../utils/widgetData'
 import { HealthKitService } from '../services/healthkit'
+import { InAppReview } from '@capacitor-community/in-app-review';
+import { shouldShowReviewPrompt, setLastReviewPrompt } from '../stores/preferencesStore'
 
 const router = useRouter()
 const { t } = useI18n()
 
-// Check if onboarding is completed and redirect if needed
-// Named handlers so they can be removed properly
 function onScanHistoryUpdated() {
     loadScanHistory()
     loadStreak()
@@ -217,6 +217,21 @@ function onFocus() {
     loadScanHistory()
     loadStreak()
 }
+
+setTimeout(async () => {
+    try {
+        if (recentFoods.value.length > 9) {
+            const canShow = await shouldShowReviewPrompt(5)
+            if (canShow) {
+                const result = await InAppReview.requestReview();
+                await setLastReviewPrompt(Date.now())
+                console.log('InAppReview requested:', result)
+            }
+        }
+    } catch (err) {
+        console.error('Error requesting in-app review:', err)
+    }
+}, 20000);
 
 onMounted(async () => {
     await storeReady
@@ -270,36 +285,22 @@ const dailyCalories = computed(() => dailyGoals.calories)
 const dailyProtein = computed(() => dailyGoals.protein)
 const dailyCarbs = computed(() => dailyGoals.carbs)
 const dailyFats = computed(() => dailyGoals.fats)
-
-// Today's nutrition data (from all today's scans, not just recent 10)
 const todaysNutrition = ref({ calories: 0, protein: 0, carbs: 0, fats: 0 })
-
-// Consumed amounts - calculated from ALL today's scanned items
 const consumedCalories = computed(() => todaysNutrition.value.calories)
-
 const consumedProtein = computed(() => todaysNutrition.value.protein)
-
 const consumedCarbs = computed(() => todaysNutrition.value.carbs)
-
 const consumedFats = computed(() => todaysNutrition.value.fats)
 
-// Scan history from Capacitor Preferences
 const scanHistory = ref<ScanData[]>([])
 const currentStreak = ref<number>(0)
 
-// Load scan history from Capacitor Preferences
 async function loadScanHistory() {
     try {
         const history = await ScanHistory.get()
-        scanHistory.value = history.slice(0, 10) // Show only last 10 items for display
+        scanHistory.value = history.slice(0, 10)
 
-        // Calculate today's nutrition from ALL today's scans
         await calculateTodaysNutrition()
-
-        // Update widget data when scan history changes
         await WidgetDataManager.updateWidgetData()
-
-        // Sync today's data to HealthKit
         await syncToHealthKit()
     } catch (error) {
         console.error('Error loading scan history:', error)
@@ -308,13 +309,11 @@ async function loadScanHistory() {
     }
 }
 
-// Calculate nutrition from all today's scans (not just recent 10)
 async function calculateTodaysNutrition() {
     try {
         const history = await ScanHistory.get()
         const today = new Date().toISOString().split('T')[0]
-        
-        // Filter scans for today only
+
         const todaysScans = history.filter(scan => {
             const scanDate = new Date(scan.timestamp).toISOString().split('T')[0]
             return scanDate === today
