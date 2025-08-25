@@ -44,6 +44,8 @@ PODS:
     - GoogleUtilities/Privacy
   - GTMSessionFetcher/Core (3.5.0)
   - IONFilesystemLib (1.0.1)
+  - KaloriqHealthKit (0.0.1):
+    - Capacitor
   - MLImage (1.0.0-beta6)
   - MLKitBarcodeScanning (6.0.0):
     - MLKitCommon (~> 12.0)
@@ -85,6 +87,7 @@ DEPENDENCIES:
   - "CapacitorSplashScreen (from `../../node_modules/@capacitor/splash-screen`)"
   - "CapacitorStatusBar (from `../../node_modules/@capacitor/status-bar`)"
   - "CapawesomeCapacitorTorch (from `../../node_modules/@capawesome/capacitor-torch`)"
+  - KaloriqHealthKit (from `../../kaloriq-health-kit`)
   - "RevenuecatPurchasesCapacitor (from `../../node_modules/@revenuecat/purchases-capacitor`)"
 
 SPEC REPOS:
@@ -125,6 +128,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/status-bar"
   CapawesomeCapacitorTorch:
     :path: "../../node_modules/@capawesome/capacitor-torch"
+  KaloriqHealthKit:
+    :path: "../../kaloriq-health-kit"
   RevenuecatPurchasesCapacitor:
     :path: "../../node_modules/@revenuecat/purchases-capacitor"
 
@@ -145,6 +150,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: 00c88b9a86066ef77f0da2fab05f65d7768ed8e1
   GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
   IONFilesystemLib: 89258b8e3e85465da93127d25d7ce37f977e8a6f
+  KaloriqHealthKit: 4a8838ce3e63278f6b76eef0b4276f912a4daee3
   MLImage: 0ad1c5f50edd027672d8b26b0fee78a8b4a0fc56
   MLKitBarcodeScanning: 0a3064da0a7f49ac24ceb3cb46a5bc67496facd2
   MLKitCommon: 07c2c33ae5640e5380beaaa6e4b9c249a205542d
@@ -155,6 +161,6 @@ SPEC CHECKSUMS:
   RevenueCat: eb2aa042789d9c99ad5172bd96e28b96286d6ada
   RevenuecatPurchasesCapacitor: 420b762736c2842bfb64436b7e0b88d2f672c943
 
-PODFILE CHECKSUM: 56e89f8172c73417ab6672c509b5ab368f8a2ac5
+PODFILE CHECKSUM: 744aba4bab176e68d8a1f0a0dcd56792a7c69955
 
 COCOAPODS: 1.16.2

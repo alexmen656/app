@@ -201,6 +201,7 @@ import { useI18n } from 'vue-i18n'
 import { dailyGoals, isOnboardingCompleted, storeReady } from '../stores/userStore'
 import { ScanHistory } from '../utils/storage'
 import { WidgetDataManager, StreakManager } from '../utils/widgetData'
+import { HealthKitService } from '../services/healthkit'
 
 const router = useRouter()
 const { t } = useI18n()
@@ -224,6 +225,9 @@ onMounted(async () => {
         router.push('/onboarding')
         return
     }
+
+    // Initialize HealthKit
+    await HealthKitService.initialize()
 
     loadScanHistory()
     loadStreak()
@@ -290,6 +294,9 @@ async function loadScanHistory() {
 
         // Update widget data when scan history changes
         await WidgetDataManager.updateWidgetData()
+
+        // Sync today's data to HealthKit
+        await syncToHealthKit()
     } catch (error) {
         console.error('Error loading scan history:', error)
         scanHistory.value = []
@@ -347,6 +354,15 @@ async function loadStreak() {
     } catch (error) {
         console.error('Error loading streak:', error)
         currentStreak.value = 0
+    }
+}
+
+// Sync data to HealthKit
+async function syncToHealthKit() {
+    try {
+        await HealthKitService.syncTodaysData()
+    } catch (error) {
+        console.error('Error syncing to HealthKit:', error)
     }
 }
 
