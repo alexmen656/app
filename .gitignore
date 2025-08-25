@@ -26,3 +26,4 @@ dist-ssr
 
 .env
 android_/*
+ios/App/Kaloriq.storekit
