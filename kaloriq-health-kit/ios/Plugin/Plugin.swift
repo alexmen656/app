@@ -14,13 +14,58 @@ public class HealthKit: CAPPlugin {
     // MARK: - Plugin Methods
     
     @objc func isAvailable(_ call: CAPPluginCall) {
+        print("🩺 HealthKit: Checking availability...")
+        
+        // Additional check for simulator
+        var isSimulator = false
+        #if targetEnvironment(simulator)
+        isSimulator = true
+        #endif
+        
+        if isSimulator {
+            print("🩺 HealthKit Warning: Running in iOS Simulator - HealthKit is not available in the simulator")
+            call.resolve(["available": false])
+            return
+        }
+        
+        // Check iOS version
+        let systemVersion = UIDevice.current.systemVersion
+        print("🩺 HealthKit: iOS Version: \(systemVersion)")
+        
+        // Check if HealthKit is available on this device
         let available = HKHealthStore.isHealthDataAvailable()
+        print("🩺 HealthKit: HKHealthStore.isHealthDataAvailable() = \(available)")
+        
+        // Additional device checks
+        let deviceModel = UIDevice.current.model
+        let deviceName = UIDevice.current.name
+        print("🩺 HealthKit: Device Model: \(deviceModel)")
+        print("🩺 HealthKit: Device Name: \(deviceName)")
+        
+        if !available {
+            print("🩺 HealthKit: ⚠️ HealthKit not available. Possible reasons:")
+            print("🩺 HealthKit: - HealthKit is disabled in Settings > Privacy & Security > Health")
+            print("🩺 HealthKit: - Device doesn't support HealthKit (very old devices)")
+            print("🩺 HealthKit: - Region restrictions")
+            print("🩺 HealthKit: - Other system restrictions")
+        } else {
+            print("🩺 HealthKit: ✅ HealthKit is available on this device")
+        }
+        
         call.resolve(["available": available])
     }
     
     @objc func requestHealthKitPermissions(_ call: CAPPluginCall) {
+        #if targetEnvironment(simulator)
+        print("🩺 HealthKit Error: Cannot request permissions in iOS Simulator")
+        call.reject("SIMULATOR_NOT_SUPPORTED", "HealthKit is not supported in the iOS Simulator. Please test on a physical device.")
+        return
+        #endif
+        
         let readPermissions = call.getBool("read") ?? false
         let writePermissions = call.getBool("write") ?? false
+        
+        print("🩺 HealthKit: Requesting permissions - Read: \(readPermissions), Write: \(writePermissions)")
         
         var healthKitTypes = Set<HKSampleType>()
         
@@ -41,11 +86,15 @@ public class HealthKit: CAPPlugin {
         let readTypes: Set<HKObjectType>? = readPermissions ? healthKitTypes : nil
         let writeTypes: Set<HKSampleType>? = writePermissions ? healthKitTypes : nil
         
+        print("🩺 HealthKit: Requesting authorization for \(healthKitTypes.count) health types")
+        
         healthStore.requestAuthorization(toShare: writeTypes, read: readTypes) { success, error in
             DispatchQueue.main.async {
                 if let error = error {
-                    call.reject("Permission request failed", error.localizedDescription)
+                    print("🩺 HealthKit Error: \(error.localizedDescription)")
+                    call.reject("PERMISSION_REQUEST_FAILED", error.localizedDescription)
                 } else {
+                    print("🩺 HealthKit: Permission request completed - Success: \(success)")
                     call.resolve(["granted": success])
                 }
             }

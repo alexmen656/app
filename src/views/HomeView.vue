@@ -226,8 +226,12 @@ onMounted(async () => {
         return
     }
 
+    // Debug HealthKit status
+    await HealthKitService.debugStatus()
+
     // Initialize HealthKit
-    await HealthKitService.initialize()
+    const healthKitInitialized = await HealthKitService.initialize()
+    console.log('🩺 HealthKit initialization result:', healthKitInitialized)
 
     loadScanHistory()
     loadStreak()
