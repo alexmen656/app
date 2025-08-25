@@ -13,9 +13,9 @@
                         </button>
                         <button class="nutrition-menu" @click="showDetailsModal = true">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                <circle cx="12" cy="12" r="2"/>
-                                <circle cx="12" cy="5" r="2"/>
-                                <circle cx="12" cy="19" r="2"/>
+                                <circle cx="12" cy="12" r="2" />
+                                <circle cx="12" cy="5" r="2" />
+                                <circle cx="12" cy="19" r="2" />
                             </svg>
                         </button>
                     </div>
@@ -120,7 +120,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Additional Nutrition Information -->
                 <div v-if="hasAdditionalNutrition" class="nutrition-additional">
                     <h3>{{ $t('nutrition.additionalNutrients') }}</h3>
@@ -128,7 +128,8 @@
                         <div v-if="product.fiber > 0" class="additional-item">
                             <div class="additional-icon">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="#8b5cf6">
-                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                    <path
+                                        d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                                 </svg>
                             </div>
                             <div class="additional-info">
@@ -139,7 +140,8 @@
                         <div v-if="product.sugar > 0" class="additional-item">
                             <div class="additional-icon">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="#f59e0b">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                    <path
+                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                                 </svg>
                             </div>
                             <div class="additional-info">
@@ -149,7 +151,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="nutrition-health">
                     <div class="health-icon">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="#22c55e">
@@ -169,7 +171,7 @@
                     <h3>{{ $t('nutrition.ingredients') }}</h3>
                     <div class="ingredient-text">{{ product.ingredients.join(', ') }}</div>
                 </div>
-                
+
                 <!-- Detailed food breakdown for analyzed dishes -->
                 <div class="nutrition-foods" v-if="product.foods && product.foods.length > 1">
                     <h3>{{ $t('nutrition.detectedIngredients') }}</h3>
@@ -186,13 +188,14 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Analysis confidence and notes -->
                 <div class="nutrition-analysis" v-if="product.type === 'food' && (product.confidence || product.notes)">
                     <div class="analysis-confidence" v-if="product.confidence">
                         <div class="confidence-label">{{ $t('nutrition.analysisConfidence') }}</div>
                         <div class="confidence-badge" :class="product.confidence">
-                            {{ product.confidence === 'hoch' ? $t('nutrition.high') : product.confidence === 'medium' ? $t('nutrition.medium') : $t('nutrition.low') }}
+                            {{ product.confidence === 'hoch' ? $t('nutrition.high') : product.confidence === 'medium' ?
+                                $t('nutrition.medium') : $t('nutrition.low') }}
                         </div>
                     </div>
                     <div class="analysis-notes" v-if="product.notes">
@@ -432,10 +435,10 @@ const editedProduct = ref({});
 const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
 function capitalizeIfLetter(value) {
-  if (!value) return ''
-  return /^[a-zA-Z]/.test(value)
-    ? value.charAt(0).toUpperCase() + value.slice(1)
-    : value
+    if (!value) return ''
+    return /^[a-zA-Z]/.test(value)
+        ? value.charAt(0).toUpperCase() + value.slice(1)
+        : value
 }
 
 const fetchProduct = async (barcode) => {
@@ -444,7 +447,7 @@ const fetchProduct = async (barcode) => {
         const cachedProduct = await BarcodeCache.get(barcode);
         if (cachedProduct) {
             console.log('Using cached product data for barcode:', barcode);
-            
+
             // Handle both old and new format in cache
             let calories, protein, carbs, fats;
             if (cachedProduct.nutrition?.per100g) {
@@ -461,7 +464,7 @@ const fetchProduct = async (barcode) => {
                 carbs = cachedProduct.carbs || 0;
                 fats = cachedProduct.fats || 0;
             }
-            
+
             product.value = {
                 name: cachedProduct.name || 'Unknown Product',
                 calories,
@@ -487,13 +490,13 @@ const fetchProduct = async (barcode) => {
         // If not cached, fetch from API
         console.log('Fetching product data from API for barcode:', barcode);
         const response = await fetch(`https://kaloriq-api.vercel.app/api/product/${barcode}`);
-        
+
         if (!response.ok) {
             throw new Error(`KaloriQ API error: ${response.status}`);
         }
 
         const data = await response.json();
-        
+
         if (!data.success || !data.product) {
             throw new Error('Product not found in KaloriQ API');
         }
@@ -530,10 +533,10 @@ const fetchProduct = async (barcode) => {
 
         // Initialize edited product for fix modal
         editedProduct.value = { ...product.value };
-        
+
     } catch (e) {
         console.error('KaloriQ API failed:', e);
-        
+
         // Fallback: Create unknown product
         product.value = {
             name: 'Unknown Product',
@@ -558,21 +561,17 @@ const fetchProduct = async (barcode) => {
     }
 };
 
-// Initialize product data
 onMounted(() => {
     if (route.query.barcode) {
         fetchProduct(route.query.barcode);
     } else if (route.query.foodData) {
-        // Handle food scan data
         try {
             const foodData = JSON.parse(route.query.foodData);
-            
-            // Check if it's multiple foods (dish analysis) or single food
+
             if (foodData.foods && foodData.foods.length > 0) {
-                // Use total values for multiple foods
                 const total = foodData.total || {};
                 const firstFood = foodData.foods[0] || {};
-                
+
                 product.value = {
                     name: foodData.name,/*foodData.foods.length > 1 
                         ? `Gericht mit ${foodData.foods.length} Zutaten`
@@ -610,11 +609,11 @@ onMounted(() => {
                     type: 'food'
                 };
             }
-            
+
             editedProduct.value = { ...product.value };
         } catch (e) {
             console.error('Error parsing food data:', e);
-            
+
             // Create fallback product
             product.value = {
                 name: 'Analysiertes Gericht',
@@ -1637,19 +1636,19 @@ async function saveAndReturn() {
     .modal-overlay {
         padding: 10px;
     }
-    
+
     .details-modal {
         max-height: 90vh;
     }
-    
+
     .details-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .details-header {
         padding: 20px 20px 0;
     }
-    
+
     .details-content {
         padding: 0 20px 20px;
     }

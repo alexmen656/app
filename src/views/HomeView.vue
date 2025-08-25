@@ -2,10 +2,6 @@
     <div class="home-view" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
         <header class="header">
             <div class="logo-section">
-                <!--<svg class="logo" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                    <path
-                        d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                </svg>-->
                 <h1 class="app-title"><span style="color: #007052;">Kal</span>oriq</h1><!--#005e4a #005f4a -->
             </div>
             <div class="streak" @click="goToStreak">
@@ -161,7 +157,6 @@
             </div>
         </div>
 
-        <!-- Bottom Navigation -->
         <nav class="bottom-nav">
             <router-link to="/" class="nav-item active">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
@@ -185,7 +180,6 @@
             </router-link>
         </nav>
 
-        <!-- Add Button -->
         <router-link to="/scan" class="add-button">
             <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
                 <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
@@ -350,7 +344,6 @@ async function calculateTodaysNutrition() {
     }
 }
 
-// Load current streak
 async function loadStreak() {
     try {
         currentStreak.value = await StreakManager.getCurrentStreak()
@@ -360,7 +353,6 @@ async function loadStreak() {
     }
 }
 
-// Sync data to HealthKit
 async function syncToHealthKit() {
     try {
         await HealthKitService.syncTodaysData()
@@ -369,12 +361,10 @@ async function syncToHealthKit() {
     }
 }
 
-// Navigate to streak view
 function goToStreak() {
     router.push('/streak')
 }
 
-// Convert scan history to food items format
 const recentFoods = computed((): FoodItem[] => {
     return scanHistory.value.map((scan: ScanData): FoodItem | null => {
         if (scan.type === 'food') {
