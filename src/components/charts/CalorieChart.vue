@@ -1,11 +1,16 @@
 <template>
   <div class="chart-container">
-    <apexchart
-      type="bar"
-      :options="chartOptions"
-      :series="chartSeries"
-      height="240"
-    />
+    <template v-if="hasNonZero">
+      <apexchart
+        type="bar"
+        :options="chartOptions"
+        :series="chartSeries"
+        height="240"
+      />
+    </template>
+    <template v-else>
+      <div class="no-data">Keine Daten</div>
+    </template>
   </div>
 </template>
 
@@ -40,6 +45,11 @@ const chartData = computed(() => {
     { label: 'Sa', calories: 2800 },
     { label: 'So', calories: 2150 }
   ]
+})
+
+// whether any data point is non-zero
+const hasNonZero = computed(() => {
+  return chartData.value.some(item => (item.calories ?? 0) > 0)
 })
 
 const chartSeries = computed(() => {
@@ -154,5 +164,14 @@ const chartOptions = computed(() => ({
 
 apexchart {
     height: 100%;
+}
+
+.no-data {
+  height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
 }
 </style>
