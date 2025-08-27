@@ -542,8 +542,8 @@ async function finishOnboarding() {
 
     await completeOnboarding()
 
-    // Navigate to paywall instead of home
-    router.push('/paywall')
+    // Navigate to home for freemium model
+    router.push('/')
 }
 </script>
 

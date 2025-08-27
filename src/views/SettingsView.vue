@@ -22,6 +22,44 @@
           </svg>
         </button>
       </div>
+      
+      <!-- Premium Upgrade Card -->
+      <div v-if="!isSubscriptionActive" class="upgrade-card" @click="goToUpgrade">
+        <div class="upgrade-content">
+          <div class="upgrade-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+          </div>
+          <div class="upgrade-info">
+            <h3 class="upgrade-title">Upgrade to Premium</h3>
+            <p class="upgrade-description">Unlock advanced features & premium budgets</p>
+          </div>
+          <div class="upgrade-arrow">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="m9 18 6-6-6-6"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Premium Status Card (for subscribed users) -->
+      <div v-else class="premium-status-card">
+        <div class="premium-content">
+          <div class="premium-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+          </div>
+          <div class="premium-info">
+            <h3 class="premium-title">Premium Active</h3>
+            <p class="premium-description">All features unlocked</p>
+          </div>
+          <div class="premium-badge">
+            <span>PRO</span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="settings-section">
@@ -425,6 +463,7 @@ import {
   userPreferences,
   updateDailyGoals,
   updateUserPreferences,
+  isSubscriptionActive,
   //updateUserProfile,
   resetOnboarding,
   //calculateRecommendedMacros
@@ -443,6 +482,10 @@ const currentLanguage = ref(getCurrentLanguage())
 const mockDataEnabled = ref(false)
 const notificationSettings = ref<NotificationSettings>(NotificationService.getDefaultSettings())
 const isNotificationSupported = computed(() => NotificationService.isSupported())
+
+function goToUpgrade() {
+  router.push('/upgrade')
+}
 
 const changeLanguage = (event: Event) => {
   const target = event.target as HTMLSelectElement
@@ -1280,5 +1323,118 @@ a {
   color: rgba(255, 255, 255, 0.7);
   font-size: 12px;
   font-style: italic;
+}
+
+/* Upgrade/Premium Cards */
+.upgrade-card {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.1));
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 16px;
+  padding: 16px;
+  margin-top: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(10px);
+}
+
+.upgrade-card:hover {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 165, 0, 0.15));
+  border-color: rgba(255, 215, 0, 0.5);
+  transform: translateY(-1px);
+}
+
+.upgrade-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.upgrade-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1e1e2e;
+  flex-shrink: 0;
+}
+
+.upgrade-info {
+  flex: 1;
+}
+
+.upgrade-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  color: #FFD700;
+}
+
+.upgrade-description {
+  font-size: 14px;
+  opacity: 0.8;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.upgrade-arrow {
+  opacity: 0.6;
+  color: #FFD700;
+}
+
+.premium-status-card {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(139, 195, 74, 0.1));
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  border-radius: 16px;
+  padding: 16px;
+  margin-top: 16px;
+  backdrop-filter: blur(10px);
+}
+
+.premium-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.premium-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #4CAF50, #8BC34A);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.premium-info {
+  flex: 1;
+}
+
+.premium-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  color: #4CAF50;
+}
+
+.premium-description {
+  font-size: 14px;
+  opacity: 0.8;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.premium-badge {
+  background: #4CAF50;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
 }
 </style>

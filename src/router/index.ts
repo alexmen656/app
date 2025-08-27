@@ -3,6 +3,7 @@ import HomeView from "../views/HomeView.vue";
 import YesterdayView from "../views/YesterdayView.vue";
 import OnboardingView from "../views/OnboardingView.vue";
 import PaywallView from "../views/PaywallView.vue";
+import UpgradeView from "../views/UpgradeView.vue";
 import CouponView from "../views/CouponView.vue";
 import ScanView from "../views/ScanView.vue";
 import NutritionView from "../views/NutritionView.vue";
@@ -11,7 +12,6 @@ import SettingsView from "../views/SettingsView.vue";
 import SourcesDisclaimerView from "../views/SourcesDisclaimerView.vue";
 import StreakView from "../views/StreakView.vue";
 import ProfileEditView from "../views/ProfileEditView.vue";
-import { subscriptionGuard } from "../utils/subscriptionGuard";
 import { isOnboardingCompleted } from "../stores/userStore";
 
 const routes = [
@@ -34,6 +34,11 @@ const routes = [
     path: "/paywall",
     name: "Paywall",
     component: PaywallView,
+  },
+  {
+    path: "/upgrade",
+    name: "Upgrade",
+    component: UpgradeView,
   },
   {
     path: "/coupon",
@@ -82,47 +87,18 @@ const router = createRouter({
   routes,
 });
 
-// Set up subscription guard
-subscriptionGuard.setRouter(router)
-
-// Global navigation guard for subscription checking
 router.beforeEach(async (to, _from, next) => {
   try {
-    // Wait for user store to be ready
     const { storeReady } = await import('../stores/userStore')
     await storeReady
 
-    // Check if onboarding is completed
     if (!isOnboardingCompleted.value && to.name !== 'Onboarding') {
       return next('/onboarding')
     }
 
-    // Routes that don't require subscription
-    const freeRoutes = ['Onboarding', 'Paywall', 'Coupon']
-
-    if (freeRoutes.includes(to.name as string)) {
-      return next()
-    }
-
-    // For protected routes, check subscription with RevenueCat
-    const hasSubscription = await subscriptionGuard.checkSubscriptionStatus()
-    
-    if (!hasSubscription) {
-      console.log('No active subscription, redirecting to paywall')
-      return next('/paywall')
-    }
-
-    // Update local store if subscription is valid
-    const { updateSubscriptionStatus } = await import('../stores/userStore')
-    await updateSubscriptionStatus(true, 'Premium')
-    
     next()
   } catch (error) {
     console.error('Router guard error:', error)
-    // On error, redirect to paywall for safety
-    if (to.name !== 'Paywall' && to.name !== 'Onboarding') {
-      return next('/paywall')
-    }
     next()
   }
 })
