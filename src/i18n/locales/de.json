@@ -372,5 +372,44 @@
       "title": "Zeit zu tracken! ⏰",
       "body": "Du hast heute noch nichts gescannt. Öffne Kaloriq und tracke deine Mahlzeiten!"
     }
+  },
+  "sourcesDisclaimer": {
+    "title": "Quellen & Haftungsausschluss",
+    "educational": {
+      "title": "Nur für Bildungszwecke",
+      "content1": "Kaloriq ist ausschließlich für Bildungs- und Informationszwecke entwickelt worden. Die App dient zur allgemeinen Aufklärung über Ernährung und Kalorienverfolgung.",
+      "content2": "Diese App ersetzt keinesfalls professionelle medizinische, diätetische oder ernährungsberaterische Beratung. Bei gesundheitlichen Fragen oder spezifischen Ernährungsbedürfnissen wenden Sie sich bitte an einen qualifizierten Arzt, Ernährungsberater oder Diätassistenten.",
+      "warning": "Konsultieren Sie immer einen Fachmann für medizinische Beratung"
+    },
+    "sources": {
+      "title": "Datenquellen",
+      "barcodes": {
+        "title": "Barcode-Scans",
+        "description": "Nährwertinformationen für Barcode-Scans werden von Open Food Facts bereitgestellt, einer offenen Datenbank mit Produktinformationen aus der ganzen Welt.",
+        "link": "Besuchen Sie Open Food Facts"
+      },
+      "ai": {
+        "title": "KI-Foto-Erkennung",
+        "description": "Lebensmittel-Fotoscans werden mit Hilfe von künstlicher Intelligenz analysiert, um Lebensmittel zu identifizieren und Nährwerte zu schätzen.",
+        "note": "KI-Schätzungen können ungenau sein und sollten als Annäherungswerte betrachtet werden"
+      }
+    },
+    "accuracy": {
+      "title": "Genauigkeit & Haftungsausschluss",
+      "content1": "Obwohl wir uns bemühen, genaue Informationen bereitzustellen, können wir die Vollständigkeit oder Richtigkeit der Nährwertdaten nicht garantieren. Die Genauigkeit kann variieren aufgrund von:",
+      "point1": "Unterschieden in Produktformulierungen und regionalen Variationen",
+      "point2": "Einschränkungen der KI-Erkennung bei Foto-Scans",
+      "point3": "Benutzereingaben und Portionsgrößen-Schätzungen",
+      "content2": "Verwenden Sie diese Informationen als allgemeine Richtlinie und verlassen Sie sich nicht ausschließlich auf diese Daten für kritische Ernährungsentscheidungen."
+    },
+    "privacy": {
+      "title": "Datenschutz",
+      "content1": "Gescannten Bilder können auf unseren Servern zur Verbesserung der Erkennungsqualität verarbeitet werden, werden jedoch nicht dauerhaft gespeichert. Nur abgeleitete Nährwertdaten, die für das Tracking benötigt werden, werden gespeichert.",
+      "content2": "Weitere Informationen finden Sie in unserer Datenschutzerklärung."
+    },
+    "contact": {
+      "title": "Kontakt",
+      "content": "Bei Fragen zu den Datenquellen oder Bedenken zur Genauigkeit kontaktieren Sie uns:"
+    }
   }
 }

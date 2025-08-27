@@ -353,6 +353,9 @@
     <div class="settings-section">
       <h3 class="section-title">{{ $t('settings.legal') }}</h3>
       <div class="settings-card">
+         <div class="setting-item">
+          <router-link to="/sources-disclaimer" class="setting-link">{{ $t('sourcesDisclaimer.title') }}</router-link>
+        </div>
         <div class="setting-item">
           <a class="setting-link" href="https://kaloriq.sites.control-center.eu/privacy-policy.html" target="_blank"
             rel="noopener">{{ $t('settings.privacy') }}</a>

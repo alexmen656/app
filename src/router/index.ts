@@ -8,6 +8,7 @@ import ScanView from "../views/ScanView.vue";
 import NutritionView from "../views/NutritionView.vue";
 import AnalyticsView from "../views/AnalyticsView.vue";
 import SettingsView from "../views/SettingsView.vue";
+import SourcesDisclaimerView from "../views/SourcesDisclaimerView.vue";
 import StreakView from "../views/StreakView.vue";
 import ProfileEditView from "../views/ProfileEditView.vue";
 import { subscriptionGuard } from "../utils/subscriptionGuard";
@@ -53,6 +54,11 @@ const routes = [
     path: "/settings",
     name: "Settings",
     component: SettingsView,
+  },
+  {
+    path: "/sources-disclaimer",
+    name: "SourcesDisclaimer",
+    component: SourcesDisclaimerView,
   },
   {
     path: "/nutrition",

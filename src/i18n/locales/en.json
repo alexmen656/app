@@ -372,5 +372,44 @@
       "title": "Time to track! ⏰",
       "body": "You haven't scanned anything today. Open Kaloriq and track your meals!"
     }
+  },
+  "sourcesDisclaimer": {
+    "title": "Sources & Disclaimer",
+    "educational": {
+      "title": "Educational Purpose Only",
+      "content1": "Kaloriq is designed solely for educational and informational purposes. This app serves as a general educational tool about nutrition and calorie tracking.",
+      "content2": "This application does not replace professional medical, dietary, or nutritional advice. For health concerns or specific dietary needs, please consult with a qualified physician, nutritionist, or registered dietitian.",
+      "warning": "Always consult a professional for medical advice"
+    },
+    "sources": {
+      "title": "Data Sources",
+      "barcodes": {
+        "title": "Barcode Scans",
+        "description": "Nutritional information for barcode scans is provided by Open Food Facts, an open database of product information from around the world.",
+        "link": "Visit Open Food Facts"
+      },
+      "ai": {
+        "title": "AI Photo Recognition",
+        "description": "Food photo scans are analyzed using artificial intelligence to identify foods and estimate nutritional values.",
+        "note": "AI estimates may be inaccurate and should be considered approximations"
+      }
+    },
+    "accuracy": {
+      "title": "Accuracy & Disclaimer",
+      "content1": "While we strive to provide accurate information, we cannot guarantee the completeness or accuracy of nutritional data. Accuracy may vary due to:",
+      "point1": "Differences in product formulations and regional variations",
+      "point2": "Limitations of AI recognition in photo scans",
+      "point3": "User input and portion size estimations",
+      "content2": "Use this information as a general guide and do not rely solely on this data for critical nutritional decisions."
+    },
+    "privacy": {
+      "title": "Privacy",
+      "content1": "Scanned images may be processed on our servers to improve recognition quality, but images are not stored permanently. Only derived nutritional data needed for tracking is retained.",
+      "content2": "For more information, please see our Privacy Policy."
+    },
+    "contact": {
+      "title": "Contact",
+      "content": "For questions about data sources or accuracy concerns, please contact us:"
+    }
   }
 }
