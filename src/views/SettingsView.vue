@@ -110,6 +110,101 @@
       </div>
     </div>
 
+    <!-- Notifications Section -->
+    <div class="settings-section">
+      <h3 class="section-title">Benachrichtigungen</h3>
+      <div class="settings-card">
+        <div class="setting-item">
+          <label class="setting-label">Benachrichtigungen aktivieren</label>
+          <div class="toggle-switch">
+            <input type="checkbox" v-model="notificationSettings.enabled" @change="saveNotificationSettings"
+              class="toggle-input" id="notifications-main-toggle" />
+            <label for="notifications-main-toggle" class="toggle-slider"></label>
+          </div>
+        </div>
+
+        <!-- Notification permission status -->
+        <div v-if="!isNotificationSupported" class="setting-item">
+          <div class="notification-warning">
+            ⚠️ Benachrichtigungen sind nur in der mobilen App verfügbar
+          </div>
+        </div>
+
+        <div v-if="notificationSettings.enabled && isNotificationSupported">
+          <!-- Breakfast -->
+          <div class="setting-item meal-setting">
+            <div class="meal-header">
+              <label class="setting-label">Frühstück</label>
+              <div class="toggle-switch">
+                <input type="checkbox" v-model="notificationSettings.breakfast.enabled" @change="saveNotificationSettings"
+                  class="toggle-input" id="breakfast-toggle" />
+                <label for="breakfast-toggle" class="toggle-slider"></label>
+              </div>
+            </div>
+            <div v-if="notificationSettings.breakfast.enabled" class="time-setting">
+              <input type="time" v-model="notificationSettings.breakfast.time" @change="saveNotificationSettings"
+                class="time-input" />
+            </div>
+          </div>
+
+          <!-- Lunch -->
+          <div class="setting-item meal-setting">
+            <div class="meal-header">
+              <label class="setting-label">Mittagessen</label>
+              <div class="toggle-switch">
+                <input type="checkbox" v-model="notificationSettings.lunch.enabled" @change="saveNotificationSettings"
+                  class="toggle-input" id="lunch-toggle" />
+                <label for="lunch-toggle" class="toggle-slider"></label>
+              </div>
+            </div>
+            <div v-if="notificationSettings.lunch.enabled" class="time-setting">
+              <input type="time" v-model="notificationSettings.lunch.time" @change="saveNotificationSettings"
+                class="time-input" />
+            </div>
+          </div>
+
+          <!-- Dinner -->
+          <div class="setting-item meal-setting">
+            <div class="meal-header">
+              <label class="setting-label">Abendessen</label>
+              <div class="toggle-switch">
+                <input type="checkbox" v-model="notificationSettings.dinner.enabled" @change="saveNotificationSettings"
+                  class="toggle-input" id="dinner-toggle" />
+                <label for="dinner-toggle" class="toggle-slider"></label>
+              </div>
+            </div>
+            <div v-if="notificationSettings.dinner.enabled" class="time-setting">
+              <input type="time" v-model="notificationSettings.dinner.time" @change="saveNotificationSettings"
+                class="time-input" />
+            </div>
+          </div>
+
+          <!-- Snacks -->
+          <div class="setting-item meal-setting">
+            <div class="meal-header">
+              <label class="setting-label">Snacks</label>
+              <div class="toggle-switch">
+                <input type="checkbox" v-model="notificationSettings.snacks.enabled" @change="saveNotificationSettings"
+                  class="toggle-input" id="snacks-toggle" />
+                <label for="snacks-toggle" class="toggle-slider"></label>
+              </div>
+            </div>
+            <div v-if="notificationSettings.snacks.enabled" class="time-setting">
+              <input type="time" v-model="notificationSettings.snacks.time" @change="saveNotificationSettings"
+                class="time-input" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Status info when enabled -->
+        <div v-if="notificationSettings.enabled && isNotificationSupported" class="setting-item">
+          <div class="notification-status">
+            ✅ Benachrichtigungen sind aktiviert. Du erhältst täglich Erinnerungen zu deinen ausgewählten Mahlzeiten.
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Preferences Section -->
     <div v-if="showDebugInfo" class="settings-section">
       <h3 class="section-title">{{ $t('settings.preferences') }}</h3>
@@ -322,6 +417,11 @@ import {
 import { BarcodeCache, ScanHistory } from '../utils/storage'
 import { MockDataManager } from '../utils/mockData'
 import { setLanguage, getCurrentLanguage } from '../i18n'
+import { 
+  getNotificationSettings, 
+  setNotificationSettings as saveNotificationSettingsToStore 
+} from '../stores/preferencesStore'
+import { NotificationService, type NotificationSettings } from '../services/notifications'
 
 const router = useRouter()
 //const { t } = useI18n()
@@ -331,6 +431,10 @@ const currentLanguage = ref(getCurrentLanguage())
 
 // Mock data toggle
 const mockDataEnabled = ref(false)
+
+// Notification settings
+const notificationSettings = ref<NotificationSettings>(NotificationService.getDefaultSettings())
+const isNotificationSupported = computed(() => NotificationService.isSupported())
 
 const changeLanguage = (event: Event) => {
   const target = event.target as HTMLSelectElement
@@ -399,6 +503,18 @@ onMounted(async () => {
   
   // Load mock data state
   mockDataEnabled.value = await MockDataManager.isEnabled()
+  
+  // Load notification settings
+  try {
+    notificationSettings.value = await getNotificationSettings()
+    
+    // Initialize notification service if supported
+    if (NotificationService.isSupported()) {
+      await NotificationService.initialize()
+    }
+  } catch (error) {
+    console.error('Error loading notification settings:', error)
+  }
 })
 
 // Use computed to display current user data with truncated name
@@ -430,6 +546,17 @@ async function savePreferences() {
   console.log('Preferences saved:', userPreferences)
   // Save preferences using the store function
   await updateUserPreferences(userPreferences)
+}
+
+// Notification settings functions
+async function saveNotificationSettings() {
+  try {
+    await saveNotificationSettingsToStore(notificationSettings.value)
+    console.log('Notification settings saved:', notificationSettings.value)
+  } catch (error) {
+    console.error('Error saving notification settings:', error)
+    alert('Fehler beim Speichern der Benachrichtigungseinstellungen')
+  }
 }
 
 // Simple Mock Data Toggle
@@ -1104,5 +1231,58 @@ a {
   color: rgba(255, 255, 255, 0.7);
   font-size: 14px;
   margin: 0;
+}
+
+/* Notification Settings Styles */
+.meal-setting {
+  flex-direction: column;
+  align-items: stretch !important;
+}
+
+.meal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.time-setting {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.time-input {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  padding: 8px 12px;
+  font-size: 14px;
+  width: 120px;
+}
+
+.time-input:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.notification-warning {
+  color: #ffa726;
+  font-size: 14px;
+  padding: 12px;
+  background: rgba(255, 167, 38, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 167, 38, 0.2);
+}
+
+.notification-status {
+  color: #4caf50;
+  font-size: 14px;
+  padding: 12px;
+  background: rgba(76, 175, 80, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(76, 175, 80, 0.2);
 }
 </style>

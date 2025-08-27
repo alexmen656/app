@@ -1,6 +1,8 @@
 import { Storage } from '../utils/storage'
+import { type NotificationSettings, NotificationService } from '../services/notifications'
 
 const LAST_REVIEW_KEY = 'lastReviewPromptAt'
+const NOTIFICATION_SETTINGS_KEY = 'notificationSettings'
 
 export async function getLastReviewPrompt(): Promise<number | null> {
   try {
@@ -37,8 +39,37 @@ export async function shouldShowReviewPrompt(days = 5): Promise<boolean> {
   }
 }
 
+// Notification Settings
+export async function getNotificationSettings(): Promise<NotificationSettings> {
+  try {
+    const stored = await Storage.get(NOTIFICATION_SETTINGS_KEY)
+    if (stored) {
+      return JSON.parse(stored)
+    }
+    return NotificationService.getDefaultSettings()
+  } catch (e) {
+    console.error('preferencesStore.getNotificationSettings error', e)
+    return NotificationService.getDefaultSettings()
+  }
+}
+
+export async function setNotificationSettings(settings: NotificationSettings): Promise<void> {
+  try {
+    await Storage.set(NOTIFICATION_SETTINGS_KEY, JSON.stringify(settings))
+    
+    // Schedule notifications based on new settings
+    if (NotificationService.isSupported()) {
+      await NotificationService.scheduleAllMealNotifications(settings)
+    }
+  } catch (e) {
+    console.error('preferencesStore.setNotificationSettings error', e)
+  }
+}
+
 export default {
   getLastReviewPrompt,
   setLastReviewPrompt,
-  shouldShowReviewPrompt
+  shouldShowReviewPrompt,
+  getNotificationSettings,
+  setNotificationSettings
 }

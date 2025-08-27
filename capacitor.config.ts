@@ -18,6 +18,11 @@ const config: CapacitorConfig = {
         camera: "Camera access is required to scan barcodes."
       }
     },
+    LocalNotifications: {
+      smallIcon: "ic_launcher",
+      iconColor: "#007052",
+      sound: "beep.wav"
+    }
     /*Preferences: {
       group: "group.com.kaloriq.shared"
     }*/

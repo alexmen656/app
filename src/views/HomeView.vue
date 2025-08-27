@@ -197,7 +197,8 @@ import { ScanHistory } from '../utils/storage'
 import { WidgetDataManager, StreakManager } from '../utils/widgetData'
 import { HealthKitService } from '../services/healthkit'
 import { InAppReview } from '@capacitor-community/in-app-review';
-import { shouldShowReviewPrompt, setLastReviewPrompt } from '../stores/preferencesStore'
+import { shouldShowReviewPrompt, setLastReviewPrompt, getNotificationSettings } from '../stores/preferencesStore'
+import { NotificationService } from '../services/notifications'
 
 const router = useRouter()
 const { t } = useI18n()
@@ -241,6 +242,29 @@ onMounted(async () => {
     // Initialize HealthKit
     const healthKitInitialized = await HealthKitService.initialize()
     console.log('🩺 HealthKit initialization result:', healthKitInitialized)
+
+    // Initialize notifications if supported
+    try {
+        if (NotificationService.isSupported()) {
+            const permissionGranted = await NotificationService.initialize()
+            if (permissionGranted) {
+                console.log('🔔 Notification permissions granted')
+                
+                // Load and apply notification settings
+                const notificationSettings = await getNotificationSettings()
+                if (notificationSettings.enabled) {
+                    await NotificationService.scheduleAllMealNotifications(notificationSettings)
+                    console.log('📅 Meal notifications scheduled')
+                }
+            } else {
+                console.log('❌ Notification permissions denied')
+            }
+        } else {
+            console.log('📱 Notifications not supported on this platform')
+        }
+    } catch (error) {
+        console.error('Error initializing notifications:', error)
+    }
 
     loadScanHistory()
     loadStreak()
