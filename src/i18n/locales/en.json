@@ -120,7 +120,17 @@
     "exportDebugData": "Export Debug Data",
     "version": "Version",
     "build": "Build",
-    "checkUpdates": "Check for Updates"
+    "checkUpdates": "Check for Updates",
+    "notificationsSection": "Notifications",
+    "enableNotifications": "Enable Notifications",
+    "notificationsOnlyMobile": "Notifications are only available in the mobile app",
+    "breakfast": "Breakfast",
+    "lunch": "Lunch",
+    "dinner": "Dinner",
+    "snacks": "Snacks",
+    "notificationsActive": "Notifications are active. You will receive daily reminders for your selected meals.",
+    "inactivityReminders": "Inactivity Reminders",
+    "inactivityRemindersDesc": "Reminder after 8 active hours without scanning (22:00-7:00 not counted)"
   },
   "analytics": {
     "weeklyOverview": "Weekly Overview",
@@ -339,6 +349,28 @@
         "name": "Gain weight",
         "description": "Build weight and muscle"
       }
+    }
+  },
+  "notifications": {
+    "breakfast": {
+      "title": "Breakfast Time! 🌅",
+      "body": "Don't forget to track your breakfast for a healthy start to your day."
+    },
+    "lunch": {
+      "title": "Lunch Time! 🍽️",
+      "body": "Time for lunch! Remember to scan your meal."
+    },
+    "dinner": {
+      "title": "Dinner Time! 🌙",
+      "body": "Your dinner awaits! Don't forget to track it in Kaloriq."
+    },
+    "snack": {
+      "title": "Snack Time! 🍎",
+      "body": "Time for a healthy snack! Track it in Kaloriq."
+    },
+    "inactivity": {
+      "title": "Time to track! ⏰",
+      "body": "You haven't scanned anything today. Open Kaloriq and track your meals!"
     }
   }
 }

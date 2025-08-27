@@ -120,7 +120,17 @@
     "exportDebugData": "Debug-Daten exportieren",
     "version": "Version",
     "build": "Build",
-    "checkUpdates": "Nach Updates suchen"
+    "checkUpdates": "Nach Updates suchen",
+    "notificationsSection": "Benachrichtigungen",
+    "enableNotifications": "Benachrichtigungen aktivieren",
+    "notificationsOnlyMobile": "Benachrichtigungen sind nur in der mobilen App verfügbar",
+    "breakfast": "Frühstück",
+    "lunch": "Mittagessen",
+    "dinner": "Abendessen",
+    "snacks": "Snacks",
+    "notificationsActive": "Benachrichtigungen sind aktiviert. Du erhältst täglich Erinnerungen zu deinen ausgewählten Mahlzeiten.",
+    "inactivityReminders": "Inaktivitäts-Erinnerungen",
+    "inactivityRemindersDesc": "Erinnerung nach 8 aktiven Stunden ohne Scan (22:00-7:00 werden nicht gezählt)"
   },
   "analytics": {
     "weeklyOverview": "Wochenübersicht",
@@ -339,6 +349,28 @@
         "name": "Zunehmen",
         "description": "Gewicht und Muskeln aufbauen"
       }
+    }
+  },
+  "notifications": {
+    "breakfast": {
+      "title": "Frühstück Zeit! 🌅",
+      "body": "Vergiss nicht dein Frühstück zu tracken für einen gesunden Start in den Tag."
+    },
+    "lunch": {
+      "title": "Mittagessen Zeit! 🍽️",
+      "body": "Zeit für das Mittagessen! Denk daran, deine Mahlzeit zu scannen."
+    },
+    "dinner": {
+      "title": "Abendessen Zeit! 🌙",
+      "body": "Dein Abendessen wartet! Vergiss nicht es in Kaloriq zu tracken."
+    },
+    "snack": {
+      "title": "Snack Zeit! 🍎",
+      "body": "Zeit für einen gesunden Snack! Tracke ihn in Kaloriq."
+    },
+    "inactivity": {
+      "title": "Zeit zu tracken! ⏰",
+      "body": "Du hast heute noch nichts gescannt. Öffne Kaloriq und tracke deine Mahlzeiten!"
     }
   }
 }

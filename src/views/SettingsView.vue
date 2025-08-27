@@ -112,10 +112,10 @@
 
     <!-- Notifications Section -->
     <div class="settings-section">
-      <h3 class="section-title">Benachrichtigungen</h3>
+      <h3 class="section-title">🔔 {{ $t('settings.notificationsSection') }}</h3>
       <div class="settings-card">
         <div class="setting-item">
-          <label class="setting-label">Benachrichtigungen aktivieren</label>
+          <label class="setting-label">{{ $t('settings.enableNotifications') }}</label>
           <div class="toggle-switch">
             <input type="checkbox" v-model="notificationSettings.enabled" @change="saveNotificationSettings"
               class="toggle-input" id="notifications-main-toggle" />
@@ -126,7 +126,7 @@
         <!-- Notification permission status -->
         <div v-if="!isNotificationSupported" class="setting-item">
           <div class="notification-warning">
-            ⚠️ Benachrichtigungen sind nur in der mobilen App verfügbar
+            ⚠️ {{ $t('settings.notificationsOnlyMobile') }}
           </div>
         </div>
 
@@ -134,7 +134,7 @@
           <!-- Breakfast -->
           <div class="setting-item meal-setting">
             <div class="meal-header">
-              <label class="setting-label">Frühstück</label>
+              <label class="setting-label">🌅 {{ $t('settings.breakfast') }}</label>
               <div class="toggle-switch">
                 <input type="checkbox" v-model="notificationSettings.breakfast.enabled" @change="saveNotificationSettings"
                   class="toggle-input" id="breakfast-toggle" />
@@ -150,7 +150,7 @@
           <!-- Lunch -->
           <div class="setting-item meal-setting">
             <div class="meal-header">
-              <label class="setting-label">Mittagessen</label>
+              <label class="setting-label">🍽️ {{ $t('settings.lunch') }}</label>
               <div class="toggle-switch">
                 <input type="checkbox" v-model="notificationSettings.lunch.enabled" @change="saveNotificationSettings"
                   class="toggle-input" id="lunch-toggle" />
@@ -166,7 +166,7 @@
           <!-- Dinner -->
           <div class="setting-item meal-setting">
             <div class="meal-header">
-              <label class="setting-label">Abendessen</label>
+              <label class="setting-label">🌙 {{ $t('settings.dinner') }}</label>
               <div class="toggle-switch">
                 <input type="checkbox" v-model="notificationSettings.dinner.enabled" @change="saveNotificationSettings"
                   class="toggle-input" id="dinner-toggle" />
@@ -182,7 +182,7 @@
           <!-- Snacks -->
           <div class="setting-item meal-setting">
             <div class="meal-header">
-              <label class="setting-label">Snacks</label>
+              <label class="setting-label">🍎 {{ $t('settings.snacks') }}</label>
               <div class="toggle-switch">
                 <input type="checkbox" v-model="notificationSettings.snacks.enabled" @change="saveNotificationSettings"
                   class="toggle-input" id="snacks-toggle" />
@@ -194,12 +194,27 @@
                 class="time-input" />
             </div>
           </div>
+
+          <!-- Inactivity Reminders -->
+          <div class="setting-item meal-setting">
+            <div class="meal-header">
+              <label class="setting-label">⏰ {{ $t('settings.inactivityReminders') }}</label>
+              <div class="toggle-switch">
+                <input type="checkbox" v-model="notificationSettings.inactivityReminders" @change="saveNotificationSettings"
+                  class="toggle-input" id="inactivity-toggle" />
+                <label for="inactivity-toggle" class="toggle-slider"></label>
+              </div>
+            </div>
+            <div v-if="notificationSettings.inactivityReminders" class="time-setting">
+              <small class="inactivity-description">{{ $t('settings.inactivityRemindersDesc') }}</small>
+            </div>
+          </div>
         </div>
 
         <!-- Status info when enabled -->
         <div v-if="notificationSettings.enabled && isNotificationSupported" class="setting-item">
           <div class="notification-status">
-            ✅ Benachrichtigungen sind aktiviert. Du erhältst täglich Erinnerungen zu deinen ausgewählten Mahlzeiten.
+            ✅ {{ $t('settings.notificationsActive') }}
           </div>
         </div>
       </div>
@@ -403,7 +418,7 @@
 <script setup lang="ts">
 import { computed, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-//import { useI18n } from 'vue-i18n'
+// import { useI18n } from 'vue-i18n' // Used in template
 import {
   userProfile,
   dailyGoals,
@@ -424,7 +439,7 @@ import {
 import { NotificationService, type NotificationSettings } from '../services/notifications'
 
 const router = useRouter()
-//const { t } = useI18n()
+// const { t } = useI18n() // Used in template
 
 // Language functionality
 const currentLanguage = ref(getCurrentLanguage())
@@ -1284,5 +1299,11 @@ a {
   background: rgba(76, 175, 80, 0.1);
   border-radius: 8px;
   border: 1px solid rgba(76, 175, 80, 0.2);
+}
+
+.inactivity-description {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  font-style: italic;
 }
 </style>

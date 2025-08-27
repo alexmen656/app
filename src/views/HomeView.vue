@@ -320,6 +320,9 @@ async function loadScanHistory() {
         await calculateTodaysNutrition()
         await WidgetDataManager.updateWidgetData()
         await syncToHealthKit()
+        
+        // Reset inactivity timer when new scans are detected
+        await NotificationService.resetInactivityTimer()
     } catch (error) {
         console.error('Error loading scan history:', error)
         scanHistory.value = []
