@@ -1,11 +1,8 @@
 <template>
   <div class="settings-view" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
-    <!-- Header -->
     <header class="header">
       <h1 class="title">{{ $t('app.settings') }}</h1>
     </header>
-
-    <!-- Profile Section -->
     <div class="profile-section">
       <div class="profile-card">
         <div class="profile-avatar">
@@ -27,18 +24,17 @@
       </div>
     </div>
 
-    <!-- Goals Section -->
     <div class="settings-section">
       <!--<div class="section-header">-->
-        <h3 class="section-title">{{ $t('settings.dailyGoals') }}</h3>
-       <!--<button @click="recalculateGoals" class="recalculate-button">
+      <h3 class="section-title">{{ $t('settings.dailyGoals') }}</h3>
+      <!--<button @click="recalculateGoals" class="recalculate-button">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
             <path
               d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z" />
           </svg>
           {{ $t('common.calculate') }}
-        </button>--> 
-     <!-- </div>-->
+        </button>-->
+      <!-- </div>-->
       <div class="settings-card">
         <div class="setting-item">
           <label class="setting-label">{{ $t('nutrition.calories') }} Goal</label>
@@ -75,7 +71,7 @@
     </div>
 
     <!-- Goal Selection Section -->
-  <!--  <div class="settings-section">
+    <!--  <div class="settings-section">
       <h3 class="section-title">{{ $t('settings.primaryGoal') }}</h3>
       <div class="settings-card">
         <div class="goal-selection">
@@ -112,7 +108,7 @@
 
     <!-- Notifications Section -->
     <div class="settings-section">
-      <h3 class="section-title">🔔 {{ $t('settings.notificationsSection') }}</h3>
+      <h3 class="section-title">{{ $t('settings.notificationsSection') }}</h3>
       <div class="settings-card">
         <div class="setting-item">
           <label class="setting-label">{{ $t('settings.enableNotifications') }}</label>
@@ -134,10 +130,10 @@
           <!-- Breakfast -->
           <div class="setting-item meal-setting">
             <div class="meal-header">
-              <label class="setting-label">🌅 {{ $t('settings.breakfast') }}</label>
+              <label class="setting-label">{{ $t('settings.breakfast') }}</label>
               <div class="toggle-switch">
-                <input type="checkbox" v-model="notificationSettings.breakfast.enabled" @change="saveNotificationSettings"
-                  class="toggle-input" id="breakfast-toggle" />
+                <input type="checkbox" v-model="notificationSettings.breakfast.enabled"
+                  @change="saveNotificationSettings" class="toggle-input" id="breakfast-toggle" />
                 <label for="breakfast-toggle" class="toggle-slider"></label>
               </div>
             </div>
@@ -150,7 +146,7 @@
           <!-- Lunch -->
           <div class="setting-item meal-setting">
             <div class="meal-header">
-              <label class="setting-label">🍽️ {{ $t('settings.lunch') }}</label>
+              <label class="setting-label">{{ $t('settings.lunch') }}</label>
               <div class="toggle-switch">
                 <input type="checkbox" v-model="notificationSettings.lunch.enabled" @change="saveNotificationSettings"
                   class="toggle-input" id="lunch-toggle" />
@@ -166,7 +162,7 @@
           <!-- Dinner -->
           <div class="setting-item meal-setting">
             <div class="meal-header">
-              <label class="setting-label">🌙 {{ $t('settings.dinner') }}</label>
+              <label class="setting-label">{{ $t('settings.dinner') }}</label>
               <div class="toggle-switch">
                 <input type="checkbox" v-model="notificationSettings.dinner.enabled" @change="saveNotificationSettings"
                   class="toggle-input" id="dinner-toggle" />
@@ -182,7 +178,7 @@
           <!-- Snacks -->
           <div class="setting-item meal-setting">
             <div class="meal-header">
-              <label class="setting-label">🍎 {{ $t('settings.snacks') }}</label>
+              <label class="setting-label">{{ $t('settings.snacks') }}</label>
               <div class="toggle-switch">
                 <input type="checkbox" v-model="notificationSettings.snacks.enabled" @change="saveNotificationSettings"
                   class="toggle-input" id="snacks-toggle" />
@@ -198,10 +194,10 @@
           <!-- Inactivity Reminders -->
           <div class="setting-item meal-setting">
             <div class="meal-header">
-              <label class="setting-label">⏰ {{ $t('settings.inactivityReminders') }}</label>
+              <label class="setting-label">{{ $t('settings.inactivityReminders') }}</label>
               <div class="toggle-switch">
-                <input type="checkbox" v-model="notificationSettings.inactivityReminders" @change="saveNotificationSettings"
-                  class="toggle-input" id="inactivity-toggle" />
+                <input type="checkbox" v-model="notificationSettings.inactivityReminders"
+                  @change="saveNotificationSettings" class="toggle-input" id="inactivity-toggle" />
                 <label for="inactivity-toggle" class="toggle-slider"></label>
               </div>
             </div>
@@ -259,11 +255,11 @@
           </div>
         </div>
 
-        <div v-if="showDebugInfo"class="setting-item">
+        <div v-if="showDebugInfo" class="setting-item">
           <label class="setting-label">Mock Data (Screenshots)</label>
           <div class="toggle-switch">
-            <input type="checkbox" v-model="mockDataEnabled" @change="toggleMockData"
-              class="toggle-input" id="mock-data-toggle" />
+            <input type="checkbox" v-model="mockDataEnabled" @change="toggleMockData" class="toggle-input"
+              id="mock-data-toggle" />
             <label for="mock-data-toggle" class="toggle-slider"></label>
           </div>
         </div>
@@ -358,10 +354,12 @@
       <h3 class="section-title">{{ $t('settings.legal') }}</h3>
       <div class="settings-card">
         <div class="setting-item">
-          <a class="setting-link" href="https://kaloriq.sites.control-center.eu/privacy-policy.html" target="_blank" rel="noopener">{{ $t('settings.privacy') }}</a>
+          <a class="setting-link" href="https://kaloriq.sites.control-center.eu/privacy-policy.html" target="_blank"
+            rel="noopener">{{ $t('settings.privacy') }}</a>
         </div>
         <div class="setting-item">
-          <a class="setting-link" href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener">{{ $t('settings.terms') }}</a>
+          <a class="setting-link" href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"
+            target="_blank" rel="noopener">{{ $t('settings.terms') }}</a>
         </div>
       </div>
     </div>
@@ -418,7 +416,6 @@
 <script setup lang="ts">
 import { computed, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-// import { useI18n } from 'vue-i18n' // Used in template
 import {
   userProfile,
   dailyGoals,
@@ -432,22 +429,15 @@ import {
 import { BarcodeCache, ScanHistory } from '../utils/storage'
 import { MockDataManager } from '../utils/mockData'
 import { setLanguage, getCurrentLanguage } from '../i18n'
-import { 
-  getNotificationSettings, 
-  setNotificationSettings as saveNotificationSettingsToStore 
+import {
+  getNotificationSettings,
+  setNotificationSettings as saveNotificationSettingsToStore
 } from '../stores/preferencesStore'
 import { NotificationService, type NotificationSettings } from '../services/notifications'
 
 const router = useRouter()
-// const { t } = useI18n() // Used in template
-
-// Language functionality
 const currentLanguage = ref(getCurrentLanguage())
-
-// Mock data toggle
 const mockDataEnabled = ref(false)
-
-// Notification settings
 const notificationSettings = ref<NotificationSettings>(NotificationService.getDefaultSettings())
 const isNotificationSupported = computed(() => NotificationService.isSupported())
 
@@ -512,17 +502,17 @@ const debugInfo = ref({
 
 // Check if debug mode should be enabled (e.g., if in development)
 onMounted(async () => {
-    if (showDebugInfo.value) {
+  if (showDebugInfo.value) {
     refreshDebugInfo()
   }
-  
+
   // Load mock data state
   mockDataEnabled.value = await MockDataManager.isEnabled()
-  
+
   // Load notification settings
   try {
     notificationSettings.value = await getNotificationSettings()
-    
+
     // Initialize notification service if supported
     if (NotificationService.isSupported()) {
       await NotificationService.initialize()
@@ -548,7 +538,6 @@ const displayProfile = computed(() => {
 })
 
 function editProfile() {
-  // Navigate to profile edit view instead of onboarding
   router.push('/profile/edit')
 }
 
@@ -559,11 +548,9 @@ async function saveGoals() {
 
 async function savePreferences() {
   console.log('Preferences saved:', userPreferences)
-  // Save preferences using the store function
   await updateUserPreferences(userPreferences)
 }
 
-// Notification settings functions
 async function saveNotificationSettings() {
   try {
     await saveNotificationSettingsToStore(notificationSettings.value)
@@ -574,7 +561,6 @@ async function saveNotificationSettings() {
   }
 }
 
-// Simple Mock Data Toggle
 async function toggleMockData() {
   try {
     await MockDataManager.setEnabled(mockDataEnabled.value)
@@ -601,7 +587,6 @@ async function toggleMockData() {
 
 async function exportData() {
   try {
-    // Show loading state
     const exportButton = document.querySelector('.action-button[data-export]') as HTMLButtonElement
     if (exportButton) {
       exportButton.disabled = true
@@ -639,7 +624,6 @@ async function exportData() {
 
     const tryCapacitorExport = async () => {
       try {
-        // Dynamic import to avoid bundling errors when plugins are not installed
         const FilesystemModule: any = await import('@capacitor/filesystem')
         const ShareModule: any = await import('@capacitor/share')
 
@@ -650,14 +634,11 @@ async function exportData() {
         const dateStr = new Date().toISOString().split('T')[0]
         const fileName = `kaloriq-data-${dateStr}.json`
 
-        // Convert blob to base64 (data:<mime>;base64,xxxx)
         const dataUrl = await blobToBase64(blob)
         const base64 = dataUrl.includes(',') ? dataUrl.split(',')[1] : dataUrl
 
-        // Write file to app Documents (iOS) / Data (Android)
         await Filesystem.writeFile({ path: fileName, data: base64, directory: Directory.Documents })
 
-        // Get a URI we can share
         const uriResult = await Filesystem.getUri({ directory: Directory.Documents, path: fileName })
         await Share.share({ title: 'Kaloriq Export', text: 'Exported Kaloriq data', url: uriResult.uri })
 
@@ -668,11 +649,12 @@ async function exportData() {
       }
     }
 
-    // Try native export first (iOS/Android) — falls back to browser download
-    const usedNative = await tryCapacitorExport()
+    await tryCapacitorExport()
 
+    /*
+    ----- No Web ------
+    const usedNative = 
     if (!usedNative) {
-      // Browser fallback (works in web preview)
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
@@ -681,16 +663,14 @@ async function exportData() {
       a.click()
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
-    }
+    }*/
 
-    // Show success message
     alert('Data exported successfully!')
 
   } catch (error) {
     console.error('Export failed:', error)
     alert('Failed to export data. Please try again.')
   } finally {
-    // Reset button state
     const exportButton = document.querySelector('.action-button[data-export]') as HTMLButtonElement
     if (exportButton) {
       exportButton.disabled = false
@@ -732,11 +712,6 @@ async function deleteAccount() {
   }
 }
 
-/*function checkUpdates() {
-  alert('You are using the latest version of Kaloriq!')
-}*/
-
-// Debug functions
 async function refreshDebugInfo() {
   try {
     const [
@@ -748,11 +723,11 @@ async function refreshDebugInfo() {
     ])
 
     debugInfo.value = {
-      migrationComplete: true, // Migration removed
+      migrationComplete: true,
       barcodeCache: cacheStats,
       scanHistoryCount: scanHistory.length,
-      capacitorPreferencesItems: 0, // No longer tracked
-      localStorageItems: 0 // No longer tracked
+      capacitorPreferencesItems: 0,
+      localStorageItems: 0,
     }
 
   } catch (error) {
@@ -793,10 +768,9 @@ function formatBytes(bytes: number): string {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }
 
-// Touch/Swipe functionality
 let touchStartX = 0
 let touchStartY = 0
-const swipeThreshold = 50 // Minimum distance for a swipe
+const swipeThreshold = 50
 
 function handleTouchStart(event: TouchEvent) {
   touchStartX = event.touches[0].clientX
@@ -804,8 +778,6 @@ function handleTouchStart(event: TouchEvent) {
 }
 
 function handleTouchMove(event: TouchEvent) {
-  // Prevent default to avoid scrolling issues during swipe
-  // Only prevent if we're in a horizontal swipe
   const currentX = event.touches[0].clientX
   const currentY = event.touches[0].clientY
   const deltaX = Math.abs(currentX - touchStartX)
@@ -1053,11 +1025,11 @@ function handleTouchEnd(event: TouchEvent) {
   border-radius: 50%;
 }
 
-.toggle-input:checked + .toggle-slider {
+.toggle-input:checked+.toggle-slider {
   background: #4caf50;
 }
 
-.toggle-input:checked + .toggle-slider:before {
+.toggle-input:checked+.toggle-slider:before {
   transform: translateX(24px);
 }
 

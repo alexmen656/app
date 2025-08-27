@@ -27,7 +27,6 @@ interface UserPreferences {
   weeklyReports: boolean
 }
 
-// Default values
 const defaultUserProfile: UserProfile = {
   name: '',
   email: '',
@@ -54,7 +53,6 @@ const defaultPreferences: UserPreferences = {
   weeklyReports: false
 }
 
-// Load from Capacitor Preferences or use defaults
 async function loadFromStorage<T>(key: string, defaultValue: T): Promise<T> {
   try {
     const stored = await Storage.get(key)
@@ -64,7 +62,6 @@ async function loadFromStorage<T>(key: string, defaultValue: T): Promise<T> {
   }
 }
 
-// Save to Capacitor Preferences
 async function saveToStorage(key: string, data: any): Promise<void> {
   try {
     await Storage.set(key, data)
@@ -73,22 +70,18 @@ async function saveToStorage(key: string, data: any): Promise<void> {
   }
 }
 
-// Initialize reactive state with defaults first, then load from storage
 export const userProfile = reactive<UserProfile>({ ...defaultUserProfile })
 export const dailyGoals = reactive<DailyGoals>({ ...defaultGoals })
 export const userPreferences = reactive<UserPreferences>({ ...defaultPreferences })
 
-// Reactive onboarding completion state
 const onboardingCompleted = ref(false)
 
-// Reactive subscription status
 const subscriptionStatus = reactive({
   isActive: false,
   plan: '',
   expiresAt: null as Date | null
 })
 
-// Load data from storage on initialization
 async function initializeStore() {
   try {
     const [loadedProfile, loadedGoals, loadedPreferences, loadedOnboarding, loadedSubscription] = await Promise.all([
@@ -109,10 +102,8 @@ async function initializeStore() {
   }
 }
 
-// Initialize the store and export a ready promise so consumers can await storage load
 export const storeReady = initializeStore()
 
-// Computed values
 export const isOnboardingCompleted = computed(() => {
   return onboardingCompleted.value
 })
@@ -122,7 +113,6 @@ export const hasValidProfile = computed(() => {
          userProfile.height && userProfile.weight
 })
 
-// Export subscription status
 export const isSubscriptionActive = computed(() => {
   return subscriptionStatus.isActive
 })
@@ -131,7 +121,6 @@ export const subscriptionPlan = computed(() => {
   return subscriptionStatus.plan
 })
 
-// Actions
 export async function updateUserProfile(updates: Partial<UserProfile>) {
   Object.assign(userProfile, updates)
   await saveToStorage('userProfile', userProfile)
@@ -166,14 +155,12 @@ export async function resetOnboarding() {
     Storage.remove('userPreferences')
   ])
   
-  // Reset reactive state
   Object.assign(userProfile, defaultUserProfile)
   Object.assign(dailyGoals, defaultGoals)
   Object.assign(userPreferences, defaultPreferences)
   onboardingCompleted.value = false
 }
 
-// BMR calculation using Harris-Benedict equation
 export function calculateBMR(profile: UserProfile): number {
   if (!profile.age || !profile.weight || !profile.height || !profile.gender) {
     return 0
@@ -186,7 +173,6 @@ export function calculateBMR(profile: UserProfile): number {
   }
 }
 
-// TDEE calculation (Total Daily Energy Expenditure)
 export function calculateTDEE(profile: UserProfile): number {
   const bmr = calculateBMR(profile)
   
@@ -202,7 +188,6 @@ export function calculateTDEE(profile: UserProfile): number {
   return Math.round(bmr * multiplier)
 }
 
-// Recommended macros calculation
 export function calculateRecommendedMacros(profile: UserProfile) {
   const tdee = calculateTDEE(profile)
   
