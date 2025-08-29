@@ -3,6 +3,7 @@ import { type NotificationSettings, NotificationService } from '../services/noti
 
 const LAST_REVIEW_KEY = 'lastReviewPromptAt'
 const NOTIFICATION_SETTINGS_KEY = 'notificationSettings'
+const DEBUG_MODE_KEY = 'debugMode'
 
 export async function getLastReviewPrompt(): Promise<number | null> {
   try {
@@ -52,16 +53,42 @@ export async function getNotificationSettings(): Promise<NotificationSettings> {
 
 export async function setNotificationSettings(settings: NotificationSettings): Promise<void> {
   try {
-  await Storage.set(NOTIFICATION_SETTINGS_KEY, settings)
-    if (NotificationService.isSupported()) {
-      await NotificationService.scheduleAllMealNotifications(settings)
-    }
+    await Storage.set(NOTIFICATION_SETTINGS_KEY, settings)
   } catch (e) {
     console.error('preferencesStore.setNotificationSettings error', e)
   }
 }
 
-export default {
+// Debug mode functions
+export async function getDebugMode(): Promise<boolean> {
+  try {
+    const value = await Storage.get(DEBUG_MODE_KEY)
+    return value === 'true'
+  } catch (e) {
+    console.error('preferencesStore.getDebugMode error', e)
+    return false
+  }
+}
+
+export async function setDebugMode(enabled: boolean): Promise<void> {
+  try {
+    await Storage.set(DEBUG_MODE_KEY, enabled ? 'true' : 'false')
+  } catch (e) {
+    console.error('preferencesStore.setDebugMode error', e)
+  }
+}
+
+export async function toggleDebugMode(): Promise<boolean> {
+  try {
+    const current = await getDebugMode()
+    const newValue = !current
+    await setDebugMode(newValue)
+    return newValue
+  } catch (e) {
+    console.error('preferencesStore.toggleDebugMode error', e)
+    return false
+  }
+}export default {
   getLastReviewPrompt,
   setLastReviewPrompt,
   shouldShowReviewPrompt,

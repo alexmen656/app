@@ -11,6 +11,7 @@ interface UserProfile {
   targetWeight: number | null
   activityLevel: string
   goal?: string
+  profilePicture?: string
 }
 
 interface DailyGoals {
@@ -36,7 +37,8 @@ const defaultUserProfile: UserProfile = {
   weight: null,
   targetWeight: null,
   activityLevel: '',
-  goal: ''
+  goal: '',
+  profilePicture: undefined
 }
 
 const defaultGoals: DailyGoals = {

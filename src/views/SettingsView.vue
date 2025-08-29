@@ -6,7 +6,8 @@
     <div class="profile-section">
       <div class="profile-card">
         <div class="profile-avatar">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+          <img v-if="userProfile.profilePicture" :src="userProfile.profilePicture" alt="Profile" class="profile-image" />
+          <svg v-else width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
             <path
               d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
           </svg>
@@ -383,6 +384,7 @@
         <div class="debug-actions">
           <button class="debug-button" @click="forceMigration">{{ $t('settings.forceMigration') }}</button>
           <button class="debug-button" @click="exportDebugData">{{ $t('settings.exportDebugData') }}</button>
+          <button class="debug-button danger" @click="disableDebugMode">🔧 Disable Debug Mode</button>
         </div>
       </div>
     </div>
@@ -416,7 +418,7 @@
 
         <div class="setting-item">
           <span class="setting-label">{{ $t('settings.build') }}</span>
-          <span class="setting-value">2024.08.001</span>
+          <span class="setting-value build-clickable" @click="handleBuildClick">2024.08.001</span>
         </div>
 
         <!--<button class="action-button" @click="checkUpdates">
@@ -473,7 +475,10 @@ import { MockDataManager } from '../utils/mockData'
 import { setLanguage, getCurrentLanguage } from '../i18n'
 import {
   getNotificationSettings,
-  setNotificationSettings as saveNotificationSettingsToStore
+  setNotificationSettings as saveNotificationSettingsToStore,
+  getDebugMode,
+  setDebugMode,
+  toggleDebugMode
 } from '../stores/preferencesStore'
 import { NotificationService, type NotificationSettings } from '../services/notifications'
 
@@ -537,7 +542,7 @@ const changeLanguage = (event: Event) => {
 }*/
 
 // Debug state
-const showDebugInfo = ref(true)
+const showDebugInfo = ref(false)
 const debugInfo = ref({
   migrationComplete: false,
   barcodeCache: { count: 0, totalSize: 0 },
@@ -546,8 +551,15 @@ const debugInfo = ref({
   localStorageItems: 0
 })
 
+// Easter egg for debug mode
+const buildClickCount = ref(0)
+const buildClickTimeout = ref<number | null>(null)
+
 // Check if debug mode should be enabled (e.g., if in development)
 onMounted(async () => {
+  // Load debug mode state
+  showDebugInfo.value = await getDebugMode()
+  
   if (showDebugInfo.value) {
     refreshDebugInfo()
   }
@@ -585,6 +597,45 @@ const displayProfile = computed(() => {
 
 function editProfile() {
   router.push('/profile/edit')
+}
+
+// Easter egg: Build number click handler
+function handleBuildClick() {
+  buildClickCount.value++
+  
+  // Clear previous timeout
+  if (buildClickTimeout.value) {
+    clearTimeout(buildClickTimeout.value)
+  }
+  
+  // Reset click count after 2 seconds
+  buildClickTimeout.value = setTimeout(() => {
+    buildClickCount.value = 0
+  }, 2000)
+  
+  // Enable debug mode after 5 rapid clicks
+  if (buildClickCount.value >= 5) {
+    buildClickCount.value = 0
+    if (buildClickTimeout.value) {
+      clearTimeout(buildClickTimeout.value)
+    }
+    
+    toggleDebugMode().then((enabled) => {
+      showDebugInfo.value = enabled
+      if (enabled) {
+        refreshDebugInfo()
+        alert('🐛 Debug mode activated!')
+      } else {
+        alert('🔧 Debug mode deactivated!')
+      }
+    })
+  }
+}
+
+async function disableDebugMode() {
+  await setDebugMode(false)
+  showDebugInfo.value = false
+  alert('🔧 Debug mode disabled!')
 }
 
 async function saveGoals() {
@@ -906,6 +957,14 @@ function handleTouchEnd(event: TouchEvent) {
   align-items: center;
   justify-content: center;
   color: white;
+  overflow: hidden;
+}
+
+.profile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 .profile-info {
@@ -1173,6 +1232,27 @@ function handleTouchEnd(event: TouchEvent) {
 .debug-button:hover {
   background: rgba(255, 255, 255, 0.15);
   border-color: rgba(255, 255, 255, 0.3);
+}
+
+.debug-button.danger {
+  background: rgba(244, 67, 54, 0.2);
+  color: #f44336;
+  border-color: rgba(244, 67, 54, 0.4);
+}
+
+.debug-button.danger:hover {
+  background: rgba(244, 67, 54, 0.3);
+  border-color: rgba(244, 67, 54, 0.6);
+}
+
+.build-clickable {
+  cursor: pointer;
+  transition: color 0.2s;
+  user-select: none;
+}
+
+.build-clickable:hover {
+  color: #4caf50;
 }
 
 .bottom-nav {

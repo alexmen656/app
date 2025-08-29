@@ -15,12 +15,19 @@
 
     <!-- Profile Image Section -->
     <div class="profile-section">
-      <div class="profile-avatar-large">
-        <svg width="80" height="80" viewBox="0 0 24 24" fill="currentColor">
+      <div class="profile-avatar-large" @click="selectProfilePicture">
+        <img v-if="form.profilePicture" :src="form.profilePicture" alt="Profile" class="profile-image" />
+        <svg v-else width="80" height="80" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
         </svg>
+        <div class="profile-avatar-overlay">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 15.2l3.2-2.7L12 9.8l-3.2 2.7L12 15.2zM9 2l-1.8 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.2L15 2H9zm3 15c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5z"/>
+          </svg>
+        </div>
       </div>
       <h2 class="profile-greeting">{{ $t('profile.editGreeting') }}</h2>
+      <p class="profile-hint">Tap to change profile picture</p>
     </div>
 
     <!-- Form -->
@@ -214,6 +221,7 @@ import {
   updateDailyGoals,
   calculateRecommendedMacros
 } from '../stores/userStore'
+import { ImageService } from '../services/imageService'
 
 const router = useRouter()
 const { t } = useI18n()
@@ -227,7 +235,8 @@ const form = ref({
   height: 170,
   weight: 70,
   activityLevel: 'moderate' as string,
-  goal: 'maintain' as string
+  goal: 'maintain' as string,
+  profilePicture: undefined as string | undefined
 })
 
 const showSuccessToast = ref(false)
@@ -242,7 +251,8 @@ onMounted(() => {
     height: userProfile.height || 170,
     weight: userProfile.weight || 70,
     activityLevel: userProfile.activityLevel || 'moderate',
-    goal: userProfile.goal || 'maintain'
+    goal: userProfile.goal || 'maintain',
+    profilePicture: userProfile.profilePicture
   }
 })
 
@@ -332,6 +342,18 @@ const calculatedGoals = computed(() => {
 
 function goBack() {
   router.back()
+}
+
+async function selectProfilePicture() {
+  try {
+    const imageData = await ImageService.showImageSelectionDialog()
+    if (imageData) {
+      form.value.profilePicture = imageData
+    }
+  } catch (error) {
+    console.error('Error selecting profile picture:', error)
+    alert(t('profile.imageError'))
+  }
 }
 
 async function saveProfile() {
@@ -429,6 +451,43 @@ async function saveProfile() {
   justify-content: center;
   margin: 0 auto 1rem;
   border: 2px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s;
+  overflow: hidden;
+}
+
+.profile-avatar-large:hover {
+  border-color: #007052;
+  transform: scale(1.02);
+}
+
+.profile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.profile-avatar-overlay {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: #007052;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(26, 29, 38, 1);
+}
+
+.profile-hint {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0.5rem 0 0 0;
+  font-style: italic;
 }
 
 .profile-greeting {
