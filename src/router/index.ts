@@ -12,6 +12,10 @@ import SettingsView from "../views/SettingsView.vue";
 import SourcesDisclaimerView from "../views/SourcesDisclaimerView.vue";
 import StreakView from "../views/StreakView.vue";
 import ProfileEditView from "../views/ProfileEditView.vue";
+import CaloriesDetailView from "../views/CaloriesDetailView.vue";
+import ProteinDetailView from "../views/ProteinDetailView.vue";
+import CarbsDetailView from "../views/CarbsDetailView.vue";
+import FatsDetailView from "../views/FatsDetailView.vue";
 import { isOnboardingCompleted } from "../stores/userStore";
 
 const routes = [
@@ -79,6 +83,26 @@ const routes = [
     path: "/profile/edit",
     name: "ProfileEdit",
     component: ProfileEditView,
+  },
+  {
+    path: "/calories",
+    name: "CaloriesDetail",
+    component: CaloriesDetailView,
+  },
+  {
+    path: "/protein",
+    name: "ProteinDetail",
+    component: ProteinDetailView,
+  },
+  {
+    path: "/carbs",
+    name: "CarbsDetail",
+    component: CarbsDetailView,
+  },
+  {
+    path: "/fats",
+    name: "FatsDetail",
+    component: FatsDetailView,
   },
 ];
 

@@ -18,7 +18,7 @@
             <router-link to="/yesterday"> <button class="date-btn">{{ $t('app.yesterday') }}</button> </router-link>
         </div>
 
-        <div class="main-card">
+        <div class="main-card" @click="goToCaloriesDetail">
             <div class="calories-section">
                 <h2 class="calories-number">{{ caloriesNumberDisplay }}</h2>
                 <p class="calories-label">{{ caloriesLabelDisplay }}</p>
@@ -41,7 +41,7 @@
 
         <!-- Macros Grid -->
         <div class="macros-grid">
-            <div class="macro-card protein">
+            <div class="macro-card protein" @click="goToProteinDetail">
                 <div class="macro-amount">{{ proteinNumberDisplay }}</div>
                 <div class="macro-label">{{ proteinLabelDisplay }}</div>
                 <div class="macro-progress">
@@ -62,7 +62,7 @@
                 </div>
             </div>
 
-            <div class="macro-card carbs">
+            <div class="macro-card carbs" @click="goToCarbsDetail">
                 <div class="macro-amount">{{ carbsNumberDisplay }}</div>
                 <div class="macro-label">{{ carbsLabelDisplay }}</div>
                 <div class="macro-progress">
@@ -83,7 +83,7 @@
                 </div>
             </div>
 
-            <div class="macro-card fats">
+            <div class="macro-card fats" @click="goToFatsDetail">
                 <div class="macro-amount">{{ fatsNumberDisplay }}</div>
                 <div class="macro-label">{{ fatsLabelDisplay }}</div>
                 <div class="macro-progress">
@@ -392,6 +392,22 @@ function goToStreak() {
     router.push('/streak')
 }
 
+function goToCaloriesDetail() {
+    router.push('/calories')
+}
+
+function goToProteinDetail() {
+    router.push('/protein')
+}
+
+function goToCarbsDetail() {
+    router.push('/carbs')
+}
+
+function goToFatsDetail() {
+    router.push('/fats')
+}
+
 const recentFoods = computed((): FoodItem[] => {
     return scanHistory.value.map((scan: ScanData): FoodItem | null => {
         if (scan.type === 'food') {
@@ -607,7 +623,19 @@ function handleTouchEnd(event: TouchEvent) {
     /*24px*/
     backdrop-filter: blur(10px);
     height: 140px;
+    /*cursor: pointer;
+    transition: transform 0.2s, background 0.2s;*/
 }
+
+/*.main-card:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.main-card:active {
+    transform: translateY(0px);
+    background: rgba(255, 255, 255, 0.12);
+}*/
 
 .calories-number {
     font-size: 48px;
@@ -656,7 +684,19 @@ function handleTouchEnd(event: TouchEvent) {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+   /* cursor: pointer;
+    transition: transform 0.2s, background 0.2s;*/
 }
+
+/*.macro-card:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.macro-card:active {
+    transform: translateY(0px);
+    background: rgba(255, 255, 255, 0.12);
+}*/
 
 .macro-amount {
     font-size: 20px;

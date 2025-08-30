@@ -417,5 +417,62 @@
       "title": "Kontakt",
       "content": "Bei Fragen zu den Datenquellen oder Bedenken zur Genauigkeit kontaktieren Sie uns:"
     }
+  },
+  "detail": {
+    "goal": "Ziel",
+    "remaining": "übrig",
+    "over": "über dem Ziel",
+    "statistics": "Statistiken",
+    "average": "Durchschnitt",
+    "maximum": "Maximum",
+    "minimum": "Minimum",
+    "daysOnTrack": "Tage im Zielbereich",
+    "week": "Woche",
+    "month": "Monat",
+    "year": "Jahr",
+    "calories": {
+      "title": "Kalorien",
+      "chartTitle": "Kalorienverlauf",
+      "aboutTitle": "Über Kalorien",
+      "aboutText": "Kalorien sind die Energieeinheit, die Ihr Körper aus der Nahrung gewinnt. Ein ausgewogenes Verhältnis zwischen aufgenommenen und verbrauchten Kalorien ist entscheidend für die Gewichtskontrolle.",
+      "tipsTitle": "Tipps für gesunde Kalorienzufuhr",
+      "tip1": "Essen Sie nährstoffreiche Lebensmittel anstatt leerer Kalorien",
+      "tip2": "Achten Sie auf Portionsgrößen und essen Sie bewusst",
+      "tip3": "Verteilen Sie Ihre Mahlzeiten gleichmäßig über den Tag",
+      "tip4": "Trinken Sie ausreichend Wasser, um Hunger von Durst zu unterscheiden"
+    },
+    "protein": {
+      "title": "Protein",
+      "chartTitle": "Proteinverlauf",
+      "aboutTitle": "Über Protein",
+      "aboutText": "Protein ist essentiell für den Muskelaufbau, die Reparatur von Gewebe und viele Körperfunktionen. Eine ausreichende Proteinzufuhr unterstützt den Stoffwechsel und hält Sie länger satt.",
+      "tipsTitle": "Tipps für optimale Proteinzufuhr",
+      "tip1": "Kombinieren Sie verschiedene Proteinquellen wie Fleisch, Fisch, Hülsenfrüchte",
+      "tip2": "Verteilen Sie Protein gleichmäßig über alle Mahlzeiten",
+      "tip3": "Wählen Sie magere Proteinquellen um Kalorien zu sparen",
+      "tip4": "Ergänzen Sie pflanzliche Proteine für eine vollständige Aminosäureversorgung"
+    },
+    "carbs": {
+      "title": "Kohlenhydrate",
+      "chartTitle": "Kohlenhydratverlauf",
+      "aboutTitle": "Über Kohlenhydrate",
+      "aboutText": "Kohlenhydrate sind die Hauptenergiequelle für Ihr Gehirn und Ihre Muskeln. Komplexe Kohlenhydrate liefern nachhaltige Energie und wichtige Nährstoffe.",
+      "tipsTitle": "Tipps für gesunde Kohlenhydrate",
+      "tip1": "Wählen Sie Vollkornprodukte anstatt raffinierte Kohlenhydrate",
+      "tip2": "Essen Sie viel Gemüse und Obst für natürliche Kohlenhydrate",
+      "tip3": "Vermeiden Sie zu viele zuckerhaltige Getränke und Snacks",
+      "tip4": "Timing ist wichtig - mehr Kohlenhydrate vor dem Training"
+    },
+    "fats": {
+      "title": "Fette",
+      "chartTitle": "Fettverlauf",
+      "aboutTitle": "Über Fette",
+      "aboutText": "Gesunde Fette sind wichtig für die Hormonproduktion, Vitaminaufnahme und Gehirnfunktion. Nicht alle Fette sind gleich - wählen Sie ungesättigte Fette.",
+      "tipsTitle": "Tipps für gesunde Fette",
+      "tip1": "Bevorzugen Sie ungesättigte Fette aus Nüssen, Samen und Fisch",
+      "tip2": "Begrenzen Sie gesättigte Fette aus verarbeiteten Lebensmitteln",
+      "tip3": "Verwenden Sie Olivenöl oder Avocadoöl zum Kochen",
+      "tip4": "Essen Sie regelmäßig fetten Fisch für Omega-3-Fettsäuren"
+    }
   }
 }
