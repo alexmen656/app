@@ -130,7 +130,13 @@
     "snacks": "Snacks",
     "notificationsActive": "Benachrichtigungen sind aktiviert. Du erhältst täglich Erinnerungen zu deinen ausgewählten Mahlzeiten.",
     "inactivityReminders": "Inaktivitäts-Erinnerungen",
-    "inactivityRemindersDesc": "Erinnerung nach 8 aktiven Stunden ohne Scan (22:00-7:00 werden nicht gezählt)"
+    "inactivityRemindersDesc": "Erinnerung nach 8 aktiven Stunden ohne Scan (22:00-7:00 werden nicht gezählt)",
+    "healthKit": "HealthKit",
+    "connectHealthKit": "Mit HealthKit verbinden",
+    "disconnectHealthKit": "HealthKit trennen",
+    "syncNow": "Jetzt synchronisieren",
+    "permissions": "Berechtigungen",
+    "lastSync": "Letzte Synchronisation"
   },
   "analytics": {
     "weeklyOverview": "Wochenübersicht",

@@ -130,7 +130,13 @@
     "snacks": "Snacks",
     "notificationsActive": "Notifications are active. You will receive daily reminders for your selected meals.",
     "inactivityReminders": "Inactivity Reminders",
-    "inactivityRemindersDesc": "Reminder after 8 active hours without scanning (22:00-7:00 not counted)"
+    "inactivityRemindersDesc": "Reminder after 8 active hours without scanning (22:00-7:00 not counted)",
+    "healthKit": "HealthKit",
+    "connectHealthKit": "Connect to HealthKit",
+    "disconnectHealthKit": "Disconnect HealthKit",
+    "syncNow": "Sync Now",
+    "permissions": "Permissions",
+    "lastSync": "Last Sync"
   },
   "analytics": {
     "weeklyOverview": "Weekly Overview",

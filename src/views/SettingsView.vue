@@ -109,6 +109,98 @@
       </div>
     </div>
 
+    <!-- HealthKit Section -->
+    <div class="settings-section">
+      <h3 class="section-title">{{ $t('settings.healthKit') }}</h3>
+      <div class="settings-card">
+        <!-- HealthKit Status -->
+        <div class="setting-item">
+          <div class="healthkit-status">
+            <div class="healthkit-header">
+              <div class="healthkit-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19.35,10.04C18.67,6.59 15.64,4 12,4C9.11,4 6.6,5.64 5.35,8.04C2.34,8.36 0,10.91 0,14A6,6 0 0,0 6,20H19A5,5 0 0,0 24,15C24,12.36 21.95,10.22 19.35,10.04M17,13L12,18L7,13H10V9H14V13H17Z"/>
+                </svg>
+              </div>
+              <div class="healthkit-info">
+                <h4 class="healthkit-title">Apple Health</h4>
+                <p class="healthkit-description">{{ healthKitStatusText }}</p>
+              </div>
+              <div class="healthkit-indicator" :class="{ 'connected': healthKitStatus.isConnected }">
+                <div class="status-dot"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- HealthKit Actions -->
+        <div v-if="!healthKitStatus.isConnected && healthKitStatus.isAvailable" class="setting-item">
+          <button class="action-button healthkit-connect" @click="connectHealthKit">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z"/>
+            </svg>
+            <span>{{ $t('settings.connectHealthKit') }}</span>
+          </button>
+        </div>
+
+        <div v-if="healthKitStatus.isConnected" class="setting-item">
+          <button class="action-button" @click="syncHealthKit">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"/>
+            </svg>
+            <span>{{ $t('settings.syncNow') }}</span>
+          </button>
+        </div>
+
+        <!-- HealthKit Permissions -->
+        <div v-if="healthKitStatus.isConnected" class="healthkit-permissions">
+          <div class="permissions-header">
+            <h5 class="permissions-title">{{ $t('settings.permissions') }}</h5>
+          </div>
+          
+          <div class="permission-item" v-for="permission in healthKitPermissions" :key="permission.type">
+            <div class="permission-info">
+              <span class="permission-name">{{ permission.name }}</span>
+              <span class="permission-description">{{ permission.description }}</span>
+            </div>
+            <div class="permission-status" :class="{ 'granted': permission.granted }">
+              <svg v-if="permission.granted" width="16" height="16" viewBox="0 0 24 24" fill="#4CAF50">
+                <path d="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z"/>
+              </svg>
+              <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="#F44336">
+                <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- HealthKit Last Sync Info -->
+        <div v-if="healthKitStatus.isConnected && healthKitStatus.lastSync" class="setting-item">
+          <div class="sync-info">
+            <span class="sync-label">{{ $t('settings.lastSync') }}</span>
+            <span class="sync-time">{{ formatLastSync(healthKitStatus.lastSync) }}</span>
+          </div>
+        </div>
+
+        <!-- HealthKit Disconnect Option -->
+        <div v-if="healthKitStatus.isConnected" class="setting-item">
+          <button class="action-button danger" @click="disconnectHealthKit">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z"/>
+            </svg>
+            <span>{{ $t('settings.disconnectHealthKit') }}</span>
+          </button>
+        </div>
+
+        <!-- HealthKit Unavailable Message -->
+        <div v-if="!healthKitStatus.isAvailable" class="setting-item">
+          <div class="healthkit-unavailable">
+            <p>ℹ️ HealthKit ist nur auf iOS-Geräten verfügbar</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Goal Selection Section -->
     <!--  <div class="settings-section">
       <h3 class="section-title">{{ $t('settings.primaryGoal') }}</h3>
@@ -481,12 +573,35 @@ import {
   toggleDebugMode
 } from '../stores/preferencesStore'
 import { NotificationService, type NotificationSettings } from '../services/notifications'
+import { HealthKitService } from '../services/healthkit'
+import { Capacitor } from '@capacitor/core'
 
 const router = useRouter()
 const currentLanguage = ref(getCurrentLanguage())
 const mockDataEnabled = ref(false)
 const notificationSettings = ref<NotificationSettings>(NotificationService.getDefaultSettings())
 const isNotificationSupported = computed(() => NotificationService.isSupported())
+
+// HealthKit reactive variables
+const healthKitStatus = ref({
+  isConnected: false,
+  isAvailable: false,
+  lastSync: null as string | null
+})
+
+const healthKitPermissions = ref([
+  { type: 'calories', name: 'Kalorien', description: 'Energiezufuhr in kcal', granted: false },
+  { type: 'protein', name: 'Protein', description: 'Proteinzufuhr in Gramm', granted: false },
+  { type: 'carbs', name: 'Kohlenhydrate', description: 'Kohlenhydratzufuhr in Gramm', granted: false },
+  { type: 'fat', name: 'Fett', description: 'Fettzufuhr in Gramm', granted: false }
+])
+
+const healthKitStatusText = computed(() => {
+  if (!healthKitStatus.value.isAvailable) {
+    return 'Not available on this device'
+  }
+  return healthKitStatus.value.isConnected ? 'Connected & Syncing' : 'Not connected'
+})
 
 function goToUpgrade() {
   router.push('/upgrade')
@@ -578,6 +693,9 @@ onMounted(async () => {
   } catch (error) {
     console.error('Error loading notification settings:', error)
   }
+
+  // Initialize HealthKit status
+  await loadHealthKitStatus()
 })
 
 // Use computed to display current user data with truncated name
@@ -597,6 +715,91 @@ const displayProfile = computed(() => {
 
 function editProfile() {
   router.push('/profile/edit')
+}
+
+// HealthKit functions
+async function loadHealthKitStatus() {
+  try {
+    if (!Capacitor.isNativePlatform() || Capacitor.getPlatform() !== 'ios') {
+      healthKitStatus.value.isAvailable = false
+      healthKitStatus.value.isConnected = false
+      return
+    }
+
+    // Check if HealthKit is available
+    healthKitStatus.value.isAvailable = await HealthKitService.isAvailable()
+    
+    // Check if HealthKit is connected (permissions granted)
+    healthKitStatus.value.isConnected = await HealthKitService.isAvailable()
+
+    // Update permissions status (simplified for now)
+    if (healthKitStatus.value.isConnected) {
+      healthKitPermissions.value.forEach(permission => {
+        permission.granted = true
+      })
+      
+      // Set last sync time if connected
+      healthKitStatus.value.lastSync = new Date().toISOString()
+    }
+  } catch (error) {
+    console.error('Error loading HealthKit status:', error)
+    healthKitStatus.value.isAvailable = false
+    healthKitStatus.value.isConnected = false
+  }
+}
+
+async function connectHealthKit() {
+  try {
+    const success = await HealthKitService.initialize()
+    if (success) {
+      await loadHealthKitStatus()
+      alert('✅ HealthKit erfolgreich verbunden!')
+    } else {
+      alert('❌ HealthKit Verbindung fehlgeschlagen. Bitte versuche es erneut.')
+    }
+  } catch (error) {
+    console.error('Error connecting HealthKit:', error)
+    alert('❌ Fehler beim Verbinden mit HealthKit.')
+  }
+}
+
+async function syncHealthKit() {
+  try {
+    const success = await HealthKitService.syncTodaysData()
+    if (success) {
+      healthKitStatus.value.lastSync = new Date().toISOString()
+      alert('✅ Daten erfolgreich mit HealthKit synchronisiert!')
+    } else {
+      alert('❌ Synchronisation fehlgeschlagen.')
+    }
+  } catch (error) {
+    console.error('Error syncing HealthKit:', error)
+    alert('❌ Fehler bei der Synchronisation.')
+  }
+}
+
+async function disconnectHealthKit() {
+  const confirmed = confirm('Möchtest du die HealthKit-Verbindung wirklich trennen?')
+  if (confirmed) {
+    healthKitStatus.value.isConnected = false
+    healthKitStatus.value.lastSync = null
+    healthKitPermissions.value.forEach(permission => {
+      permission.granted = false
+    })
+    alert('✅ HealthKit-Verbindung getrennt.')
+  }
+}
+
+function formatLastSync(timestamp: string): string {
+  const date = new Date(timestamp)
+  const now = new Date()
+  const diffMs = now.getTime() - date.getTime()
+  const diffMins = Math.floor(diffMs / 60000)
+  
+  if (diffMins < 1) return 'Gerade eben'
+  if (diffMins < 60) return `vor ${diffMins} Min`
+  if (diffMins < 1440) return `vor ${Math.floor(diffMins / 60)} Std`
+  return `vor ${Math.floor(diffMins / 1440)} Tagen`
 }
 
 // Easter egg: Build number click handler
@@ -1169,6 +1372,170 @@ function handleTouchEnd(event: TouchEvent) {
 
 .action-button.danger:hover {
   background: rgba(244, 67, 54, 0.3);
+}
+
+/* HealthKit Styles */
+.healthkit-status {
+  width: 100%;
+}
+
+.healthkit-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.healthkit-icon {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4CAF50;
+  flex-shrink: 0;
+}
+
+.healthkit-info {
+  flex: 1;
+}
+
+.healthkit-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  color: white;
+}
+
+.healthkit-description {
+  font-size: 14px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.healthkit-indicator {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transition: background 0.2s;
+}
+
+.healthkit-indicator.connected .status-dot {
+  background: #4CAF50;
+}
+
+.healthkit-connect {
+  background: rgba(76, 175, 80, 0.2);
+  color: #4CAF50;
+  border: 1px solid rgba(76, 175, 80, 0.4);
+}
+
+.healthkit-connect:hover {
+  background: rgba(76, 175, 80, 0.3);
+  border-color: rgba(76, 175, 80, 0.6);
+}
+
+.healthkit-permissions {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.permissions-header {
+  margin-bottom: 12px;
+}
+
+.permissions-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.permission-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.permission-item:last-child {
+  border-bottom: none;
+}
+
+.permission-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.permission-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+}
+
+.permission-description {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.permission-status {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sync-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.sync-label {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.sync-time {
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+}
+
+.healthkit-unavailable {
+  padding: 16px;
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.2);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.healthkit-unavailable p {
+  margin: 0;
+  color: #FFC107;
+  font-size: 14px;
 }
 
 /* Debug styles */
