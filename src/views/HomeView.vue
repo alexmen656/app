@@ -190,11 +190,11 @@
             </router-link>
         </nav>
 
-        <router-link to="/native-scan" class="add-button">
+        <div @click="openNativeScanner" class="add-button">
             <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
                 <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
             </svg>
-        </router-link>
+        </div>
     </div>
 </template>
 
@@ -209,9 +209,27 @@ import { HealthKitService } from '../services/healthkit'
 import { InAppReview } from '@capacitor-community/in-app-review';
 import { shouldShowReviewPrompt, setLastReviewPrompt, getNotificationSettings } from '../stores/preferencesStore'
 import { NotificationService } from '../services/notifications'
+import { useBarcodeScanner } from '../composables/useBarcodeScanner'
 
 const router = useRouter()
 const { t } = useI18n()
+const { startScanning } = useBarcodeScanner()
+
+// Open native scanner directly
+async function openNativeScanner() {
+    try {
+        await startScanning({
+            mode: 'barcode', // Default to barcode mode
+            timeout: 0, // No timeout
+            showControls: true
+        })
+        
+        // Refresh scan history when we return from scanner
+        loadScanHistory()
+    } catch (error) {
+        console.error('Failed to open scanner:', error)
+    }
+}
 
 function onScanHistoryUpdated() {
     loadScanHistory()

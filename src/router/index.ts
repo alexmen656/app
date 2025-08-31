@@ -6,7 +6,6 @@ import PaywallView from "../views/PaywallView.vue";
 import UpgradeView from "../views/UpgradeView.vue";
 import CouponView from "../views/CouponView.vue";
 import ScanView from "../views/ScanView.vue";
-import NativeScanView from "../views/NativeScanView.vue";
 import NutritionView from "../views/NutritionView.vue";
 import AnalyticsView from "../views/AnalyticsView.vue";
 import SettingsView from "../views/SettingsView.vue";
@@ -55,11 +54,6 @@ const routes = [
     path: "/scan",
     name: "Scan",
     component: ScanView,
-  },
-  {
-    path: "/native-scan",
-    name: "NativeScan",
-    component: NativeScanView,
   },
   {
     path: "/analytics",
