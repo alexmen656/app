@@ -326,7 +326,7 @@ onMounted(() => {
     background: linear-gradient(135deg, #1e1e2e 0%, #2a2d37 100%);
     color: white;
     overflow-y: auto;
-    padding-top: max(44px, env(safe-area-inset-top, 44px));
+    margin-top: max(44px, env(safe-area-inset-top, 44px));
     padding-bottom: max(20px, env(safe-area-inset-bottom, 20px));
 }
 
@@ -336,7 +336,7 @@ onMounted(() => {
     justify-content: space-between;
     padding: 16px 20px;
     position: sticky;
-    top: max(44px, env(safe-area-inset-top, 44px));
+    top: 0;
     background: rgba(30, 30, 46, 0.95);
     backdrop-filter: blur(10px);
     z-index: 10;
