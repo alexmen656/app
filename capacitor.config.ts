@@ -8,12 +8,7 @@ const config: CapacitorConfig = {
     androidScheme: 'https'
   },
   plugins: {
-    Camera: {
-      permissions: {
-        camera: "Camera access is required to scan food items."
-      }
-    },
-    BarcodeScanner: {
+    KaloriqBarcodeScanner: {
       permissions: {
         camera: "Camera access is required to scan barcodes."
       }

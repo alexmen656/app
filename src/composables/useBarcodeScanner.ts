@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { Camera } from 'kaloriq-barcode-scanner'
+import { KaloriqBarcodeScanner } from 'kaloriq-barcode-scanner'
 import { useRouter } from 'vue-router'
 
 export interface ScanResult {
@@ -24,7 +24,7 @@ export function useBarcodeScanner() {
   // Check camera permission
   const checkPermission = async (): Promise<boolean> => {
     try {
-      const result = await Camera.checkCameraPermission()
+      const result = await KaloriqBarcodeScanner.checkCameraPermission()
       hasPermission.value = result.granted
       return result.granted
     } catch (error) {
@@ -36,7 +36,7 @@ export function useBarcodeScanner() {
   // Request camera permission
   const requestPermission = async (): Promise<boolean> => {
     try {
-      const result = await Camera.requestCameraPermission()
+      const result = await KaloriqBarcodeScanner.requestCameraPermission()
       hasPermission.value = result.granted
       return result.granted
     } catch (error) {
@@ -66,11 +66,11 @@ export function useBarcodeScanner() {
       currentMode.value = options.mode || 'barcode'
 
       // Set up event listeners
-      Camera.addListener('barcodeScanned', handleBarcodeScanned)
-      Camera.addListener('photoTaken', handlePhotoTaken)
+      KaloriqBarcodeScanner.addListener('barcodeScanned', handleBarcodeScanned)
+      KaloriqBarcodeScanner.addListener('photoTaken', handlePhotoTaken)
 
       // Start the native scanner
-      await Camera.startScanning({
+      await KaloriqBarcodeScanner.startScanning({
         mode: options.mode || 'barcode',
         camera: options.camera || 'back',
         showControls: options.showControls ?? true,
@@ -96,10 +96,10 @@ export function useBarcodeScanner() {
   const stopScanning = async () => {
     try {
       isScanning.value = false
-      await Camera.stopScanning()
+      await KaloriqBarcodeScanner.stopScanning()
       
       // Remove event listeners
-      Camera.removeAllListeners()
+      KaloriqBarcodeScanner.removeAllListeners()
     } catch (error) {
       console.error('Error stopping scanner:', error)
     }
@@ -205,7 +205,7 @@ export function useBarcodeScanner() {
   // Camera controls
   const switchCamera = async () => {
     try {
-      await Camera.switchCamera()
+      await KaloriqBarcodeScanner.switchCamera()
     } catch (error) {
       console.error('Error switching camera:', error)
     }
@@ -213,7 +213,7 @@ export function useBarcodeScanner() {
 
   const toggleFlash = async (): Promise<boolean> => {
     try {
-      const result = await Camera.toggleFlash()
+      const result = await KaloriqBarcodeScanner.toggleFlash()
       return result.enabled
     } catch (error) {
       console.error('Error toggling flash:', error)
@@ -223,7 +223,7 @@ export function useBarcodeScanner() {
 
   const takePhoto = async () => {
     try {
-      await Camera.takePhoto()
+      await KaloriqBarcodeScanner.takePhoto()
       // Result will be handled by the photoTaken event listener
     } catch (error) {
       console.error('Error taking photo:', error)
