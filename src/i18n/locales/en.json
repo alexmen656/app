@@ -44,6 +44,8 @@
     "requesting": "Requesting camera permission...",
     "scanning": "Scanning...",
     "start": "Start Scanning",
+    "analyzingFood": "Analyzing food...",
+    "pleaseWait": "Please wait while we analyze your photo",
     "permission": {
       "title": "Camera Access Required",
       "description": "To scan barcodes and food items, Kaloriq needs access to your camera.",

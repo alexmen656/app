@@ -20,6 +20,7 @@ export function useBarcodeScanner() {
   const isScanning = ref(false)
   const hasPermission = ref(false)
   const currentMode = ref<'barcode' | 'photo'>('barcode')
+  const isProcessingPhoto = ref(false) // New loading state for photo processing
 
   // Check camera permission
   const checkPermission = async (): Promise<boolean> => {
@@ -135,15 +136,15 @@ export function useBarcodeScanner() {
     console.log('🔥 Photo taken event received:', { width: result.width, height: result.height, base64Length: result.base64?.length })
     
     isScanning.value = false
+    isProcessingPhoto.value = true // Start processing state
     
     try {
-      // Convert base64 to data URL if it's not already
-      const base64Image = result.base64.startsWith('data:') ? result.base64 : `data:image/jpeg;base64,${result.base64}`
-      
       // Analyze the photo for food content
       console.log('🔥 Starting food analysis...')
-      const analyzedFood = await analyzeFoodPhoto(base64Image)
+      const analyzedFood = await analyzeFoodPhoto(result.base64)
       console.log('🔥 Food analysis completed:', analyzedFood)
+      
+      isProcessingPhoto.value = false // End processing state
       
       // Navigate to nutrition view with food data
       await router.push({
@@ -155,6 +156,8 @@ export function useBarcodeScanner() {
       })
     } catch (error) {
       console.error('🔥 Food analysis failed:', error)
+      
+      isProcessingPhoto.value = false // End processing state
       
       // Navigate anyway with basic data
       await router.push({
@@ -277,6 +280,7 @@ export function useBarcodeScanner() {
     isScanning,
     hasPermission,
     currentMode,
+    isProcessingPhoto,
     
     // Methods
     checkPermission,

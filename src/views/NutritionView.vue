@@ -636,18 +636,9 @@ onMounted(() => {
 });
 
 const backgroundStyle = computed(() => {
-    const img = route.query.photo || (product.value && product.value.image);
-    return img
-        ? {
-            backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${img}')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            width: '100%',
-            height: '340px',
-            position: 'relative',
-            zIndex: 1,
-        }
-        : {
+    const rawImg = route.query.photo || (product.value && product.value.image);
+    if (!rawImg) {
+        return {
             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
             width: '100%',
             height: '340px',
@@ -656,6 +647,22 @@ const backgroundStyle = computed(() => {
             position: 'relative',
             zIndex: 1,
         };
+    }
+    
+    // Ensure image has proper data URI prefix
+    const img = typeof rawImg === 'string' && rawImg.startsWith('data:') 
+        ? rawImg 
+        : `data:image/jpeg;base64,${rawImg}`;
+        
+    return {
+        backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${img}')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        width: '100%',
+        height: '340px',
+        position: 'relative',
+        zIndex: 1,
+    };
 });
 
 const hasAdditionalNutrition = computed(() => {
@@ -699,7 +706,14 @@ async function saveAndReturn() {
             type: product.value.type === 'food' ? 'food' : 'barcode',
             timestamp: new Date().toISOString(),
             time: time,
-            image: route.query.photo || product.value.image,
+            image: (() => {
+                const imageData = route.query.photo || product.value.image;
+                if (!imageData) return imageData;
+                // Ensure image has proper data URI prefix
+                return typeof imageData === 'string' && imageData.startsWith('data:') 
+                    ? imageData 
+                    : `data:image/jpeg;base64,${imageData}`;
+            })(),
             data: product.value.type === 'food' ? {
                 // Food scan format
                 total: {
