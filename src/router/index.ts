@@ -16,6 +16,7 @@ import CaloriesDetailView from "../views/CaloriesDetailView.vue";
 import ProteinDetailView from "../views/ProteinDetailView.vue";
 import CarbsDetailView from "../views/CarbsDetailView.vue";
 import FatsDetailView from "../views/FatsDetailView.vue";
+import AllScansView from "../views/AllScansView.vue";
 import { isOnboardingCompleted } from "../stores/userStore";
 
 const routes = [
@@ -103,6 +104,11 @@ const routes = [
     path: "/fats",
     name: "FatsDetail",
     component: FatsDetailView,
+  },
+  {
+    path: "/all-scans",
+    name: "AllScans",
+    component: AllScansView,
   },
 ];
 

@@ -155,6 +155,16 @@
                 </div>
                 <div class="food-time">{{ item.time }}</div>
             </div>
+
+            <!-- Show All Scans Link -->
+            <div v-if="recentFoods.length > 5" class="show-all-link">
+                <router-link to="/all-scans" class="show-all-btn">
+                    {{ $t('home.showAllScans') }}
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                    </svg>
+                </router-link>
+            </div>
         </div>
 
         <nav class="bottom-nav">
@@ -853,6 +863,36 @@ function handleTouchEnd(event: TouchEvent) {
 .food-time {
     font-size: 14px;
     opacity: 0.6;
+}
+
+.show-all-link {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.show-all-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    text-decoration: none;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+    transition: all 0.2s;
+}
+
+.show-all-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+.show-all-btn:active {
+    transform: translateY(0px);
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .bottom-nav {

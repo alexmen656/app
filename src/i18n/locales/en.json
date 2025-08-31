@@ -22,7 +22,8 @@
     "noScansYet": "No scans yet",
     "noScansSubtitle": "Use the scan button to scan your first meal!",
     "scannedFood": "Scanned food",
-    "unknownProduct": "Unknown product"
+    "unknownProduct": "Unknown product",
+    "showAllScans": "Show all scans"
   },
   "yesterday": {
     "title": "Yesterday's meals",
@@ -474,5 +475,26 @@
       "tip3": "Use olive oil or avocado oil for cooking",
       "tip4": "Eat fatty fish regularly for omega-3 fatty acids"
     }
+  },
+  "allScans": {
+    "title": "All Scans",
+    "searchPlaceholder": "Search for foods...",
+    "all": "All",
+    "foodScans": "Food",
+    "barcodeScans": "Barcodes",
+    "sortBy": "Sort by",
+    "newest": "Newest",
+    "oldest": "Oldest", 
+    "name": "Name",
+    "calories": "Calories",
+    "results": "results",
+    "clearFilters": "Clear filters",
+    "noResults": "No results found",
+    "noResultsSubtitle": "Try different search terms or filters",
+    "foodScan": "Food",
+    "barcodeScan": "Barcode",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "loadMore": "Load more"
   }
 }

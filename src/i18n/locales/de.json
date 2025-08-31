@@ -22,7 +22,8 @@
     "noScansYet": "Noch keine Scans vorhanden",
     "noScansSubtitle": "Nutzen Sie den Scan-Button um Ihr erstes Essen zu scannen!",
     "scannedFood": "Gescanntes Essen",
-    "unknownProduct": "Unbekanntes Produkt"
+    "unknownProduct": "Unbekanntes Produkt",
+    "showAllScans": "Alle Scans anzeigen"
   },
   "yesterday": {
     "title": "Gestern gegessen",
@@ -474,5 +475,26 @@
       "tip3": "Verwenden Sie Olivenöl oder Avocadoöl zum Kochen",
       "tip4": "Essen Sie regelmäßig fetten Fisch für Omega-3-Fettsäuren"
     }
+  },
+  "allScans": {
+    "title": "Alle Scans",
+    "searchPlaceholder": "Nach Lebensmitteln suchen...",
+    "all": "Alle",
+    "foodScans": "Essen",
+    "barcodeScans": "Barcodes",
+    "sortBy": "Sortieren nach",
+    "newest": "Neueste",
+    "oldest": "Älteste",
+    "name": "Name",
+    "calories": "Kalorien",
+    "results": "Ergebnisse",
+    "clearFilters": "Filter löschen",
+    "noResults": "Keine Ergebnisse gefunden",
+    "noResultsSubtitle": "Versuchen Sie andere Suchbegriffe oder Filter",
+    "foodScan": "Essen",
+    "barcodeScan": "Barcode",
+    "today": "Heute",
+    "yesterday": "Gestern",
+    "loadMore": "Mehr laden"
   }
 }
