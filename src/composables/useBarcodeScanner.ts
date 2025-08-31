@@ -68,6 +68,14 @@ export function useBarcodeScanner() {
       // Set up event listeners
       KaloriqBarcodeScanner.addListener('barcodeScanned', handleBarcodeScanned)
       KaloriqBarcodeScanner.addListener('photoTaken', handlePhotoTaken)
+      
+      // Add food analysis listener using generic approach
+      try {
+        (KaloriqBarcodeScanner as any).addListener('foodAnalyzed', handleFoodAnalyzed)
+        console.log('Food analysis listener added')
+      } catch (e) {
+        console.log('Food analysis listener not available (web fallback)')
+      }
 
       // Start the native scanner
       await KaloriqBarcodeScanner.startScanning({
@@ -124,13 +132,18 @@ export function useBarcodeScanner() {
 
   // Handle photo result
   const handlePhotoTaken = async (result: PhotoResult) => {
-    console.log('Photo taken:', { width: result.width, height: result.height })
+    console.log('🔥 Photo taken event received:', { width: result.width, height: result.height, base64Length: result.base64?.length })
     
     isScanning.value = false
     
     try {
+      // Convert base64 to data URL if it's not already
+      const base64Image = result.base64.startsWith('data:') ? result.base64 : `data:image/jpeg;base64,${result.base64}`
+      
       // Analyze the photo for food content
-      const analyzedFood = await analyzeFoodPhoto(result.base64)
+      console.log('🔥 Starting food analysis...')
+      const analyzedFood = await analyzeFoodPhoto(base64Image)
+      console.log('🔥 Food analysis completed:', analyzedFood)
       
       // Navigate to nutrition view with food data
       await router.push({
@@ -141,13 +154,14 @@ export function useBarcodeScanner() {
         }
       })
     } catch (error) {
-      console.error('Food analysis failed:', error)
+      console.error('🔥 Food analysis failed:', error)
       
       // Navigate anyway with basic data
       await router.push({
         name: 'Nutrition', 
         query: {
           foodData: JSON.stringify({
+            name: 'Scanned Food',
             foods: [{ name: 'Scanned Food', calories: 0, protein: 0, carbs: 0, fat: 0 }],
             total: { calories: 0, protein: 0, carbs: 0, fat: 0 },
             confidence: 'low',
@@ -160,28 +174,56 @@ export function useBarcodeScanner() {
     }
   }
 
+  // Handle food analysis result (NEW - from iOS native analysis)
+  const handleFoodAnalyzed = async (result: any) => {
+    console.log('Food analyzed natively:', result)
+    
+    isScanning.value = false
+    
+    // Navigate to nutrition view with pre-analyzed food data
+    await router.push({
+      name: 'Nutrition',
+      query: {
+        foodData: JSON.stringify(result.foodData),
+        photo: result.photo
+      }
+    })
+  }
+
   // Analyze food photo using KaloriQ API
   const analyzeFoodPhoto = async (base64Image: string) => {
     try {
+      console.log('🔥 analyzeFoodPhoto called with base64 length:', base64Image.length)
+      
+      // Ensure base64Image is a data URL
+      const dataUrl = base64Image.startsWith('data:') ? base64Image : `data:image/jpeg;base64,${base64Image}`
+      
       // Convert base64 to blob
-      const response = await fetch(base64Image)
+      const response = await fetch(dataUrl)
       const blob = await response.blob()
+      
+      console.log('🔥 Blob created, size:', blob.size)
 
       // Create form data
       const formData = new FormData()
       formData.append('image', blob, 'photo.jpg')
 
+      console.log('🔥 Sending request to KaloriQ API...')
+      
       // Send to KaloriQ Food Analyze API
       const apiResponse = await fetch('https://kaloriq-api.vercel.app/api/food/analyze', {
         method: 'POST',
         body: formData
       })
 
+      console.log('🔥 API Response status:', apiResponse.status)
+
       if (!apiResponse.ok) {
         throw new Error(`API error: ${apiResponse.status}`)
       }
 
       const data = await apiResponse.json()
+      console.log('🔥 API Response data:', data)
 
       if (!data.success || !data.data) {
         throw new Error('Food analysis failed')
@@ -197,7 +239,7 @@ export function useBarcodeScanner() {
       }
 
     } catch (error) {
-      console.error('Food analysis error:', error)
+      console.error('🔥 Food analysis error:', error)
       throw error
     }
   }
