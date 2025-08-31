@@ -4,7 +4,7 @@
         <header class="header">
             <button class="back-button" @click="goBack">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
                 </svg>
             </button>
             <h1 class="title">{{ $t('detail.calories.title') }}</h1>
@@ -13,6 +13,20 @@
 
         <!-- Current Value Card -->
         <div class="current-value-card">
+             <div class="progress-ring-large">
+                <svg class="progress-svg-large" width="120" height="120" viewBox="0 0 120 120">
+                    <circle cx="60" cy="60" r="50" stroke="#2a2d37" stroke-width="8" fill="none" />
+                    <circle cx="60" cy="60" r="50" stroke="#ff6b35" stroke-width="8" fill="none"
+                        stroke-dasharray="314.16" :stroke-dashoffset="314.16 - (314.16 * progress)"
+                        stroke-linecap="round" class="progress-circle-large" transform="rotate(-90 60 60)" />
+                </svg>
+                <div class="flame-icon-large">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="#ff6b35">
+                        <path
+                            d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z" />
+                    </svg>
+                </div>
+            </div>
             <div class="value-section">
                 <div class="current-value">{{ currentValue }}</div>
                 <div class="value-unit">kcal</div>
@@ -25,30 +39,12 @@
                     <span v-else>{{ difference }} kcal {{ $t('detail.remaining') }}</span>
                 </div>
             </div>
-            <div class="progress-ring-large">
-                <svg class="progress-svg-large" width="120" height="120" viewBox="0 0 120 120">
-                    <circle cx="60" cy="60" r="50" stroke="#2a2d37" stroke-width="8" fill="none" />
-                    <circle cx="60" cy="60" r="50" stroke="#ff6b35" stroke-width="8" fill="none" 
-                        stroke-dasharray="314.16" :stroke-dashoffset="314.16 - (314.16 * progress)" 
-                        stroke-linecap="round" class="progress-circle-large" transform="rotate(-90 60 60)" />
-                </svg>
-                <div class="flame-icon-large">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="#ff6b35">
-                        <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z" />
-                    </svg>
-                </div>
-            </div>
         </div>
 
         <!-- Period Toggle -->
         <div class="period-toggle">
-            <button 
-                v-for="period in periods" 
-                :key="period.value"
-                class="period-btn" 
-                :class="{ active: selectedPeriod === period.value }"
-                @click="selectedPeriod = period.value"
-            >
+            <button v-for="period in periods" :key="period.value" class="period-btn"
+                :class="{ active: selectedPeriod === period.value }" @click="selectedPeriod = period.value">
                 {{ period.label }}
             </button>
         </div>
@@ -60,12 +56,7 @@
                 <div class="chart-period">{{ selectedPeriodLabel }}</div>
             </div>
             <div class="chart-container">
-                <apexchart
-                    type="bar"
-                    height="300"
-                    :options="chartOptions"
-                    :series="chartSeries"
-                />
+                <apexchart type="bar" height="300" :options="chartOptions" :series="chartSeries" />
             </div>
         </div>
 
@@ -96,7 +87,7 @@
         <div class="info-section">
             <h3>{{ $t('detail.calories.aboutTitle') }}</h3>
             <p class="info-text">{{ $t('detail.calories.aboutText') }}</p>
-            
+
             <div class="info-tips">
                 <h4>{{ $t('detail.calories.tipsTitle') }}</h4>
                 <ul class="tips-list">
@@ -198,10 +189,7 @@ const chartOptions = computed(() => ({
         axisTicks: { show: false }
     },
     yaxis: {
-        labels: { 
-            style: { colors: 'rgba(255, 255, 255, 0.7)', fontSize: '12px' },
-            formatter: (value: number) => `${value}`
-        }
+        labels: { show: false }
     },
     grid: { borderColor: 'rgba(255, 255, 255, 0.1)', strokeDashArray: 3 },
     tooltip: {
@@ -269,7 +257,7 @@ async function loadData() {
     try {
         const history = await ScanHistory.get()
         const today = new Date()
-        
+
         // Calculate current day's calories
         const todayStr = today.toISOString().split('T')[0]
         const todaysScans = history.filter(scan => {
@@ -340,7 +328,7 @@ watch(selectedPeriod, () => {
     background: linear-gradient(135deg, #1e1e2e 0%, #2a2d37 100%);
     color: white;
     overflow-y: auto;
-    padding-top: max(44px, env(safe-area-inset-top, 44px));
+    margin-top: max(44px, env(safe-area-inset-top, 44px));
     padding-bottom: max(20px, env(safe-area-inset-bottom, 20px));
 }
 
@@ -348,10 +336,10 @@ watch(selectedPeriod, () => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 20px;
+    padding: 4px 20px;
     position: sticky;
-    top: max(44px, env(safe-area-inset-top, 44px));
-    background: rgba(30, 30, 46, 0.95);
+    top: 0;
+    background: rgba(30, 30, 46, 1);
     backdrop-filter: blur(10px);
     z-index: 10;
 }
@@ -506,7 +494,7 @@ watch(selectedPeriod, () => {
 .chart-container {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 16px;
-    padding: 20px;
+    /*padding: 20px;*/
     backdrop-filter: blur(10px);
 }
 

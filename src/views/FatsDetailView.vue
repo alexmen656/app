@@ -4,7 +4,7 @@
         <header class="header">
             <button class="back-button" @click="goBack">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
                 </svg>
             </button>
             <h1 class="title">{{ $t('detail.fats.title') }}</h1>
@@ -13,6 +13,20 @@
 
         <!-- Current Value Card -->
         <div class="current-value-card">
+            <div class="progress-ring-large">
+                <svg class="progress-svg-large" width="120" height="120" viewBox="0 0 120 120">
+                    <circle cx="60" cy="60" r="50" stroke="#2a2d37" stroke-width="8" fill="none" />
+                    <circle cx="60" cy="60" r="50" stroke="#42a5f5" stroke-width="8" fill="none"
+                        stroke-dasharray="314.16" :stroke-dashoffset="314.16 - (314.16 * progress)"
+                        stroke-linecap="round" class="progress-circle-large" transform="rotate(-90 60 60)" />
+                </svg>
+                <div class="fats-icon-large">
+                    <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+                        <path fill="#42a5f5"
+                            d="M240 64C240 46.3 254.3 32 272 32L368 32C385.7 32 400 46.3 400 64C400 81.7 385.7 96 368 96L368 199.3C432.9 219.7 480 280.3 480 352L480 544C480 579.3 451.3 608 416 608L224 608C188.7 608 160 579.3 160 544L160 352C160 280.4 207.1 219.7 272 199.3L272 96C254.3 96 240 81.7 240 64zM320 480C355.3 480 384 447.6 384 416C384 394.8 355.1 351.5 336.1 325.4C328 314.3 311.9 314.3 303.8 325.4C284.8 351.5 255.9 394.8 255.9 416C255.9 447.6 284.6 480 319.9 480z" />
+                    </svg>
+                </div>
+            </div>
             <div class="value-section">
                 <div class="current-value">{{ currentValue }}</div>
                 <div class="value-unit">g</div>
@@ -25,30 +39,12 @@
                     <span v-else>{{ difference }}g {{ $t('detail.remaining') }}</span>
                 </div>
             </div>
-            <div class="progress-ring-large">
-                <svg class="progress-svg-large" width="120" height="120" viewBox="0 0 120 120">
-                    <circle cx="60" cy="60" r="50" stroke="#2a2d37" stroke-width="8" fill="none" />
-                    <circle cx="60" cy="60" r="50" stroke="#42a5f5" stroke-width="8" fill="none" 
-                        stroke-dasharray="314.16" :stroke-dashoffset="314.16 - (314.16 * progress)" 
-                        stroke-linecap="round" class="progress-circle-large" transform="rotate(-90 60 60)" />
-                </svg>
-                <div class="fats-icon-large">
-                    <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
-                        <path fill="#42a5f5" d="M240 64C240 46.3 254.3 32 272 32L368 32C385.7 32 400 46.3 400 64C400 81.7 385.7 96 368 96L368 199.3C432.9 219.7 480 280.3 480 352L480 544C480 579.3 451.3 608 416 608L224 608C188.7 608 160 579.3 160 544L160 352C160 280.4 207.1 219.7 272 199.3L272 96C254.3 96 240 81.7 240 64zM320 480C355.3 480 384 447.6 384 416C384 394.8 355.1 351.5 336.1 325.4C328 314.3 311.9 314.3 303.8 325.4C284.8 351.5 255.9 394.8 255.9 416C255.9 447.6 284.6 480 319.9 480z" />
-                    </svg>
-                </div>
-            </div>
         </div>
 
         <!-- Period Toggle -->
         <div class="period-toggle">
-            <button 
-                v-for="period in periods" 
-                :key="period.value"
-                class="period-btn" 
-                :class="{ active: selectedPeriod === period.value }"
-                @click="selectedPeriod = period.value"
-            >
+            <button v-for="period in periods" :key="period.value" class="period-btn"
+                :class="{ active: selectedPeriod === period.value }" @click="selectedPeriod = period.value">
                 {{ period.label }}
             </button>
         </div>
@@ -60,12 +56,7 @@
                 <div class="chart-period">{{ selectedPeriodLabel }}</div>
             </div>
             <div class="chart-container">
-                <apexchart
-                    type="bar"
-                    height="300"
-                    :options="chartOptions"
-                    :series="chartSeries"
-                />
+                <apexchart type="bar" height="300" :options="chartOptions" :series="chartSeries" />
             </div>
         </div>
 
@@ -96,7 +87,7 @@
         <div class="info-section">
             <h3>{{ $t('detail.fats.aboutTitle') }}</h3>
             <p class="info-text">{{ $t('detail.fats.aboutText') }}</p>
-            
+
             <div class="info-tips">
                 <h4>{{ $t('detail.fats.tipsTitle') }}</h4>
                 <ul class="tips-list">
@@ -197,11 +188,8 @@ const chartOptions = computed(() => ({
         axisBorder: { show: false },
         axisTicks: { show: false }
     },
-    yaxis: {
-        labels: { 
-            style: { colors: 'rgba(255, 255, 255, 0.7)', fontSize: '12px' },
-            formatter: (value: number) => `${value}g`
-        }
+   yaxis: {
+        labels: { show: false }
     },
     grid: { borderColor: 'rgba(255, 255, 255, 0.1)', strokeDashArray: 3 },
     tooltip: {
@@ -269,7 +257,7 @@ async function loadData() {
     try {
         const history = await ScanHistory.get()
         const today = new Date()
-        
+
         // Calculate current day's fats
         const todayStr = today.toISOString().split('T')[0]
         const todaysScans = history.filter(scan => {
@@ -340,7 +328,7 @@ watch(selectedPeriod, () => {
     background: linear-gradient(135deg, #1e1e2e 0%, #2a2d37 100%);
     color: white;
     overflow-y: auto;
-    padding-top: max(44px, env(safe-area-inset-top, 44px));
+    margin-top: max(44px, env(safe-area-inset-top, 44px));
     padding-bottom: max(20px, env(safe-area-inset-bottom, 20px));
 }
 
@@ -348,10 +336,10 @@ watch(selectedPeriod, () => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 20px;
+    padding: 4px 20px;
     position: sticky;
-    top: max(44px, env(safe-area-inset-top, 44px));
-    background: rgba(30, 30, 46, 0.95);
+    top: 0;
+    background: rgba(30, 30, 46, 1);
     backdrop-filter: blur(10px);
     z-index: 10;
 }
@@ -506,7 +494,7 @@ watch(selectedPeriod, () => {
 .chart-container {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 16px;
-    padding: 20px;
+    /*padding: 20px;*/
     backdrop-filter: blur(10px);
 }
 

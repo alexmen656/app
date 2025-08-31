@@ -4,7 +4,7 @@
         <header class="header">
             <button class="back-button" @click="goBack">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
                 </svg>
             </button>
             <h1 class="title">{{ $t('detail.protein.title') }}</h1>
@@ -13,6 +13,20 @@
 
         <!-- Current Value Card -->
         <div class="current-value-card">
+             <div class="progress-ring-large">
+                <svg class="progress-svg-large" width="120" height="120" viewBox="0 0 120 120">
+                    <circle cx="60" cy="60" r="50" stroke="#2a2d37" stroke-width="8" fill="none" />
+                    <circle cx="60" cy="60" r="50" stroke="#ff6b6b" stroke-width="8" fill="none"
+                        stroke-dasharray="314.16" :stroke-dashoffset="314.16 - (314.16 * progress)"
+                        stroke-linecap="round" class="progress-circle-large" transform="rotate(-90 60 60)" />
+                </svg>
+                <div class="protein-icon-large">
+                    <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+                        <path fill="#ff6b6b"
+                            d="M224 329.2C224 337.7 220.6 345.8 214.6 351.8L187.8 378.6C175.5 390.9 155.3 390 138.4 385.8C133.8 384.7 128.9 384 123.9 384C90.8 384 63.9 410.9 63.9 444C63.9 477.1 90.8 504 123.9 504C130.2 504 135.9 509.7 135.9 516C135.9 549.1 162.8 576 195.9 576C229 576 255.9 549.1 255.9 516C255.9 511 255.3 506.2 254.1 501.5C249.9 484.6 248.9 464.4 261.3 452.1L288.1 425.3C294.1 419.3 302.2 415.9 310.7 415.9L399.9 415.9C406.2 415.9 412.3 415.6 418.4 414.9C430.3 413.7 434.8 399.4 429.2 388.9C420.7 373.1 415.9 355.1 415.9 335.9C415.9 274 466 223.9 527.9 223.9C535.9 223.9 543.6 224.7 551.1 226.3C562.8 228.8 575.2 220.4 573.1 208.7C558.4 126.4 486.4 63.9 399.9 63.9C302.7 63.9 223.9 142.7 223.9 239.9L223.9 329.1z" />
+                    </svg>
+                </div>
+            </div>
             <div class="value-section">
                 <div class="current-value">{{ currentValue }}</div>
                 <div class="value-unit">g</div>
@@ -25,30 +39,12 @@
                     <span v-else>{{ difference }}g {{ $t('detail.remaining') }}</span>
                 </div>
             </div>
-            <div class="progress-ring-large">
-                <svg class="progress-svg-large" width="120" height="120" viewBox="0 0 120 120">
-                    <circle cx="60" cy="60" r="50" stroke="#2a2d37" stroke-width="8" fill="none" />
-                    <circle cx="60" cy="60" r="50" stroke="#ff6b6b" stroke-width="8" fill="none" 
-                        stroke-dasharray="314.16" :stroke-dashoffset="314.16 - (314.16 * progress)" 
-                        stroke-linecap="round" class="progress-circle-large" transform="rotate(-90 60 60)" />
-                </svg>
-                <div class="protein-icon-large">
-                    <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
-                        <path fill="#ff6b6b" d="M224 329.2C224 337.7 220.6 345.8 214.6 351.8L187.8 378.6C175.5 390.9 155.3 390 138.4 385.8C133.8 384.7 128.9 384 123.9 384C90.8 384 63.9 410.9 63.9 444C63.9 477.1 90.8 504 123.9 504C130.2 504 135.9 509.7 135.9 516C135.9 549.1 162.8 576 195.9 576C229 576 255.9 549.1 255.9 516C255.9 511 255.3 506.2 254.1 501.5C249.9 484.6 248.9 464.4 261.3 452.1L288.1 425.3C294.1 419.3 302.2 415.9 310.7 415.9L399.9 415.9C406.2 415.9 412.3 415.6 418.4 414.9C430.3 413.7 434.8 399.4 429.2 388.9C420.7 373.1 415.9 355.1 415.9 335.9C415.9 274 466 223.9 527.9 223.9C535.9 223.9 543.6 224.7 551.1 226.3C562.8 228.8 575.2 220.4 573.1 208.7C558.4 126.4 486.4 63.9 399.9 63.9C302.7 63.9 223.9 142.7 223.9 239.9L223.9 329.1z" />
-                    </svg>
-                </div>
-            </div>
         </div>
 
         <!-- Period Toggle -->
         <div class="period-toggle">
-            <button 
-                v-for="period in periods" 
-                :key="period.value"
-                class="period-btn" 
-                :class="{ active: selectedPeriod === period.value }"
-                @click="selectedPeriod = period.value"
-            >
+            <button v-for="period in periods" :key="period.value" class="period-btn"
+                :class="{ active: selectedPeriod === period.value }" @click="selectedPeriod = period.value">
                 {{ period.label }}
             </button>
         </div>
@@ -60,12 +56,7 @@
                 <div class="chart-period">{{ selectedPeriodLabel }}</div>
             </div>
             <div class="chart-container">
-                <apexchart
-                    type="bar"
-                    height="300"
-                    :options="chartOptions"
-                    :series="chartSeries"
-                />
+                <apexchart type="bar" height="300" :options="chartOptions" :series="chartSeries" />
             </div>
         </div>
 
@@ -96,7 +87,7 @@
         <div class="info-section">
             <h3>{{ $t('detail.protein.aboutTitle') }}</h3>
             <p class="info-text">{{ $t('detail.protein.aboutText') }}</p>
-            
+
             <div class="info-tips">
                 <h4>{{ $t('detail.protein.tipsTitle') }}</h4>
                 <ul class="tips-list">
@@ -198,10 +189,7 @@ const chartOptions = computed(() => ({
         axisTicks: { show: false }
     },
     yaxis: {
-        labels: { 
-            style: { colors: 'rgba(255, 255, 255, 0.7)', fontSize: '12px' },
-            formatter: (value: number) => `${value}g`
-        }
+        labels: { show: false }
     },
     grid: { borderColor: 'rgba(255, 255, 255, 0.1)', strokeDashArray: 3 },
     tooltip: {
@@ -269,7 +257,7 @@ async function loadData() {
     try {
         const history = await ScanHistory.get()
         const today = new Date()
-        
+
         // Calculate current day's protein
         const todayStr = today.toISOString().split('T')[0]
         const todaysScans = history.filter(scan => {
@@ -340,7 +328,7 @@ watch(selectedPeriod, () => {
     background: linear-gradient(135deg, #1e1e2e 0%, #2a2d37 100%);
     color: white;
     overflow-y: auto;
-    padding-top: max(44px, env(safe-area-inset-top, 44px));
+    margin-top: max(44px, env(safe-area-inset-top, 44px));
     padding-bottom: max(20px, env(safe-area-inset-bottom, 20px));
 }
 
@@ -348,10 +336,10 @@ watch(selectedPeriod, () => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 20px;
+    padding: 4px 20px;
     position: sticky;
-    top: max(44px, env(safe-area-inset-top, 44px));
-    background: rgba(30, 30, 46, 0.95);
+    top: 0;
+    background: rgba(30, 30, 46, 1);
     backdrop-filter: blur(10px);
     z-index: 10;
 }
@@ -506,7 +494,7 @@ watch(selectedPeriod, () => {
 .chart-container {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 16px;
-    padding: 20px;
+    /*padding: 20px;*/
     backdrop-filter: blur(10px);
 }
 
