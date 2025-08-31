@@ -39,6 +39,30 @@
     "modes": {
       "barcode": "Barcode",
       "photo": "Foto"
+    },
+    "checking": "Kamerazugriff prüfen...",
+    "requesting": "Kameraberechtigung anfordern...",
+    "scanning": "Scanne...",
+    "start": "Scan starten",
+    "permission": {
+      "title": "Kamerazugriff erforderlich",
+      "description": "Um Barcodes und Lebensmittel zu scannen, benötigt Kaloriq Zugriff auf Ihre Kamera.",
+      "grant": "Kamerazugriff gewähren"
+    },
+    "instructions": {
+      "barcode": "Positionieren Sie einen Barcode im Kamerabereich zum Scannen",
+      "photo": "Machen Sie ein Foto Ihres Essens für die KI-Analyse"
+    },
+    "features": {
+      "fast": "Schnelles & Genaues Scannen",
+      "accurate": "Hochqualitative Erkennung",
+      "fullscreen": "Vollbild-Kameraansicht"
+    },
+    "errors": {
+      "initialization": "Kamera konnte nicht initialisiert werden",
+      "permission": "Kameraberechtigungsfehler",
+      "permissionDenied": "Kamerazugriff verweigert. Bitte aktivieren Sie ihn in den Einstellungen.",
+      "start": "Scanner konnte nicht gestartet werden"
     }
   },
   "nutrition": {

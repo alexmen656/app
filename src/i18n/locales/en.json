@@ -39,6 +39,30 @@
     "modes": {
       "barcode": "Barcode",
       "photo": "Photo"
+    },
+    "checking": "Checking camera access...",
+    "requesting": "Requesting camera permission...",
+    "scanning": "Scanning...",
+    "start": "Start Scanning",
+    "permission": {
+      "title": "Camera Access Required",
+      "description": "To scan barcodes and food items, Kaloriq needs access to your camera.",
+      "grant": "Grant Camera Access"
+    },
+    "instructions": {
+      "barcode": "Position a barcode within the camera view to scan",
+      "photo": "Take a photo of your food for AI analysis"
+    },
+    "features": {
+      "fast": "Fast & Accurate Scanning",
+      "accurate": "High-Quality Recognition",
+      "fullscreen": "Full-Screen Camera View"
+    },
+    "errors": {
+      "initialization": "Failed to initialize camera",
+      "permission": "Camera permission error",
+      "permissionDenied": "Camera access denied. Please enable it in Settings.",
+      "start": "Failed to start scanner"
     }
   },
   "nutrition": {
