@@ -120,6 +120,7 @@ export function useBarcodeScanner() {
     
     isScanning.value = false
     
+    console.log("Pushing to nutrition", result.image);
     await router.push({
       name: 'Nutrition',
       query: {

@@ -426,13 +426,13 @@ onMounted(() => {
                 product.value = {
                     name: foodData.name,
                     image: route.query.photo,
-                    calories: total.calories || firstFood.calories || 0,
-                    protein: total.protein || firstFood.protein || 0,
-                    carbs: total.carbs || firstFood.carbs || 0,
-                    fats: total.fat || firstFood.fats || firstFood.fat || 0,
-                    fiber: total.fiber || firstFood.fiber || 0,
-                    sugar: total.sugar || firstFood.sugar || 0,
-                    salt: total.salt || firstFood.salt || 0,
+                    calories: total.calories || 0,
+                    protein: total.protein || 0,
+                    carbs: total.carbs || 0,
+                    fats: total.fat || 0,
+                    fiber: total.fiber || 0,
+                    sugar: total.sugar || 0,
+                    salt: total.salt || 0,
                     healthScore: foodData.healthScore || 7,
                     ingredients: foodData.foods.map(f => `${f.name} (${f.amount || 'ca. 100g'})`),
                     type: 'food',
@@ -468,6 +468,7 @@ onMounted(() => {
 });
 
 const backgroundStyle = computed(() => {
+    console.log("Background Styles", route.query.photo);
     const rawImg = route.query.photo || product.value?.image;
 
     const baseStyle = {
