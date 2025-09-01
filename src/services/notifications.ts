@@ -44,6 +44,20 @@ export class NotificationService {
     }
   }
 
+  static async requestPermissions(): Promise<{ granted: boolean }> {
+    if (!Capacitor.isNativePlatform()) {
+      return { granted: false }
+    }
+
+    try {
+      const permission = await LocalNotifications.requestPermissions()
+      return { granted: permission.display === 'granted' }
+    } catch (error) {
+      console.error('Error requesting notification permissions:', error)
+      return { granted: false }
+    }
+  }
+
   static async scheduleAllMealNotifications(settings: NotificationSettings): Promise<void> {
     if (!settings.enabled) {
       await this.cancelAllNotifications()

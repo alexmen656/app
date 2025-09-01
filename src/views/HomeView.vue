@@ -314,7 +314,7 @@ function closeScanLimitBlocker() {
 // Handle premium upgrade from scan limit blocker
 function handleScanLimitUpgrade() {
     showScanLimitBlocker.value = false
-    router.push('/paywall')
+    router.push('/upgrade')
 }
 
 function onScanHistoryUpdated() {
@@ -350,34 +350,19 @@ onMounted(async () => {
         return
     }
 
-    // Debug HealthKit status
-    await HealthKitService.debugStatus()
+    // Note: HealthKit initialization moved to Settings - only for Premium users
 
-    // Initialize HealthKit
-    const healthKitInitialized = await HealthKitService.initialize()
-    console.log('🩺 HealthKit initialization result:', healthKitInitialized)
-
-    // Initialize notifications if supported
+    // Note: Notification permissions now requested only when user enables them in Settings
+    // Load notification settings but don't request permissions automatically
     try {
-        if (NotificationService.isSupported()) {
-            const permissionGranted = await NotificationService.initialize()
-            if (permissionGranted) {
-                console.log('🔔 Notification permissions granted')
-                
-                // Load and apply notification settings
-                const notificationSettings = await getNotificationSettings()
-                if (notificationSettings.enabled) {
-                    await NotificationService.scheduleAllMealNotifications(notificationSettings)
-                    console.log('📅 Meal notifications scheduled')
-                }
-            } else {
-                console.log('❌ Notification permissions denied')
-            }
-        } else {
-            console.log('📱 Notifications not supported on this platform')
+        const notificationSettings = await getNotificationSettings()
+        if (notificationSettings.enabled && NotificationService.isSupported()) {
+            // Only schedule notifications if already enabled and permission granted
+            await NotificationService.scheduleAllMealNotifications(notificationSettings)
+            console.log('📅 Meal notifications scheduled')
         }
     } catch (error) {
-        console.error('Error initializing notifications:', error)
+        console.error('Error loading notification settings:', error)
     }
 
     loadScanHistory()
@@ -497,13 +482,10 @@ async function loadStreak() {
 async function syncToHealthKit() {
     try {
         // Premium-Check für HealthKit-Sync
-        /*const { premiumManager, premiumFeatures } = await import('../utils/premiumManager');
-        const canUseHealthKit = await premiumManager.canAccessFeature(premiumFeatures.HEALTHKIT_SYNC);
-        
-        if (!canUseHealthKit) {
+        if (!isPremiumUser.value) {
             console.log('🔒 HealthKit sync skipped - Premium feature');
             return;
-        }*/
+        }
 
         await HealthKitService.syncTodaysData()
     } catch (error) {
@@ -532,7 +514,7 @@ function goToFatsDetail() {
 }
 
 function goToPremium() {
-    router.push('/paywall')
+    router.push('/upgrade')
 }
 
 function hidePremiumBanner() {

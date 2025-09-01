@@ -132,7 +132,7 @@ const getFeatureDescription = (feature: string): string => {
 const upgradeNow = () => {
   emit('upgrade', props.feature)
   router.push({
-    name: 'Paywall',
+    name: 'Upgrade',
     query: { feature: props.feature }
   })
 }

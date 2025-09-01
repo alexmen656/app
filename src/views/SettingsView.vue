@@ -134,13 +134,31 @@
         </div>
 
         <!-- HealthKit Actions -->
-        <div v-if="!healthKitStatus.isConnected && healthKitStatus.isAvailable" class="setting-item">
+        <div v-if="!healthKitStatus.isConnected && healthKitStatus.isAvailable && isPremiumUser" class="setting-item">
           <button class="action-button healthkit-connect" @click="connectHealthKit">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z"/>
             </svg>
             <span>{{ $t('settings.connectHealthKit') }}</span>
           </button>
+        </div>
+
+        <!-- Premium Required Message for HealthKit -->
+        <div v-if="!healthKitStatus.isConnected && healthKitStatus.isAvailable && !isPremiumUser" class="setting-item">
+          <div class="premium-required-message">
+            <div class="premium-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+            </div>
+            <div class="premium-message-content">
+              <h4>Premium Feature</h4>
+              <p>Apple Health integration requires a Premium subscription</p>
+              <button class="upgrade-button" @click="goToUpgrade">
+                Upgrade to Premium
+              </button>
+            </div>
+          </div>
         </div>
 
         <div v-if="healthKitStatus.isConnected" class="setting-item">
@@ -549,7 +567,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import {
   userProfile,
@@ -575,7 +593,8 @@ import {
 import { NotificationService, type NotificationSettings } from '../services/notifications'
 import { HealthKitService } from '../services/healthkit'
 import { Capacitor } from '@capacitor/core'
-
+import { isPremiumUser } from '../utils/premiumManager'
+//, premiumManager, premiumFeatures
 const router = useRouter()
 const currentLanguage = ref(getCurrentLanguage())
 const mockDataEnabled = ref(false)
@@ -685,18 +704,22 @@ onMounted(async () => {
   // Load notification settings
   try {
     notificationSettings.value = await getNotificationSettings()
-
-    // Initialize notification service if supported
-    if (NotificationService.isSupported()) {
-      await NotificationService.initialize()
-    }
   } catch (error) {
     console.error('Error loading notification settings:', error)
   }
 
-  // Initialize HealthKit status
-  await loadHealthKitStatus()
+  // Initialize HealthKit status only for premium users
+  if (isPremiumUser.value) {
+    await loadHealthKitStatus()
+  }
 })
+
+// Watch for premium status changes to load HealthKit when user upgrades
+watch(isPremiumUser, async (newValue) => {
+  if (newValue && !healthKitStatus.value.isAvailable) {
+    await loadHealthKitStatus()
+  }
+}, { immediate: false })
 
 // Use computed to display current user data with truncated name
 function truncateName(name?: string, max = 20): string {
@@ -749,6 +772,13 @@ async function loadHealthKitStatus() {
 }
 
 async function connectHealthKit() {
+  // Check if user has premium access
+  if (!isPremiumUser.value) {
+    alert('❌ Apple Health integration requires a Premium subscription.')
+    goToUpgrade()
+    return
+  }
+
   try {
     const success = await HealthKitService.initialize()
     if (success) {
@@ -853,6 +883,16 @@ async function savePreferences() {
 
 async function saveNotificationSettings() {
   try {
+    // If user is enabling notifications, request permission first
+    if (notificationSettings.value.enabled && isNotificationSupported.value) {
+      const permission = await NotificationService.requestPermissions()
+      if (!permission.granted) {
+        notificationSettings.value.enabled = false
+        alert('Benachrichtigungen können nicht aktiviert werden. Bitte erlaube Benachrichtigungen in den Systemeinstellungen.')
+        return
+      }
+    }
+
     await saveNotificationSettingsToStore(notificationSettings.value)
     console.log('Notification settings saved:', notificationSettings.value)
   } catch (error) {
@@ -1883,5 +1923,63 @@ a {
   border-radius: 12px;
   font-size: 12px;
   font-weight: 600;
+}
+
+/* Premium Required Message */
+.premium-required-message {
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 152, 0, 0.1));
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.premium-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #FFD700, #FFA000);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1a1d26;
+  flex-shrink: 0;
+}
+
+.premium-message-content {
+  flex: 1;
+}
+
+.premium-message-content h4 {
+  margin: 0 0 4px 0;
+  color: #FFD700;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.premium-message-content p {
+  margin: 0 0 12px 0;
+  color: #ffffff;
+  opacity: 0.9;
+  font-size: 14px;
+}
+
+.upgrade-button {
+  background: linear-gradient(135deg, #FFD700, #FFA000);
+  color: #1a1d26;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.upgrade-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
 }
 </style>

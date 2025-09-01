@@ -218,10 +218,10 @@ export class PremiumManager {
    * Premium-Upgrade anzeigen
    */
   showUpgradePrompt(feature: string): void {
-    // Navigation zur Paywall mit Feature-Kontext
+    // Navigation zur Upgrade-View mit Feature-Kontext
     if (typeof window !== 'undefined' && (window as any).router) {
       (window as any).router.push({
-        name: 'Paywall',
+        name: 'Upgrade',
         query: { feature }
       })
     }
