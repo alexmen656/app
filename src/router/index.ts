@@ -16,6 +16,8 @@ import CaloriesDetailView from "../views/CaloriesDetailView.vue";
 import ProteinDetailView from "../views/ProteinDetailView.vue";
 import CarbsDetailView from "../views/CarbsDetailView.vue";
 import FatsDetailView from "../views/FatsDetailView.vue";
+import BMIDetailView from "../views/BMIDetailView.vue";
+import WeightDetailView from "../views/WeightDetailView.vue";
 import AllScansView from "../views/AllScansView.vue";
 import { isOnboardingCompleted } from "../stores/userStore";
 
@@ -109,6 +111,16 @@ const routes = [
     path: "/all-scans",
     name: "AllScans",
     component: AllScansView,
+  },
+  {
+    path: "/bmi-detail",
+    name: "BMIDetail",
+    component: BMIDetailView,
+  },
+  {
+    path: "/weight-detail",
+    name: "WeightDetail",
+    component: WeightDetailView,
   },
 ];
 

@@ -1,12 +1,7 @@
 <template>
   <div class="chart-container">
     <template v-if="hasNonZero">
-      <apexchart
-        type="bar"
-        :options="chartOptions"
-        :series="chartSeries"
-        height="240"
-      />
+      <apexchart type="bar" :options="chartOptions" :series="chartSeries" height="240" />
     </template>
     <template v-else>
       <div class="no-data">Keine Daten</div>
@@ -37,13 +32,20 @@ const chartData = computed(() => {
   }
   // Fallback mock data
   return [
-    { label: 'Mo', calories: 2200 },
-    { label: 'Di', calories: 2400 },
-    { label: 'Mi', calories: 2100 },
-    { label: 'Do', calories: 2600 },
-    { label: 'Fr', calories: 2300 },
-    { label: 'Sa', calories: 2800 },
-    { label: 'So', calories: 2150 }
+    /* { label: 'Mo', calories: 2200 },
+     { label: 'Di', calories: 2400 },
+     { label: 'Mi', calories: 2100 },
+     { label: 'Do', calories: 2600 },
+     { label: 'Fr', calories: 2300 },
+     { label: 'Sa', calories: 2800 },
+     { label: 'So', calories: 2150 }*/
+    { label: 'Mo', calories: 0 },
+    { label: 'Di', calories: 0 },
+    { label: 'Mi', calories: 0 },
+    { label: 'Do', calories: 0 },
+    { label: 'Fr', calories: 0 },
+    { label: 'Sa', calories: 0 },
+    { label: 'So', calories: 0 }
   ]
 })
 
@@ -78,9 +80,9 @@ const chartOptions = computed(() => ({
   chart: {
     type: 'bar',
     background: 'transparent',
-  toolbar: { show: false },
-  stacked: true,
-   // animations: { enabled: true, easing: 'easeinout', speed: 800 }
+    toolbar: { show: false },
+    stacked: true,
+    // animations: { enabled: true, easing: 'easeinout', speed: 800 }
   },
   theme: { mode: 'dark' },
   // main series: top color #ff8e8e -> bottom color #ff6b6b; second color used for zero-baseline
@@ -100,7 +102,7 @@ const chartOptions = computed(() => ({
     enabled: true,
     formatter: (value: number) => `${value}`,
     // small offset so labels sit just above the bar
-  offsetY: -22,
+    offsetY: -22,
     style: { colors: ['#ffffff'], fontSize: '12px', fontWeight: '400' },
     background: { enabled: false }
   },
@@ -114,13 +116,13 @@ const chartOptions = computed(() => ({
       inverseColors: false,
       opacityFrom: 1,
       opacityTo: 1,
-  // explicit top->bottom colors to match `linear-gradient(to top, #ff6b6b, #ff8e8e)`
-  // ApexCharts uses `colors` as the start (top) and `gradientToColors` as the end (bottom)
-  gradientToColors: ['#ff6b6b'],
+      // explicit top->bottom colors to match `linear-gradient(to top, #ff6b6b, #ff8e8e)`
+      // ApexCharts uses `colors` as the start (top) and `gradientToColors` as the end (bottom)
+      gradientToColors: ['#ff6b6b'],
       stops: [0, 100]
     }
   },
-  
+
   xaxis: {
     categories: chartData.value.map(item => item.label),
     labels: { style: { colors: 'rgba(255, 255, 255, 0.7)', fontSize: '12px' } },
@@ -163,7 +165,7 @@ const chartOptions = computed(() => ({
 }
 
 apexchart {
-    height: 100%;
+  height: 100%;
 }
 
 .no-data {

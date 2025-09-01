@@ -153,8 +153,15 @@
     </div>
 
     <!-- BMI Section -->
-    <div v-if="analyticsData?.bmiData.value" class="bmi-section">
-      <h3 class="section-title">{{ $t('analytics.bmiHealthStatus') }}</h3>
+    <div v-if="analyticsData?.bmiData.value" class="bmi-section" @click="navigateToBMIDetail">
+      <div class="section-header">
+        <h3 class="section-title">{{ $t('analytics.bmiHealthStatus') }}</h3>
+        <button class="detail-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+          </svg>
+        </button>
+      </div>
       <div class="bmi-container">
         <div class="bmi-display">
           <div class="bmi-value" :style="{ color: analyticsData?.bmiData.categoryColor || '#ffffff' }">
@@ -181,12 +188,19 @@
     <div class="weight-section">
       <div class="section-header">
         <h3 class="section-title">{{ $t('analytics.weightProgress') }}</h3>
-        <button @click="showWeightLogModal = true" class="log-weight-btn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-          </svg>
-          {{ $t('analytics.logWeight') }}
-        </button>
+        <div class="header-buttons">
+          <button @click="navigateToWeightDetail" class="detail-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+            </svg>
+          </button>
+          <button @click="showWeightLogModal = true" class="log-weight-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+            </svg>
+            {{ $t('analytics.logWeight') }}
+          </button>
+        </div>
       </div>
       
 
@@ -461,6 +475,15 @@ async function logWeight() {
     } catch (error) {
         console.error('Error logging weight:', error)
     }
+}
+
+// Navigation functions
+function navigateToBMIDetail() {
+    router.push('/bmi-detail')
+}
+
+function navigateToWeightDetail() {
+    router.push('/weight-detail')
 }
 
 // Touch/Swipe functionality
@@ -811,6 +834,16 @@ function handleTouchEnd(event: TouchEvent) {
 
 .bmi-section {
   margin-bottom: 32px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.bmi-section:hover {
+  transform: translateY(-2px);
+}
+
+.bmi-section:active {
+  transform: translateY(0);
 }
 
 .bmi-container {
@@ -1058,6 +1091,33 @@ function handleTouchEnd(event: TouchEvent) {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
+}
+
+.header-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.detail-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  padding: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 32px;
+  height: 32px;
+}
+
+.detail-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .log-weight-btn {
