@@ -899,7 +899,7 @@ function handleTouchEnd(event: TouchEvent) {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 15px;
     padding: 15px;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     backdrop-filter: blur(10px);
 }
 
