@@ -264,6 +264,50 @@
       "multipleUseAnswer": "Generally, only one coupon code can be active at a time. New codes will replace previously applied discounts."
     }
   },
+  "premium": {
+    "upgrade": {
+      "title": "Upgrade Now",
+      "button": "Get Premium"
+    },
+    "close": "Close",
+    "scans": {
+      "used": "{used}/{total} scans used",
+      "remaining": "remaining today"
+    },
+    "foodScans": {
+      "title": "Daily Scan Limit Reached",
+      "description": "Upgrade to Premium for unlimited food scans with AI recognition."
+    },
+    "analytics": {
+      "title": "Advanced Analytics", 
+      "description": "Get deeper insights into your nutrition habits with Premium Analytics.",
+      "feature1": "Unlimited data history",
+      "feature2": "Monthly and yearly comparisons",
+      "feature3": "Export functionality",
+      "upgradeTitle": "Premium Analytics",
+      "upgradeSubtitle": "Unlock detailed historical analysis"
+    },
+    "widgets": {
+      "title": "iOS Widgets",
+      "description": "Keep track of your nutrition goals directly on your iPhone home screen."
+    },
+    "banner": {
+      "title": "Unlock Premium",
+      "subtitle": "Unlimited scans, widgets & more"
+    },
+    "features": {
+      "unlimited_scans_desc": "Scan unlimited foods with AI recognition",
+      "widgets_desc": "3 different widget sizes for your home screen",
+      "analytics_desc": "Detailed historical analysis and trends", 
+      "export_desc": "Export your data as CSV or PDF",
+      "healthkit_desc": "Automatic synchronization with Apple Health",
+      "charts_desc": "Advanced charts and statistics",
+      "default_desc": "Unlock this premium feature"
+    },
+    "legal": {
+      "text": "Subscriptions automatically renew unless canceled at least 24 hours before the end of the current period."
+    }
+  },
   "common": {
     "save": "Save",
     "cancel": "Cancel",

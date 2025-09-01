@@ -110,6 +110,15 @@ export class WidgetDataManager {
   // Update widget data in Capacitor Preferences (accessible by iOS)
   static async updateWidgetData(): Promise<void> {
     try {
+      // Premium-Check für Widget-Updates
+     /* const { premiumManager, premiumFeatures } = await import('./premiumManager');
+      const canUseWidgets = await premiumManager.canAccessFeature(premiumFeatures.IOS_WIDGETS);
+      
+      if (!canUseWidgets) {
+        console.log('🔒 Widget update skipped - Premium feature');
+        return;
+      }*/
+
       const todaysScans = await this.getTodaysScans();
       const nutrition = this.calculateTodaysNutrition(todaysScans);
       const streak = await this.getStreakCount();

@@ -21,6 +21,16 @@
       </button>
     </div>
 
+    <!-- Free User Scan Counter (top overlay) -->
+    <div v-if="!isPremiumUser && mode === 'photo'" class="scan-counter-overlay">
+      <div class="scan-counter">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#FFD700">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
+        <span>{{ remainingFoodScans }}/{{ freeLimits.DAILY_FOOD_SCANS }} {{ $t('premium.scans.remaining') }}</span>
+      </div>
+    </div>
+
     <!-- Scanning area overlay -->
     <div v-if="mode === 'barcode'" class="scan-overlay">
       <div class="scan-frame"></div>
@@ -41,7 +51,7 @@
           </svg>
           <span>{{ $t('scanner.modes.barcode') }}</span>
         </button>
-        <button class="mode-tab" :class="{ active: mode === 'photo' }" @click="mode = 'photo'">
+        <button class="mode-tab" :class="{ active: mode === 'photo' }" @click="switchToPhotoMode">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
             <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" />
             <path
@@ -87,6 +97,17 @@
       </button>
     </div>
 
+    <!-- Premium Blocker Modal -->
+    <PremiumBlocker
+      v-if="showPremiumBlocker"
+      :feature="'unlimited_food_scans'"
+      :title="$t('premium.foodScans.title')"
+      :description="$t('premium.foodScans.description')"
+      :show-usage-info="true"
+      @close="showPremiumBlocker = false"
+      @upgrade="handleUpgrade"
+    />
+
     <!-- Result display -->
     <!-- Overlay entfernt: Navigation erfolgt direkt nach Scan -->
   </div>
@@ -94,11 +115,19 @@
 
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
+import { ref, onMounted, onBeforeUnmount, watch, computed } from 'vue';
 import { BrowserMultiFormatReader, BarcodeFormat } from '@zxing/browser';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { WidgetDataManager, StreakManager } from '../utils/widgetData';
+import PremiumBlocker from '../components/PremiumBlocker.vue';
+import { 
+  premiumManager, 
+  isPremiumUser, 
+  remainingFoodScans, 
+  freeLimits,
+  premiumFeatures
+} from '../utils/premiumManager';
 
 const { t } = useI18n();
 
@@ -107,6 +136,7 @@ const barcodeResult = ref('');
 const router = useRouter();
 const photoUrl = ref('');
 const flashEnabled = ref(false);
+const showPremiumBlocker = ref(false);
 let videoInputDeviceId = null;
 let codeReader;
 let videoStream = null;
@@ -347,8 +377,19 @@ const analyzeFoodPhoto = async (photoDataUrl) => {
 };
 
 const takePhoto = async () => {
+  // Premium-Check für Food-Scans
+  if (!await premiumManager.canAccessFeature(premiumFeatures.UNLIMITED_FOOD_SCANS)) {
+    showPremiumBlocker.value = true;
+    return;
+  }
+
   const videoElement = document.getElementById('barcode-video');
   if (!videoElement) return;
+
+  // Usage für Free-User erhöhen
+  if (!isPremiumUser.value) {
+    await premiumManager.incrementFoodScanUsage();
+  }
 
   const canvas = document.createElement('canvas');
   canvas.width = videoElement.videoWidth;
@@ -396,7 +437,28 @@ watch(mode, (newMode) => {
   console.log('Mode switched to:', newMode);
 });
 
-onMounted(() => setupCamera(cameraFacing.value));
+// Premium-Handler
+const switchToPhotoMode = async () => {
+  if (!await premiumManager.canAccessFeature(premiumFeatures.UNLIMITED_FOOD_SCANS)) {
+    showPremiumBlocker.value = true;
+    return;
+  }
+  mode.value = 'photo';
+};
+
+const handleUpgrade = (feature) => {
+  console.log('Upgrading for feature:', feature);
+  // Navigation zur Paywall erfolgt bereits in PremiumBlocker
+};
+
+onMounted(async () => {
+  await setupCamera(cameraFacing.value);
+  
+  // Premium-Status initialisieren
+  await premiumManager.updatePremiumStatus();
+  await premiumManager.loadUsageTracking();
+});
+
 onBeforeUnmount(() => stopCamera());
 </script>
 
@@ -456,6 +518,31 @@ onBeforeUnmount(() => stopCamera());
 .header-btn:hover {
   background: rgba(255, 255, 255, 0.25);
   transform: scale(1.05);
+}
+
+/* Scan Counter for Free Users */
+.scan-counter-overlay {
+  position: absolute;
+  top: 120px;
+  left: 20px;
+  right: 20px;
+  z-index: 15;
+  display: flex;
+  justify-content: center;
+}
+
+.scan-counter {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.9), rgba(255, 165, 0, 0.9));
+  color: #1e1e2e;
+  padding: 8px 16px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
 }
 
 .header-title {

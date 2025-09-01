@@ -7,13 +7,28 @@
     <header class="header">
       <h1 class="title">{{ $t('app.analytics') }}</h1>
       <div class="date-picker">
-        <select v-model="selectedPeriod" class="period-select">
+        <select v-model="selectedPeriod" class="period-select" @change="checkPremiumAccess">
           <option value="week">{{ $t('analytics.thisWeek') }}</option>
           <option value="month">{{ $t('analytics.thisMonth') }}</option>
           <option value="year">{{ $t('analytics.thisYear') }}</option>
         </select>
       </div>
     </header>
+
+    <!-- Premium Blocker for extended periods -->
+    <PremiumBlocker
+      v-if="showPremiumBlocker"
+      :feature="'unlimited_analytics_history'"
+      :title="$t('premium.analytics.title')"
+      :description="$t('premium.analytics.description')"
+      :features="[
+        $t('premium.analytics.feature1'),
+        $t('premium.analytics.feature2'),
+        $t('premium.analytics.feature3')
+      ]"
+      @close="closePremiumBlocker"
+      @upgrade="handleAnalyticsUpgrade"
+    />
 
     <!-- Summary Cards -->
     <div class="summary-cards">
@@ -34,10 +49,24 @@
       </div>
     </div>
 
-    <!-- Chart Section -->
-    <div class="chart-section">
+    <!-- Chart Section (with Premium overlay if needed) -->
+    <div class="chart-section" :class="{ 'premium-locked': shouldShowPremiumOverlay }">
       <h3 class="section-title">{{ chartTitle }}</h3>
+      
+      <!-- Premium Overlay for Charts -->
+      <div v-if="shouldShowPremiumOverlay" class="premium-chart-overlay" @click="showPremiumBlocker = true">
+        <div class="premium-overlay-content">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="#FFD700">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
+          <h4>{{ $t('premium.analytics.upgradeTitle') }}</h4>
+          <p>{{ $t('premium.analytics.upgradeSubtitle') }}</p>
+          <button class="upgrade-btn">{{ $t('premium.upgrade.button') }}</button>
+        </div>
+      </div>
+      
       <CalorieChart 
+        v-else
         :data="getChartData()" 
         :period="selectedPeriod" 
         :goal="2500"
@@ -294,6 +323,8 @@ import { WeightTracker } from '../utils/weightTracking'
 import { StreakManager } from '../utils/widgetData'
 import CalorieChart from '../components/charts/CalorieChart.vue'
 import WeightChart from '../components/charts/WeightChart.vue'
+import PremiumBlocker from '../components/PremiumBlocker.vue'
+import { premiumManager, isPremiumUser, premiumFeatures } from '../utils/premiumManager'
 
 const router = useRouter()
 
@@ -302,21 +333,40 @@ const analyticsData = ref<AnalyticsData | null>(null)
 const loading = ref(true)
 const previousAnalyticsData = ref<AnalyticsData | null>(null)
 
+// Premium-related state
+const showPremiumBlocker = ref(false)
+
 // Weight logging modal
 const showWeightLogModal = ref(false)
 const newWeight = ref<number | null>(null)
 const weightNote = ref('')
 
-// Weight chart specific properties
-//const selectedWeightPeriod = ref('month')
+// Premium access check
+const shouldShowPremiumOverlay = computed(() => {
+  return !isPremiumUser.value && (selectedPeriod.value === 'month' || selectedPeriod.value === 'year')
+})
 
-// Weight period options
-/*const weightPeriods = [
-    { label: 'Week', value: 'week' },
-    { label: 'Month', value: 'month' },
-    { label: '3M', value: '3months' },
-    { label: 'Year', value: 'year' }
-]*/
+// Premium functions
+const checkPremiumAccess = async () => {
+  if (selectedPeriod.value !== 'week') {
+    const canAccess = await premiumManager.canAccessFeature(premiumFeatures.UNLIMITED_ANALYTICS_HISTORY)
+    if (!canAccess) {
+      showPremiumBlocker.value = true
+      selectedPeriod.value = 'week' // Reset to free tier
+      return
+    }
+  }
+}
+
+const closePremiumBlocker = () => {
+  showPremiumBlocker.value = false
+  selectedPeriod.value = 'week' // Reset to free tier
+}
+
+const handleAnalyticsUpgrade = (feature: string) => {
+  console.log('Upgrading for analytics feature:', feature)
+  // Navigation zur Paywall erfolgt bereits in PremiumBlocker
+}
 
 // Load analytics data
 async function loadAnalyticsData() {
@@ -1471,5 +1521,72 @@ function handleTouchEnd(event: TouchEvent) {
 #weightGradient stop:last-child {
   stop-color: #42a5f5;
   stop-opacity: 0.1;
+}
+
+/* Premium Chart Overlay */
+.premium-locked {
+  position: relative;
+}
+
+.premium-chart-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(30, 30, 46, 0.95), rgba(42, 45, 55, 0.95));
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+.premium-chart-overlay:hover {
+  background: linear-gradient(135deg, rgba(30, 30, 46, 0.98), rgba(42, 45, 55, 0.98));
+}
+
+.premium-overlay-content {
+  text-align: center;
+  color: white;
+  padding: 32px;
+}
+
+.premium-overlay-content h4 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 16px 0 8px 0;
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.premium-overlay-content p {
+  font-size: 14px;
+  opacity: 0.8;
+  margin: 0 0 20px 0;
+  line-height: 1.4;
+}
+
+.upgrade-btn {
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  color: #1e1e2e;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(255, 215, 0, 0.3);
+}
+
+.upgrade-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
 }
 </style>

@@ -264,6 +264,50 @@
       "multipleUseAnswer": "Im Allgemeinen kann nur ein Gutschein-Code gleichzeitig aktiv sein. Neue Codes ersetzen zuvor angewendete Rabatte."
     }
   },
+  "premium": {
+    "upgrade": {
+      "title": "Jetzt upgraden",
+      "button": "Premium kaufen"
+    },
+    "close": "Schließen",
+    "scans": {
+      "used": "{used}/{total} Scans verwendet",
+      "remaining": "verbleibend heute"
+    },
+    "foodScans": {
+      "title": "Tägliches Scan-Limit erreicht",
+      "description": "Upgraden Sie auf Premium für unbegrenzte Food-Scans mit KI-Erkennung."
+    },
+    "analytics": {
+      "title": "Erweiterte Analytics",
+      "description": "Erhalten Sie tiefere Einblicke in Ihre Ernährungsgewohnheiten mit Premium Analytics.",
+      "feature1": "Unbegrenzter Daten-Verlauf",
+      "feature2": "Monats- und Jahresvergleiche", 
+      "feature3": "Export-Funktionen",
+      "upgradeTitle": "Premium Analytics",
+      "upgradeSubtitle": "Freischaltung detaillierter Verlaufsanalysen"
+    },
+    "widgets": {
+      "title": "iOS Widgets",
+      "description": "Behalten Sie Ihre Ernährungsziele direkt auf Ihrem iPhone-Homescreen im Blick."
+    },
+    "banner": {
+      "title": "Premium freischalten",
+      "subtitle": "Unbegrenzte Scans, Widgets & mehr"
+    },
+    "features": {
+      "unlimited_scans_desc": "Scannen Sie unbegrenzt Lebensmittel mit KI-Erkennung",
+      "widgets_desc": "3 verschiedene Widget-Größen für Ihren Homescreen",
+      "analytics_desc": "Detaillierte Verlaufsanalysen und Trends",
+      "export_desc": "Exportieren Sie Ihre Daten als CSV oder PDF",
+      "healthkit_desc": "Automatische Synchronisation mit Apple Health",
+      "charts_desc": "Erweiterte Charts und Statistiken",
+      "default_desc": "Freischaltung dieser Premium-Funktion"
+    },
+    "legal": {
+      "text": "Abonnements werden automatisch verlängert, außer sie werden mindestens 24 Stunden vor Ende der aktuellen Periode deaktiviert."
+    }
+  },
   "common": {
     "save": "Speichern",
     "cancel": "Abbrechen",
