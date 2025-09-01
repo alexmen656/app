@@ -120,7 +120,6 @@ export function useBarcodeScanner() {
     
     isScanning.value = false
     
-    // Navigate to nutrition view with barcode data
     await router.push({
       name: 'Nutrition',
       query: {
