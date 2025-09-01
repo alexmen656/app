@@ -228,12 +228,8 @@
         </div>
 
         <!-- Details Modal -->
-        <NutritionDetailsModal 
-            :show="showDetailsModal" 
-            :product="product" 
-            :amount="amount" 
-            @close="showDetailsModal = false" 
-        />
+        <NutritionDetailsModal :show="showDetailsModal" :product="product" :amount="amount"
+            @close="showDetailsModal = false" />
 
         <!-- Fix Modal -->
         <div v-if="showFixModal" class="modal-overlay" @click="showFixModal = false">
@@ -314,17 +310,14 @@ const fetchProduct = async (barcode) => {
         if (cachedProduct) {
             console.log('Using cached product data for barcode:', barcode);
 
-            // Handle both old and new format in cache
             let calories, protein, carbs, fats;
             if (cachedProduct.nutrition?.per100g) {
-                // New format
                 const nutrition = cachedProduct.nutrition.per100g;
                 calories = nutrition.calories || 0;
                 protein = nutrition.protein || 0;
                 carbs = nutrition.carbs || 0;
                 fats = nutrition.fats || 0;
-            } else {
-                // Old format (backward compatibility)
+            }else {
                 calories = cachedProduct.calories || 0;
                 protein = cachedProduct.protein || 0;
                 carbs = cachedProduct.carbs || 0;
@@ -353,7 +346,6 @@ const fetchProduct = async (barcode) => {
             return;
         }
 
-        // If not cached, fetch from API
         console.log('Fetching product data from API for barcode:', barcode);
         const response = await fetch(`https://kaloriq-api.vercel.app/api/product/${barcode}`);
 
@@ -367,7 +359,6 @@ const fetchProduct = async (barcode) => {
             throw new Error('Product not found in KaloriQ API');
         }
 
-        // Map new API response format to internal format
         const nutrition = data.product.nutrition?.perServing || data.product.nutrition?.per100g || {};
         const productData = {
             name: data.product.name || 'Unknown Product',
@@ -387,23 +378,17 @@ const fetchProduct = async (barcode) => {
             servingSize: data.product.servingSize || null,
             servingUnit: data.product.servingUnit || null,
             packageSize: data.product.packageSize || null,
-            // Store both nutrition formats for potential future use
             nutritionPer100g: data.product.nutrition?.per100g || null,
             nutritionPerServing: data.product.nutrition?.perServing || null
         };
 
         product.value = productData;
-
-        // Cache the product data
         await BarcodeCache.set(barcode, productData);
-
-        // Initialize edited product for fix modal
         editedProduct.value = { ...product.value };
 
     } catch (e) {
         console.error('KaloriQ API failed:', e);
 
-        // Fallback: Create unknown product
         product.value = {
             name: 'Unknown Product',
             image: null,
@@ -439,9 +424,7 @@ onMounted(() => {
                 const firstFood = foodData.foods[0] || {};
 
                 product.value = {
-                    name: foodData.name,/*foodData.foods.length > 1 
-                        ? `Gericht mit ${foodData.foods.length} Zutaten`
-                        : firstFood.name || 'Analysiertes Gericht',*/
+                    name: foodData.name,
                     image: route.query.photo,
                     calories: total.calories || firstFood.calories || 0,
                     protein: total.protein || firstFood.protein || 0,
@@ -455,24 +438,8 @@ onMounted(() => {
                     type: 'food',
                     confidence: foodData.confidence || 'medium',
                     notes: foodData.notes || '',
-                    foods: foodData.foods, // Store individual foods for detailed view
+                    foods: foodData.foods,
                     analysisError: foodData.error || false
-                };
-            } else {
-                // Fallback for old format
-                product.value = {
-                    name: foodData.name || 'Analysiertes Gericht',
-                    image: route.query.photo,
-                    calories: foodData.calories || 0,
-                    protein: foodData.protein || 0,
-                    carbs: foodData.carbs || 0,
-                    fats: foodData.fats || 0,
-                    fiber: foodData.fiber || 0,
-                    sugar: foodData.sugar || 0,
-                    salt: foodData.salt || 0,
-                    healthScore: foodData.healthScore || 7,
-                    ingredients: foodData.ingredients || [],
-                    type: 'food'
                 };
             }
 
@@ -480,7 +447,6 @@ onMounted(() => {
         } catch (e) {
             console.error('Error parsing food data:', e);
 
-            // Create fallback product
             product.value = {
                 name: 'Analysiertes Gericht',
                 image: route.query.photo,
@@ -502,32 +468,29 @@ onMounted(() => {
 });
 
 const backgroundStyle = computed(() => {
-    const rawImg = route.query.photo || (product.value && product.value.image);
-    if (!rawImg) {
-        return {
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            width: '100%',
-            height: '340px',
-            borderBottomLeftRadius: '32px',
-            borderBottomRightRadius: '32px',
-            position: 'relative',
-            zIndex: 1,
-        };
-    }
+    const rawImg = route.query.photo || product.value?.image;
 
-    // Ensure image has proper data URI prefix
-    const img = typeof rawImg === 'string' && rawImg.startsWith('data:')
-        ? rawImg
-        : `data:image/jpeg;base64,${rawImg}`;
-
-    return {
-        backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${img}')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
+    const baseStyle = {
         width: '100%',
         height: '340px',
         position: 'relative',
         zIndex: 1,
+    };
+
+    if (!rawImg) {
+        return {
+            ...baseStyle,
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            borderBottomLeftRadius: '32px',
+            borderBottomRightRadius: '32px',
+        };
+    }
+
+    return {
+        ...baseStyle,
+        backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${rawImg}')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
     };
 });
 
@@ -538,9 +501,7 @@ const hasAdditionalNutrition = computed(() => {
         (product.value.salt && product.value.salt > 0)
     );
 });
-// /        borderBottomLeftRadius: '32px',
-//    borderBottomRightRadius: '32px',
-// Amount controls
+
 function increaseAmount() {
     amount.value += 1;
 }
@@ -551,7 +512,6 @@ function decreaseAmount() {
     }
 }
 
-// Fix modal functions
 function editMacro(type) {
     showFixModal.value = true;
 }
@@ -561,7 +521,6 @@ function applyFix() {
     showFixModal.value = false;
 }
 
-// Save and return function
 async function saveAndReturn() {
     if (!product.value) return;
 
@@ -607,18 +566,10 @@ async function saveAndReturn() {
             }
         };
 
-        // Save to scan history using Capacitor Preferences
         await ScanHistory.add(scanEntry);
-
-        // Update streak when food is logged
         await StreakManager.updateStreak();
-
-        // Update widget data for iOS widgets
         await WidgetDataManager.updateWidgetData();
-
-        // Dispatch event to update home view
         window.dispatchEvent(new CustomEvent('scanHistoryUpdated'));
-
         router.push({ path: '/' });
 
     } catch (error) {
@@ -630,7 +581,6 @@ async function saveAndReturn() {
 </script>
 
 <style scoped>
-/* Statusbar Space for iOS */
 .statusbar-spacer {
     height: env(safe-area-inset-top, 44px);
     width: 100%;
