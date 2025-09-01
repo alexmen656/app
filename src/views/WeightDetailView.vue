@@ -253,14 +253,16 @@
 import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import WeightChart from '../components/charts/WeightChart.vue'
+import { WeightTracker, type WeightEntry } from '../utils/weightTracking'
 
 const { t } = useI18n()
 
 // Weight data
-const currentWeight = ref(70.2)
-const targetWeight = ref(65.0)
-const startWeight = ref(75.0)
-const weightChange = ref(-0.3)
+const currentWeight = ref(0)
+const targetWeight = ref(0)
+const startWeight = ref(0)
+const weightChange = ref(0)
+const weightEntries = ref<WeightEntry[]>([])
 
 // Chart settings
 const selectedChartPeriod = ref('month')
@@ -271,51 +273,13 @@ const newWeight = ref<number | null>(null)
 const newWeightDate = ref('')
 const weightNote = ref('')
 
-// Mock weight entries
-const recentWeightEntries = ref([
-  {
-    id: 1,
-    date: new Date('2025-09-01T08:30:00'),
-    weight: 70.2,
-    change: -0.2,
-    note: 'Morgengewicht'
-  },
-  {
-    id: 2,
-    date: new Date('2025-08-31T08:45:00'),
-    weight: 70.4,
-    change: -0.1,
-    note: ''
-  },
-  {
-    id: 3,
-    date: new Date('2025-08-30T09:00:00'),
-    weight: 70.5,
-    change: 0.0,
-    note: 'Nach dem Training'
-  },
-  {
-    id: 4,
-    date: new Date('2025-08-29T08:30:00'),
-    weight: 70.5,
-    change: -0.3,
-    note: ''
-  },
-  {
-    id: 5,
-    date: new Date('2025-08-28T08:15:00'),
-    weight: 70.8,
-    change: -0.2,
-    note: ''
-  }
-])
-
 // Computed properties
 const isGoalAchieved = computed(() => {
   return Math.abs(currentWeight.value - targetWeight.value) <= 0.5
 })
 
 const progressPercentage = computed(() => {
+  if (startWeight.value === 0 || targetWeight.value === 0) return 0
   const totalGoal = Math.abs(startWeight.value - targetWeight.value)
   const currentProgress = Math.abs(startWeight.value - currentWeight.value)
   return Math.min(Math.round((currentProgress / totalGoal) * 100), 100)
@@ -323,20 +287,20 @@ const progressPercentage = computed(() => {
 
 const averageWeight = computed(() => {
   const entries = getFilteredEntries()
-  if (entries.length === 0) return currentWeight.value
+  if (entries.length === 0) return currentWeight.value.toFixed(1)
   const sum = entries.reduce((acc, entry) => acc + entry.weight, 0)
   return (sum / entries.length).toFixed(1)
 })
 
 const highestWeight = computed(() => {
   const entries = getFilteredEntries()
-  if (entries.length === 0) return currentWeight.value
+  if (entries.length === 0) return currentWeight.value.toFixed(1)
   return Math.max(...entries.map(entry => entry.weight)).toFixed(1)
 })
 
 const lowestWeight = computed(() => {
   const entries = getFilteredEntries()
-  if (entries.length === 0) return currentWeight.value
+  if (entries.length === 0) return currentWeight.value.toFixed(1)
   return Math.min(...entries.map(entry => entry.weight)).toFixed(1)
 })
 
@@ -353,19 +317,19 @@ const milestones = computed(() => [
     id: 1,
     title: t('weightDetail.milestone1'),
     description: t('weightDetail.milestone1Desc'),
-    completed: currentWeight.value <= 72
+    completed: Math.abs(startWeight.value - currentWeight.value) >= 2
   },
   {
     id: 2,
     title: t('weightDetail.milestone2'),
     description: t('weightDetail.milestone2Desc'),
-    completed: currentWeight.value <= 70
+    completed: Math.abs(startWeight.value - currentWeight.value) >= 5
   },
   {
     id: 3,
     title: t('weightDetail.milestone3'),
     description: t('weightDetail.milestone3Desc'),
-    completed: currentWeight.value <= 68
+    completed: progressPercentage.value >= 50
   },
   {
     id: 4,
@@ -375,25 +339,60 @@ const milestones = computed(() => [
   }
 ])
 
+// Recent weight entries (last 10)
+const recentWeightEntries = computed(() => {
+  return weightEntries.value.slice(0, 10).map((entry, index) => {
+    const prevEntry = weightEntries.value[index + 1]
+    const change = prevEntry ? entry.weight - prevEntry.weight : null
+    
+    return {
+      id: entry.timestamp,
+      date: new Date(entry.date),
+      weight: entry.weight,
+      change,
+      note: entry.note || ''
+    }
+  })
+})
+
 // Methods
 const getWeightChartData = () => {
-  // Mock data - in real app this would come from a store/API
-  return [
-    { date: '2025-07-01', weight: 75.0 },
-    { date: '2025-07-08', weight: 74.5 },
-    { date: '2025-07-15', weight: 74.2 },
-    { date: '2025-07-22', weight: 73.8 },
-    { date: '2025-07-29', weight: 73.5 },
-    { date: '2025-08-05', weight: 73.0 },
-    { date: '2025-08-12', weight: 72.5 },
-    { date: '2025-08-19', weight: 72.0 },
-    { date: '2025-08-26', weight: 71.2 },
-    { date: '2025-09-01', weight: 70.2 }
-  ]
+  return weightEntries.value
+    .filter(entry => {
+      const entryDate = new Date(entry.date)
+      const now = new Date()
+      const cutoffDate = new Date()
+      
+      switch (selectedChartPeriod.value) {
+        case 'week':
+          cutoffDate.setDate(now.getDate() - 7)
+          break
+        case 'month':
+          cutoffDate.setMonth(now.getMonth() - 1)
+          break
+        case '3months':
+          cutoffDate.setMonth(now.getMonth() - 3)
+          break
+        case '6months':
+          cutoffDate.setMonth(now.getMonth() - 6)
+          break
+        case 'year':
+          cutoffDate.setFullYear(now.getFullYear() - 1)
+          break
+        case 'all':
+          return true
+      }
+      
+      return entryDate >= cutoffDate
+    })
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    .map(entry => ({
+      date: entry.date,
+      weight: entry.weight
+    }))
 }
 
 const getFilteredEntries = () => {
-  // Filter entries based on selected period
   const now = new Date()
   const cutoffDate = new Date()
   
@@ -414,10 +413,10 @@ const getFilteredEntries = () => {
       cutoffDate.setFullYear(now.getFullYear() - 1)
       break
     case 'all':
-      return recentWeightEntries.value
+      return weightEntries.value
   }
   
-  return recentWeightEntries.value.filter(entry => entry.date >= cutoffDate)
+  return weightEntries.value.filter(entry => new Date(entry.date) >= cutoffDate)
 }
 
 const getPeriodLabel = (period: string) => {
@@ -451,39 +450,82 @@ const getHighestWeightDate = () => {
   const entries = getFilteredEntries()
   if (entries.length === 0) return ''
   const highestEntry = entries.find(entry => entry.weight === parseFloat(String(highestWeight.value)))
-  return highestEntry ? formatDate(highestEntry.date) : ''
+  return highestEntry ? formatDate(new Date(highestEntry.date)) : ''
 }
 
 const getLowestWeightDate = () => {
   const entries = getFilteredEntries()
   if (entries.length === 0) return ''
   const lowestEntry = entries.find(entry => entry.weight === parseFloat(String(lowestWeight.value)))
-  return lowestEntry ? formatDate(lowestEntry.date) : ''
+  return lowestEntry ? formatDate(new Date(lowestEntry.date)) : ''
 }
 
-const logWeight = () => {
+const logWeight = async () => {
   if (!newWeight.value) return
   
-  const newEntry = {
-    id: Date.now(),
-    date: newWeightDate.value ? new Date(newWeightDate.value) : new Date(),
-    weight: newWeight.value,
-    change: newWeight.value - currentWeight.value,
-    note: weightNote.value
+  try {
+    // Add the weight entry
+    await WeightTracker.addWeightEntry(newWeight.value, weightNote.value)
+    
+    // Reload data
+    await loadData()
+    
+    // Reset form
+    newWeight.value = null
+    newWeightDate.value = ''
+    weightNote.value = ''
+    showWeightLogModal.value = false
+  } catch (error) {
+    console.error('Error logging weight:', error)
   }
-  
-  recentWeightEntries.value.unshift(newEntry)
-  currentWeight.value = newWeight.value
-  
-  // Reset form
-  newWeight.value = null
-  newWeightDate.value = ''
-  weightNote.value = ''
-  showWeightLogModal.value = false
 }
 
-const deleteWeightEntry = (id: number) => {
-  recentWeightEntries.value = recentWeightEntries.value.filter(entry => entry.id !== id)
+const deleteWeightEntry = async (timestamp: number) => {
+  try {
+    // Remove the entry from the array
+    const updatedEntries = weightEntries.value.filter(entry => entry.timestamp !== timestamp)
+    await import('../utils/storage').then(({ Storage }) => Storage.set('weightEntries', updatedEntries))
+    
+    // Reload data
+    await loadData()
+  } catch (error) {
+    console.error('Error deleting weight entry:', error)
+  }
+}
+
+const loadData = async () => {
+  try {
+    // Load weight entries
+    weightEntries.value = await WeightTracker.getWeightEntries()
+    
+    // Load weight statistics
+    const weightStats = await WeightTracker.getWeightStats()
+    if (weightStats.currentWeight) {
+      currentWeight.value = weightStats.currentWeight
+    }
+    
+    // Load weight goal
+    const goal = await WeightTracker.getWeightGoal()
+    if (goal) {
+      targetWeight.value = goal.targetWeight
+      startWeight.value = goal.startWeight
+    }
+    
+    // Calculate weekly weight change
+    const oneWeekAgo = new Date()
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
+    
+    const weekOldEntry = weightEntries.value.find(entry => 
+      new Date(entry.date) <= oneWeekAgo
+    )
+    
+    if (weekOldEntry) {
+      weightChange.value = currentWeight.value - weekOldEntry.weight
+    }
+    
+  } catch (error) {
+    console.error('Error loading weight data:', error)
+  }
 }
 
 onMounted(() => {
@@ -491,8 +533,8 @@ onMounted(() => {
   const now = new Date()
   newWeightDate.value = now.toISOString().slice(0, 16)
   
-  // Initialize with mock user data if needed
-  // In real app this would come from a user store
+  // Load data
+  loadData()
 })
 </script>
 

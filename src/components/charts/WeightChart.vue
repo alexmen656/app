@@ -20,6 +20,8 @@ interface WeightChartProps {
   data: WeightDataPoint[]
   goalWeight?: number
   currentWeight?: number
+  period?: string
+  showStatistics?: boolean
 }
 
 const props = defineProps<WeightChartProps>()

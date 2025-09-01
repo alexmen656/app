@@ -120,9 +120,9 @@
             </svg>
           </div>
           <div class="info-content">
-            <h4>{{ getWeightToGoalTitle() }}</h4>
-            <p>{{ getWeightToGoal() }} kg</p>
-            <span class="info-description">{{ getWeightToGoalDescription() }}</span>
+            <h4>{{ weightToGoalTitle }}</h4>
+            <p>{{ weightToGoal }} kg</p>
+            <span class="info-description">{{ weightToGoalDescription }}</span>
           </div>
         </div>
       </div>
@@ -193,16 +193,27 @@
 import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import BMIChart from '../components/charts/BMIChart.vue'
+import { WeightTracker, type WeightEntry } from '../utils/weightTracking'
+import { userProfile } from '../stores/userStore'
 
 const { t } = useI18n()
 
 // BMI Data
 const currentBMI = ref({
-  value: 22.5,
+  value: 0,
   category: 'Normal',
   categoryColor: '#4CAF50',
-  description: 'Ihr BMI liegt im normalen Bereich. Weiter so!'
+  description: 'Berechnung läuft...'
 })
+
+// Weight entries for BMI calculation
+const weightEntries = ref<WeightEntry[]>([])
+const userHeight = ref<number>(175)
+
+// Reactive values for weight goal info
+const weightToGoalTitle = ref<string>('')
+const weightToGoal = ref<string>('0.0')
+const weightToGoalDescription = ref<string>('')
 
 // Chart periods
 const chartPeriods = ref([
@@ -239,57 +250,46 @@ const getBMIPosition = (bmi: number): number => {
 }
 
 const getBMIChartData = () => {
-  // Mock data for BMI history
-  return [
-    { date: '2025-06-01', bmi: 23.2 },
-    { date: '2025-06-15', bmi: 23.0 },
-    { date: '2025-07-01', bmi: 22.8 },
-    { date: '2025-07-15', bmi: 22.6 },
-    { date: '2025-08-01', bmi: 22.5 },
-    { date: '2025-08-15', bmi: 22.5 },
-    { date: '2025-09-01', bmi: 22.5 }
-  ]
+  // Filter entries based on selected period
+  const now = new Date()
+  const cutoffDate = new Date()
+  
+  switch (selectedChartPeriod.value) {
+    case '3months':
+      cutoffDate.setMonth(now.getMonth() - 3)
+      break
+    case '6months':
+      cutoffDate.setMonth(now.getMonth() - 6)
+      break
+    case '1year':
+      cutoffDate.setFullYear(now.getFullYear() - 1)
+      break
+    case 'all':
+      cutoffDate.setFullYear(2020) // Far back enough to include all data
+      break
+  }
+  
+  const filteredEntries = weightEntries.value
+    .filter(entry => new Date(entry.date) >= cutoffDate)
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+  
+  // Calculate BMI for each weight entry
+  return filteredEntries.map(entry => {
+    const heightInM = userHeight.value / 100
+    const bmi = entry.weight / (heightInM * heightInM)
+    return {
+      date: entry.date,
+      bmi: Math.round(bmi * 10) / 10
+    }
+  })
 }
 
 const getHealthyWeightRange = (): string => {
-  const height = 175 // Mock height
+  const height = userHeight.value
   const heightInM = height / 100
   const minWeight = Math.round(18.5 * heightInM * heightInM * 10) / 10
   const maxWeight = Math.round(24.9 * heightInM * heightInM * 10) / 10
   return `${minWeight} - ${maxWeight}`
-}
-
-const getWeightToGoalTitle = () => {
-  const currentWeight = 70 // Mock current weight
-  const targetWeight = 70 // Mock target weight
-  
-  if (currentWeight > targetWeight) {
-    return t('bmiDetail.weightToLose')
-  } else if (currentWeight < targetWeight) {
-    return t('bmiDetail.weightToGain')
-  } else {
-    return t('bmiDetail.weightMaintained')
-  }
-}
-
-const getWeightToGoal = (): string => {
-  const currentWeight = 70 // Mock current weight
-  const targetWeight = 70 // Mock target weight
-  const difference = Math.abs(currentWeight - targetWeight)
-  return difference.toFixed(1)
-}
-
-const getWeightToGoalDescription = () => {
-  const currentWeight = 70 // Mock current weight
-  const targetWeight = 70 // Mock target weight
-  
-  if (currentWeight > targetWeight) {
-    return t('bmiDetail.weightToLoseDescription')
-  } else if (currentWeight < targetWeight) {
-    return t('bmiDetail.weightToGainDescription')
-  } else {
-    return t('bmiDetail.weightMaintainedDescription')
-  }
 }
 
 const getCalculatedBMICategory = () => {
@@ -347,26 +347,72 @@ const getHealthTips = () => {
   }
 }
 
-onMounted(() => {
-  // Initialize with mock user data
-  const height = 175 // Mock height
-  const weight = 70 // Mock weight
-  
-  if (height && weight) {
-    const heightInM = height / 100
-    const bmi = weight / (heightInM * heightInM)
-    const roundedBMI = Math.round(bmi * 10) / 10
+const loadData = async () => {
+  try {
+    // Load weight entries
+    weightEntries.value = await WeightTracker.getWeightEntries()
     
-    currentBMI.value = {
-      value: roundedBMI,
-      category: getCalculatedBMICategory().category,
-      categoryColor: getCalculatedBMICategory().color,
-      description: getBMIDescription(roundedBMI)
+    // Get user height
+    userHeight.value = userProfile.height || 175
+    
+    // Calculate current BMI
+    const weightStats = await WeightTracker.getWeightStats()
+    if (weightStats.currentWeight && userHeight.value) {
+      const bmiData = WeightTracker.calculateBMI(weightStats.currentWeight, userHeight.value)
+      currentBMI.value = {
+        value: bmiData.value,
+        category: WeightTracker.getBMICategoryText(bmiData.category),
+        categoryColor: bmiData.categoryColor,
+        description: getBMIDescription(bmiData.value)
+      }
+      
+      // Update calculator with current values
+      calculatorHeight.value = userHeight.value
+      calculatorWeight.value = weightStats.currentWeight
     }
     
-    calculatorHeight.value = height
-    calculatorWeight.value = weight
+    // Load weight goal information
+    await loadWeightGoalInfo()
+  } catch (error) {
+    console.error('Error loading BMI data:', error)
   }
+}
+
+const loadWeightGoalInfo = async () => {
+  try {
+    const weightStats = await WeightTracker.getWeightStats()
+    const goal = await WeightTracker.getWeightGoal()
+    
+    if (!weightStats.currentWeight || !goal) {
+      weightToGoalTitle.value = t('bmiDetail.weightMaintained')
+      weightToGoal.value = '0.0'
+      weightToGoalDescription.value = t('bmiDetail.weightMaintainedDescription')
+      return
+    }
+    
+    const currentWeight = weightStats.currentWeight
+    const targetWeight = goal.targetWeight
+    const difference = Math.abs(currentWeight - targetWeight)
+    
+    weightToGoal.value = difference.toFixed(1)
+    
+    if (currentWeight > targetWeight) {
+      weightToGoalTitle.value = t('bmiDetail.weightToLose')
+      weightToGoalDescription.value = t('bmiDetail.weightToLoseDescription')
+    } else if (currentWeight < targetWeight) {
+      weightToGoalTitle.value = t('bmiDetail.weightToGain')
+      weightToGoalDescription.value = t('bmiDetail.weightToGainDescription')
+    } else {
+      weightToGoalTitle.value = t('bmiDetail.weightMaintained')
+      weightToGoalDescription.value = t('bmiDetail.weightMaintainedDescription')
+    }
+  } catch (error) {
+    console.error('Error loading weight goal info:', error)
+  }
+}
+
+onMounted(() => {
+  loadData()
 })
 
 const getBMIDescription = (bmi: number): string => {
