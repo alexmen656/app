@@ -177,6 +177,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { revenueCatService, type SubscriptionPlan } from '../services/revenuecat'
 import { updateSubscriptionStatus } from '../stores/userStore'
+import { PremiumManager } from '../utils/premiumManager'
 
 const router = useRouter()
 
@@ -242,6 +243,10 @@ async function purchaseSelected() {
     
     if (success) {
       await updateSubscriptionStatus(true, 'Premium')
+      // Force update premium status für immediate UI updates
+      await PremiumManager.forceUpdatePremiumStatus()
+      
+      console.log('🎉 Purchase successful - navigating to home')
       router.push('/')
     } else {
       errorMessage.value = 'Purchase failed. Please try again.'
@@ -265,6 +270,10 @@ async function restorePurchases() {
     
     if (success) {
       await updateSubscriptionStatus(true, 'Premium')
+      // Force update premium status für immediate UI updates
+      await PremiumManager.forceUpdatePremiumStatus()
+      
+      console.log('🎉 Restore successful - navigating to home')
       router.push('/')
     } else {
       errorMessage.value = 'No purchases found to restore.'

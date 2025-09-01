@@ -256,7 +256,7 @@ import { InAppReview } from '@capacitor-community/in-app-review';
 import { shouldShowReviewPrompt, setLastReviewPrompt, getNotificationSettings } from '../stores/preferencesStore'
 import { NotificationService } from '../services/notifications'
 import { useBarcodeScanner } from '../composables/useBarcodeScanner'
-import { isPremiumUser } from '../utils/premiumManager' //premiumManager
+import { isPremiumUser, onPremiumStatusChange } from '../utils/premiumManager' //premiumManager
 import PremiumBlocker from '../components/PremiumBlocker.vue'
 
 const router = useRouter()
@@ -370,6 +370,17 @@ onMounted(async () => {
 
     window.addEventListener('scanHistoryUpdated', onScanHistoryUpdated)
     window.addEventListener('focus', onFocus)
+    
+    // Listen for premium status changes to hide banner immediately
+    const unsubscribe = onPremiumStatusChange((isPremium) => {
+        console.log('🎉 Premium status changed in HomeView:', isPremium)
+        if (isPremium) {
+            showPremiumBanner.value = false
+        }
+    })
+    
+    // Cleanup function will be called by onUnmounted
+    window.addEventListener('beforeunload', unsubscribe)
 })
 
 onUnmounted(() => {

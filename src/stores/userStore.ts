@@ -1,5 +1,6 @@
 import { reactive, computed, ref } from 'vue'
 import { Storage } from '../utils/storage'
+import { isPremiumUser, subscriptionType } from '../utils/premiumManager'
 
 interface UserProfile {
   name: string
@@ -142,6 +143,16 @@ export async function updateSubscriptionStatus(isActive: boolean, plan: string =
   subscriptionStatus.plan = plan
   subscriptionStatus.expiresAt = expiresAt
   await saveToStorage('subscriptionStatus', subscriptionStatus)
+  
+  // WICHTIG: Auch den globalen Premium-Status aktualisieren
+  isPremiumUser.value = isActive
+  subscriptionType.value = plan
+  
+  console.log('🎉 Subscription status updated:', { 
+    isActive, 
+    plan, 
+    premiumUserUpdated: isPremiumUser.value 
+  })
 }
 
 export async function completeOnboarding() {

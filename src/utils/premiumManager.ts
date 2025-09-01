@@ -1,9 +1,32 @@
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { revenueCatService } from '../services/revenuecat'
 
 // State für Premium-Status
 export const isPremiumUser = ref(false)
 export const subscriptionType = ref<string>('')
+
+// Callback functions für Premium-Status-Änderungen
+type PremiumStatusCallback = (isPremium: boolean, type: string) => void
+const premiumStatusCallbacks: Set<PremiumStatusCallback> = new Set()
+
+export function onPremiumStatusChange(callback: PremiumStatusCallback) {
+  premiumStatusCallbacks.add(callback)
+  return () => premiumStatusCallbacks.delete(callback)
+}
+
+// Watch für automatische Callbacks
+watch([isPremiumUser, subscriptionType], ([newIsPremium, newType], [oldIsPremium, oldType]) => {
+  if (newIsPremium !== oldIsPremium || newType !== oldType) {
+    console.log('🎉 Premium status changed:', { from: oldIsPremium, to: newIsPremium, type: newType })
+    premiumStatusCallbacks.forEach(callback => {
+      try {
+        callback(newIsPremium, newType)
+      } catch (error) {
+        console.error('Error in premium status callback:', error)
+      }
+    })
+  }
+}, { immediate: false })
 
 // Premium-Features Konfiguration
 export const premiumFeatures = {
@@ -114,6 +137,20 @@ export class PremiumManager {
     } catch (error) {
       console.error('Error updating premium status:', error)
       isPremiumUser.value = false
+    }
+  }
+
+  /**
+   * Manueller Premium-Status Update (für nach Purchase/Restore)
+   */
+  static async forceUpdatePremiumStatus(): Promise<void> {
+    try {
+      const instance = PremiumManager.getInstance()
+      await instance.updatePremiumStatus()
+      
+      console.log('🎉 Premium status force updated - callbacks will be triggered automatically')
+    } catch (error) {
+      console.error('Error force updating premium status:', error)
     }
   }
   

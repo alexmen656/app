@@ -144,9 +144,9 @@
         <!-- HealthKit Actions -->
         <div v-if="!healthKitStatus.isConnected && healthKitStatus.isAvailable && isPremiumUser" class="setting-item">
           <button class="action-button healthkit-connect" @click="connectHealthKit">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <!--  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z"/>
-            </svg>
+            </svg>-->
             <span>{{ $t('settings.connectHealthKit') }}</span>
           </button>
         </div>
@@ -536,7 +536,7 @@
 
         <div class="setting-item">
           <span class="setting-label">{{ $t('settings.build') }}</span>
-          <span class="setting-value build-clickable" @click="handleBuildClick">2024.09.001</span>
+          <span class="setting-value build-clickable" @click="handleBuildClick">2025.09.002</span>
         </div>
 
         <!--<button class="action-button" @click="checkUpdates">
@@ -575,7 +575,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, watch } from 'vue'
+import { computed, ref, onMounted, watch, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import {
   userProfile,
@@ -601,7 +601,7 @@ import {
 import { NotificationService, type NotificationSettings } from '../services/notifications'
 import { HealthKitService } from '../services/healthkit'
 import { Capacitor } from '@capacitor/core'
-import { isPremiumUser } from '../utils/premiumManager'
+import { isPremiumUser, onPremiumStatusChange } from '../utils/premiumManager'
 //, premiumManager, premiumFeatures
 const router = useRouter()
 const currentLanguage = ref(getCurrentLanguage())
@@ -729,6 +729,26 @@ onMounted(async () => {
   
   // Also ensure we're watching for changes correctly
   console.log('Settings view mounted - Premium status:', isPremiumUser.value, 'HealthKit status:', healthKitStatus.value)
+  
+  // Listen for premium status changes
+  const unsubscribe = onPremiumStatusChange(async (isPremium, type) => {
+    console.log('🎉 Premium status changed in Settings:', { isPremium, type })
+    if (isPremium) {
+      await loadHealthKitStatus()
+    } else {
+      // Reset HealthKit status when premium is lost
+      healthKitStatus.value.isConnected = false
+      healthKitStatus.value.lastSync = null
+      healthKitPermissions.value.forEach(permission => {
+        permission.granted = false
+      })
+    }
+  })
+  
+  // Cleanup
+  onUnmounted(() => {
+    unsubscribe()
+  })
 })
 
 // Watch for premium status changes to load HealthKit when user upgrades
