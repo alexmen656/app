@@ -223,6 +223,24 @@
                 <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
             </svg>
         </div>
+
+        <!-- Scan Limit Blocker -->
+        <PremiumBlocker
+            v-if="showScanLimitBlocker"
+            feature="unlimited_food_scans"
+            :title="$t('premium.scanLimit.title')"
+            :description="$t('premium.scanLimit.description')"
+            :features="[
+                $t('premium.scanLimit.feature1'),
+                $t('premium.scanLimit.feature2'),
+                $t('premium.scanLimit.feature3')
+            ]"
+            :show-usage-info="true"
+            :scans-used="currentScanUsage?.currentCount || 0"
+            :scans-total="currentScanUsage?.limit || 10"
+            @close="closeScanLimitBlocker"
+            @upgrade="handleScanLimitUpgrade"
+        />
     </div>
 </template>
 
@@ -239,16 +257,30 @@ import { shouldShowReviewPrompt, setLastReviewPrompt, getNotificationSettings } 
 import { NotificationService } from '../services/notifications'
 import { useBarcodeScanner } from '../composables/useBarcodeScanner'
 import { isPremiumUser } from '../utils/premiumManager' //premiumManager
+import PremiumBlocker from '../components/PremiumBlocker.vue'
 
 const router = useRouter()
 const { t } = useI18n()
-const { startScanning, isProcessingPhoto } = useBarcodeScanner()
+const { startScanning, isProcessingPhoto, checkScanLimit, getScanUsage } = useBarcodeScanner()
 
 const showPremiumBanner = ref(true)
+const showScanLimitBlocker = ref(false)
+const currentScanUsage = ref<any>(null)
 
 // Open native scanner directly
 async function openNativeScanner() {
     try {
+        // Check scan limits first
+        const usage = await checkScanLimit()
+        currentScanUsage.value = usage
+        
+        if (!usage.canScan && !usage.isPremium) {
+            // Show premium blocker for free users who hit the limit
+            console.log(`Scan limit reached: ${usage.currentCount}/${usage.limit} scans used today`)
+            showScanLimitBlocker.value = true
+            return
+        }
+        
         await startScanning({
             mode: 'barcode', // Default to barcode mode
             timeout: 0, // No timeout
@@ -257,9 +289,32 @@ async function openNativeScanner() {
         
         // Refresh scan history when we return from scanner
         loadScanHistory()
+        
+        // Update scan usage after successful scan
+        await getScanUsage()
+        
     } catch (error) {
         console.error('Failed to open scanner:', error)
+        
+        // Handle scan limit errors
+        if (error instanceof Error && error.message?.includes('SCAN_LIMIT_REACHED')) {
+            // Show premium upgrade prompt
+            const usage = await getScanUsage()
+            currentScanUsage.value = usage
+            showScanLimitBlocker.value = true
+        }
     }
+}
+
+// Close scan limit blocker
+function closeScanLimitBlocker() {
+    showScanLimitBlocker.value = false
+}
+
+// Handle premium upgrade from scan limit blocker
+function handleScanLimitUpgrade() {
+    showScanLimitBlocker.value = false
+    router.push('/paywall')
 }
 
 function onScanHistoryUpdated() {

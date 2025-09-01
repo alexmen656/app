@@ -278,6 +278,13 @@
       "title": "Tägliches Scan-Limit erreicht",
       "description": "Upgraden Sie auf Premium für unbegrenzte Food-Scans mit KI-Erkennung."
     },
+    "scanLimit": {
+      "title": "Tägliches Scan-Limit erreicht",
+      "description": "Sie haben Ihr tägliches Limit von 5 Scans erreicht. Upgraden Sie auf Premium für unbegrenzte Scans!",
+      "feature1": "Unbegrenzte Food-Scans",
+      "feature2": "KI-basierte Lebensmittelerkennung", 
+      "feature3": "Keine täglichen Limits"
+    },
     "analytics": {
       "title": "Erweiterte Analytics",
       "description": "Erhalten Sie tiefere Einblicke in Ihre Ernährungsgewohnheiten mit Premium Analytics.",

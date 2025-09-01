@@ -87,12 +87,16 @@ interface Props {
   features?: string[]
   showUsageInfo?: boolean
   showCloseButton?: boolean
+  scansUsed?: number
+  scansTotal?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
   features: () => [],
   showUsageInfo: false,
-  showCloseButton: true
+  showCloseButton: true,
+  scansUsed: 0,
+  scansTotal: 10
 })
 
 const emit = defineEmits<{
@@ -104,8 +108,8 @@ const router = useRouter()
 const { t } = useI18n()
 
 // Usage Information
-const scansUsed = computed(() => usageTracking.value.dailyFoodScans)
-const scansTotal = computed(() => freeLimits.DAILY_FOOD_SCANS)
+const scansUsed = computed(() => props.scansUsed || usageTracking.value.dailyFoodScans)
+const scansTotal = computed(() => props.scansTotal || freeLimits.DAILY_FOOD_SCANS)
 const usagePercentage = computed(() => 
   Math.min((scansUsed.value / scansTotal.value) * 100, 100)
 )

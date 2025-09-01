@@ -15,12 +15,22 @@ export interface PhotoResult {
   height: number
 }
 
+export interface ScanUsageInfo {
+  currentCount: number
+  limit: number
+  remaining: number
+  isPremium: boolean
+  canScan: boolean
+  limitReached: boolean
+}
+
 export function useBarcodeScanner() {
   const router = useRouter()
   const isScanning = ref(false)
   const hasPermission = ref(false)
   const currentMode = ref<'barcode' | 'photo'>('barcode')
   const isProcessingPhoto = ref(false) // New loading state for photo processing
+  const scanUsage = ref<ScanUsageInfo | null>(null)
 
   // Check camera permission
   const checkPermission = async (): Promise<boolean> => {
@@ -46,6 +56,71 @@ export function useBarcodeScanner() {
     }
   }
 
+  // NEW: Scan limit functions
+  
+  // Check if user can scan (within daily limit)
+  const checkScanLimit = async (): Promise<ScanUsageInfo> => {
+    try {
+      const usage = await (KaloriqBarcodeScanner as any).canScan()
+      scanUsage.value = usage
+      return usage
+    } catch (error) {
+      console.error('Error checking scan limit:', error)
+      // Default fallback for non-premium users
+      return {
+        currentCount: 0,
+        limit: 10,
+        remaining: 10,
+        isPremium: false,
+        canScan: true,
+        limitReached: false
+      }
+    }
+  }
+
+  // Get current scan usage
+  const getScanUsage = async (): Promise<ScanUsageInfo> => {
+    try {
+      const usage = await (KaloriqBarcodeScanner as any).getScanUsage()
+      scanUsage.value = usage
+      return usage
+    } catch (error) {
+      console.error('Error getting scan usage:', error)
+      return {
+        currentCount: 0,
+        limit: 10,
+        remaining: 10,
+        isPremium: false,
+        canScan: true,
+        limitReached: false
+      }
+    }
+  }
+
+  // Set premium status (called from RevenueCat)
+  const setPremiumStatus = async (isPremium: boolean, expiryDate?: number): Promise<void> => {
+    try {
+      await (KaloriqBarcodeScanner as any).setPremiumStatus({
+        isPremium,
+        expiryDate
+      })
+      // Refresh usage info
+      await getScanUsage()
+    } catch (error) {
+      console.error('Error setting premium status:', error)
+    }
+  }
+
+  // Reset scan count (for testing)
+  const resetScanCount = async (): Promise<void> => {
+    try {
+      const usage = await (KaloriqBarcodeScanner as any).resetScanCount()
+      scanUsage.value = usage
+    } catch (error) {
+      console.error('Error resetting scan count:', error)
+    }
+  }
+
   // Start scanning
   const startScanning = async (options: {
     mode?: 'barcode' | 'photo'
@@ -63,6 +138,12 @@ export function useBarcodeScanner() {
         }
       }
 
+      // NEW: Check scan limits before starting
+      const usage = await checkScanLimit()
+      if (!usage.canScan) {
+        throw new Error(`SCAN_LIMIT_REACHED: ${usage.remaining} scans remaining today`)
+      }
+
       isScanning.value = true
       currentMode.value = options.mode || 'barcode'
 
@@ -78,7 +159,7 @@ export function useBarcodeScanner() {
         //console.log('Food analysis listener not available (web fallback)')
       }
 
-      // Start the native scanner
+      // Start the native scanner with scan limit check
       await KaloriqBarcodeScanner.startScanning({
         mode: options.mode || 'barcode',
         camera: options.camera || 'back',
@@ -97,6 +178,12 @@ export function useBarcodeScanner() {
     } catch (error) {
       console.error('Error starting scanner:', error)
       isScanning.value = false
+      
+      // Check if it's a scan limit error
+      if (error instanceof Error && error.message?.includes('SCAN_LIMIT_REACHED')) {
+        throw new Error(error.message)
+      }
+      
       throw error
     }
   }
@@ -119,6 +206,13 @@ export function useBarcodeScanner() {
     //console.log('Barcode scanned:', result)
     
     isScanning.value = false
+    
+    // Update scan usage after successful scan
+    try {
+      await getScanUsage()
+    } catch (error) {
+      console.error('Error updating scan usage:', error)
+    }
     
     console.log("Pushing to nutrition", result.image);
     await router.push({
@@ -281,6 +375,7 @@ export function useBarcodeScanner() {
     hasPermission,
     currentMode,
     isProcessingPhoto,
+    scanUsage,
     
     // Methods
     checkPermission,
@@ -289,6 +384,12 @@ export function useBarcodeScanner() {
     stopScanning,
     switchCamera,
     toggleFlash,
-    takePhoto
+    takePhoto,
+    
+    // NEW: Scan limit methods
+    checkScanLimit,
+    getScanUsage,
+    setPremiumStatus,
+    resetScanCount
   }
 }

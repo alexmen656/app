@@ -39,7 +39,7 @@ export const freeLimits = {
   EXPORT_FUNCTIONS: false
 }
 
-// Usage Tracking für Free Users
+// Usage Tracking für Free Users (deprecated - now using native Swift tracking)
 export const usageTracking = ref({
   dailyFoodScans: 0,
   lastResetDate: new Date().toDateString()
@@ -93,7 +93,7 @@ export class PremiumManager {
   }
   
   /**
-   * Premium-Status aktualisieren
+   * Premium-Status aktualisieren und mit nativem System synchronisieren
    */
   async updatePremiumStatus(): Promise<void> {
     try {
@@ -107,10 +107,33 @@ export class PremiumManager {
         subscriptionType.value = ''
       }
       
+      // NEW: Synchronisiere mit nativem Scan-Limit-System
+      await this.syncWithNativeScanLimits(hasSubscription)
+      
       console.log('Premium status updated:', { isPremiumUser: isPremiumUser.value })
     } catch (error) {
       console.error('Error updating premium status:', error)
       isPremiumUser.value = false
+    }
+  }
+  
+  /**
+   * Synchronisiere Premium-Status mit nativem Swift Scan-Limit-System
+   */
+  private async syncWithNativeScanLimits(isPremium: boolean, expiryDate?: Date): Promise<void> {
+    try {
+      // Importiere das Barcode Scanner Plugin dynamisch
+      const { KaloriqBarcodeScanner } = await import('kaloriq-barcode-scanner')
+      
+      // Setze Premium-Status im nativen System
+      await (KaloriqBarcodeScanner as any).setPremiumStatus({
+        isPremium,
+        expiryDate: expiryDate ? expiryDate.getTime() : undefined
+      })
+      
+      console.log('Native scan limits synchronized with premium status:', isPremium)
+    } catch (error) {
+      console.error('Error syncing with native scan limits:', error)
     }
   }
   

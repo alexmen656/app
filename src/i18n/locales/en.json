@@ -278,6 +278,13 @@
       "title": "Daily Scan Limit Reached",
       "description": "Upgrade to Premium for unlimited food scans with AI recognition."
     },
+    "scanLimit": {
+      "title": "Daily Scan Limit Reached",
+      "description": "You've reached your daily limit of 5 scans. Upgrade to Premium for unlimited scans!",
+      "feature1": "Unlimited food scans",
+      "feature2": "AI-powered food recognition", 
+      "feature3": "No daily limits"
+    },
     "analytics": {
       "title": "Advanced Analytics", 
       "description": "Get deeper insights into your nutrition habits with Premium Analytics.",
