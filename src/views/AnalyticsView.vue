@@ -952,7 +952,7 @@ function handleTouchEnd(event: TouchEvent) {
 .weight-chart-container {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 16px;
-  padding: 24px;
+  padding: 6px;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
@@ -1272,14 +1272,6 @@ function handleTouchEnd(event: TouchEvent) {
 
 .modal-btn:disabled:hover {
   background: #007052;
-}
-
-/* New Weight Chart Styles */
-.weight-chart-container {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
-  padding: 24px;
-  backdrop-filter: blur(10px);
 }
 
 .weight-period-selector {

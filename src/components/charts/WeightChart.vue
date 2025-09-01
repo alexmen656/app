@@ -1,11 +1,6 @@
 <template>
   <div class="weight-chart-container">
-    <apexchart
-      type="line"
-      height="300"
-      :options="chartOptions"
-      :series="chartSeries"
-    />
+    <apexchart type="line" height="300" :options="chartOptions" :series="chartSeries" />
   </div>
 </template>
 
@@ -112,7 +107,7 @@ const chartOptions = computed(() => {
       min,
       max,
       tickAmount,
-      labels: { style: { colors: 'rgba(255,255,255,0.75)', fontSize: '12px' }, formatter: (v: number) => `${v} kg` }
+      labels: { style: { colors: 'rgba(255,255,255,0.75)', fontSize: '12px' }, formatter: (v: number) => `${v.toFixed(1)}` }
     },
     grid: { borderColor: 'rgba(255,255,255,0.08)', strokeDashArray: 4 },
     tooltip: {
