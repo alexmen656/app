@@ -73,9 +73,9 @@ export function useBarcodeScanner() {
       // Add food analysis listener using generic approach
       try {
         (KaloriqBarcodeScanner as any).addListener('foodAnalyzed', handleFoodAnalyzed)
-        console.log('Food analysis listener added')
+        //console.log('Food analysis listener added')
       } catch (e) {
-        console.log('Food analysis listener not available (web fallback)')
+        //console.log('Food analysis listener not available (web fallback)')
       }
 
       // Start the native scanner
@@ -116,7 +116,7 @@ export function useBarcodeScanner() {
 
   // Handle barcode scan result
   const handleBarcodeScanned = async (result: ScanResult) => {
-    console.log('Barcode scanned:', result)
+    //console.log('Barcode scanned:', result)
     
     isScanning.value = false
     
@@ -133,16 +133,16 @@ export function useBarcodeScanner() {
 
   // Handle photo result
   const handlePhotoTaken = async (result: PhotoResult) => {
-    console.log('🔥 Photo taken event received:', { width: result.width, height: result.height, base64Length: result.base64?.length })
+    //console.log('🔥 Photo taken event received:', { width: result.width, height: result.height, base64Length: result.base64?.length })
     
     isScanning.value = false
     isProcessingPhoto.value = true // Start processing state
     
     try {
       // Analyze the photo for food content
-      console.log('🔥 Starting food analysis...')
+      //console.log('🔥 Starting food analysis...')
       const analyzedFood = await analyzeFoodPhoto(result.base64)
-      console.log('🔥 Food analysis completed:', analyzedFood)
+      //console.log('🔥 Food analysis completed:', analyzedFood)
       
       isProcessingPhoto.value = false // End processing state
       
@@ -179,7 +179,7 @@ export function useBarcodeScanner() {
 
   // Handle food analysis result (NEW - from iOS native analysis)
   const handleFoodAnalyzed = async (result: any) => {
-    console.log('Food analyzed natively:', result)
+    ////console.log('Food analyzed natively:', result)
     
     isScanning.value = false
     
@@ -196,7 +196,7 @@ export function useBarcodeScanner() {
   // Analyze food photo using KaloriQ API
   const analyzeFoodPhoto = async (base64Image: string) => {
     try {
-      console.log('🔥 analyzeFoodPhoto called with base64 length:', base64Image.length)
+      //console.log('🔥 analyzeFoodPhoto called with base64 length:', base64Image.length)
       
       // Ensure base64Image is a data URL
       const dataUrl = base64Image.startsWith('data:') ? base64Image : `data:image/jpeg;base64,${base64Image}`
@@ -205,13 +205,13 @@ export function useBarcodeScanner() {
       const response = await fetch(dataUrl)
       const blob = await response.blob()
       
-      console.log('🔥 Blob created, size:', blob.size)
+      //console.log('🔥 Blob created, size:', blob.size)
 
       // Create form data
       const formData = new FormData()
       formData.append('image', blob, 'photo.jpg')
 
-      console.log('🔥 Sending request to KaloriQ API...')
+      //console.log('🔥 Sending request to KaloriQ API...')
       
       // Send to KaloriQ Food Analyze API
       const apiResponse = await fetch('https://kaloriq-api.vercel.app/api/food/analyze', {
@@ -219,14 +219,14 @@ export function useBarcodeScanner() {
         body: formData
       })
 
-      console.log('🔥 API Response status:', apiResponse.status)
+      //console.log('🔥 API Response status:', apiResponse.status)
 
       if (!apiResponse.ok) {
         throw new Error(`API error: ${apiResponse.status}`)
       }
 
       const data = await apiResponse.json()
-      console.log('🔥 API Response data:', data)
+      //console.log('🔥 API Response data:', data)
 
       if (!data.success || !data.data) {
         throw new Error('Food analysis failed')

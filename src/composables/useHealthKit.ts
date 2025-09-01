@@ -19,7 +19,7 @@ export function useHealthKit() {
    */
   const syncToHealthKit = async (data: HealthKitData): Promise<boolean> => {
     if (!isHealthKitAvailable.value) {
-      console.log('HealthKit not available')
+      //console.log('HealthKit not available')
       return false
     }
     
@@ -31,7 +31,7 @@ export function useHealthKit() {
    */
   const syncTodaysData = async (): Promise<boolean> => {
     if (!isHealthKitAvailable.value) {
-      console.log('HealthKit not available')
+      //console.log('HealthKit not available')
       return false
     }
     
@@ -43,7 +43,7 @@ export function useHealthKit() {
    */
   const getHealthKitData = async (date: string): Promise<HealthKitData | null> => {
     if (!isHealthKitAvailable.value) {
-      console.log('HealthKit not available')
+      //console.log('HealthKit not available')
       return null
     }
     
@@ -55,7 +55,7 @@ export function useHealthKit() {
    */
   const getHealthKitDataRange = async (startDate: string, endDate: string): Promise<HealthKitData[]> => {
     if (!isHealthKitAvailable.value) {
-      console.log('HealthKit not available')
+      //console.log('HealthKit not available')
       return []
     }
     
