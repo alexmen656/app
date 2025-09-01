@@ -184,7 +184,12 @@
     <!-- BMI Section -->
     <div v-if="analyticsData?.bmiData.value" class="bmi-section" @click="navigateToBMIDetail">
       <div class="section-header">
-        <h3 class="section-title">{{ $t('analytics.bmiHealthStatus') }}</h3>
+        <h3 class="section-title">
+          {{ $t('analytics.bmiHealthStatus') }}
+          <button class="info-btn" @click.stop="showBMIInfoModal = true">
+            i
+          </button>
+        </h3>
         <button class="detail-btn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
             <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
@@ -291,6 +296,71 @@
       </div>
     </div>
 
+    <!-- BMI Info Modal -->
+    <div v-if="showBMIInfoModal" class="modal-overlay" @click="showBMIInfoModal = false">
+      <div class="modal-content bmi-info-modal" @click.stop>
+        <div class="modal-header">
+          <h3>{{ $t('analytics.bmiExplanation.title') }}</h3>
+          <button @click="showBMIInfoModal = false" class="close-btn">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="bmi-info-section">
+            <h4>{{ $t('analytics.bmiExplanation.whatIs') }}</h4>
+            <p>{{ $t('analytics.bmiExplanation.description') }}</p>
+          </div>
+          
+          <div class="bmi-info-section">
+            <h4>{{ $t('analytics.bmiExplanation.calculation') }}</h4>
+            <div class="formula-container">
+              <code class="formula">BMI = {{ $t('analytics.bmiExplanation.formula') }}</code>
+            </div>
+            <p class="formula-note">{{ $t('analytics.bmiExplanation.formulaNote') }}</p>
+          </div>
+
+          <div class="bmi-info-section">
+            <h4>{{ $t('analytics.bmiExplanation.categories') }}</h4>
+            <div class="bmi-categories">
+              <div class="category-item">
+                <span class="category-range">&lt; 18.5</span>
+                <span class="category-name">{{ $t('analytics.bmiExplanation.underweight') }}</span>
+              </div>
+              <div class="category-item">
+                <span class="category-range">18.5 - 24.9</span>
+                <span class="category-name">{{ $t('analytics.bmiExplanation.normal') }}</span>
+              </div>
+              <div class="category-item">
+                <span class="category-range">25.0 - 29.9</span>
+                <span class="category-name">{{ $t('analytics.bmiExplanation.overweight') }}</span>
+              </div>
+              <div class="category-item">
+                <span class="category-range">≥ 30.0</span>
+                <span class="category-name">{{ $t('analytics.bmiExplanation.obese') }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bmi-info-section">
+            <h4>{{ $t('analytics.bmiExplanation.important') }}</h4>
+            <p>{{ $t('analytics.bmiExplanation.disclaimer') }}</p>
+            
+            <div class="external-link-container">
+              <a href="https://www.cdc.gov/bmi/about/?CDC_AAref_Val=https://www.cdc.gov/healthyweight/assessing/bmi/index.html" target="_blank" class="external-link">
+                {{ $t('analytics.bmiExplanation.cdcLink') }}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <polyline points="15,3 21,3 21,9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <line x1="10" y1="14" x2="21" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button @click="showBMIInfoModal = false" class="modal-btn primary">{{ $t('common.understood') }}</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
       <router-link to="/" class="nav-item">
@@ -340,6 +410,9 @@ const showPremiumBlocker = ref(false)
 const showWeightLogModal = ref(false)
 const newWeight = ref<number | null>(null)
 const weightNote = ref('')
+
+// BMI info modal
+const showBMIInfoModal = ref(false)
 
 // Premium access check
 const shouldShowPremiumOverlay = computed(() => {
@@ -667,6 +740,31 @@ function handleTouchEnd(event: TouchEvent) {
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.info-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.info-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  opacity: 1;
+  transform: scale(1.1);
 }
 
 .chart-container {
@@ -1588,5 +1686,103 @@ function handleTouchEnd(event: TouchEvent) {
 .upgrade-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+}
+
+/* BMI Info Modal Styles */
+.bmi-info-modal {
+  max-width: 500px;
+}
+
+.bmi-info-section {
+  margin-bottom: 24px;
+}
+
+.bmi-info-section h4 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+  color: white;
+}
+
+.bmi-info-section p {
+  line-height: 1.5;
+  margin: 0 0 12px 0;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.formula-container {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 12px 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.formula {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 16px;
+  color: #64b5f6;
+  background: transparent;
+  border: none;
+  display: block;
+  text-align: center;
+}
+
+.formula-note {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  font-style: italic;
+  margin: 8px 0 0 0;
+}
+
+.bmi-categories {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.category-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.category-range {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 14px;
+  color: #64b5f6;
+  font-weight: 600;
+}
+
+.category-name {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.external-link-container {
+  margin-top: 16px;
+}
+
+.external-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #64b5f6;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 12px;
+  border: 1px solid #64b5f6;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.external-link:hover {
+  background: #64b5f6;
+  color: #1e1e2e;
 }
 </style>

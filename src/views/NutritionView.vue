@@ -34,7 +34,14 @@
                     </div>
                     <div class="nutrition-amount">
                         <button class="amount-btn minus" @click="decreaseAmount">−</button>
-                        <span class="amount-number">{{ amount }}</span>
+                        <input 
+                            v-model.number="amount" 
+                            class="amount-input" 
+                            type="number" 
+                            step="0.1" 
+                            min="0.1"
+                            @blur="validateAmount"
+                        />
                         <button class="amount-btn plus" @click="increaseAmount">+</button>
                     </div>
                 </div>
@@ -207,6 +214,15 @@
                         <div class="error-text">{{ $t('nutrition.analysisError') }}</div>
                     </div>
                 </div>
+
+                <!-- Source Information -->
+                <div class="nutrition-source">
+                    <span class="source-text">{{ $t('nutrition.source') }}: </span>
+                    <button class="source-link" @click="showSourceModal = true">
+                        {{ getSourceDisplay(product.source || product.type) }}
+                    </button>
+                </div>
+
                 <div class="nutrition-actions">
                     <button class="fix-btn" @click="showFixModal = true">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -233,45 +249,117 @@
 
         <!-- Fix Modal -->
         <div v-if="showFixModal" class="modal-overlay" @click="showFixModal = false">
-            <div class="modal" @click.stop>
-                <h3>Fix Results</h3>
+            <div class="modal fix-modal" @click.stop>
+                <h3>{{ $t('nutrition.fixResults') }}</h3>
+                
+                <!-- Basic nutrition editing -->
                 <div class="fix-form">
                     <div class="form-group">
-                        <label>Product Name</label>
+                        <label>{{ $t('nutrition.productName') }}</label>
                         <input v-model="editedProduct.name" type="text">
                     </div>
                     <div class="form-group">
-                        <label>Calories</label>
+                        <label>{{ $t('nutrition.calories') }}</label>
                         <input v-model.number="editedProduct.calories" type="number">
                     </div>
                     <div class="form-group">
-                        <label>Protein (g)</label>
+                        <label>{{ $t('nutrition.protein') }} (g)</label>
                         <input v-model.number="editedProduct.protein" type="number" step="0.1">
                     </div>
                     <div class="form-group">
-                        <label>Carbs (g)</label>
+                        <label>{{ $t('nutrition.carbs') }} (g)</label>
                         <input v-model.number="editedProduct.carbs" type="number" step="0.1">
                     </div>
                     <div class="form-group">
-                        <label>Fats (g)</label>
+                        <label>{{ $t('nutrition.fat') }} (g)</label>
                         <input v-model.number="editedProduct.fats" type="number" step="0.1">
                     </div>
                     <div class="form-group">
-                        <label>Fiber (g)</label>
+                        <label>{{ $t('nutrition.fiber') }} (g)</label>
                         <input v-model.number="editedProduct.fiber" type="number" step="0.1">
                     </div>
                     <div class="form-group">
-                        <label>Sugar (g)</label>
+                        <label>{{ $t('nutrition.sugar') }} (g)</label>
                         <input v-model.number="editedProduct.sugar" type="number" step="0.1">
                     </div>
                     <div class="form-group">
-                        <label>Salt (g)</label>
+                        <label>{{ $t('nutrition.salt') }} (g)</label>
                         <input v-model.number="editedProduct.salt" type="number" step="0.01">
                     </div>
                 </div>
+
+                <!-- Foods editing for analyzed dishes -->
+                <div v-if="editedProduct.foods && editedProduct.foods.length > 0" class="foods-editing">
+                    <h4>{{ $t('nutrition.detectedFoods') }}</h4>
+                    <div class="foods-list-edit">
+                        <div v-for="(food, index) in editedProduct.foods" :key="index" class="food-edit-item">
+                            <div class="food-edit-content">
+                                <input v-model="food.name" class="food-name-input" :placeholder="$t('nutrition.foodName')">
+                                <input v-model="food.amount" class="food-amount-input" :placeholder="$t('nutrition.amount')">
+                            </div>
+                            <button class="remove-food-btn" @click="removeFood(index)">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                    <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <button class="add-food-btn" @click="addFood">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        {{ $t('nutrition.addFood') }}
+                    </button>
+                </div>
+
                 <div class="modal-actions">
-                    <button class="cancel-btn" @click="showFixModal = false">Cancel</button>
-                    <button class="save-btn" @click="applyFix">Save</button>
+                    <button class="cancel-btn" @click="showFixModal = false">{{ $t('common.cancel') }}</button>
+                    <button class="save-btn" @click="applyFix">{{ $t('common.save') }}</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Source Modal -->
+        <div v-if="showSourceModal" class="modal-overlay" @click="showSourceModal = false">
+            <div class="modal source-modal" @click.stop>
+                <h3>{{ $t('nutrition.aboutSource') }}</h3>
+                <div class="source-explanation">
+                    <div v-if="product.source === 'OpenFoodFacts'">
+                        <h4>Open Food Facts</h4>
+                        <p>{{ $t('nutrition.sourceExplanation.openFoodFacts') }}</p>
+                        <div class="source-link-container">
+                            <a href="https://world.openfoodfacts.org" target="_blank" class="external-link">
+                                {{ $t('nutrition.visitOpenFoodFacts') }}
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <polyline points="15,3 21,3 21,9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <line x1="10" y1="14" x2="21" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                    <div v-else-if="product.source === 'KaloriQ' || product.source === 'Cache' || product.source === 'API'">
+                        <h4>{{ $t('nutrition.database') }}</h4>
+                        <p>{{ $t('nutrition.sourceExplanation.database') }}</p>
+                    </div>
+                    <div v-else-if="product.type === 'food' || product.source === 'AI'">
+                        <h4>{{ $t('nutrition.aiAnalysis') }}</h4>
+                        <p>{{ $t('nutrition.sourceExplanation.ai') }}</p>
+                        <div class="accuracy-warning">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="#f59e0b">
+                                <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"/>
+                                <path d="M12 8v4M12 16h.01" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <span>{{ $t('nutrition.accuracyWarning') }}</span>
+                        </div>
+                    </div>
+                    <div v-else>
+                        <h4>{{ $t('nutrition.manualEntry') }}</h4>
+                        <p>{{ $t('nutrition.sourceExplanation.manual') }}</p>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="done-btn" @click="showSourceModal = false">{{ $t('common.understood') }}</button>
                 </div>
             </div>
         </div>
@@ -290,9 +378,10 @@ const route = useRoute();
 const router = useRouter();
 const { t } = useI18n();
 const product = ref(null);
-const amount = ref(1);
+const amount = ref(1.0);
 const showFixModal = ref(false);
 const showDetailsModal = ref(false);
+const showSourceModal = ref(false);
 const editedProduct = ref({});
 const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -504,13 +593,70 @@ const hasAdditionalNutrition = computed(() => {
 });
 
 function increaseAmount() {
-    amount.value += 1;
+    amount.value = Math.round((amount.value + 0.1) * 10) / 10;
 }
 
 function decreaseAmount() {
-    if (amount.value > 1) {
-        amount.value -= 1;
+    if (amount.value > 0.1) {
+        amount.value = Math.round((amount.value - 0.1) * 10) / 10;
     }
+}
+
+function validateAmount() {
+    if (amount.value < 0.1) {
+        amount.value = 0.1;
+    }
+    amount.value = Math.round(amount.value * 10) / 10;
+}
+
+function getSourceDisplay(source) {
+    const sourceMap = {
+        'KaloriQ': 'Database',
+        'Cache': 'Database', 
+        'food': 'AI',
+        'AI': 'AI',
+        'Manual': 'Manual',
+        'OpenFoodFacts': 'Open Food Facts',
+        'API': 'Database'
+    };
+    return sourceMap[source] || 'Database';
+}
+
+function removeFood(index) {
+    editedProduct.value.foods.splice(index, 1);
+    // Recalculate totals
+    recalculateTotals();
+}
+
+function addFood() {
+    if (!editedProduct.value.foods) {
+        editedProduct.value.foods = [];
+    }
+    editedProduct.value.foods.push({
+        name: '',
+        amount: '',
+        calories: 0,
+        protein: 0,
+        carbs: 0,
+        fats: 0
+    });
+}
+
+function recalculateTotals() {
+    if (!editedProduct.value.foods) return;
+    
+    const totals = editedProduct.value.foods.reduce((acc, food) => {
+        acc.calories += food.calories || 0;
+        acc.protein += food.protein || 0;
+        acc.carbs += food.carbs || 0;
+        acc.fats += (food.fats || food.fat || 0);
+        return acc;
+    }, { calories: 0, protein: 0, carbs: 0, fats: 0 });
+
+    editedProduct.value.calories = totals.calories;
+    editedProduct.value.protein = totals.protein;
+    editedProduct.value.carbs = totals.carbs;
+    editedProduct.value.fats = totals.fats;
 }
 
 function editMacro(type) {
@@ -518,6 +664,10 @@ function editMacro(type) {
 }
 
 function applyFix() {
+    // If foods were edited, recalculate totals
+    if (editedProduct.value.foods && editedProduct.value.foods.length > 0) {
+        recalculateTotals();
+    }
     product.value = { ...editedProduct.value };
     showFixModal.value = false;
 }
@@ -758,6 +908,25 @@ async function saveAndReturn() {
     min-width: 24px;
     text-align: center;
     color: #333;
+}
+
+.amount-input {
+    background: transparent;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    width: 32px;
+    text-align: center;
+    color: #333;
+    outline: none;
+    appearance: none;
+    -moz-appearance: textfield;
+}
+
+.amount-input::-webkit-outer-spin-button,
+.amount-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 /* Macros Grid */
@@ -1095,7 +1264,195 @@ async function saveAndReturn() {
     line-height: 1.4;
 }
 
-/* Actions */
+/* Source Information */
+.nutrition-source {
+    background: #f8f9fa;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.source-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: #666;
+}
+
+.source-link {
+    background: none;
+    border: none;
+    color: #007aff;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.2s ease;
+}
+
+.source-link:hover {
+    color: #0056cc;
+}
+
+/* Source Modal */
+.source-modal {
+    max-width: 360px;
+}
+
+.source-explanation {
+    margin-bottom: 24px;
+    line-height: 1.5;
+    color: #333;
+}
+
+.source-explanation h4 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 12px 0;
+    color: #1a1a1a;
+}
+
+.source-link-container {
+    margin-top: 16px;
+}
+
+.external-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #007aff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 12px;
+    border: 1px solid #007aff;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.external-link:hover {
+    background: #007aff;
+    color: white;
+}
+
+.accuracy-warning {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fef3c7;
+    border-radius: 12px;
+    padding: 12px;
+    margin-top: 16px;
+    border-left: 4px solid #f59e0b;
+}
+
+.accuracy-warning span {
+    font-size: 14px;
+    font-weight: 500;
+    color: #92400e;
+}
+
+/* Fix Modal Improvements */
+.fix-modal {
+    max-width: 500px;
+    max-height: 90vh;
+}
+
+.foods-editing {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 2px solid #f0f0f0;
+}
+
+.foods-editing h4 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #333;
+}
+
+.foods-list-edit {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.food-edit-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.food-edit-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.food-name-input,
+.food-amount-input {
+    background: #fff;
+    border: 1px solid #e1e5e9;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 14px;
+    transition: border-color 0.2s ease;
+}
+
+.food-name-input:focus,
+.food-amount-input:focus {
+    outline: none;
+    border-color: #007aff;
+}
+
+.remove-food-btn {
+    background: #fee2e2;
+    border: none;
+    border-radius: 8px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #dc2626;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.remove-food-btn:hover {
+    background: #fecaca;
+}
+
+.add-food-btn {
+    background: #f0f9ff;
+    border: 2px solid #e0f2fe;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #0369a1;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.add-food-btn:hover {
+    background: #e0f2fe;
+    border-color: #0369a1;
+}
 .nutrition-actions {
     display: flex;
     gap: 16px;
@@ -1337,6 +1694,306 @@ async function saveAndReturn() {
 
     .nutrition-serving {
         font-size: 12px;
+    }
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+    .nutrition-container {
+        background: #000;
+        color: #fff;
+    }
+
+    .nutrition-content {
+        background: #000;
+        color: #fff;
+    }
+
+    .nutrition-time {
+        color: #8e8e93;
+    }
+
+    .nutrition-name {
+        color: #fff;
+    }
+
+    .nutrition-brand {
+        color: #8e8e93;
+    }
+
+    .nutrition-serving {
+        color: #007aff;
+    }
+
+    .nutrition-amount {
+        background: #1c1c1e;
+    }
+
+    .amount-btn {
+        background: #2c2c2e;
+        border-color: #3a3a3c;
+        color: #fff;
+    }
+
+    .amount-btn:hover {
+        background: #3a3a3c;
+        border-color: #4a4a4c;
+    }
+
+    .amount-btn.plus {
+        background: #fff;
+        color: #000;
+        border-color: #fff;
+    }
+
+    .amount-input {
+        color: #fff;
+    }
+
+    .macro {
+        background: #1c1c1e;
+    }
+
+    .macro:hover {
+        background: #2c2c2e;
+    }
+
+    .macro-label {
+        color: #8e8e93;
+    }
+
+    .macro-value {
+        color: #fff;
+    }
+
+    .macro-edit:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .nutrition-health {
+        background: #1c1c1e;
+    }
+
+    .health-label {
+        color: #8e8e93;
+    }
+
+    .health-score {
+        color: #fff;
+    }
+
+    .health-bar {
+        background: #3a3a3c;
+    }
+
+    .nutrition-additional h3,
+    .nutrition-ingredients h3,
+    .nutrition-foods h3 {
+        color: #fff;
+    }
+
+    .additional-item {
+        background: #1c1c1e;
+    }
+
+    .additional-label {
+        color: #8e8e93;
+    }
+
+    .additional-value {
+        color: #fff;
+    }
+
+    .ingredient-text {
+        background: #1c1c1e;
+        color: #8e8e93;
+    }
+
+    .food-item {
+        background: #1c1c1e;
+    }
+
+    .food-name {
+        color: #fff;
+    }
+
+    .food-amount {
+        color: #8e8e93;
+    }
+
+    .food-macro {
+        background: #2c2c2e;
+        color: #fff;
+        border-color: #3a3a3c;
+    }
+
+    .nutrition-analysis {
+        background: #1c1c1e;
+    }
+
+    .confidence-label,
+    .notes-label {
+        color: #8e8e93;
+    }
+
+    .notes-text {
+        color: #fff;
+    }
+
+    .analysis-error {
+        background: #3a1a1a;
+    }
+
+    .nutrition-source {
+        background: #1c1c1e;
+    }
+
+    .source-text {
+        color: #8e8e93;
+    }
+
+    .fix-btn {
+        background: #1c1c1e;
+        border-color: #fff;
+        color: #fff;
+    }
+
+    .fix-btn:hover {
+        background: #2c2c2e;
+    }
+
+    .done-btn {
+        background: #fff;
+        color: #000;
+    }
+
+    .done-btn:hover {
+        background: #e5e5e7;
+    }
+
+    /* Modal Dark Mode */
+    .modal {
+        background: #1c1c1e;
+        color: #fff;
+    }
+
+    .modal h3,
+    .foods-editing h4 {
+        color: #fff;
+    }
+
+    .form-group label {
+        color: #fff;
+    }
+
+    .form-group input,
+    .food-name-input,
+    .food-amount-input {
+        background: #2c2c2e;
+        border-color: #3a3a3c;
+        color: #fff;
+    }
+
+    .form-group input:focus,
+    .food-name-input:focus,
+    .food-amount-input:focus {
+        border-color: #007aff;
+    }
+
+    .food-edit-item {
+        background: #2c2c2e;
+    }
+
+    .food-name-input,
+    .food-amount-input {
+        background: #1c1c1e;
+    }
+
+    .remove-food-btn {
+        background: #3a1a1a;
+        color: #ff6b6b;
+    }
+
+    .remove-food-btn:hover {
+        background: #4a2020;
+    }
+
+    .add-food-btn {
+        background: #1a2c3a;
+        border-color: #2c3e50;
+        color: #64b5f6;
+    }
+
+    .add-food-btn:hover {
+        background: #2c3e50;
+        border-color: #64b5f6;
+    }
+
+    .cancel-btn {
+        background: #1c1c1e;
+        border-color: #3a3a3c;
+        color: #8e8e93;
+    }
+
+    .cancel-btn:hover {
+        background: #2c2c2e;
+    }
+
+    .save-btn {
+        background: #fff;
+        color: #000;
+    }
+
+    .save-btn:hover {
+        background: #e5e5e7;
+    }
+
+    .source-explanation {
+        color: #e5e5e7;
+    }
+
+    .source-explanation h4 {
+        color: #fff;
+    }
+
+    .external-link {
+        color: #64b5f6;
+        border-color: #64b5f6;
+    }
+
+    .external-link:hover {
+        background: #64b5f6;
+        color: #000;
+    }
+
+    .accuracy-warning {
+        background: #3a2f1a;
+        border-color: #f59e0b;
+    }
+
+    .accuracy-warning span {
+        color: #fbbf24;
+    }
+
+    .nutrition-loading {
+        color: #8e8e93;
+    }
+
+    .loading-spinner {
+        border-color: #3a3a3c;
+        border-top-color: #fff;
+    }
+
+    /* Header buttons dark mode */
+    .nutrition-back,
+    .nutrition-menu {
+        background: rgba(28, 28, 30, 0.9);
+        color: #fff;
+    }
+
+    .nutrition-back:hover,
+    .nutrition-menu:hover {
+        background: rgba(28, 28, 30, 1);
     }
 }
 </style>

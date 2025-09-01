@@ -112,7 +112,24 @@
     "packageSize": "Packungsgröße",
     "barcode": "Barcode",
     "category": "Kategorie",
-    "origin": "Herkunft"
+    "origin": "Herkunft",
+    "productName": "Produktname",
+    "detectedFoods": "Erkannte Lebensmittel",
+    "foodName": "Lebensmittelname",
+    "amount": "Menge",
+    "addFood": "Lebensmittel hinzufügen",
+    "aboutSource": "Über die Quelle",
+    "sourceExplanation": {
+      "database": "Diese Daten stammen aus unserer umfassenden Produktdatenbank mit verifizierten Nährwertinformationen.",
+      "openFoodFacts": "Diese Nährwertdaten stammen von Open Food Facts, einer kollaborativen, kostenlosen und offenen Datenbank für Lebensmittelprodukte aus aller Welt. Die Informationen werden von Nutzern beigetragen und von der Community verifiziert.",
+      "ai": "Diese Analyse wurde mit künstlicher Intelligenz durchgeführt, um Lebensmittel zu identifizieren und Nährwerte zu schätzen.",
+      "manual": "Diese Informationen wurden manuell eingegeben und müssen möglicherweise überprüft werden."
+    },
+    "accuracyWarning": "KI-Analyseergebnisse sind möglicherweise nicht 100% genau. Bitte überprüfe wichtige Werte.",
+    "database": "Datenbank",
+    "aiAnalysis": "KI-Analyse",
+    "manualEntry": "Manuelle Eingabe",
+    "visitOpenFoodFacts": "Open Food Facts besuchen"
   },
   "settings": {
     "dailyGoals": "Tagesziele",
@@ -197,7 +214,23 @@
     "kg": "kg",
     "protein": "Protein",
     "carbs": "Kohlenhydrate",
-    "fats": "Fette"
+    "fats": "Fette",
+    "bmiExplanation": {
+      "title": "Über den BMI",
+      "whatIs": "Was ist der BMI?",
+      "description": "Der Body-Mass-Index (BMI) ist das Gewicht einer Person in Kilogramm geteilt durch das Quadrat der Körpergröße in Metern. Er ist ein nützliches Werkzeug zur Einschätzung von Gewichtskategorien, die zu Gesundheitsproblemen führen können.",
+      "calculation": "Wie wird der BMI berechnet?",
+      "formula": "Gewicht (kg) ÷ Körpergröße² (m²)",
+      "formulaNote": "Gewicht in Kilogramm geteilt durch Körpergröße in Metern zum Quadrat",
+      "categories": "BMI-Kategorien",
+      "underweight": "Untergewicht",
+      "normal": "Normalgewicht",
+      "overweight": "Übergewicht",
+      "obese": "Adipositas",
+      "important": "Wichtiger Hinweis",
+      "disclaimer": "Der BMI ist ein Screening-Tool und nicht diagnostisch für die Gesundheit einer Person. Ein ausgebildeter Gesundheitsdienstleister sollte angemessene Gesundheitsbewertungen durchführen, um den Gesundheitszustand einer Person zu bewerten.",
+      "cdcLink": "Mehr erfahren von der CDC"
+    }
   },
   "onboarding": {
     "welcome": "Willkommen bei Kaloriq",
@@ -212,7 +245,27 @@
     "continue": "Weiter",
     "finish": "Fertig",
     "whatIsYourGoal": "Was ist Ihr Ziel?",
-    "goalSubtitle": "Wählen Sie Ihr Hauptziel aus, damit wir Ihre Ernährung optimal anpassen können"
+    "goalSubtitle": "Wählen Sie Ihr Hauptziel aus, damit wir Ihre Ernährung optimal anpassen können",
+    "calculationSource": {
+      "title": "Wie wir Ihre Ziele berechnen",
+      "description": "Ihre täglichen Kalorien- und Makronährstoffziele werden mit wissenschaftlich validierten Formeln berechnet.",
+      "bmrFormula": "BMR (Grundumsatz) Formel",
+      "menFormula": "Für Männer",
+      "womenFormula": "Für Frauen",
+      "formulaNote": "BMR wird mit der Harris-Benedict-Gleichung berechnet (Gewicht in kg, Größe in cm, Alter in Jahren)",
+      "activityMultipliers": "Aktivitätslevel-Multiplikatoren",
+      "sedentary": "Sitzend (wenig/keine Bewegung)",
+      "lightlyActive": "Leicht aktiv (leichte Bewegung 1-3 Tage/Woche)",
+      "moderatelyActive": "Mäßig aktiv (moderate Bewegung 3-5 Tage/Woche)",
+      "veryActive": "Sehr aktiv (intensive Bewegung 6-7 Tage/Woche)",
+      "extraActive": "Extrem aktiv (sehr intensive Bewegung/körperliche Arbeit)",
+      "learnMore": "Mehr über Berechnungen erfahren",
+      "modalTitle": "Berechnungsmethoden",
+      "harrisTitle": "Harris-Benedict-Gleichung",
+      "harrisDescription": "Die Harris-Benedict-Gleichung ist eine der am häufigsten verwendeten Formeln zur Berechnung des Grundumsatzes (BMR). Sie wurde erstmals 1919 veröffentlicht und 1984 überarbeitet.",
+      "totalCalculation": "Ihr gesamter täglicher Energieverbrauch wird berechnet, indem Ihr BMR mit dem Aktivitätslevel-Multiplikator multipliziert wird.",
+      "learnMoreLink": "Mehr über BMR-Berechnungen lesen"
+    }
   },
   "paywall": {
     "title": "Jetzt starten",
@@ -329,7 +382,8 @@
     "success": "Erfolg",
     "close": "Schließen",
     "calculate": "Neu berechnen",
-    "current": "Aktuell"
+    "current": "Aktuell",
+    "understood": "Verstanden"
   },
   "streak": {
     "title": "Streak Details",

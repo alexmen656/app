@@ -112,7 +112,24 @@
     "packageSize": "Package Size",
     "barcode": "Barcode",
     "category": "Category",
-    "origin": "Origin"
+    "origin": "Origin",
+    "productName": "Product Name",
+    "detectedFoods": "Detected Foods",
+    "foodName": "Food Name",
+    "amount": "Amount",
+    "addFood": "Add Food",
+    "aboutSource": "About Source",
+    "sourceExplanation": {
+      "database": "This data comes from our comprehensive product database with verified nutrition information.",
+      "openFoodFacts": "This nutritional data comes from Open Food Facts, a collaborative, free and open database of food products from around the world. The information is contributed by users and verified by the community.",
+      "ai": "This analysis was performed using artificial intelligence to identify foods and estimate nutritional values.",
+      "manual": "This information was entered manually and may need verification."
+    },
+    "accuracyWarning": "AI analysis results may not be 100% accurate. Please verify important values.",
+    "database": "Database",
+    "aiAnalysis": "AI Analysis", 
+    "manualEntry": "Manual Entry",
+    "visitOpenFoodFacts": "Visit Open Food Facts"
   },
   "settings": {
     "dailyGoals": "Daily Goals",
@@ -197,7 +214,23 @@
     "kg": "kg",
     "protein": "Protein",
     "carbs": "Carbs",
-    "fats": "Fats"
+    "fats": "Fats",
+    "bmiExplanation": {
+      "title": "About BMI",
+      "whatIs": "What is BMI?",
+      "description": "Body Mass Index (BMI) is a person's weight in kilograms divided by the square of height in meters. It's a useful tool for screening weight categories that may lead to health problems.",
+      "calculation": "How is BMI calculated?",
+      "formula": "weight (kg) ÷ height² (m²)",
+      "formulaNote": "Weight in kilograms divided by height in meters squared",
+      "categories": "BMI Categories",
+      "underweight": "Underweight",
+      "normal": "Normal weight",
+      "overweight": "Overweight", 
+      "obese": "Obese",
+      "important": "Important Note",
+      "disclaimer": "BMI is a screening tool and is not diagnostic of the health of an individual. A trained healthcare provider should perform appropriate health assessments to evaluate an individual's health status.",
+      "cdcLink": "Learn more from CDC"
+    }
   },
   "onboarding": {
     "welcome": "Welcome to Kaloriq",
@@ -212,7 +245,27 @@
     "continue": "Continue",
     "finish": "Finish",
     "whatIsYourGoal": "What is your goal?",
-    "goalSubtitle": "Choose your main goal so we can optimize your nutrition plan"
+    "goalSubtitle": "Choose your main goal so we can optimize your nutrition plan",
+    "calculationSource": {
+      "title": "How We Calculate Your Goals",
+      "description": "Your daily calorie and macro targets are calculated using scientifically validated formulas.",
+      "bmrFormula": "BMR (Basal Metabolic Rate) Formula",
+      "menFormula": "For Men",
+      "womenFormula": "For Women",
+      "formulaNote": "BMR is calculated using the Harris-Benedict equation (weight in kg, height in cm, age in years)",
+      "activityMultipliers": "Activity Level Multipliers",
+      "sedentary": "Sedentary (little/no exercise)",
+      "lightlyActive": "Lightly active (light exercise 1-3 days/week)",
+      "moderatelyActive": "Moderately active (moderate exercise 3-5 days/week)",
+      "veryActive": "Very active (hard exercise 6-7 days/week)",
+      "extraActive": "Extra active (very hard exercise/physical job)",
+      "learnMore": "Learn More About Calculations",
+      "modalTitle": "Calculation Methods",
+      "harrisTitle": "Harris-Benedict Equation",
+      "harrisDescription": "The Harris-Benedict equation is one of the most widely used formulas to calculate Basal Metabolic Rate (BMR). It was first published in 1919 and revised in 1984.",
+      "totalCalculation": "Your total daily energy expenditure is calculated by multiplying your BMR by your activity level multiplier.",
+      "learnMoreLink": "Read more about BMR calculations"
+    }
   },
   "paywall": {
     "title": "Get Started",
@@ -329,7 +382,8 @@
     "success": "Success",
     "close": "Close",
     "calculate": "Recalculate",
-    "current": "Current"
+    "current": "Current",
+    "understood": "Understood"
   },
   "streak": {
     "title": "Streak Details",

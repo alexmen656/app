@@ -299,6 +299,46 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Calculation Source Information -->
+                <div class="calculation-source">
+                    <h4 class="source-title">{{ $t('onboarding.calculationSource.title') }}</h4>
+                    <div class="source-explanation">
+                        <p>{{ $t('onboarding.calculationSource.description') }}</p>
+                        
+                        <div class="formula-section">
+                            <h5>{{ $t('onboarding.calculationSource.bmrFormula') }}</h5>
+                            <div class="formula-container">
+                                <div class="formula-item">
+                                    <span class="formula-label">{{ $t('onboarding.calculationSource.menFormula') }}:</span>
+                                    <code class="formula-code">BMR = 88.362 + (13.397 × weight) + (4.799 × height) - (5.677 × age)</code>
+                                </div>
+                                <div class="formula-item">
+                                    <span class="formula-label">{{ $t('onboarding.calculationSource.womenFormula') }}:</span>
+                                    <code class="formula-code">BMR = 447.593 + (9.247 × weight) + (3.098 × height) - (4.330 × age)</code>
+                                </div>
+                            </div>
+                            <p class="formula-note">{{ $t('onboarding.calculationSource.formulaNote') }}</p>
+                        </div>
+
+                        <div class="activity-multipliers">
+                            <h5>{{ $t('onboarding.calculationSource.activityMultipliers') }}</h5>
+                            <ul class="multiplier-list">
+                                <li>{{ $t('onboarding.calculationSource.sedentary') }}: 1.2</li>
+                                <li>{{ $t('onboarding.calculationSource.lightlyActive') }}: 1.375</li>
+                                <li>{{ $t('onboarding.calculationSource.moderatelyActive') }}: 1.55</li>
+                                <li>{{ $t('onboarding.calculationSource.veryActive') }}: 1.725</li>
+                                <li>{{ $t('onboarding.calculationSource.extraActive') }}: 1.9</li>
+                            </ul>
+                        </div>
+
+                        <div class="source-link-section">
+                            <button class="source-link" @click="showSourceModal = true">
+                                {{ $t('onboarding.calculationSource.learnMore') }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -310,6 +350,51 @@
             <button @click="nextStep" class="nav-button primary" :disabled="!canProceed">
                 {{ currentStep === totalSteps ? 'Get Started' : 'Continue' }}
             </button>
+        </div>
+
+        <!-- Calculation Source Modal -->
+        <div v-if="showSourceModal" class="modal-overlay" @click="showSourceModal = false">
+            <div class="modal-content" @click.stop>
+                <div class="modal-header">
+                    <h3>{{ $t('onboarding.calculationSource.modalTitle') }}</h3>
+                    <button @click="showSourceModal = false" class="close-button">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="source-section">
+                        <h4>{{ $t('onboarding.calculationSource.harrisTitle') }}</h4>
+                        <p>{{ $t('onboarding.calculationSource.harrisDescription') }}</p>
+                        
+                        <div class="formula-details">
+                            <div class="formula-group">
+                                <h5>{{ $t('onboarding.calculationSource.menFormula') }}</h5>
+                                <code class="formula-display">BMR = 88.362 + (13.397 × weight) + (4.799 × height) - (5.677 × age)</code>
+                            </div>
+                            <div class="formula-group">
+                                <h5>{{ $t('onboarding.calculationSource.womenFormula') }}</h5>
+                                <code class="formula-display">BMR = 447.593 + (9.247 × weight) + (3.098 × height) - (4.330 × age)</code>
+                            </div>
+                        </div>
+                        
+                        <p>{{ $t('onboarding.calculationSource.totalCalculation') }}</p>
+                        
+                        <div class="reference-link">
+                            <a href="https://www.calculator.net/bmr-calculator.html" target="_blank" rel="noopener noreferrer">
+                                {{ $t('onboarding.calculationSource.learnMoreLink') }}
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                    <polyline points="15,3 21,3 21,9"></polyline>
+                                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -325,6 +410,7 @@ const router = useRouter()
 
 const currentStep = ref(1)
 const totalSteps = 6
+const showSourceModal = ref(false)
 
 const userInfo = reactive({
     name: '',
@@ -1153,5 +1239,277 @@ async function finishOnboarding() {
 
 .calc-value.weight-maintain {
     color: #ffa726;
+}
+
+/* Calculation Source Styles */
+.calculation-source {
+    margin-top: 32px;
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.source-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: white;
+}
+
+.source-explanation {
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+}
+
+.formula-section {
+    margin: 20px 0;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.formula-section h5 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: white;
+}
+
+.formula-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.formula-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.formula-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.formula-code {
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #a8e6cf;
+    border: 1px solid rgba(168, 230, 207, 0.2);
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.formula-note {
+    margin-top: 12px;
+    font-size: 13px;
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.activity-multipliers {
+    margin: 20px 0;
+}
+
+.activity-multipliers h5 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: white;
+}
+
+.multiplier-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.multiplier-list li {
+    padding: 8px 0;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.multiplier-list li:last-child {
+    border-bottom: none;
+}
+
+.source-link-section {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.source-link {
+    background: linear-gradient(135deg, #007052, #009d6b);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.source-link:hover {
+    background: linear-gradient(135deg, #005a43, #008055);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 112, 82, 0.3);
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+    border-radius: 20px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-header h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: white;
+    margin: 0;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.close-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+.source-section h4 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: white;
+}
+
+.source-section p {
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.formula-details {
+    margin: 20px 0;
+}
+
+.formula-group {
+    margin-bottom: 20px;
+}
+
+.formula-group h5 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.formula-display {
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #a8e6cf;
+    border: 1px solid rgba(168, 230, 207, 0.2);
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.reference-link {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.reference-link a {
+    color: #a8e6cf;
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.reference-link a:hover {
+    color: #c7f2dd;
+    text-decoration: underline;
+}
+
+.reference-link svg {
+    width: 16px;
+    height: 16px;
+    opacity: 0.7;
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+    .calculation-source {
+        background: rgba(255, 255, 255, 0.03);
+        border-color: rgba(255, 255, 255, 0.08);
+    }
+    
+    .formula-section {
+        background: rgba(0, 0, 0, 0.4);
+        border-color: rgba(255, 255, 255, 0.08);
+    }
+    
+    .modal-content {
+        background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+    }
 }
 </style>
