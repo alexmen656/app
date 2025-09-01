@@ -111,7 +111,15 @@
 
     <!-- HealthKit Section -->
     <div class="settings-section">
-      <h3 class="section-title">{{ $t('settings.healthKit') }}</h3>
+      <div class="section-header">
+        <h3 class="section-title">{{ $t('settings.healthKit') }}</h3>
+        <button @click="loadHealthKitStatus" class="recalculate-button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17.65,6.35C16.2,4.9 14.21,4 12,4C7.58,4 4,7.58 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12C6,8.69 8.69,6 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"/>
+          </svg>
+          Refresh
+        </button>
+      </div>
       <div class="settings-card">
         <!-- HealthKit Status -->
         <div class="setting-item">
@@ -616,6 +624,12 @@ const healthKitPermissions = ref([
 ])
 
 const healthKitStatusText = computed(() => {
+  console.log('HealthKit status text computed:', {
+    isAvailable: healthKitStatus.value.isAvailable,
+    isConnected: healthKitStatus.value.isConnected,
+    isPremium: isPremiumUser.value
+  })
+  
   if (!healthKitStatus.value.isAvailable) {
     return 'Not available on this device'
   }
@@ -712,12 +726,24 @@ onMounted(async () => {
   //if (isPremiumUser.value) {
     await loadHealthKitStatus()
   //}
+  
+  // Also ensure we're watching for changes correctly
+  console.log('Settings view mounted - Premium status:', isPremiumUser.value, 'HealthKit status:', healthKitStatus.value)
 })
 
 // Watch for premium status changes to load HealthKit when user upgrades
-watch(isPremiumUser, async (newValue) => {
-  if (newValue && !healthKitStatus.value.isAvailable) {
+watch(isPremiumUser, async (newValue, oldValue) => {
+  console.log('Premium status changed:', { from: oldValue, to: newValue })
+  if (newValue && !oldValue) {
+    // User just became premium - reload HealthKit status
     await loadHealthKitStatus()
+  } else if (!newValue && oldValue) {
+    // User lost premium - reset HealthKit status
+    healthKitStatus.value.isConnected = false
+    healthKitStatus.value.lastSync = null
+    healthKitPermissions.value.forEach(permission => {
+      permission.granted = false
+    })
   }
 }, { immediate: false })
 
@@ -757,7 +783,14 @@ async function loadHealthKitStatus() {
         permission.granted = true
       })
       
+      // Nur lastSync setzen wenn wirklich verbunden
       healthKitStatus.value.lastSync = new Date().toISOString()
+    } else {
+      // Sicherstellen, dass Permissions auf false gesetzt sind wenn nicht verbunden
+      healthKitPermissions.value.forEach(permission => {
+        permission.granted = false
+      })
+      healthKitStatus.value.lastSync = null
     }
 
     console.log('HealthKit status loaded:', healthKitStatus.value)
@@ -765,6 +798,10 @@ async function loadHealthKitStatus() {
     console.error('Error loading HealthKit status:', error)
     healthKitStatus.value.isAvailable = false
     healthKitStatus.value.isConnected = false
+    healthKitPermissions.value.forEach(permission => {
+      permission.granted = false
+    })
+    healthKitStatus.value.lastSync = null
   }
 }
 
@@ -778,6 +815,7 @@ async function connectHealthKit() {
   try {
     const success = await HealthKitService.initialize()
     if (success) {
+      // Force reload the status to ensure UI is updated
       await loadHealthKitStatus()
       alert('✅ HealthKit erfolgreich verbunden!')
     } else {
@@ -807,12 +845,22 @@ async function syncHealthKit() {
 async function disconnectHealthKit() {
   const confirmed = confirm('Möchtest du die HealthKit-Verbindung wirklich trennen?')
   if (confirmed) {
-    healthKitStatus.value.isConnected = false
-    healthKitStatus.value.lastSync = null
-    healthKitPermissions.value.forEach(permission => {
-      permission.granted = false
-    })
-    alert('✅ HealthKit-Verbindung getrennt.')
+    try {
+      // Reset the HealthKit connection in the service
+      await HealthKitService.resetConnection()
+      
+      // Update UI state
+      healthKitStatus.value.isConnected = false
+      healthKitStatus.value.lastSync = null
+      healthKitPermissions.value.forEach(permission => {
+        permission.granted = false
+      })
+      
+      alert('✅ HealthKit-Verbindung getrennt.')
+    } catch (error) {
+      console.error('Error disconnecting HealthKit:', error)
+      alert('❌ Fehler beim Trennen der HealthKit-Verbindung.')
+    }
   }
 }
 

@@ -1,5 +1,6 @@
 import { HealthKit } from 'kaloriq-health-kit';
 import { Capacitor } from '@capacitor/core';
+import { Preferences } from '@capacitor/preferences';
 
 export interface HealthKitData {
   calories?: number;
@@ -18,8 +19,80 @@ interface HealthData {
 }
 
 export class HealthKitService {
-  private static isPermissionGranted = false;
-  private static isInitialized = false;
+  private static readonly PERMISSION_KEY = 'healthkit_permission_granted';
+  private static readonly INITIALIZATION_KEY = 'healthkit_initialized';
+  
+  // Cache für bessere Performance
+  private static permissionCache: boolean | null = null;
+  private static initializationCache: boolean | null = null;
+
+  /**
+   * Persistente Speicherung der HealthKit-Berechtigung
+   */
+  private static async setPermissionGranted(granted: boolean): Promise<void> {
+    try {
+      await Preferences.set({
+        key: this.PERMISSION_KEY,
+        value: granted.toString()
+      });
+      this.permissionCache = granted;
+    } catch (error) {
+      console.error('Error saving HealthKit permission status:', error);
+    }
+  }
+
+  /**
+   * Abrufen der persistierten HealthKit-Berechtigung
+   */
+  private static async getPermissionGranted(): Promise<boolean> {
+    try {
+      if (this.permissionCache !== null) {
+        return this.permissionCache;
+      }
+
+      const { value } = await Preferences.get({ key: this.PERMISSION_KEY });
+      const granted = value === 'true';
+      this.permissionCache = granted;
+      return granted;
+    } catch (error) {
+      console.error('Error loading HealthKit permission status:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Persistente Speicherung des Initialisierungsstatus
+   */
+  private static async setInitialized(initialized: boolean): Promise<void> {
+    try {
+      await Preferences.set({
+        key: this.INITIALIZATION_KEY,
+        value: initialized.toString()
+      });
+      this.initializationCache = initialized;
+    } catch (error) {
+      console.error('Error saving HealthKit initialization status:', error);
+    }
+  }
+
+  /**
+   * Abrufen des persistierten Initialisierungsstatus
+   */
+  private static async getInitialized(): Promise<boolean> {
+    try {
+      if (this.initializationCache !== null) {
+        return this.initializationCache;
+      }
+
+      const { value } = await Preferences.get({ key: this.INITIALIZATION_KEY });
+      const initialized = value === 'true';
+      this.initializationCache = initialized;
+      return initialized;
+    } catch (error) {
+      console.error('Error loading HealthKit initialization status:', error);
+      return false;
+    }
+  }
 
   /**
    * Initialize HealthKit and request permissions
@@ -49,8 +122,8 @@ export class HealthKitService {
       });
 
       console.log('🩺 HealthKit permissions granted:', granted);
-      this.isPermissionGranted = granted;
-      this.isInitialized = true;
+      await this.setPermissionGranted(granted);
+      await this.setInitialized(true);
       
       if (!granted) {
         console.log('❌ HealthKit permissions not granted by user');
@@ -93,8 +166,10 @@ export class HealthKitService {
       }
 
       const { available } = await HealthKit.isAvailable();
-      console.log('🩺 HealthKit availability check:', available, 'Permissions:', this.isPermissionGranted);
-      return available && this.isPermissionGranted;
+      const permissionGranted = await this.getPermissionGranted();
+      
+      console.log('🩺 HealthKit availability check:', available, 'Permissions:', permissionGranted);
+      return available && permissionGranted;
     } catch (error) {
       console.error('❌ Error checking HealthKit availability:', error);
       return false;
@@ -106,7 +181,8 @@ export class HealthKitService {
    */
   static async syncNutritionData(data: HealthKitData): Promise<boolean> {
     try {
-      if (!this.isPermissionGranted) {
+      const permissionGranted = await this.getPermissionGranted();
+      if (!permissionGranted) {
         console.log('🩺 HealthKit permissions not granted, skipping sync');
         return false;
       }
@@ -138,7 +214,8 @@ export class HealthKitService {
    */
   static async getNutritionData(date: string): Promise<HealthKitData | null> {
     try {
-      if (!this.isPermissionGranted) {
+      const permissionGranted = await this.getPermissionGranted();
+      if (!permissionGranted) {
         console.log('HealthKit permissions not granted');
         return null;
       }
@@ -162,7 +239,8 @@ export class HealthKitService {
    */
   static async getNutritionDataRange(startDate: string, endDate: string): Promise<HealthKitData[]> {
     try {
-      if (!this.isPermissionGranted) {
+      const permissionGranted = await this.getPermissionGranted();
+      if (!permissionGranted) {
         console.log('HealthKit permissions not granted');
         return [];
       }
@@ -186,7 +264,8 @@ export class HealthKitService {
    */
   static async syncTodaysData(): Promise<boolean> {
     try {
-      if (!this.isPermissionGranted) {
+      const permissionGranted = await this.getPermissionGranted();
+      if (!permissionGranted) {
         console.log('🩺 HealthKit permissions not granted, skipping sync');
         return false;
       }
@@ -251,12 +330,15 @@ export class HealthKitService {
    */
   static async debugStatus(): Promise<void> {
     try {
+      const permissionGranted = await this.getPermissionGranted();
+      const initialized = await this.getInitialized();
+      
       console.log('🔍 HealthKit Debug Status:');
       console.log('- Platform:', Capacitor.getPlatform());
       console.log('- Is Native Platform:', Capacitor.isNativePlatform());
       console.log('- Plugin Available:', typeof HealthKit !== 'undefined');
-      console.log('- Permissions Granted:', this.isPermissionGranted);
-      console.log('- Is Initialized:', this.isInitialized);
+      console.log('- Permissions Granted:', permissionGranted);
+      console.log('- Is Initialized:', initialized);
 
       if (typeof HealthKit !== 'undefined') {
         try {
@@ -268,6 +350,21 @@ export class HealthKitService {
       }
     } catch (error) {
       console.error('❌ Error in debug status:', error);
+    }
+  }
+
+  /**
+   * Reset HealthKit connection (for debugging/troubleshooting)
+   */
+  static async resetConnection(): Promise<void> {
+    try {
+      await this.setPermissionGranted(false);
+      await this.setInitialized(false);
+      this.permissionCache = null;
+      this.initializationCache = null;
+      console.log('🔄 HealthKit connection reset');
+    } catch (error) {
+      console.error('❌ Error resetting HealthKit connection:', error);
     }
   }
 }
