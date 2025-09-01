@@ -8,7 +8,7 @@
                 <p>{{ $t('scan.pleaseWait') }}</p>
             </div>
         </div>
-        
+
         <header class="header">
             <div class="logo-section">
                 <h1 class="app-title"><span style="color: #007052;">Kaloriq</span></h1><!--#005e4a #005f4a -->
@@ -47,12 +47,13 @@
                 </div>
             </div>
         </div>
-                <!-- Premium Banner for Free Users -->
+        <!-- Premium Banner for Free Users -->
         <div v-if="!isPremiumUser && showPremiumBanner" class="premium-banner" @click="goToPremium">
             <div class="banner-content">
                 <div class="banner-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="#FFD700">
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        <path
+                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                     </svg>
                 </div>
                 <div class="banner-text">
@@ -61,7 +62,8 @@
                 </div>
                 <div class="banner-close" @click.stop="hidePremiumBanner">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                        <path
+                            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
                     </svg>
                 </div>
             </div>
@@ -143,7 +145,7 @@
                 <p class="empty-subtitle">{{ $t('home.noScansSubtitle') }}</p>
             </div>
 
-            <div v-else class="food-item" v-for="item in recentFoods" :key="item.id">
+            <div v-else class="food-item" @click="goToNutritionDetail(item)" v-for="item in recentFoods" :key="item.id">
                 <div class="food-image">
                     <img v-if="item.image && !item.image.includes('placeholder')" :src="item.image" :alt="item.name" />
                     <span v-else>{{ item.type === 'food' ? '🍽️' : '📦' }}</span>
@@ -189,7 +191,7 @@
                 <router-link to="/all-scans" class="show-all-btn">
                     {{ $t('home.showAllScans') }}
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
                     </svg>
                 </router-link>
             </div>
@@ -225,22 +227,14 @@
         </div>
 
         <!-- Scan Limit Blocker -->
-        <PremiumBlocker
-            v-if="showScanLimitBlocker"
-            feature="unlimited_food_scans"
-            :title="$t('premium.scanLimit.title')"
-            :description="$t('premium.scanLimit.description')"
-            :features="[
+        <PremiumBlocker v-if="showScanLimitBlocker" feature="unlimited_food_scans"
+            :title="$t('premium.scanLimit.title')" :description="$t('premium.scanLimit.description')" :features="[
                 $t('premium.scanLimit.feature1'),
                 $t('premium.scanLimit.feature2'),
                 $t('premium.scanLimit.feature3')
-            ]"
-            :show-usage-info="true"
-            :scans-used="currentScanUsage?.currentCount || 0"
-            :scans-total="currentScanUsage?.limit || 10"
-            @close="closeScanLimitBlocker"
-            @upgrade="handleScanLimitUpgrade"
-        />
+            ]" :show-usage-info="true" :scans-used="currentScanUsage?.currentCount || 0"
+            :scans-total="currentScanUsage?.limit || 10" @close="closeScanLimitBlocker"
+            @upgrade="handleScanLimitUpgrade" />
     </div>
 </template>
 
@@ -273,29 +267,29 @@ async function openNativeScanner() {
         // Check scan limits first
         const usage = await checkScanLimit()
         currentScanUsage.value = usage
-        
+
         if (!usage.canScan && !usage.isPremium) {
             // Show premium blocker for free users who hit the limit
             console.log(`Scan limit reached: ${usage.currentCount}/${usage.limit} scans used today`)
             showScanLimitBlocker.value = true
             return
         }
-        
+
         await startScanning({
             mode: 'barcode', // Default to barcode mode
             timeout: 0, // No timeout
             showControls: true
         })
-        
+
         // Refresh scan history when we return from scanner
         loadScanHistory()
-        
+
         // Update scan usage after successful scan
         await getScanUsage()
-        
+
     } catch (error) {
         console.error('Failed to open scanner:', error)
-        
+
         // Handle scan limit errors
         if (error instanceof Error && error.message?.includes('SCAN_LIMIT_REACHED')) {
             // Show premium upgrade prompt
@@ -370,7 +364,7 @@ onMounted(async () => {
 
     window.addEventListener('scanHistoryUpdated', onScanHistoryUpdated)
     window.addEventListener('focus', onFocus)
-    
+
     // Listen for premium status changes to hide banner immediately
     const unsubscribe = onPremiumStatusChange((isPremium) => {
         console.log('🎉 Premium status changed in HomeView:', isPremium)
@@ -378,7 +372,7 @@ onMounted(async () => {
             showPremiumBanner.value = false
         }
     })
-    
+
     // Cleanup function will be called by onUnmounted
     window.addEventListener('beforeunload', unsubscribe)
 })
@@ -430,7 +424,7 @@ async function loadScanHistory() {
         await calculateTodaysNutrition()
         await WidgetDataManager.updateWidgetData()
         await syncToHealthKit()
-        
+
         // Reset inactivity timer when new scans are detected
         await NotificationService.resetInactivityTimer()
     } catch (error) {
@@ -530,6 +524,15 @@ function goToPremium() {
 
 function hidePremiumBanner() {
     showPremiumBanner.value = false
+}
+
+function goToNutritionDetail(item: FoodItem) {
+    router.push({
+        path: '/scan-detail',
+        query: {
+            scanId: item.id.toString()
+        }
+    })
 }
 
 const recentFoods = computed((): FoodItem[] => {
@@ -808,7 +811,7 @@ function handleTouchEnd(event: TouchEvent) {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-   /* cursor: pointer;
+    /* cursor: pointer;
     transition: transform 0.2s, background 0.2s;*/
 }
 
@@ -1128,8 +1131,13 @@ a {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* Premium Banner */

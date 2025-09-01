@@ -263,9 +263,9 @@ function formatDate(dateStr: string): string {
 }
 
 function viewScanDetails(scan: ScanData) {
-    // Navigate to nutrition view with scan details
+    // Navigate to scan detail view with scan ID
     router.push({
-        path: '/nutrition',
+        path: '/scan-detail',
         query: { scanId: scan.id.toString() }
     })
 }

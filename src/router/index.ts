@@ -19,6 +19,7 @@ import FatsDetailView from "../views/FatsDetailView.vue";
 import BMIDetailView from "../views/BMIDetailView.vue";
 import WeightDetailView from "../views/WeightDetailView.vue";
 import AllScansView from "../views/AllScansView.vue";
+import ScanDetailView from "../views/ScanDetailView.vue";
 import { isOnboardingCompleted } from "../stores/userStore";
 
 const routes = [
@@ -111,6 +112,11 @@ const routes = [
     path: "/all-scans",
     name: "AllScans",
     component: AllScansView,
+  },
+  {
+    path: "/scan-detail",
+    name: "ScanDetail",
+    component: ScanDetailView,
   },
   {
     path: "/bmi-detail",
