@@ -213,7 +213,7 @@
         <!-- HealthKit Unavailable Message -->
         <div v-if="!healthKitStatus.isAvailable" class="setting-item">
           <div class="healthkit-unavailable">
-            <p>ℹ️ HealthKit ist nur auf iOS-Geräten verfügbar</p>
+            <p>ℹ️ Apple Health ist auf diesem Gerät nicht verfügbar</p>
           </div>
         </div>
       </div>
@@ -523,12 +523,12 @@
       <div class="settings-card">
         <div class="setting-item">
           <span class="setting-label">{{ $t('settings.version') }}</span>
-          <span class="setting-value">1.0.0</span>
+          <span class="setting-value">2.0.0</span>
         </div>
 
         <div class="setting-item">
           <span class="setting-label">{{ $t('settings.build') }}</span>
-          <span class="setting-value build-clickable" @click="handleBuildClick">2024.08.001</span>
+          <span class="setting-value build-clickable" @click="handleBuildClick">2024.09.001</span>
         </div>
 
         <!--<button class="action-button" @click="checkUpdates">
@@ -709,9 +709,9 @@ onMounted(async () => {
   }
 
   // Initialize HealthKit status only for premium users
-  if (isPremiumUser.value) {
+  //if (isPremiumUser.value) {
     await loadHealthKitStatus()
-  }
+  //}
 })
 
 // Watch for premium status changes to load HealthKit when user upgrades
@@ -749,21 +749,18 @@ async function loadHealthKitStatus() {
       return
     }
 
-    // Check if HealthKit is available
-    healthKitStatus.value.isAvailable = await HealthKitService.isAvailable()
-    
-    // Check if HealthKit is connected (permissions granted)
+    healthKitStatus.value.isAvailable = await HealthKitService.isHealthKitAvailable()
     healthKitStatus.value.isConnected = await HealthKitService.isAvailable()
 
-    // Update permissions status (simplified for now)
     if (healthKitStatus.value.isConnected) {
       healthKitPermissions.value.forEach(permission => {
         permission.granted = true
       })
       
-      // Set last sync time if connected
       healthKitStatus.value.lastSync = new Date().toISOString()
     }
+
+    console.log('HealthKit status loaded:', healthKitStatus.value)
   } catch (error) {
     console.error('Error loading HealthKit status:', error)
     healthKitStatus.value.isAvailable = false
@@ -772,7 +769,6 @@ async function loadHealthKitStatus() {
 }
 
 async function connectHealthKit() {
-  // Check if user has premium access
   if (!isPremiumUser.value) {
     alert('❌ Apple Health integration requires a Premium subscription.')
     goToUpgrade()
@@ -948,7 +944,7 @@ async function exportData() {
       },
       exportDate: new Date().toISOString(),
       exportVersion: '1.0',
-      appVersion: '1.0.0'
+      appVersion: '2.0.0'
     }
 
     const jsonString = JSON.stringify(data, null, 2)

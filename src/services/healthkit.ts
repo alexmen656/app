@@ -66,6 +66,24 @@ export class HealthKitService {
   }
 
   /**
+   * Check if HealthKit is available on the device (without permission check)
+   */
+  static async isHealthKitAvailable(): Promise<boolean> {
+    try {
+      if (!Capacitor.isNativePlatform() || Capacitor.getPlatform() !== 'ios') {
+        return false;
+      }
+
+      const { available } = await HealthKit.isAvailable();
+      console.log('🩺 HealthKit device availability check:', available);
+      return available;
+    } catch (error) {
+      console.error('❌ Error checking HealthKit device availability:', error);
+      return false;
+    }
+  }
+
+  /**
    * Check if HealthKit is available and permissions are granted
    */
   static async isAvailable(): Promise<boolean> {
