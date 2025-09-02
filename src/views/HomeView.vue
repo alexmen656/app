@@ -877,7 +877,7 @@ function handleTouchEnd(event: TouchEvent) {
 .section-title {
     font-size: 20px;
     font-weight: 600;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 
 .empty-state {
@@ -912,14 +912,14 @@ function handleTouchEnd(event: TouchEvent) {
     gap: 15px;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 15px;
-    padding: 15px;
+    padding: 12px;
     margin-bottom: 12px;
     backdrop-filter: blur(10px);
 }
 
 .food-image {
-    width: 60px;
-    height: 60px;
+    width: 69px;
+    height: 69px;
     border-radius: 10px;
     overflow: hidden;
     background: #333;
