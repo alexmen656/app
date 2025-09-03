@@ -255,11 +255,18 @@ export function useBarcodeScanner() {
         name: 'Nutrition', 
         query: {
           foodData: JSON.stringify({
-            name: 'Scanned Food',
-            foods: [{ name: 'Scanned Food', calories: 0, protein: 0, carbs: 0, fat: 0 }],
+            names: { de: 'Gescanntes Essen', en: 'Scanned Food' },
+            foods: [{ 
+              name: { de: 'Gescanntes Essen', en: 'Scanned Food' },
+              amount: { de: '1 Portion', en: '1 serving' },
+              calories: 0, 
+              protein: 0, 
+              carbs: 0, 
+              fat: 0 
+            }],
             total: { calories: 0, protein: 0, carbs: 0, fat: 0 },
             confidence: 'low',
-            notes: 'Food analysis failed',
+            notes: { de: 'Lebensmittelanalyse fehlgeschlagen', en: 'Food analysis failed' },
             error: true
           }),
           photo: result.base64
@@ -358,13 +365,11 @@ export function useBarcodeScanner() {
       }
 
       return {
-        name: data.data.name || 'Unbekanntes Essen',
-        name_en: data.data.name_en || 'Unknown Food',
+        names: data.data.names || { de: 'Unbekanntes Essen', en: 'Unknown Food' },
         foods: data.data.foods || [],
         total: data.data.total || { calories: 0, protein: 0, carbs: 0, fat: 0 },
         confidence: data.data.confidence || 'medium',
-        notes: data.data.notes || '',
-        notes_en: data.data.notes_en || '',
+        notes: data.data.notes || { de: '', en: '' },
         timestamp: data.data.timestamp || new Date().toISOString()
       }
 

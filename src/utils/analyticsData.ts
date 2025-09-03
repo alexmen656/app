@@ -82,6 +82,21 @@ export class AnalyticsManager {
       const getLocalizedName = (item: any) => {
         const currentLanguage = localStorage.getItem('kaloriq-language') || 'en';
         
+        // Handle new multilingual structure
+        if (item?.names && typeof item.names === 'object') {
+          // Try current language first
+          if (item.names[currentLanguage]) {
+            return item.names[currentLanguage];
+          }
+          
+          // Fallback to any available language
+          const availableLanguages = Object.keys(item.names);
+          if (availableLanguages.length > 0) {
+            return item.names[availableLanguages[0]];
+          }
+        }
+        
+        // Handle legacy structure (backward compatibility)
         if (currentLanguage === 'en' && item?.name_en) {
           return item.name_en;
         }

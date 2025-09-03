@@ -256,7 +256,7 @@
                 <div class="fix-form">
                     <div class="form-group">
                         <label>{{ $t('nutrition.productName') }}</label>
-                        <input v-model="editedProduct.name" type="text">
+                        <input v-model="editedProductName" type="text">
                     </div>
                     <div class="form-group">
                         <label>{{ $t('nutrition.calories') }}</label>
@@ -294,8 +294,18 @@
                     <div class="foods-list-edit">
                         <div v-for="(food, index) in editedProduct.foods" :key="index" class="food-edit-item">
                             <div class="food-edit-content">
-                                <input v-model="food.name" class="food-name-input" :placeholder="$t('nutrition.foodName')">
-                                <input v-model="food.amount" class="food-amount-input" :placeholder="$t('nutrition.amount')">
+                                <input 
+                                    :value="getLocalizedName(food)" 
+                                    @input="updateFoodName(index, $event.target.value)" 
+                                    class="food-name-input" 
+                                    :placeholder="$t('nutrition.foodName')"
+                                >
+                                <input 
+                                    :value="getLocalizedAmount(food)" 
+                                    @input="updateFoodAmount(index, $event.target.value)" 
+                                    class="food-amount-input" 
+                                    :placeholder="$t('nutrition.amount')"
+                                >
                             </div>
                             <button class="remove-food-btn" @click="removeFood(index)">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -373,6 +383,7 @@ import { useI18n } from 'vue-i18n';
 import { BarcodeCache, ScanHistory } from '../utils/storage';
 import { WidgetDataManager, StreakManager } from '../utils/widgetData';
 import { getLocalizedName, getLocalizedNotes, getLocalizedAmount, capitalizeIfLetter } from '../utils/localization';
+import { getCurrentLanguage } from '../i18n';
 import NutritionDetailsModal from '../components/NutritionDetailsModal.vue';
 
 const route = useRoute();
@@ -385,6 +396,18 @@ const showDetailsModal = ref(false);
 const showSourceModal = ref(false);
 const editedProduct = ref({});
 const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+// Computed property for editing the product name
+const editedProductName = computed({
+    get: () => getLocalizedName(editedProduct.value),
+    set: (value) => {
+        if (!editedProduct.value.names) {
+            editedProduct.value.names = {};
+        }
+        const currentLanguage = getCurrentLanguage();
+        editedProduct.value.names[currentLanguage] = value;
+    }
+});
 
 const fetchProduct = async (barcode) => {
     try {
@@ -408,7 +431,7 @@ const fetchProduct = async (barcode) => {
             }
 
             product.value = {
-                name: cachedProduct.name || 'Unknown Product',
+                names: cachedProduct.names || { de: cachedProduct.name || 'Unbekanntes Produkt', en: 'Unknown Product' },
                 calories,
                 protein,
                 carbs,
@@ -444,7 +467,7 @@ const fetchProduct = async (barcode) => {
 
         const nutrition = data.product.nutrition?.perServing || data.product.nutrition?.per100g || {};
         const productData = {
-            name: data.product.name || 'Unknown Product',
+            names: data.product.names || { de: data.product.name || 'Unbekanntes Produkt', en: 'Unknown Product' },
             calories: nutrition.calories || 0,
             protein: nutrition.protein || 0,
             carbs: nutrition.carbs || 0,
@@ -508,8 +531,7 @@ onMounted(() => {
                 const firstFood = foodData.foods[0] || {};
 
                 product.value = {
-                    name: foodData.name,
-                    name_en: foodData.name_en,
+                    names: foodData.names || { de: foodData.name || 'Unbekanntes Essen', en: foodData.name_en || 'Unknown Food' },
                     image: route.query.photo,
                     calories: total.calories || 0,
                     protein: total.protein || 0,
@@ -522,8 +544,7 @@ onMounted(() => {
                     ingredients: foodData.foods.map(f => `${getLocalizedName(f)} (${getLocalizedAmount(f) || 'ca. 100g'})`),
                     type: 'food',
                     confidence: foodData.confidence || 'medium',
-                    notes: foodData.notes || '',
-                    notes_en: foodData.notes_en || '',
+                    notes: foodData.notes || { de: foodData.notes || '', en: foodData.notes_en || '' },
                     foods: foodData.foods,
                     analysisError: foodData.error || false
                 };
@@ -557,8 +578,7 @@ onMounted(() => {
             const nutrition = labelData.nutrition || {};
 
             product.value = {
-                name: labelData.name || 'Scanned Label',
-                name_en: labelData.name_en || '',
+                names: labelData.names || { de: labelData.name || 'Gescanntes Label', en: labelData.name_en || 'Scanned Label' },
                 image: route.query.photo,
                 calories: nutrition.calories || 0,
                 protein: nutrition.protein || 0,
@@ -574,8 +594,7 @@ onMounted(() => {
                 claims: labelData.claims || [],
                 type: 'label',
                 confidence: labelData.confidence || 'medium',
-                notes: labelData.notes || '',
-                notes_en: labelData.notes_en || '',
+                notes: labelData.notes || { de: labelData.notes || '', en: labelData.notes_en || '' },
                 analysisError: labelData.error || false
             };
 
@@ -680,13 +699,31 @@ function addFood() {
         editedProduct.value.foods = [];
     }
     editedProduct.value.foods.push({
-        name: '',
-        amount: '',
+        names: { de: '', en: '' },
+        amount: { de: '', en: '' },
         calories: 0,
         protein: 0,
         carbs: 0,
-        fats: 0
+        fat: 0
     });
+}
+
+function updateFoodName(index, value) {
+    const food = editedProduct.value.foods[index];
+    if (!food.names) {
+        food.names = {};
+    }
+    const currentLanguage = getCurrentLanguage();
+    food.names[currentLanguage] = value;
+}
+
+function updateFoodAmount(index, value) {
+    const food = editedProduct.value.foods[index];
+    if (!food.amount) {
+        food.amount = {};
+    }
+    const currentLanguage = getCurrentLanguage();
+    food.amount[currentLanguage] = value;
 }
 
 function recalculateTotals() {
@@ -746,16 +783,16 @@ async function saveAndReturn() {
                     fat: Math.round(product.value.fats * amount.value)
                 },
                 foods: [{
-                    name: product.value.name,
-                    name_en: product.value.name_en,
+                    names: product.value.names || { de: product.value.name || 'Unbekannt', en: product.value.name_en || 'Unknown' },
+                    amount: { de: '1 Portion', en: '1 serving' },
                     calories: Math.round(product.value.calories * amount.value),
                     protein: Math.round(product.value.protein * amount.value),
                     carbs: Math.round(product.value.carbs * amount.value),
-                    fats: Math.round(product.value.fats * amount.value)
+                    fat: Math.round(product.value.fats * amount.value)
                 }]
             } : {
                 // Barcode scan format  
-                product_name: product.value.name,
+                product_name: getLocalizedName(product.value),
                 nutriments: {
                     energy_kcal_100g: Math.round(product.value.calories * amount.value),
                     proteins_100g: Math.round(product.value.protein * amount.value),
