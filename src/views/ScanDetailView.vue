@@ -185,7 +185,7 @@
                     <h3>{{ $t('nutrition.detectedIngredients') }}</h3>
                     <div class="foods-list">
                         <div v-for="food in scanData.data.foods" :key="food.name" class="food-item">
-                            <div class="food-name">{{ capitalizeIfLetter(food.name) }}</div>
+                            <div class="food-name">{{ capitalizeIfLetter(getLocalizedName(food)) }}</div>
                             <div class="food-amount" v-if="food.amount">{{ food.amount }}</div>
                             <div class="food-macros">
                                 <span class="food-macro">{{ Math.round((food.calories || 0) * amount) }} kcal</span>
@@ -350,6 +350,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { ScanHistory } from '../utils/storage';
 import { WidgetDataManager, StreakManager } from '../utils/widgetData';
+import { getLocalizedName, getLocalizedNotes, capitalizeIfLetter } from '../utils/localization';
 
 const route = useRoute();
 const router = useRouter();
@@ -371,7 +372,7 @@ const displayName = computed(() => {
     
     if (scanData.value.type === 'food') {
         const firstFood = scanData.value.data.foods?.[0];
-        return firstFood?.name || t('home.scannedFood');
+        return getLocalizedName(firstFood) || t('home.scannedFood');
     } else {
         return scanData.value.data.product_name || t('home.unknownProduct');
     }
@@ -462,13 +463,6 @@ const backgroundStyle = computed(() => {
         backgroundPosition: 'center',
     };
 });
-
-function capitalizeIfLetter(value) {
-    if (!value) return '';
-    return /^[a-zA-Z]/.test(value) 
-        ? value.charAt(0).toUpperCase() + value.slice(1) 
-        : value;
-}
 
 function increaseAmount() {
     amount.value = Math.round((amount.value + 0.1) * 10) / 10;

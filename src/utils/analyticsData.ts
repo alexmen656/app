@@ -78,12 +78,23 @@ export class AnalyticsManager {
       let fats = 0;
       let name = '';
 
+      // Helper function for localized names
+      const getLocalizedName = (item: any) => {
+        const currentLanguage = localStorage.getItem('kaloriq-language') || 'en';
+        
+        if (currentLanguage === 'en' && item?.name_en) {
+          return item.name_en;
+        }
+        
+        return item?.name || item?.name_en || 'Unknown';
+      };
+
       if (scan.type === 'food' && scan.data.total) {
         calories = scan.data.total.calories || 0;
         protein = scan.data.total.protein || 0;
         carbs = scan.data.total.carbs || 0;
         fats = scan.data.total.fat || 0;
-        name = scan.data.foods?.[0]?.name || 'Gescanntes Essen';
+        name = getLocalizedName(scan.data.foods?.[0]) || 'Gescanntes Essen';
       } else if (scan.type === 'barcode' && scan.data.nutriments) {
         calories = scan.data.nutriments.energy_kcal_100g || 0;
         protein = scan.data.nutriments.proteins_100g || 0;

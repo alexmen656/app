@@ -124,15 +124,28 @@ export class WidgetDataManager {
       const streak = await this.getStreakCount();
 
       // Prepare recent foods for widget
-      const todayFoods = todaysScans.slice(0, 3).map(scan => ({
-        name: scan.type === 'food' 
-          ? (scan.data.foods?.[0]?.name || 'Gescanntes Essen')
-          : (scan.data.product_name || 'Unbekanntes Produkt'),
-        calories: scan.type === 'food'
-          ? (scan.data.total?.calories || 0)
-          : (scan.data.nutriments?.energy_kcal_100g || 0),
-        time: scan.time
-      }));
+      const todayFoods = todaysScans.slice(0, 3).map(scan => {
+        // Import localization helper
+        const getLocalizedName = (item: any) => {
+          const currentLanguage = localStorage.getItem('kaloriq-language') || 'en';
+          
+          if (currentLanguage === 'en' && item.name_en) {
+            return item.name_en;
+          }
+          
+          return item.name || item.name_en || 'Unknown';
+        };
+
+        return {
+          name: scan.type === 'food' 
+            ? (getLocalizedName(scan.data.foods?.[0]) || 'Gescanntes Essen')
+            : (scan.data.product_name || 'Unbekanntes Produkt'),
+          calories: scan.type === 'food'
+            ? (scan.data.total?.calories || 0)
+            : (scan.data.nutriments?.energy_kcal_100g || 0),
+          time: scan.time
+        };
+      });
 
       const widgetData: WidgetData = {
         calories: {

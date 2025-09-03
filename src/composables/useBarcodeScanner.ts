@@ -358,11 +358,13 @@ export function useBarcodeScanner() {
       }
 
       return {
-        name: data.data.name || 'Unknown Food',
+        name: data.data.name || 'Unbekanntes Essen',
+        name_en: data.data.name_en || 'Unknown Food',
         foods: data.data.foods || [],
         total: data.data.total || { calories: 0, protein: 0, carbs: 0, fat: 0 },
         confidence: data.data.confidence || 'medium',
         notes: data.data.notes || '',
+        notes_en: data.data.notes_en || '',
         timestamp: data.data.timestamp || new Date().toISOString()
       }
 

@@ -160,7 +160,7 @@
                     <span v-else>{{ item.type === 'food' ? '🍽️' : '📦' }}</span>
                 </div>
                 <div class="food-info">
-                    <h4 class="food-name">{{ item.name }}</h4>
+                    <h4 class="food-name">{{ item.name }}</h4><!--getLocalizedName(-->
                     <div class="food-calories">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="#ff6b35">
                             <path
@@ -260,6 +260,7 @@ import { shouldShowReviewPrompt, setLastReviewPrompt, getNotificationSettings } 
 import { NotificationService } from '../services/notifications'
 import { useBarcodeScanner } from '../composables/useBarcodeScanner'
 import { isPremiumUser, onPremiumStatusChange } from '../utils/premiumManager' //premiumManager
+import { getLocalizedName } from '../utils/localization'
 import PremiumBlocker from '../components/PremiumBlocker.vue'
 
 const router = useRouter()
@@ -565,7 +566,7 @@ const recentFoods = computed((): FoodItem[] => {
             const firstFood = scan.data.foods?.[0]
             return {
                 id: scan.id,
-                name: firstFood?.name || t('home.scannedFood'),
+                name: getLocalizedName(firstFood) || t('home.scannedFood'),
                 calories: total.calories || 0,
                 protein: total.protein || 0,
                 carbs: total.carbs || 0,

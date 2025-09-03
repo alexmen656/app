@@ -73,7 +73,7 @@
 
                 <div class="scan-info">
                     <div class="scan-header">
-                        <h4 class="scan-name">{{ scan.name }}</h4>
+                        <h4 class="scan-name">{{ getLocalizedName(scan) }}</h4>
                         <span class="scan-type-badge" :class="scan.type">
                             {{ scan.type === 'food' ? $t('allScans.foodScan') : $t('allScans.barcodeScan') }}
                         </span>
@@ -141,6 +141,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ScanHistory } from '../utils/storage'
+import { getLocalizedName } from '../utils/localization'
 
 const router = useRouter()
 const { t } = useI18n()
@@ -285,7 +286,7 @@ async function loadAllScans() {
                     time: scan.time,
                     image: scan.image,
                     data: scan.data,
-                    name: firstFood?.name || t('home.scannedFood'),
+                    name: getLocalizedName(firstFood) || t('home.scannedFood'),
                     calories: Math.round(total.calories || 0),
                     protein: Math.round(total.protein || 0),
                     carbs: Math.round(total.carbs || 0),

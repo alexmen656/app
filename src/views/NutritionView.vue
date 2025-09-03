@@ -25,7 +25,7 @@
                 <div class="nutrition-time">{{ time }}</div>
                 <div class="product-header">
                     <div class="product-info">
-                        <h1 class="nutrition-name">{{ capitalizeIfLetter(product.name) }}</h1>
+                        <h1 class="nutrition-name">{{ capitalizeIfLetter(getLocalizedName(product)) }}</h1>
                         <!--<div v-if="product.brand" class="nutrition-brand">{{ product.brand }}</div>-->
                         <div v-if="product.servingSize && product.servingUnit" class="nutrition-serving">
                             {{ $t('nutrition.serving') }}: {{ product.servingSize }}{{ product.servingUnit }}
@@ -184,8 +184,8 @@
                     <h3>{{ $t('nutrition.detectedIngredients') }}</h3>
                     <div class="foods-list">
                         <div v-for="food in product.foods" :key="food.name" class="food-item">
-                            <div class="food-name">{{ food.name }}</div>
-                            <div class="food-amount" v-if="food.amount">{{ food.amount }}</div>
+                            <div class="food-name">{{ getLocalizedName(food) }}</div>
+                            <div class="food-amount" v-if="food.amount">{{ getLocalizedAmount(food) }}</div>
                             <div class="food-macros">
                                 <span class="food-macro">{{ Math.round(food.calories * amount) }} kcal</span>
                                 <span class="food-macro">P: {{ Math.round(food.protein * amount) }}g</span>
@@ -207,7 +207,7 @@
                     </div>
                     <div class="analysis-notes" v-if="product.notes">
                         <div class="notes-label">{{ $t('nutrition.notes') }}</div>
-                        <div class="notes-text">{{ product.notes }}</div>
+                        <div class="notes-text">{{ getLocalizedNotes(product) }}</div>
                     </div>
                     <div class="analysis-error" v-if="product.analysisError">
                         <div class="error-icon">⚠️</div>
@@ -372,6 +372,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { BarcodeCache, ScanHistory } from '../utils/storage';
 import { WidgetDataManager, StreakManager } from '../utils/widgetData';
+import { getLocalizedName, getLocalizedNotes, getLocalizedAmount, capitalizeIfLetter } from '../utils/localization';
 import NutritionDetailsModal from '../components/NutritionDetailsModal.vue';
 
 const route = useRoute();
@@ -384,13 +385,6 @@ const showDetailsModal = ref(false);
 const showSourceModal = ref(false);
 const editedProduct = ref({});
 const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-function capitalizeIfLetter(value) {
-    if (!value) return ''
-    return /^[a-zA-Z]/.test(value)
-        ? value.charAt(0).toUpperCase() + value.slice(1)
-        : value
-}
 
 const fetchProduct = async (barcode) => {
     try {
@@ -507,6 +501,7 @@ onMounted(() => {
     } else if (route.query.foodData) {
         try {
             const foodData = JSON.parse(route.query.foodData);
+            console.log('🔍 DEBUG: Received foodData:', foodData);
 
             if (foodData.foods && foodData.foods.length > 0) {
                 const total = foodData.total || {};
@@ -514,6 +509,7 @@ onMounted(() => {
 
                 product.value = {
                     name: foodData.name,
+                    name_en: foodData.name_en,
                     image: route.query.photo,
                     calories: total.calories || 0,
                     protein: total.protein || 0,
@@ -523,15 +519,17 @@ onMounted(() => {
                     sugar: total.sugar || 0,
                     salt: total.salt || 0,
                     healthScore: foodData.healthScore || 7,
-                    ingredients: foodData.foods.map(f => `${f.name} (${f.amount || 'ca. 100g'})`),
+                    ingredients: foodData.foods.map(f => `${getLocalizedName(f)} (${getLocalizedAmount(f) || 'ca. 100g'})`),
                     type: 'food',
                     confidence: foodData.confidence || 'medium',
                     notes: foodData.notes || '',
+                    notes_en: foodData.notes_en || '',
                     foods: foodData.foods,
                     analysisError: foodData.error || false
                 };
             }
 
+            console.log('🔍 DEBUG: Final product value:', product.value);
             editedProduct.value = { ...product.value };
         } catch (e) {
             console.error('Error parsing food data:', e);
@@ -560,6 +558,7 @@ onMounted(() => {
 
             product.value = {
                 name: labelData.name || 'Scanned Label',
+                name_en: labelData.name_en || '',
                 image: route.query.photo,
                 calories: nutrition.calories || 0,
                 protein: nutrition.protein || 0,
@@ -576,6 +575,7 @@ onMounted(() => {
                 type: 'label',
                 confidence: labelData.confidence || 'medium',
                 notes: labelData.notes || '',
+                notes_en: labelData.notes_en || '',
                 analysisError: labelData.error || false
             };
 
@@ -747,6 +747,7 @@ async function saveAndReturn() {
                 },
                 foods: [{
                     name: product.value.name,
+                    name_en: product.value.name_en,
                     calories: Math.round(product.value.calories * amount.value),
                     protein: Math.round(product.value.protein * amount.value),
                     carbs: Math.round(product.value.carbs * amount.value),
