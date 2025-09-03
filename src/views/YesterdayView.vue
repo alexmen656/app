@@ -6,7 +6,7 @@
         <!-- Header -->
         <header class="header">
             <div class="logo-section">
-                <h1 class="app-title"><span style="color: #007052;">Kaloriq</span></h1>
+                <h1 class="app-title"><span style="color: #007052;">KalBuddy</span></h1>
             </div>
             <div class="streak" @click="goToStreak">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="#ff6b35">

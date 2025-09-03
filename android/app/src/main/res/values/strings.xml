@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Kaloriq</string>
-    <string name="title_activity_main">Kaloriq</string>
+    <string name="app_name">KalBuddy</string>
+    <string name="title_activity_main">KalBuddy</string>
     <string name="package_name">eu.controlcenter.sites.kaloriq</string>
     <string name="custom_url_scheme">eu.controlcenter.sites.kaloriq</string>
 </resources>

@@ -1,6 +1,6 @@
-# Kaloriq Website
+# KalBuddy Website
 
-Eine professionelle Landing Page für die Kaloriq App - eine intelligente Kalorienverfolgungsapp mit AI-Fooderkennung und Barcode-Scanner.
+Eine professionelle Landing Page für die KalBuddy App - eine intelligente Kalorienverfolgungsapp mit AI-Fooderkennung und Barcode-Scanner.
 
 ## Features
 
@@ -161,4 +161,4 @@ body {
 
 ## Lizenz
 
-© 2025 Kaloriq. Alle Rechte vorbehalten.
+© 2025 KalBuddy. Alle Rechte vorbehalten.

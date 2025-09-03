@@ -20,7 +20,7 @@
 
         <header class="header">
             <div class="logo-section">
-                <h1 class="app-title"><span style="color: #007052;">Kaloriq</span></h1><!--#005e4a #005f4a -->
+                <h1 class="app-title"><span style="color: #007052;">KalBuddy</span></h1><!--#005e4a #005f4a -->
             </div>
             <div class="streak" @click="goToStreak">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="#ff6b35">

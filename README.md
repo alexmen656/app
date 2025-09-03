@@ -1,4 +1,4 @@
-# Kaloriq - Calorie Tracking App
+# KalBuddy - Calorie Tracking App
 
 Eine moderne Vue.js + Capacitor App zum Kalorienzählen mit KI-gestützter Nahrungsmittelerkennung.
 

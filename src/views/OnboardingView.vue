@@ -18,7 +18,7 @@
                             d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z" />
                     </svg>
                 </div>
-                <h1 class="hero-title">Welcome to <span class="brand">Kaloriq</span></h1>
+                <h1 class="hero-title">Welcome to <span class="brand">KalBuddy</span></h1>
                 <p class="hero-subtitle">Track your nutrition with AI-powered food recognition and achieve your health
                     goals with personalized insights.</p>
             </div>
