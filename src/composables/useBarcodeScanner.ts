@@ -15,6 +15,12 @@ export interface PhotoResult {
   height: number
 }
 
+export interface LabelResult {
+  base64: string
+  width: number
+  height: number
+}
+
 export interface ScanUsageInfo {
   currentCount: number
   limit: number
@@ -28,8 +34,9 @@ export function useBarcodeScanner() {
   const router = useRouter()
   const isScanning = ref(false)
   const hasPermission = ref(false)
-  const currentMode = ref<'barcode' | 'photo'>('barcode')
+  const currentMode = ref<'barcode' | 'photo' | 'label'>('barcode')
   const isProcessingPhoto = ref(false) // New loading state for photo processing
+  const isProcessingLabel = ref(false) // New loading state for label processing
   const scanUsage = ref<ScanUsageInfo | null>(null)
 
   // Check camera permission
@@ -123,7 +130,7 @@ export function useBarcodeScanner() {
 
   // Start scanning
   const startScanning = async (options: {
-    mode?: 'barcode' | 'photo'
+    mode?: 'barcode' | 'photo' | 'label'
     camera?: 'front' | 'back'
     showControls?: boolean
     timeout?: number
@@ -151,6 +158,14 @@ export function useBarcodeScanner() {
       KaloriqBarcodeScanner.addListener('barcodeScanned', handleBarcodeScanned)
       KaloriqBarcodeScanner.addListener('photoTaken', handlePhotoTaken)
       
+      // Add label listener with generic approach
+      try {
+        (KaloriqBarcodeScanner as any).addListener('labelTaken', handleLabelTaken)
+        //console.log('Label taken listener added')
+      } catch (e) {
+        //console.log('Label taken listener not available (web fallback)')
+      }
+      
       // Add food analysis listener using generic approach
       try {
         (KaloriqBarcodeScanner as any).addListener('foodAnalyzed', handleFoodAnalyzed)
@@ -159,8 +174,16 @@ export function useBarcodeScanner() {
         //console.log('Food analysis listener not available (web fallback)')
       }
 
+      // Add label analysis listener using generic approach
+      try {
+        (KaloriqBarcodeScanner as any).addListener('labelAnalyzed', handleLabelAnalyzed)
+        //console.log('Label analysis listener added')
+      } catch (e) {
+        //console.log('Label analysis listener not available (web fallback)')
+      }
+
       // Start the native scanner with scan limit check
-      await KaloriqBarcodeScanner.startScanning({
+      await (KaloriqBarcodeScanner as any).startScanning({
         mode: options.mode || 'barcode',
         camera: options.camera || 'back',
         showControls: options.showControls ?? true,
@@ -271,6 +294,52 @@ export function useBarcodeScanner() {
     }
   }
 
+  // Handle label result
+  const handleLabelTaken = async (result: LabelResult) => {
+    //console.log('🔥 Label taken event received:', { width: result.width, height: result.height, base64Length: result.base64?.length })
+    
+    isScanning.value = false
+    isProcessingLabel.value = true // Start processing state
+    
+    try {
+      // Analyze the photo for label content
+      //console.log('🔥 Starting label analysis...')
+      const analyzedLabel = await analyzeLabelPhoto(result.base64)
+      //console.log('🔥 Label analysis completed:', analyzedLabel)
+      
+      isProcessingLabel.value = false // End processing state
+      
+      // Navigate to nutrition view with label data
+      await router.push({
+        name: 'Nutrition',
+        query: {
+          labelData: JSON.stringify(analyzedLabel),
+          photo: result.base64
+        }
+      })
+    } catch (error) {
+      console.error('🔥 Label analysis failed:', error)
+      
+      isProcessingLabel.value = false // End processing state
+      
+      // Navigate anyway with basic data
+      await router.push({
+        name: 'Nutrition', 
+        query: {
+          labelData: JSON.stringify({
+            name: 'Scanned Label',
+            ingredients: [],
+            nutrition: { calories: 0, protein: 0, carbs: 0, fat: 0 },
+            confidence: 'low',
+            notes: 'Label analysis failed',
+            error: true
+          }),
+          photo: result.base64
+        }
+      })
+    }
+  }
+
   // Handle food analysis result (NEW - from iOS native analysis)
   const handleFoodAnalyzed = async (result: any) => {
     ////console.log('Food analyzed natively:', result)
@@ -282,6 +351,22 @@ export function useBarcodeScanner() {
       name: 'Nutrition',
       query: {
         foodData: JSON.stringify(result.foodData),
+        photo: result.photo
+      }
+    })
+  }
+
+  // Handle label analysis result (NEW - from iOS native analysis)
+  const handleLabelAnalyzed = async (result: any) => {
+    ////console.log('Label analyzed natively:', result)
+    
+    isScanning.value = false
+    
+    // Navigate to nutrition view with pre-analyzed label data
+    await router.push({
+      name: 'Nutrition',
+      query: {
+        labelData: JSON.stringify(result.labelData),
         photo: result.photo
       }
     })
@@ -341,6 +426,63 @@ export function useBarcodeScanner() {
     }
   }
 
+  // Analyze label photo using KaloriQ API
+  const analyzeLabelPhoto = async (base64Image: string) => {
+    try {
+      //console.log('🔥 analyzeLabelPhoto called with base64 length:', base64Image.length)
+      
+      // Ensure base64Image is a data URL
+      const dataUrl = base64Image.startsWith('data:') ? base64Image : `data:image/jpeg;base64,${base64Image}`
+      
+      // Convert base64 to blob
+      const response = await fetch(dataUrl)
+      const blob = await response.blob()
+      
+      //console.log('🔥 Blob created, size:', blob.size)
+
+      // Create form data
+      const formData = new FormData()
+      formData.append('image', blob, 'label.jpg')
+
+      //console.log('🔥 Sending request to KaloriQ Label API...')
+      
+      // Send to KaloriQ Label Analyze API (new endpoint)
+      const apiResponse = await fetch('https://kaloriq-api.vercel.app/api/label/analyze', {
+        method: 'POST',
+        body: formData
+      })
+
+      //console.log('🔥 API Response status:', apiResponse.status)
+
+      if (!apiResponse.ok) {
+        throw new Error(`API error: ${apiResponse.status}`)
+      }
+
+      const data = await apiResponse.json()
+      //console.log('🔥 API Response data:', data)
+
+      if (!data.success || !data.data) {
+        throw new Error('Label analysis failed')
+      }
+
+      return {
+        name: data.data.name || 'Unknown Product',
+        ingredients: data.data.ingredients || [],
+        nutrition: data.data.nutrition || { calories: 0, protein: 0, carbs: 0, fat: 0 },
+        allergens: data.data.allergens || [],
+        claims: data.data.claims || [],
+        brand: data.data.brand || '',
+        confidence: data.data.confidence || 'medium',
+        notes: data.data.notes || '',
+        timestamp: data.data.timestamp || new Date().toISOString()
+      }
+
+    } catch (error) {
+      console.error('🔥 Label analysis error:', error)
+      throw error
+    }
+  }
+
   // Camera controls
   const switchCamera = async () => {
     try {
@@ -375,6 +517,7 @@ export function useBarcodeScanner() {
     hasPermission,
     currentMode,
     isProcessingPhoto,
+    isProcessingLabel,
     scanUsage,
     
     // Methods

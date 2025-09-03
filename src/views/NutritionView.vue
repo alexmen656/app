@@ -553,6 +553,53 @@ onMounted(() => {
             };
             editedProduct.value = { ...product.value };
         }
+    } else if (route.query.labelData) {
+        try {
+            const labelData = JSON.parse(route.query.labelData);
+            const nutrition = labelData.nutrition || {};
+
+            product.value = {
+                name: labelData.name || 'Scanned Label',
+                image: route.query.photo,
+                calories: nutrition.calories || 0,
+                protein: nutrition.protein || 0,
+                carbs: nutrition.carbs || 0,
+                fats: nutrition.fat || 0,
+                fiber: nutrition.fiber || 0,
+                sugar: nutrition.sugar || 0,
+                salt: nutrition.salt || 0,
+                healthScore: 7,
+                ingredients: labelData.ingredients || [],
+                brand: labelData.brand || '',
+                allergens: labelData.allergens || [],
+                claims: labelData.claims || [],
+                type: 'label',
+                confidence: labelData.confidence || 'medium',
+                notes: labelData.notes || '',
+                analysisError: labelData.error || false
+            };
+
+            editedProduct.value = { ...product.value };
+        } catch (e) {
+            console.error('Error parsing label data:', e);
+
+            product.value = {
+                name: 'Scanned Label',
+                image: route.query.photo,
+                calories: 0,
+                protein: 0,
+                carbs: 0,
+                fats: 0,
+                fiber: 0,
+                sugar: 0,
+                salt: 0,
+                healthScore: 5,
+                ingredients: [],
+                type: 'label',
+                analysisError: true
+            };
+            editedProduct.value = { ...product.value };
+        }
     }
 });
 

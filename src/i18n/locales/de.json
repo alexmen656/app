@@ -34,18 +34,26 @@
   "scanner": {
     "scanBarcode": "Barcode scannen",
     "scanFood": "Essen scannen",
+    "scanLabel": "Etikett scannen",
     "barcode": "Barcode",
     "photo": "Foto",
+    "label": "Etikett",
     "modes": {
       "barcode": "Barcode",
-      "photo": "Foto"
+      "photo": "Foto",
+      "label": "Etikett"
     },
-    "checking": "Kamerazugriff prüfen...",
-    "requesting": "Kameraberechtigung anfordern...",
-    "scanning": "Scanne...",
-    "start": "Scan starten",
+    "checking": "Überprüfe Kamerazugriff...",
+    "requesting": "Fordere Kameraberechtigung an...",
+    "scanning": "Scannen...",
+    "start": "Scannen starten",
     "analyzingFood": "Analysiere Essen...",
+    "analyzingLabel": "Analysiere Etikett...",
     "pleaseWait": "Bitte warten Sie, während wir Ihr Foto analysieren",
+    "selectMode": "Scan-Modus wählen",
+    "barcodeDescription": "Produktbarcodes für sofortige Nährwertangaben scannen",
+    "photoDescription": "Foto Ihres Essens für KI-Analyse aufnehmen",
+    "labelDescription": "Nährwertetiketten auf Lebensmittelverpackungen scannen",
     "permission": {
       "title": "Kamerazugriff erforderlich",
       "description": "Um Barcodes und Lebensmittel zu scannen, benötigt Kaloriq Zugriff auf Ihre Kamera.",

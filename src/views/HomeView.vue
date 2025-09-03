@@ -9,6 +9,15 @@
             </div>
         </div>
 
+        <!-- Label Processing Overlay -->
+        <div v-if="isProcessingLabel" class="processing-overlay">
+            <div class="processing-content">
+                <div class="processing-spinner"></div>
+                <h3>{{ $t('scan.analyzingLabel') }}</h3>
+                <p>{{ $t('scan.pleaseWait') }}</p>
+            </div>
+        </div>
+
         <header class="header">
             <div class="logo-section">
                 <h1 class="app-title"><span style="color: #007052;">Kaloriq</span></h1><!--#005e4a #005f4a -->
@@ -255,7 +264,7 @@ import PremiumBlocker from '../components/PremiumBlocker.vue'
 
 const router = useRouter()
 const { t } = useI18n()
-const { startScanning, isProcessingPhoto, checkScanLimit, getScanUsage } = useBarcodeScanner()
+const { startScanning, isProcessingPhoto, isProcessingLabel, checkScanLimit, getScanUsage } = useBarcodeScanner()
 
 const showPremiumBanner = ref(true)
 const showScanLimitBlocker = ref(false)
@@ -275,8 +284,23 @@ async function openNativeScanner() {
             return
         }
 
+        // Show mode selector
+        // Direkter Start mit Barcode-Modus (Benutzer kann in der Swift UI zwischen Modi wechseln)
+        await startScanningWithMode('barcode')
+
+    } catch (error) {
+        console.error('Failed to check scan limits:', error)
+        // Continue with scanning anyway
+        // Direkter Start mit Barcode-Modus
+        await startScanningWithMode('barcode')
+    }
+}
+
+// Start scanning with specific mode
+async function startScanningWithMode(mode: 'barcode' | 'photo' | 'label') {
+    try {
         await startScanning({
-            mode: 'barcode', // Default to barcode mode
+            mode: mode,
             timeout: 0, // No timeout
             showControls: true
         })
@@ -293,8 +317,6 @@ async function openNativeScanner() {
         // Handle scan limit errors
         if (error instanceof Error && error.message?.includes('SCAN_LIMIT_REACHED')) {
             // Show premium upgrade prompt
-            const usage = await getScanUsage()
-            currentScanUsage.value = usage
             showScanLimitBlocker.value = true
         }
     }
@@ -1138,6 +1160,97 @@ a {
     100% {
         transform: rotate(360deg);
     }
+}
+
+/* Mode Selector */
+.mode-selector-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+}
+
+.mode-selector-content {
+    background: #fff;
+    border-radius: 20px;
+    padding: 24px;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
+
+.mode-selector-content h3 {
+    margin: 0 0 24px 0;
+    color: #1a1a1a;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.mode-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.mode-option {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border: 2px solid #f0f0f0;
+    border-radius: 12px;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+}
+
+.mode-option:hover {
+    border-color: #007052;
+    background: #f8fffe;
+}
+
+.mode-icon {
+    font-size: 32px;
+    margin-right: 16px;
+    min-width: 48px;
+}
+
+.mode-option h4 {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.mode-option p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+    line-height: 1.4;
+}
+
+.mode-cancel {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    color: #666;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.mode-cancel:hover {
+    background: #f5f5f5;
 }
 
 /* Premium Banner */

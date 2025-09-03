@@ -34,18 +34,26 @@
   "scanner": {
     "scanBarcode": "Scan barcode",
     "scanFood": "Scan food",
+    "scanLabel": "Scan label",
     "barcode": "Barcode",
     "photo": "Photo",
+    "label": "Label",
     "modes": {
       "barcode": "Barcode",
-      "photo": "Photo"
+      "photo": "Photo",
+      "label": "Label"
     },
     "checking": "Checking camera access...",
     "requesting": "Requesting camera permission...",
     "scanning": "Scanning...",
     "start": "Start Scanning",
     "analyzingFood": "Analyzing food...",
+    "analyzingLabel": "Analyzing label...",
     "pleaseWait": "Please wait while we analyze your photo",
+    "selectMode": "Select Scan Mode",
+    "barcodeDescription": "Scan product barcodes for instant nutrition info",
+    "photoDescription": "Take a photo of your food for AI analysis",
+    "labelDescription": "Scan nutrition labels on food packaging",
     "permission": {
       "title": "Camera Access Required",
       "description": "To scan barcodes and food items, Kaloriq needs access to your camera.",
