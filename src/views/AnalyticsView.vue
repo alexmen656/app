@@ -162,7 +162,7 @@
           </div>
         </div>
 
-        <!-- Weight Goal Progress - Remove target display to avoid confusion -->
+        <!-- Weight Goal Progress -->
         <div class="goal-item">
           <div class="goal-info">
             <span class="goal-name">{{ $t('analytics.weightProgress') }}</span>

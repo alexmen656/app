@@ -39,7 +39,6 @@ export function useBarcodeScanner() {
   const isProcessingLabel = ref(false) // New loading state for label processing
   const scanUsage = ref<ScanUsageInfo | null>(null)
 
-  // Check camera permission
   const checkPermission = async (): Promise<boolean> => {
     try {
       const result = await KaloriqBarcodeScanner.checkCameraPermission()
@@ -51,7 +50,6 @@ export function useBarcodeScanner() {
     }
   }
 
-  // Request camera permission
   const requestPermission = async (): Promise<boolean> => {
     try {
       const result = await KaloriqBarcodeScanner.requestCameraPermission()
@@ -63,21 +61,17 @@ export function useBarcodeScanner() {
     }
   }
 
-  // NEW: Scan limit functions
-  
-  // Check if user can scan (within daily limit)
-  const checkScanLimit = async (): Promise<ScanUsageInfo> => {
+    const checkScanLimit = async (): Promise<ScanUsageInfo> => {
     try {
       const usage = await (KaloriqBarcodeScanner as any).canScan()
       scanUsage.value = usage
       return usage
     } catch (error) {
       console.error('Error checking scan limit:', error)
-      // Default fallback for non-premium users
       return {
         currentCount: 0,
-        limit: 10,
-        remaining: 10,
+        limit: 5,
+        remaining: 5,
         isPremium: false,
         canScan: true,
         limitReached: false
@@ -85,7 +79,6 @@ export function useBarcodeScanner() {
     }
   }
 
-  // Get current scan usage
   const getScanUsage = async (): Promise<ScanUsageInfo> => {
     try {
       const usage = await (KaloriqBarcodeScanner as any).getScanUsage()
@@ -95,8 +88,8 @@ export function useBarcodeScanner() {
       console.error('Error getting scan usage:', error)
       return {
         currentCount: 0,
-        limit: 10,
-        remaining: 10,
+        limit: 5,
+        remaining: 5,
         isPremium: false,
         canScan: true,
         limitReached: false
@@ -154,35 +147,27 @@ export function useBarcodeScanner() {
       isScanning.value = true
       currentMode.value = options.mode || 'barcode'
 
-      // Set up event listeners
       KaloriqBarcodeScanner.addListener('barcodeScanned', handleBarcodeScanned)
       KaloriqBarcodeScanner.addListener('photoTaken', handlePhotoTaken)
       
-      // Add label listener with generic approach
       try {
         (KaloriqBarcodeScanner as any).addListener('labelTaken', handleLabelTaken)
-        //console.log('Label taken listener added')
       } catch (e) {
-        //console.log('Label taken listener not available (web fallback)')
+        console.log('Label taken listener not available (web fallback)')
       }
       
-      // Add food analysis listener using generic approach
       try {
         (KaloriqBarcodeScanner as any).addListener('foodAnalyzed', handleFoodAnalyzed)
-        //console.log('Food analysis listener added')
       } catch (e) {
-        //console.log('Food analysis listener not available (web fallback)')
+        console.log('Food analysis listener not available (web fallback)')
       }
 
-      // Add label analysis listener using generic approach
       try {
         (KaloriqBarcodeScanner as any).addListener('labelAnalyzed', handleLabelAnalyzed)
-        //console.log('Label analysis listener added')
       } catch (e) {
-        //console.log('Label analysis listener not available (web fallback)')
+        console.log('Label analysis listener not available (web fallback)')
       }
 
-      // Start the native scanner with scan limit check
       await (KaloriqBarcodeScanner as any).startScanning({
         mode: options.mode || 'barcode',
         camera: options.camera || 'back',
@@ -226,18 +211,15 @@ export function useBarcodeScanner() {
 
   // Handle barcode scan result
   const handleBarcodeScanned = async (result: ScanResult) => {
-    //console.log('Barcode scanned:', result)
-    
+    console.log('Barcode scanned:', result)
     isScanning.value = false
     
-    // Update scan usage after successful scan
     try {
       await getScanUsage()
     } catch (error) {
       console.error('Error updating scan usage:', error)
     }
     
-    console.log("Pushing to nutrition", result.image);
     await router.push({
       name: 'Nutrition',
       query: {
@@ -250,20 +232,14 @@ export function useBarcodeScanner() {
 
   // Handle photo result
   const handlePhotoTaken = async (result: PhotoResult) => {
-    //console.log('🔥 Photo taken event received:', { width: result.width, height: result.height, base64Length: result.base64?.length })
-    
+    console.log('🔥 Photo taken event received:', { width: result.width, height: result.height, base64Length: result.base64?.length })
     isScanning.value = false
-    isProcessingPhoto.value = true // Start processing state
+    isProcessingPhoto.value = true
     
     try {
-      // Analyze the photo for food content
-      //console.log('🔥 Starting food analysis...')
-      const analyzedFood = await analyzeFoodPhoto(result.base64)
-      //console.log('🔥 Food analysis completed:', analyzedFood)
+      const analyzedFood = await analyzeFoodPhoto(result.base64)      
+      isProcessingPhoto.value = false
       
-      isProcessingPhoto.value = false // End processing state
-      
-      // Navigate to nutrition view with food data
       await router.push({
         name: 'Nutrition',
         query: {
@@ -273,10 +249,8 @@ export function useBarcodeScanner() {
       })
     } catch (error) {
       console.error('🔥 Food analysis failed:', error)
+      isProcessingPhoto.value = false
       
-      isProcessingPhoto.value = false // End processing state
-      
-      // Navigate anyway with basic data
       await router.push({
         name: 'Nutrition', 
         query: {
@@ -295,21 +269,14 @@ export function useBarcodeScanner() {
   }
 
   // Handle label result
-  const handleLabelTaken = async (result: LabelResult) => {
-    //console.log('🔥 Label taken event received:', { width: result.width, height: result.height, base64Length: result.base64?.length })
-    
+  const handleLabelTaken = async (result: LabelResult) => {    
     isScanning.value = false
-    isProcessingLabel.value = true // Start processing state
+    isProcessingLabel.value = true
     
     try {
-      // Analyze the photo for label content
-      //console.log('🔥 Starting label analysis...')
       const analyzedLabel = await analyzeLabelPhoto(result.base64)
-      //console.log('🔥 Label analysis completed:', analyzedLabel)
+      isProcessingLabel.value = false
       
-      isProcessingLabel.value = false // End processing state
-      
-      // Navigate to nutrition view with label data
       await router.push({
         name: 'Nutrition',
         query: {
@@ -319,10 +286,8 @@ export function useBarcodeScanner() {
       })
     } catch (error) {
       console.error('🔥 Label analysis failed:', error)
+      isProcessingLabel.value = false
       
-      isProcessingLabel.value = false // End processing state
-      
-      // Navigate anyway with basic data
       await router.push({
         name: 'Nutrition', 
         query: {
@@ -340,13 +305,10 @@ export function useBarcodeScanner() {
     }
   }
 
-  // Handle food analysis result (NEW - from iOS native analysis)
   const handleFoodAnalyzed = async (result: any) => {
-    ////console.log('Food analyzed natively:', result)
-    
+    console.log('Food analyzed natively:', result)
     isScanning.value = false
     
-    // Navigate to nutrition view with pre-analyzed food data
     await router.push({
       name: 'Nutrition',
       query: {
@@ -356,13 +318,10 @@ export function useBarcodeScanner() {
     })
   }
 
-  // Handle label analysis result (NEW - from iOS native analysis)
   const handleLabelAnalyzed = async (result: any) => {
-    ////console.log('Label analyzed natively:', result)
-    
+    console.log('Label analyzed natively:', result)
     isScanning.value = false
     
-    // Navigate to nutrition view with pre-analyzed label data
     await router.push({
       name: 'Nutrition',
       query: {
@@ -375,37 +334,24 @@ export function useBarcodeScanner() {
   // Analyze food photo using KaloriQ API
   const analyzeFoodPhoto = async (base64Image: string) => {
     try {
-      //console.log('🔥 analyzeFoodPhoto called with base64 length:', base64Image.length)
-      
-      // Ensure base64Image is a data URL
       const dataUrl = base64Image.startsWith('data:') ? base64Image : `data:image/jpeg;base64,${base64Image}`
       
-      // Convert base64 to blob
       const response = await fetch(dataUrl)
       const blob = await response.blob()
       
-      //console.log('🔥 Blob created, size:', blob.size)
-
-      // Create form data
       const formData = new FormData()
       formData.append('image', blob, 'photo.jpg')
-
-      //console.log('🔥 Sending request to KaloriQ API...')
       
-      // Send to KaloriQ Food Analyze API
       const apiResponse = await fetch('https://kaloriq-api.vercel.app/api/food/analyze', {
         method: 'POST',
         body: formData
       })
-
-      //console.log('🔥 API Response status:', apiResponse.status)
 
       if (!apiResponse.ok) {
         throw new Error(`API error: ${apiResponse.status}`)
       }
 
       const data = await apiResponse.json()
-      //console.log('🔥 API Response data:', data)
 
       if (!data.success || !data.data) {
         throw new Error('Food analysis failed')
@@ -429,37 +375,24 @@ export function useBarcodeScanner() {
   // Analyze label photo using KaloriQ API
   const analyzeLabelPhoto = async (base64Image: string) => {
     try {
-      //console.log('🔥 analyzeLabelPhoto called with base64 length:', base64Image.length)
-      
-      // Ensure base64Image is a data URL
       const dataUrl = base64Image.startsWith('data:') ? base64Image : `data:image/jpeg;base64,${base64Image}`
       
-      // Convert base64 to blob
       const response = await fetch(dataUrl)
       const blob = await response.blob()
       
-      //console.log('🔥 Blob created, size:', blob.size)
-
-      // Create form data
       const formData = new FormData()
       formData.append('image', blob, 'label.jpg')
 
-      //console.log('🔥 Sending request to KaloriQ Label API...')
-      
-      // Send to KaloriQ Label Analyze API (new endpoint)
       const apiResponse = await fetch('https://kaloriq-api.vercel.app/api/label/analyze', {
         method: 'POST',
         body: formData
       })
-
-      //console.log('🔥 API Response status:', apiResponse.status)
 
       if (!apiResponse.ok) {
         throw new Error(`API error: ${apiResponse.status}`)
       }
 
       const data = await apiResponse.json()
-      //console.log('🔥 API Response data:', data)
 
       if (!data.success || !data.data) {
         throw new Error('Label analysis failed')
@@ -505,7 +438,6 @@ export function useBarcodeScanner() {
   const takePhoto = async () => {
     try {
       await KaloriqBarcodeScanner.takePhoto()
-      // Result will be handled by the photoTaken event listener
     } catch (error) {
       console.error('Error taking photo:', error)
     }
@@ -528,8 +460,6 @@ export function useBarcodeScanner() {
     switchCamera,
     toggleFlash,
     takePhoto,
-    
-    // NEW: Scan limit methods
     checkScanLimit,
     getScanUsage,
     setPremiumStatus,

@@ -3,24 +3,18 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  /* Prevent text selection */
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  /* Prevent touch callouts */
   -webkit-touch-callout: none;
-  /* Prevent tap highlight */
   -webkit-tap-highlight-color: transparent;
-  /* Prevent zoom on double tap */
   touch-action: manipulation;
 }
 
 html {
-  /* Prevent zoom completely */
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
-  /* Prevent double-tap zoom */
   touch-action: manipulation;
 }
 
@@ -35,9 +29,7 @@ body {
   margin: 0;
   padding: 0;
   background: #1e1e2e;
-  /* Prevent zoom on iOS */
   -webkit-text-size-adjust: none;
-  /* Prevent overscroll bounce */
   overscroll-behavior: none;
 }
 
@@ -45,7 +37,6 @@ body {
   height: 100vh;
   height: 100dvh;
   position: relative;
-  /* Prevent scrolling bounce */
   overscroll-behavior: none;
 }
 
@@ -55,14 +46,10 @@ textarea,
 select,
 button {
   font-size: 16px;
-  /* Prevent zoom */
   -webkit-text-size-adjust: 100%;
-  /* Prevent text selection */
   -webkit-user-select: none;
   user-select: none;
-  /* Prevent touch callouts */
   -webkit-touch-callout: none;
-  /* Prevent tap highlight */
   -webkit-tap-highlight-color: transparent;
 }
 

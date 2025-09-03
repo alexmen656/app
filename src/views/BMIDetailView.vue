@@ -242,7 +242,6 @@ const calculatedBMI = computed(() => {
 
 // Methods
 const getBMIPosition = (bmi: number): number => {
-  // Map BMI value to position on scale (0-100%)
   if (bmi < 18.5) return (bmi / 18.5) * 25
   if (bmi < 25) return 25 + ((bmi - 18.5) / 6.5) * 25
   if (bmi < 30) return 50 + ((bmi - 25) / 5) * 25
@@ -250,7 +249,6 @@ const getBMIPosition = (bmi: number): number => {
 }
 
 const getBMIChartData = () => {
-  // Filter entries based on selected period
   const now = new Date()
   const cutoffDate = new Date()
   
