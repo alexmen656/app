@@ -111,117 +111,25 @@
 
     <!-- HealthKit Section -->
     <div class="settings-section">
-      <div class="section-header">
-        <h3 class="section-title">{{ $t('settings.healthKit') }}</h3>
-        <button @click="loadHealthKitStatus" class="recalculate-button">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M17.65,6.35C16.2,4.9 14.21,4 12,4C7.58,4 4,7.58 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12C6,8.69 8.69,6 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"/>
-          </svg>
-          Refresh
-        </button>
-      </div>
+      <h3 class="section-title"><!--{{ $t('settings.healthKit') }}-->Integrations</h3>
       <div class="settings-card">
-        <!-- HealthKit Status -->
-        <div class="setting-item">
-          <div class="healthkit-status">
-            <div class="healthkit-header">
-              <div class="healthkit-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M19.35,10.04C18.67,6.59 15.64,4 12,4C9.11,4 6.6,5.64 5.35,8.04C2.34,8.36 0,10.91 0,14A6,6 0 0,0 6,20H19A5,5 0 0,0 24,15C24,12.36 21.95,10.22 19.35,10.04M17,13L12,18L7,13H10V9H14V13H17Z"/>
-                </svg>
-              </div>
-              <div class="healthkit-info">
-                <h4 class="healthkit-title">Apple Health</h4>
-                <p class="healthkit-description">{{ healthKitStatusText }}</p>
-              </div>
-              <div class="healthkit-indicator" :class="{ 'connected': healthKitStatus.isConnected }">
-                <div class="status-dot"></div>
-              </div>
-            </div>
+        <div class="setting-item setting-row">
+          <div class="setting-info">
+            <label class="setting-label"><!--{{ $t('settings.healthKit') }}-->Apple Health</label>
+            <p class="setting-description">{{ healthKitStatusText }}</p>
           </div>
-        </div>
-
-        <!-- HealthKit Actions -->
-        <div v-if="!healthKitStatus.isConnected && healthKitStatus.isAvailable && isPremiumUser" class="setting-item">
-          <button class="action-button healthkit-connect" @click="connectHealthKit">
-          <!--  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z"/>
-            </svg>-->
-            <span>{{ $t('settings.connectHealthKit') }}</span>
-          </button>
-        </div>
-
-        <!-- Premium Required Message for HealthKit -->
-        <div v-if="!healthKitStatus.isConnected && healthKitStatus.isAvailable && !isPremiumUser" class="setting-item">
-          <div class="premium-required-message">
-            <div class="premium-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          <div class="setting-controls">
+            <div class="toggle-switch">
+              <input type="checkbox" :checked="healthKitStatus.isConnected" @change="toggleHealthKit" 
+                class="toggle-input" id="healthkit-main-toggle" :disabled="!healthKitStatus.isAvailable || !isPremiumUser" />
+              <label for="healthkit-main-toggle" class="toggle-slider"></label>
+            </div>
+            <button class="detail-button" @click="goToHealthKitSettings">
+              <span>Details</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="m9 18 6-6-6-6"/>
               </svg>
-            </div>
-            <div class="premium-message-content">
-              <h4>Premium Feature</h4>
-              <p>Apple Health integration requires a Premium subscription</p>
-              <button class="upgrade-button" @click="goToUpgrade">
-                Upgrade to Premium
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div v-if="healthKitStatus.isConnected" class="setting-item">
-          <button class="action-button" @click="syncHealthKit">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"/>
-            </svg>
-            <span>{{ $t('settings.syncNow') }}</span>
-          </button>
-        </div>
-
-        <!-- HealthKit Permissions -->
-        <div v-if="healthKitStatus.isConnected" class="healthkit-permissions">
-          <div class="permissions-header">
-            <h5 class="permissions-title">{{ $t('settings.permissions') }}</h5>
-          </div>
-          
-          <div class="permission-item" v-for="permission in healthKitPermissions" :key="permission.type">
-            <div class="permission-info">
-              <span class="permission-name">{{ permission.name }}</span>
-              <span class="permission-description">{{ permission.description }}</span>
-            </div>
-            <div class="permission-status" :class="{ 'granted': permission.granted }">
-              <svg v-if="permission.granted" width="16" height="16" viewBox="0 0 24 24" fill="#4CAF50">
-                <path d="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z"/>
-              </svg>
-              <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="#F44336">
-                <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/>
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        <!-- HealthKit Last Sync Info -->
-        <div v-if="healthKitStatus.isConnected && healthKitStatus.lastSync" class="setting-item">
-          <div class="sync-info">
-            <span class="sync-label">{{ $t('settings.lastSync') }}</span>
-            <span class="sync-time">{{ formatLastSync(healthKitStatus.lastSync) }}</span>
-          </div>
-        </div>
-
-        <!-- HealthKit Disconnect Option -->
-        <div v-if="healthKitStatus.isConnected" class="setting-item">
-          <button class="action-button danger" @click="disconnectHealthKit">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z"/>
-            </svg>
-            <span>{{ $t('settings.disconnectHealthKit') }}</span>
-          </button>
-        </div>
-
-        <!-- HealthKit Unavailable Message -->
-        <div v-if="!healthKitStatus.isAvailable" class="setting-item">
-          <div class="healthkit-unavailable">
-            <p>ℹ️ Apple Health ist auf diesem Gerät nicht verfügbar</p>
+            </button>
           </div>
         </div>
       </div>
@@ -268,12 +176,23 @@
     <div class="settings-section">
       <h3 class="section-title">{{ $t('settings.notificationsSection') }}</h3>
       <div class="settings-card">
-        <div class="setting-item">
-          <label class="setting-label">{{ $t('settings.enableNotifications') }}</label>
-          <div class="toggle-switch">
-            <input type="checkbox" v-model="notificationSettings.enabled" @change="saveNotificationSettings"
-              class="toggle-input" id="notifications-main-toggle" />
-            <label for="notifications-main-toggle" class="toggle-slider"></label>
+        <div class="setting-item setting-row">
+          <div class="setting-info">
+            <label class="setting-label">{{ $t('settings.enableNotifications') }}</label>
+            <p class="setting-description">{{ notificationSettings.enabled ? 'Aktiv' : 'Inaktiv' }}</p>
+          </div>
+          <div class="setting-controls">
+            <div class="toggle-switch">
+              <input type="checkbox" v-model="notificationSettings.enabled" @change="saveNotificationSettings"
+                class="toggle-input" id="notifications-main-toggle" />
+              <label for="notifications-main-toggle" class="toggle-slider"></label>
+            </div>
+            <button class="detail-button" @click="goToNotificationSettings">
+              <span>Details</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="m9 18 6-6-6-6"/>
+              </svg>
+            </button>
           </div>
         </div>
 
@@ -281,94 +200,6 @@
         <div v-if="!isNotificationSupported" class="setting-item">
           <div class="notification-warning">
             ⚠️ {{ $t('settings.notificationsOnlyMobile') }}
-          </div>
-        </div>
-
-        <div v-if="notificationSettings.enabled && isNotificationSupported">
-          <!-- Breakfast -->
-          <div class="setting-item meal-setting">
-            <div class="meal-header">
-              <label class="setting-label">{{ $t('settings.breakfast') }}</label>
-              <div class="toggle-switch">
-                <input type="checkbox" v-model="notificationSettings.breakfast.enabled"
-                  @change="saveNotificationSettings" class="toggle-input" id="breakfast-toggle" />
-                <label for="breakfast-toggle" class="toggle-slider"></label>
-              </div>
-            </div>
-            <div v-if="notificationSettings.breakfast.enabled" class="time-setting">
-              <input type="time" v-model="notificationSettings.breakfast.time" @change="saveNotificationSettings"
-                class="time-input" />
-            </div>
-          </div>
-
-          <!-- Lunch -->
-          <div class="setting-item meal-setting">
-            <div class="meal-header">
-              <label class="setting-label">{{ $t('settings.lunch') }}</label>
-              <div class="toggle-switch">
-                <input type="checkbox" v-model="notificationSettings.lunch.enabled" @change="saveNotificationSettings"
-                  class="toggle-input" id="lunch-toggle" />
-                <label for="lunch-toggle" class="toggle-slider"></label>
-              </div>
-            </div>
-            <div v-if="notificationSettings.lunch.enabled" class="time-setting">
-              <input type="time" v-model="notificationSettings.lunch.time" @change="saveNotificationSettings"
-                class="time-input" />
-            </div>
-          </div>
-
-          <!-- Dinner -->
-          <div class="setting-item meal-setting">
-            <div class="meal-header">
-              <label class="setting-label">{{ $t('settings.dinner') }}</label>
-              <div class="toggle-switch">
-                <input type="checkbox" v-model="notificationSettings.dinner.enabled" @change="saveNotificationSettings"
-                  class="toggle-input" id="dinner-toggle" />
-                <label for="dinner-toggle" class="toggle-slider"></label>
-              </div>
-            </div>
-            <div v-if="notificationSettings.dinner.enabled" class="time-setting">
-              <input type="time" v-model="notificationSettings.dinner.time" @change="saveNotificationSettings"
-                class="time-input" />
-            </div>
-          </div>
-
-          <!-- Snacks -->
-          <div class="setting-item meal-setting">
-            <div class="meal-header">
-              <label class="setting-label">{{ $t('settings.snacks') }}</label>
-              <div class="toggle-switch">
-                <input type="checkbox" v-model="notificationSettings.snacks.enabled" @change="saveNotificationSettings"
-                  class="toggle-input" id="snacks-toggle" />
-                <label for="snacks-toggle" class="toggle-slider"></label>
-              </div>
-            </div>
-            <div v-if="notificationSettings.snacks.enabled" class="time-setting">
-              <input type="time" v-model="notificationSettings.snacks.time" @change="saveNotificationSettings"
-                class="time-input" />
-            </div>
-          </div>
-
-          <!-- Inactivity Reminders -->
-          <div class="setting-item meal-setting">
-            <div class="meal-header">
-              <label class="setting-label">{{ $t('settings.inactivityReminders') }}</label>
-              <div class="toggle-switch">
-                <input type="checkbox" v-model="notificationSettings.inactivityReminders"
-                  @change="saveNotificationSettings" class="toggle-input" id="inactivity-toggle" />
-                <label for="inactivity-toggle" class="toggle-slider"></label>
-              </div>
-            </div>
-            <div v-if="notificationSettings.inactivityReminders" class="time-setting">
-              <small class="inactivity-description">{{ $t('settings.inactivityRemindersDesc') }}</small>
-            </div>
-          </div>
-        </div>
-
-        <!-- Status info when enabled -->
-        <div v-if="notificationSettings.enabled && isNotificationSupported" class="setting-item">
-          <div class="notification-status">
-            ✅ {{ $t('settings.notificationsActive') }}
           </div>
         </div>
       </div>
@@ -641,6 +472,34 @@ function goToUpgrade() {
   router.push('/upgrade')
 }
 
+function goToHealthKitSettings() {
+  router.push('/settings/healthkit')
+}
+
+function goToNotificationSettings() {
+  router.push('/settings/notifications')
+}
+
+async function toggleHealthKit() {
+  if (healthKitStatus.value.isConnected) {
+    // Disconnect HealthKit
+    try {
+      await HealthKitService.resetConnection()
+      await loadHealthKitStatus()
+    } catch (error) {
+      console.error('Error disconnecting from HealthKit:', error)
+    }
+  } else {
+    // Connect HealthKit
+    try {
+      await HealthKitService.initialize()
+      await loadHealthKitStatus()
+    } catch (error) {
+      console.error('Error connecting to HealthKit:', error)
+    }
+  }
+}
+
 const changeLanguage = (event: Event) => {
   const target = event.target as HTMLSelectElement
   const newLanguage = target.value as 'en' | 'de' | 'es'
@@ -824,77 +683,6 @@ async function loadHealthKitStatus() {
     })
     healthKitStatus.value.lastSync = null
   }
-}
-
-async function connectHealthKit() {
-  if (!isPremiumUser.value) {
-    alert('❌ Apple Health integration requires a Premium subscription.')
-    goToUpgrade()
-    return
-  }
-
-  try {
-    const success = await HealthKitService.initialize()
-    if (success) {
-      // Force reload the status to ensure UI is updated
-      await loadHealthKitStatus()
-      alert('✅ HealthKit erfolgreich verbunden!')
-    } else {
-      alert('❌ HealthKit Verbindung fehlgeschlagen. Bitte versuche es erneut.')
-    }
-  } catch (error) {
-    console.error('Error connecting HealthKit:', error)
-    alert('❌ Fehler beim Verbinden mit HealthKit.')
-  }
-}
-
-async function syncHealthKit() {
-  try {
-    const success = await HealthKitService.syncTodaysData()
-    if (success) {
-      healthKitStatus.value.lastSync = new Date().toISOString()
-      alert('✅ Daten erfolgreich mit HealthKit synchronisiert!')
-    } else {
-      alert('❌ Synchronisation fehlgeschlagen.')
-    }
-  } catch (error) {
-    console.error('Error syncing HealthKit:', error)
-    alert('❌ Fehler bei der Synchronisation.')
-  }
-}
-
-async function disconnectHealthKit() {
-  const confirmed = confirm('Möchtest du die HealthKit-Verbindung wirklich trennen?')
-  if (confirmed) {
-    try {
-      // Reset the HealthKit connection in the service
-      await HealthKitService.resetConnection()
-      
-      // Update UI state
-      healthKitStatus.value.isConnected = false
-      healthKitStatus.value.lastSync = null
-      healthKitPermissions.value.forEach(permission => {
-        permission.granted = false
-      })
-      
-      alert('✅ HealthKit-Verbindung getrennt.')
-    } catch (error) {
-      console.error('Error disconnecting HealthKit:', error)
-      alert('❌ Fehler beim Trennen der HealthKit-Verbindung.')
-    }
-  }
-}
-
-function formatLastSync(timestamp: string): string {
-  const date = new Date(timestamp)
-  const now = new Date()
-  const diffMs = now.getTime() - date.getTime()
-  const diffMins = Math.floor(diffMs / 60000)
-  
-  if (diffMins < 1) return 'Gerade eben'
-  if (diffMins < 60) return `vor ${diffMins} Min`
-  if (diffMins < 1440) return `vor ${Math.floor(diffMins / 60)} Std`
-  return `vor ${Math.floor(diffMins / 1440)} Tagen`
 }
 
 // Easter egg: Build number click handler
@@ -2049,5 +1837,53 @@ a {
 .upgrade-button:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+}
+
+/* New setting row layout */
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.setting-info {
+  flex: 1;
+}
+
+.setting-description {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0.25rem 0 0 0;
+}
+
+.setting-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.detail-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  color: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.detail-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.detail-button svg {
+  opacity: 0.7;
 }
 </style>

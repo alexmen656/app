@@ -9,6 +9,8 @@ import ScanView from "../views/ScanView.vue";
 import NutritionView from "../views/NutritionView.vue";
 import AnalyticsView from "../views/AnalyticsView.vue";
 import SettingsView from "../views/SettingsView.vue";
+import HealthKitSettingsView from "../views/HealthKitSettingsView.vue";
+import NotificationSettingsView from "../views/NotificationSettingsView.vue";
 import SourcesDisclaimerView from "../views/SourcesDisclaimerView.vue";
 import StreakView from "../views/StreakView.vue";
 import ProfileEditView from "../views/ProfileEditView.vue";
@@ -67,6 +69,16 @@ const routes = [
     path: "/settings",
     name: "Settings",
     component: SettingsView,
+  },
+  {
+    path: "/settings/healthkit",
+    name: "HealthKitSettings",
+    component: HealthKitSettingsView,
+  },
+  {
+    path: "/settings/notifications",
+    name: "NotificationSettings",
+    component: NotificationSettingsView,
   },
   {
     path: "/sources-disclaimer",
