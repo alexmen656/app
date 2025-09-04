@@ -1313,6 +1313,9 @@ function handleTouchEnd(event: TouchEvent) {
   margin-bottom: 32px;
 }
 
+.settings-section:last-of-type {
+  margin-bottom: 0 !important;
+}
 .section-title {
   font-size: 18px;
   font-weight: 600;

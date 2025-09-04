@@ -199,7 +199,7 @@
             <div v-if="recentFoods.length > 5" class="show-all-link">
                 <router-link to="/all-scans" class="show-all-btn">
                     {{ $t('home.showAllScans') }}
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
                     </svg>
                 </router-link>
@@ -893,9 +893,9 @@ function handleTouchEnd(event: TouchEvent) {
     height: 30px;
 }
 
-.recent-section {
+/*.recent-section {
     margin-bottom: 30px;
-}
+}*/
 
 .section-title {
     font-size: 20px;
@@ -1007,14 +1007,15 @@ function handleTouchEnd(event: TouchEvent) {
 
 .show-all-link {
     text-align: center;
-    margin-top: 20px;
+    /*margin-top: 20px;*/
 }
 
 .show-all-btn {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 8px;
-    background: rgba(255, 255, 255, 0.1);
+    justify-content: center;
+    /*gap: 8px;*/
+    background: rgba(255, 255, 255, 0.05);
     color: white;
     text-decoration: none;
     padding: 12px 20px;

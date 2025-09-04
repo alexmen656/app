@@ -1054,9 +1054,9 @@ function handleTouchEnd(event: TouchEvent) {
   margin-bottom: 32px;
 }
 
-.weight-section {
+/*.weight-section {
   margin-bottom: 32px;
-}
+}*/
 
 .no-weight-data {
   background: rgba(255, 255, 255, 0.05);
