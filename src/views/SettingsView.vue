@@ -258,6 +258,7 @@
           <select v-model="currentLanguage" @change="changeLanguage" class="select-input">
             <option value="en">English</option>
             <option value="de">Deutsch</option>
+            <option value="es">Español</option>
           </select>
         </div>
       </div>
@@ -642,7 +643,7 @@ function goToUpgrade() {
 
 const changeLanguage = (event: Event) => {
   const target = event.target as HTMLSelectElement
-  const newLanguage = target.value as 'en' | 'de'
+  const newLanguage = target.value as 'en' | 'de' | 'es'
   setLanguage(newLanguage)
   currentLanguage.value = newLanguage
 }

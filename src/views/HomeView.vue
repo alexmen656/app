@@ -4,8 +4,8 @@
         <div v-if="isProcessingPhoto" class="processing-overlay">
             <div class="processing-content">
                 <div class="processing-spinner"></div>
-                <h3>{{ $t('scan.analyzingFood') }}</h3>
-                <p>{{ $t('scan.pleaseWait') }}</p>
+                <h3>{{ $t('scanner.analyzingFood') }}</h3>
+                <p>{{ $t('scanner.pleaseWait') }}</p>
             </div>
         </div>
 
@@ -13,8 +13,8 @@
         <div v-if="isProcessingLabel" class="processing-overlay">
             <div class="processing-content">
                 <div class="processing-spinner"></div>
-                <h3>{{ $t('scan.analyzingLabel') }}</h3>
-                <p>{{ $t('scan.pleaseWait') }}</p>
+                <h3>{{ $t('scanner.analyzingLabel') }}</h3>
+                <p>{{ $t('scanner.pleaseWait') }}</p>
             </div>
         </div>
 
