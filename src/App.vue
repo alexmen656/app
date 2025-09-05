@@ -1,12 +1,7 @@
 <template>
   <div id="app">
     <router-view v-slot="{ Component, route }">
-      <transition 
-        :name="getTransitionName(route)" 
-        mode="out-in"
-        @before-leave="onBeforeLeave"
-        @enter="onEnter"
-      >
+      <transition :name="getTransitionName(route)" mode="out-in" @before-leave="onBeforeLeave" @enter="onEnter">
         <component :is="Component" :key="route.path" />
       </transition>
     </router-view>
@@ -15,28 +10,37 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import { onMounted } from 'vue'
+import { analyticsActions } from './stores/analyticsStore'
 
 const router = useRouter()
 
-// Define navigation flow for swipe animations
+onMounted(async () => {
+  try {
+    await analyticsActions.loadAnalyticsData('week')
+  } catch (error) {
+    console.warn('Failed to preload analytics data:', error)
+  }
+})
+
 const navigationFlow = {
-  '/': { 
+  '/': {
     left: '/yesterday',
-    position: 0 
+    position: 0
   },
-  '/yesterday': { 
+  '/yesterday': {
     right: '/',
     left: '/analytics',
-    position: 1 
+    position: 1
   },
-  '/analytics': { 
+  '/analytics': {
     right: '/yesterday',
     left: '/settings',
-    position: 2 
+    position: 2
   },
-  '/settings': { 
+  '/settings': {
     right: '/analytics',
-    position: 3 
+    position: 3
   },
   '/onboarding': { position: -1 },
   '/scan': { position: -1 },
@@ -48,16 +52,16 @@ const navigationFlow = {
 function getTransitionName(route: any) {
   const from = router.currentRoute.value.path
   const to = route.path
-  
+
   const fromPos = navigationFlow[from as keyof typeof navigationFlow]?.position ?? 0
   const toPos = navigationFlow[to as keyof typeof navigationFlow]?.position ?? 0
-  
+
   if (fromPos < toPos) {
     return 'slide-left'
   } else if (fromPos > toPos) {
     return 'slide-right'
   }
-  
+
   return 'fade'
 }
 

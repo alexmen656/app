@@ -12,7 +12,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { default as ApexCharts } from 'vue3-apexcharts'
-
+import {useI18n} from 'vue-i18n';
+const { t } = useI18n()
 // Register the component locally
 const apexchart = ApexCharts
 
@@ -64,7 +65,7 @@ const chartSeries = computed(() => {
 
   return [
     {
-      name: 'Kalorien',
+      name: t('allScans.calories'),
       data: values
     },
     {
@@ -140,7 +141,7 @@ const chartOptions = computed(() => ({
       formatter: (value: number) => {
         const diff = value - props.goal
         const diffText = diff > 0 ? `+${diff}` : `${diff}`
-        return `${value} kcal<br/>Ziel: ${props.goal} kcal<br/>Differenz: ${diffText} kcal`
+        return `${value} kcal<br/>${t('onboarding.goal')}: ${props.goal} kcal<br/>Differenz: ${diffText} kcal`
       }
     }
   },
@@ -149,7 +150,7 @@ const chartOptions = computed(() => ({
       y: props.goal,
       borderColor: 'rgba(255, 167, 38, 0.8)',
       strokeDashArray: 5,
-      label: { text: `Ziel: ${props.goal} kcal`, style: { color: '#ffffff', background: 'rgba(255, 167, 38, 0.8)' } }
+      label: { text: `${t('onboarding.goal')}: ${props.goal} kcal`, style: { color: '#ffffff', background: 'rgba(255, 167, 38, 0.8)' } }
     }] : [],
     points: []
   }

@@ -34,14 +34,8 @@
                     </div>
                     <div class="nutrition-amount">
                         <button class="amount-btn minus" @click="decreaseAmount">−</button>
-                        <input 
-                            v-model.number="amount" 
-                            class="amount-input" 
-                            type="number" 
-                            step="0.1" 
-                            min="0.1"
-                            @blur="validateAmount"
-                        />
+                        <input v-model.number="amount" class="amount-input" type="number" step="0.1" min="0.1"
+                            @blur="validateAmount" />
                         <button class="amount-btn plus" @click="increaseAmount">+</button>
                     </div>
                 </div>
@@ -251,7 +245,7 @@
         <div v-if="showFixModal" class="modal-overlay" @click="showFixModal = false">
             <div class="modal fix-modal" @click.stop>
                 <h3>{{ $t('nutrition.fixResults') }}</h3>
-                
+
                 <!-- Basic nutrition editing -->
                 <div class="fix-form">
                     <div class="form-group">
@@ -294,29 +288,24 @@
                     <div class="foods-list-edit">
                         <div v-for="(food, index) in editedProduct.foods" :key="index" class="food-edit-item">
                             <div class="food-edit-content">
-                                <input 
-                                    :value="getLocalizedName(food)" 
-                                    @input="updateFoodName(index, $event.target.value)" 
-                                    class="food-name-input" 
-                                    :placeholder="$t('nutrition.foodName')"
-                                >
-                                <input 
-                                    :value="getLocalizedAmount(food)" 
-                                    @input="updateFoodAmount(index, $event.target.value)" 
-                                    class="food-amount-input" 
-                                    :placeholder="$t('nutrition.amount')"
-                                >
+                                <input :value="getLocalizedName(food)"
+                                    @input="updateFoodName(index, $event.target.value)" class="food-name-input"
+                                    :placeholder="$t('nutrition.foodName')">
+                                <input :value="getLocalizedAmount(food)"
+                                    @input="updateFoodAmount(index, $event.target.value)" class="food-amount-input"
+                                    :placeholder="$t('nutrition.amount')">
                             </div>
                             <button class="remove-food-btn" @click="removeFood(index)">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                                    <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" />
                                 </svg>
                             </button>
                         </div>
                     </div>
                     <button class="add-food-btn" @click="addFood">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
                         </svg>
                         {{ $t('nutrition.addFood') }}
                     </button>
@@ -341,14 +330,19 @@
                             <a href="https://world.openfoodfacts.org" target="_blank" class="external-link">
                                 {{ $t('nutrition.visitOpenFoodFacts') }}
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <polyline points="15,3 21,3 21,9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <line x1="10" y1="14" x2="21" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <polyline points="15,3 21,3 21,9" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                    <line x1="10" y1="14" x2="21" y2="3" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
                             </a>
                         </div>
                     </div>
-                    <div v-else-if="product.source === 'KaloriQ' || product.source === 'Cache' || product.source === 'API'">
+                    <div
+                        v-else-if="product.source === 'KaloriQ' || product.source === 'Cache' || product.source === 'API'">
                         <h4>{{ $t('nutrition.database') }}</h4>
                         <p>{{ $t('nutrition.sourceExplanation.database') }}</p>
                     </div>
@@ -357,8 +351,8 @@
                         <p>{{ $t('nutrition.sourceExplanation.ai') }}</p>
                         <div class="accuracy-warning">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="#f59e0b">
-                                <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"/>
-                                <path d="M12 8v4M12 16h.01" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z" />
+                                <path d="M12 8v4M12 16h.01" stroke="#fff" stroke-width="2" stroke-linecap="round" />
                             </svg>
                             <span>{{ $t('nutrition.accuracyWarning') }}</span>
                         </div>
@@ -385,6 +379,7 @@ import { WidgetDataManager, StreakManager } from '../utils/widgetData';
 import { getLocalizedName, getLocalizedNotes, getLocalizedAmount, capitalizeIfLetter } from '../utils/localization';
 import { getCurrentLanguage } from '../i18n';
 import NutritionDetailsModal from '../components/NutritionDetailsModal.vue';
+import { analyticsActions } from '../stores/analyticsStore'
 
 const route = useRoute();
 const router = useRouter();
@@ -423,7 +418,7 @@ const fetchProduct = async (barcode) => {
                 protein = nutrition.protein || 0;
                 carbs = nutrition.carbs || 0;
                 fats = nutrition.fats || 0;
-            }else {
+            } else {
                 calories = cachedProduct.calories || 0;
                 protein = cachedProduct.protein || 0;
                 carbs = cachedProduct.carbs || 0;
@@ -678,7 +673,7 @@ function validateAmount() {
 function getSourceDisplay(source) {
     const sourceMap = {
         'KaloriQ': 'Database',
-        'Cache': 'Database', 
+        'Cache': 'Database',
         'food': 'AI',
         'AI': 'AI',
         'Manual': 'Manual',
@@ -728,7 +723,7 @@ function updateFoodAmount(index, value) {
 
 function recalculateTotals() {
     if (!editedProduct.value.foods) return;
-    
+
     const totals = editedProduct.value.foods.reduce((acc, food) => {
         acc.calories += food.calories || 0;
         acc.protein += food.protein || 0;
@@ -805,6 +800,12 @@ async function saveAndReturn() {
         await ScanHistory.add(scanEntry);
         await StreakManager.updateStreak();
         await WidgetDataManager.updateWidgetData();
+
+        try {
+            analyticsActions.loadAnalyticsData('week')
+        } catch (error) {
+            console.warn('Failed to preload analytics data:', error)
+        }
         window.dispatchEvent(new CustomEvent('scanHistoryUpdated'));
         router.push({ path: '/' });
 
@@ -1538,6 +1539,7 @@ async function saveAndReturn() {
     background: #e0f2fe;
     border-color: #0369a1;
 }
+
 .nutrition-actions {
     display: flex;
     gap: 16px;
