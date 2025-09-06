@@ -19,7 +19,7 @@ const apexchart = ApexCharts
 
 interface ChartProps {
   data: Array<{ label: string; calories: number; goal?: number }>
-  period: 'week' | 'month' | 'year'
+  period: 'day' | 'week' | 'month' | 'year'
   goal?: number
 }
 

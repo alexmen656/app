@@ -5,6 +5,7 @@
       <h1 class="title">{{ $t('app.analytics') }}</h1>
       <div class="date-picker">
         <select v-model="selectedPeriod" class="period-select" @change="checkPremiumAccess">
+          <option value="day">{{ $t('analytics.today') }}</option>
           <option value="week">{{ $t('analytics.thisWeek') }}</option>
           <option value="month">{{ $t('analytics.thisMonth') }}</option>
           <option value="year">{{ $t('analytics.thisYear') }}</option>
@@ -24,18 +25,18 @@
     <div class="summary-cards">
       <div class="summary-card">
         <div class="card-header">
-          <h3>{{ $t('analytics.avgDailyCalories') }}</h3>
+          <h3>{{ selectedPeriod === 'day' ? $t('analytics.todaysCalories') : $t('analytics.avgDailyCalories') }}</h3>
           <span class="trend up">{{ calorieTrend }}</span>
         </div>
-        <div class="card-value">{{ analyticsData?.avgCalories || 0 }}</div>
+        <div class="card-value">{{ selectedPeriod === 'day' ? (analyticsData?.goalProgress.calories.current || 0) : (analyticsData?.avgCalories || 0) }}</div>
       </div>
 
       <div class="summary-card">
         <div class="card-header">
-          <h3>{{ $t('analytics.daysOnTrack') }}</h3>
+          <h3>{{ selectedPeriod === 'day' ? $t('analytics.calorieGoal') : $t('analytics.daysOnTrack') }}</h3>
           <span class="trend up">{{ daysOnTrackTrend }}</span>
         </div>
-        <div class="card-value">{{ analyticsData?.daysOnTrack || 0 }}/7</div>
+        <div class="card-value">{{ selectedPeriod === 'day' ? (analyticsData?.goalProgress.calories.current || 0) + '/' + (analyticsData?.goalProgress.calories.target || 0) : (analyticsData?.daysOnTrack || 0) + '/' + (selectedPeriod === 'week' ? '7' : selectedPeriod === 'month' ? '30' : '365') }}</div>
       </div>
     </div>
 
@@ -143,6 +144,31 @@
               :style="{ width: Math.min((analyticsData?.goalProgress.weight.percentage || 0), 100) + '%' }"></div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Debug Charts Section (only visible in debug mode) -->
+    <div v-if="showDebugInfo" class="debug-charts-section">
+      <h3 class="section-title">
+        🐛 Debug Analytics
+        <span class="debug-badge">DEV</span>
+      </h3>
+      
+      <div class="debug-charts-grid">
+        <DebugChart 
+          title="Performance Metrics" 
+          type="performance" 
+        />
+        
+        <DebugChart 
+          title="Storage Analysis" 
+          type="storage" 
+        />
+        
+        <DebugChart 
+          title="Usage Pattern" 
+          type="usage" 
+        />
       </div>
     </div>
 
@@ -345,20 +371,25 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import type { AnalyticsData } from '../utils/analyticsData'
 import { WeightTracker } from '../utils/weightTracking'
 import { StreakManager } from '../utils/widgetData'
 import CalorieChart from '../components/charts/CalorieChart.vue'
 import WeightChart from '../components/charts/WeightChart.vue'
+import DebugChart from '../components/charts/DebugChart.vue'
 import PremiumBlocker from '../components/PremiumBlocker.vue'
 import { premiumManager, isPremiumUser, premiumFeatures } from '../utils/premiumManager'
 import { analyticsStore, analyticsActions } from '../stores/analyticsStore'
+import { isDebugMode, initializeDebugMode } from '../stores/preferencesStore'
 
 const router = useRouter()
+const { t } = useI18n()
 
-const selectedPeriod = ref<'week' | 'month' | 'year'>('week')
+const selectedPeriod = ref<'day' | 'week' | 'month' | 'year'>('day')
 // Use store data instead of local state
 const analyticsData = computed(() => analyticsStore.data)
+console.log("AnalyticsData:", analyticsData.value)
 const previousAnalyticsData = ref<AnalyticsData | null>(null)
 
 // Premium-related state
@@ -372,6 +403,9 @@ const weightNote = ref('')
 // BMI info modal
 const showBMIInfoModal = ref(false)
 
+// Debug mode (synchronized with global debug mode)
+const showDebugInfo = ref(false)
+
 // Premium access check
 const shouldShowPremiumOverlay = computed(() => {
   return !isPremiumUser.value && (selectedPeriod.value === 'month' || selectedPeriod.value === 'year')
@@ -379,11 +413,11 @@ const shouldShowPremiumOverlay = computed(() => {
 
 // Premium functions
 const checkPremiumAccess = async () => {
-  if (selectedPeriod.value !== 'week') {
+  if (selectedPeriod.value !== 'week' && selectedPeriod.value !== 'day') {
     const canAccess = await premiumManager.canAccessFeature(premiumFeatures.UNLIMITED_ANALYTICS_HISTORY)
     if (!canAccess) {
       showPremiumBlocker.value = true
-      selectedPeriod.value = 'week' // Reset to free tier
+      selectedPeriod.value = 'day' // Reset to free tier
       return
     }
   }
@@ -391,7 +425,7 @@ const checkPremiumAccess = async () => {
 
 const closePremiumBlocker = () => {
   showPremiumBlocker.value = false
-  selectedPeriod.value = 'week' // Reset to free tier
+  selectedPeriod.value = 'day' // Reset to free tier
 }
 
 const handleAnalyticsUpgrade = (feature: string) => {
@@ -401,7 +435,7 @@ const handleAnalyticsUpgrade = (feature: string) => {
 // Load analytics data
 async function loadAnalyticsData() {
   try {
-    await analyticsActions.loadAnalyticsData(selectedPeriod.value as 'week' | 'month' | 'year')
+    await analyticsActions.loadAnalyticsData(selectedPeriod.value as 'day' | 'week' | 'month' | 'year')
   } catch (error) {
     console.error('Error loading analytics data:', error)
   }
@@ -427,6 +461,12 @@ watch(selectedPeriod, () => {
   loadAnalyticsData()
 })
 
+// Watch for debug mode changes
+watch(isDebugMode, (newValue) => {
+  console.log('Analytics: Debug mode changed to:', newValue)
+  showDebugInfo.value = newValue
+}, { immediate: true })
+
 // Computed properties for dynamic values
 const calorieTrend = computed(() => {
   if (!analyticsData.value || !previousAnalyticsData.value) return '+0%'
@@ -448,14 +488,16 @@ const daysOnTrackTrend = computed(() => {
 // Computed property for chart title
 const chartTitle = computed(() => {
   switch (selectedPeriod.value) {
+    case 'day':
+      return t('analytics.dailyProgress')
     case 'week':
-      return 'Weekly Progress' // $t('analytics.weeklyProgress')
+      return t('analytics.weeklyProgress')
     case 'month':
-      return 'Monthly Progress' // $t('analytics.monthlyProgress')
+      return t('analytics.monthlyProgress')
     case 'year':
-      return 'Yearly Progress' // $t('analytics.yearlyProgress')
+      return t('analytics.yearlyProgress')
     default:
-      return 'Weekly Progress' // $t('analytics.weeklyProgress')
+      return t('analytics.dailyProgress')
   }
 })
 
@@ -493,8 +535,13 @@ async function loadStreakData() {
 }
 
 onMounted(async () => {
-  //await loadAnalyticsData()
+  await loadAnalyticsData()
   await loadStreakData()
+  
+  // Initialize debug mode from storage and sync with local state
+  await initializeDebugMode()
+  showDebugInfo.value = isDebugMode.value
+  console.log('Analytics mounted - Debug mode:', isDebugMode.value, 'showDebugInfo:', showDebugInfo.value)
 })
 
 // Helper functions for BMI and weight charts
@@ -1744,5 +1791,49 @@ function handleTouchEnd(event: TouchEvent) {
 .external-link:hover {
   background: #64b5f6;
   color: #1e1e2e;
+}
+
+/* Debug Charts Styles */
+.debug-charts-section {
+  margin-bottom: 32px;
+  border: 2px dashed rgba(255, 193, 7, 0.3);
+  border-radius: 16px;
+  padding: 20px;
+  background: rgba(255, 193, 7, 0.05);
+}
+
+.debug-charts-section .section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #FFC107;
+}
+
+.debug-badge {
+  background: linear-gradient(135deg, #ff6b6b, #ffa726);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.debug-charts-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .debug-charts-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .debug-charts-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 </style>

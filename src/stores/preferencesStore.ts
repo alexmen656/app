@@ -1,9 +1,66 @@
 import { Storage } from '../utils/storage'
 import { type NotificationSettings, NotificationService } from '../services/notifications'
+import { ref, watch } from 'vue'
 
 const LAST_REVIEW_KEY = 'lastReviewPromptAt'
 const NOTIFICATION_SETTINGS_KEY = 'notificationSettings'
 const DEBUG_MODE_KEY = 'debugMode'
+
+// Reactive debug mode state
+export const isDebugMode = ref(false)
+
+// Auto-initialize debug mode when store is imported
+let isInitialized = false
+
+// Initialize debug mode from storage
+export async function initializeDebugMode() {
+  if (isInitialized) return
+  
+  try {
+    const stored = await Storage.get(DEBUG_MODE_KEY)
+    isDebugMode.value = stored === 'true'
+    isInitialized = true
+    console.log('Debug mode initialized:', isDebugMode.value)
+  } catch (e) {
+    console.error('Failed to initialize debug mode:', e)
+    isDebugMode.value = false
+    isInitialized = true
+  }
+}
+
+// Auto-initialize on import
+initializeDebugMode()
+
+// Watch for debug mode changes and persist to storage
+watch(isDebugMode, async (newValue) => {
+  try {
+    console.log('Debug mode changed, saving to storage:', newValue)
+    await Storage.set(DEBUG_MODE_KEY, String(newValue))
+  } catch (e) {
+    console.error('Failed to save debug mode:', e)
+  }
+})
+
+export async function getDebugMode(): Promise<boolean> {
+  try {
+    const stored = await Storage.get(DEBUG_MODE_KEY)
+    return stored === 'true'
+  } catch (e) {
+    console.error('preferencesStore.getDebugMode error', e)
+    return false
+  }
+}
+
+export async function setDebugMode(enabled: boolean): Promise<void> {
+  try {
+    console.log('Setting debug mode to:', enabled)
+    isDebugMode.value = enabled
+    await Storage.set(DEBUG_MODE_KEY, String(enabled))
+    console.log('Debug mode set successfully:', isDebugMode.value)
+  } catch (e) {
+    console.error('preferencesStore.setDebugMode error', e)
+  }
+}
 
 export async function getLastReviewPrompt(): Promise<number | null> {
   try {
@@ -60,35 +117,20 @@ export async function setNotificationSettings(settings: NotificationSettings): P
 }
 
 // Debug mode functions
-export async function getDebugMode(): Promise<boolean> {
-  try {
-    const value = await Storage.get(DEBUG_MODE_KEY)
-    return value === 'true'
-  } catch (e) {
-    console.error('preferencesStore.getDebugMode error', e)
-    return false
-  }
-}
-
-export async function setDebugMode(enabled: boolean): Promise<void> {
-  try {
-    await Storage.set(DEBUG_MODE_KEY, enabled ? 'true' : 'false')
-  } catch (e) {
-    console.error('preferencesStore.setDebugMode error', e)
-  }
-}
-
 export async function toggleDebugMode(): Promise<boolean> {
   try {
     const current = await getDebugMode()
     const newValue = !current
     await setDebugMode(newValue)
+    
     return newValue
   } catch (e) {
     console.error('preferencesStore.toggleDebugMode error', e)
     return false
   }
-}export default {
+}
+
+export default {
   getLastReviewPrompt,
   setLastReviewPrompt,
   shouldShowReviewPrompt,

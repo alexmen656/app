@@ -83,6 +83,26 @@
             </div>
         </div>
 
+        <!-- Debug Charts Section (only visible in debug mode) -->
+        <div v-if="showDebugInfo" class="debug-charts-section">
+            <h3 class="section-title">
+                🐛 Debug Analytics - Protein
+                <span class="debug-badge">DEV</span>
+            </h3>
+            
+            <div class="debug-charts-grid">
+                <DebugChart 
+                    title="Protein Trends" 
+                    type="trend" 
+                />
+                
+                <DebugChart 
+                    title="Usage Pattern" 
+                    type="usage" 
+                />
+            </div>
+        </div>
+
         <!-- Information Section -->
         <div class="info-section">
             <h3>{{ $t('detail.protein.aboutTitle') }}</h3>
@@ -102,12 +122,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { default as ApexCharts } from 'vue3-apexcharts'
 import { dailyGoals } from '../stores/userStore'
 import { ScanHistory } from '../utils/storage'
+import DebugChart from '../components/charts/DebugChart.vue'
+import { isDebugMode, initializeDebugMode } from '../stores/preferencesStore'
 
 const apexchart = ApexCharts
 const router = useRouter()
@@ -118,6 +140,9 @@ const currentValue = ref(0)
 const goalValue = computed(() => dailyGoals.protein)
 const selectedPeriod = ref<'week' | 'month' | 'year'>('week')
 const chartData = ref<Array<{ date: string; protein: number }>>([])
+
+// Debug mode (synchronized with global debug mode)
+const showDebugInfo = ref(false)
 
 const periods = [
     { value: 'week' as const, label: t('detail.week') },
@@ -312,13 +337,22 @@ async function loadData() {
 
 onMounted(() => {
     loadData()
+    
+    // Initialize debug mode
+    initializeDebugMode().then(() => {
+        showDebugInfo.value = isDebugMode.value
+    })
 })
 
 // Watch for period changes
-import { watch } from 'vue'
 watch(selectedPeriod, () => {
     loadData()
 })
+
+// Watch for debug mode changes
+watch(isDebugMode, (newValue) => {
+    showDebugInfo.value = newValue
+}, { immediate: true })
 </script>
 
 <style scoped>

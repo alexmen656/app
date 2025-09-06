@@ -83,6 +83,26 @@
             </div>
         </div>
 
+        <!-- Debug Charts Section (only visible in debug mode) -->
+        <div v-if="showDebugInfo" class="debug-charts-section">
+            <h3 class="section-title">
+                🐛 Debug Analytics - Calories
+                <span class="debug-badge">DEV</span>
+            </h3>
+            
+            <div class="debug-charts-grid">
+                <DebugChart 
+                    title="Calorie Trends" 
+                    type="trend" 
+                />
+                
+                <DebugChart 
+                    title="Performance" 
+                    type="performance" 
+                />
+            </div>
+        </div>
+
         <!-- Information Section -->
         <div class="info-section">
             <h3>{{ $t('detail.calories.aboutTitle') }}</h3>
@@ -102,12 +122,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { default as ApexCharts } from 'vue3-apexcharts'
 import { dailyGoals } from '../stores/userStore'
 import { ScanHistory } from '../utils/storage'
+import DebugChart from '../components/charts/DebugChart.vue'
+import { isDebugMode, initializeDebugMode } from '../stores/preferencesStore'
 
 const apexchart = ApexCharts
 const router = useRouter()
@@ -118,6 +140,9 @@ const currentValue = ref(0)
 const goalValue = computed(() => dailyGoals.calories)
 const selectedPeriod = ref<'week' | 'month' | 'year'>('week')
 const chartData = ref<Array<{ date: string; calories: number }>>([])
+
+// Debug mode (synchronized with global debug mode)
+const showDebugInfo = ref(false)
 
 const periods = [
     { value: 'week' as const, label: t('detail.week') },
@@ -312,13 +337,22 @@ async function loadData() {
 
 onMounted(() => {
     loadData()
+    
+    // Initialize debug mode
+    initializeDebugMode().then(() => {
+        showDebugInfo.value = isDebugMode.value
+    })
 })
 
 // Watch for period changes
-import { watch } from 'vue'
 watch(selectedPeriod, () => {
     loadData()
 })
+
+// Watch for debug mode changes
+watch(isDebugMode, (newValue) => {
+    showDebugInfo.value = newValue
+}, { immediate: true })
 </script>
 
 <style scoped>
@@ -578,5 +612,38 @@ watch(selectedPeriod, () => {
     font-weight: bold;
     position: absolute;
     left: 0;
+}
+
+/* Debug Charts Styles */
+.debug-charts-section {
+    margin: 0 20px 32px;
+}
+
+.debug-charts-section .section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.debug-badge {
+    background: rgba(255, 107, 53, 0.2);
+    color: #ff6b35;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.debug-charts-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+@media (min-width: 768px) {
+    .debug-charts-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 </style>

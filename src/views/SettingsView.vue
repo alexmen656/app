@@ -426,9 +426,10 @@ import { setLanguage, getCurrentLanguage } from '../i18n'
 import {
   getNotificationSettings,
   setNotificationSettings as saveNotificationSettingsToStore,
-  getDebugMode,
+  isDebugMode,
   setDebugMode,
-  toggleDebugMode
+  toggleDebugMode,
+  initializeDebugMode
 } from '../stores/preferencesStore'
 import { NotificationService, type NotificationSettings } from '../services/notifications'
 import { HealthKitService } from '../services/healthkit'
@@ -565,8 +566,9 @@ const buildClickTimeout = ref<number | null>(null)
 
 // Check if debug mode should be enabled (e.g., if in development)
 onMounted(async () => {
-  // Load debug mode state
-  showDebugInfo.value = await getDebugMode()
+  // Initialize and load debug mode state
+  await initializeDebugMode()
+  showDebugInfo.value = isDebugMode.value
   
   if (showDebugInfo.value) {
     refreshDebugInfo()
@@ -642,6 +644,14 @@ const displayProfile = computed(() => {
   }
 })
 
+// Watch for debug mode changes to keep local state in sync
+watch(isDebugMode, (newValue) => {
+  showDebugInfo.value = newValue
+  if (newValue) {
+    refreshDebugInfo()
+  }
+}, { immediate: true })
+
 function editProfile() {
   router.push('/profile/edit')
 }
@@ -706,11 +716,14 @@ function handleBuildClick() {
       clearTimeout(buildClickTimeout.value)
     }
     
+    console.log('Easter egg triggered - current debug mode:', isDebugMode.value)
+    
     toggleDebugMode().then((enabled) => {
-      showDebugInfo.value = enabled
+      console.log('Debug mode toggled to:', enabled)
+      // showDebugInfo wird automatisch durch den Watcher aktualisiert
       if (enabled) {
         refreshDebugInfo()
-        alert('🐛 Debug mode activated!')
+        alert('🐛 Debug mode activated! Go to Analytics to see debug charts.')
       } else {
         alert('🔧 Debug mode deactivated!')
       }
@@ -720,7 +733,7 @@ function handleBuildClick() {
 
 async function disableDebugMode() {
   await setDebugMode(false)
-  showDebugInfo.value = false
+  // showDebugInfo wird automatisch durch den Watcher aktualisiert
   alert('🔧 Debug mode disabled!')
 }
 

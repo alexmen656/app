@@ -5,19 +5,19 @@ import type { AnalyticsData } from "../utils/analyticsData";
 interface AnalyticsStore {
   data: AnalyticsData | null;
   isLoading: boolean;
-  currentPeriod: "week" | "month" | "year";
+  currentPeriod: "day" | "week" | "month" | "year";
   error: string | null;
 }
 
 const analyticsStore = reactive<AnalyticsStore>({
   data: null,
   isLoading: false,
-  currentPeriod: "week",
+  currentPeriod: "day",
   error: null,
 });
 
 export const analyticsActions = {
-  async loadAnalyticsData(period: "week" | "month" | "year" = "week") {
+  async loadAnalyticsData(period: "day" | "week" | "month" | "year" = "day") {
     analyticsStore.isLoading = true;
     analyticsStore.error = null;
     analyticsStore.currentPeriod = period;
@@ -39,7 +39,7 @@ export const analyticsActions = {
     }
   },
 
-  async refreshAnalyticsData(period: "week" | "month" | "year" = "week") {
+  async refreshAnalyticsData(period: "day" | "week" | "month" | "year" = "day") {
     return this.loadAnalyticsData(period);
   },
 
@@ -47,7 +47,7 @@ export const analyticsActions = {
     return analyticsStore.data;
   },
 
-  setPeriod(period: "week" | "month" | "year") {
+  setPeriod(period: "day" | "week" | "month" | "year") {
     analyticsStore.currentPeriod = period;
   },
 };

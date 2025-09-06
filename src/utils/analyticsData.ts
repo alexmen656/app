@@ -151,12 +151,59 @@ export class AnalyticsManager {
   }
 
   // Get data for different periods
-  static async getPeriodData(period: 'week' | 'month' | 'year'): Promise<WeeklyData[]> {
+  static async getPeriodData(period: 'day' | 'week' | 'month' | 'year'): Promise<WeeklyData[]> {
     const periodData: WeeklyData[] = [];
     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     
     switch (period) {
+      case 'day':
+        // Show hourly data for today
+        const today = new Date();
+        const todayData = await this.getDayData(today);
+        
+        // Group foods by hour for hourly breakdown
+        const hourlyData: { [hour: string]: { calories: number; count: number } } = {};
+        
+        // Initialize all hours
+        for (let hour = 0; hour < 24; hour++) {
+          const hourStr = hour.toString().padStart(2, '0');
+          hourlyData[hourStr] = { calories: 0, count: 0 };
+        }
+        
+        // Aggregate data by hour
+        todayData.foods.forEach(food => {
+          if (food.time) {
+            const hour = food.time.split(':')[0];
+            if (hourlyData[hour]) {
+              hourlyData[hour].calories += food.calories;
+              hourlyData[hour].count++;
+            }
+          }
+        });
+        
+        // Convert to chart data - show 6 time periods throughout the day
+        const timeSlots = [
+          { label: '6AM', hours: ['06', '07', '08', '09'] },
+          { label: '10AM', hours: ['10', '11'] },
+          { label: '12PM', hours: ['12', '13'] },
+          { label: '2PM', hours: ['14', '15'] },
+          { label: '6PM', hours: ['18', '19'] },
+          { label: '8PM', hours: ['20', '21', '22', '23'] }
+        ];
+        
+        timeSlots.forEach(slot => {
+          let slotCalories = 0;
+          slot.hours.forEach(hour => {
+            slotCalories += hourlyData[hour]?.calories || 0;
+          });
+          periodData.push({
+            day: slot.label,
+            calories: Math.round(slotCalories)
+          });
+        });
+        break;
+        
       case 'week':
         // 7 days
         for (let i = 6; i >= 0; i--) {
@@ -234,7 +281,7 @@ export class AnalyticsManager {
   }
 
   // Calculate analytics data
-  static async getAnalyticsData(period: 'week' | 'month' | 'year' = 'week'): Promise<AnalyticsData> {
+  static async getAnalyticsData(period: 'day' | 'week' | 'month' | 'year' = 'day'): Promise<AnalyticsData> {
     const weeklyData = await this.getPeriodData(period);
     
     // Calculate average calories
@@ -244,15 +291,54 @@ export class AnalyticsManager {
     // Calculate days on track (days with at least some calories logged)
     const daysOnTrack = weeklyData.filter(day => day.calories > 0).length;
 
-    // Get today's data for macro breakdown
-    const todayData = await this.getDayData(new Date());
-    const totalMacroCalories = (todayData.protein * 4) + (todayData.carbs * 4) + (todayData.fats * 9);
+    // Calculate macro breakdown based on selected period
+    let macroBreakdown = { protein: 0, carbs: 0, fats: 0 };
     
-    const macroBreakdown = {
-      protein: totalMacroCalories > 0 ? Math.round((todayData.protein * 4 / totalMacroCalories) * 100) : 0,
-      carbs: totalMacroCalories > 0 ? Math.round((todayData.carbs * 4 / totalMacroCalories) * 100) : 0,
-      fats: totalMacroCalories > 0 ? Math.round((todayData.fats * 9 / totalMacroCalories) * 100) : 0
-    };
+    if (period === 'day') {
+      // For day view, use today's data
+      const todayData = await this.getDayData(new Date());
+      const totalMacroCalories = (todayData.protein * 4) + (todayData.carbs * 4) + (todayData.fats * 9);
+      
+      macroBreakdown = {
+        protein: totalMacroCalories > 0 ? Math.round((todayData.protein * 4 / totalMacroCalories) * 100) : 0,
+        carbs: totalMacroCalories > 0 ? Math.round((todayData.carbs * 4 / totalMacroCalories) * 100) : 0,
+        fats: totalMacroCalories > 0 ? Math.round((todayData.fats * 9 / totalMacroCalories) * 100) : 0
+      };
+    } else {
+      // For week/month/year views, calculate average macro breakdown
+      let totalProtein = 0;
+      let totalCarbs = 0;
+      let totalFats = 0;
+      let daysWithData = 0;
+      
+      const daysToAnalyze = period === 'week' ? 7 : period === 'month' ? 30 : 365;
+      
+      for (let i = 0; i < daysToAnalyze; i++) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dayData = await this.getDayData(date);
+        
+        if (dayData.calories > 0) {
+          totalProtein += dayData.protein;
+          totalCarbs += dayData.carbs;
+          totalFats += dayData.fats;
+          daysWithData++;
+        }
+      }
+      
+      if (daysWithData > 0) {
+        const avgProtein = totalProtein / daysWithData;
+        const avgCarbs = totalCarbs / daysWithData;
+        const avgFats = totalFats / daysWithData;
+        const totalMacroCalories = (avgProtein * 4) + (avgCarbs * 4) + (avgFats * 9);
+        
+        macroBreakdown = {
+          protein: totalMacroCalories > 0 ? Math.round((avgProtein * 4 / totalMacroCalories) * 100) : 0,
+          carbs: totalMacroCalories > 0 ? Math.round((avgCarbs * 4 / totalMacroCalories) * 100) : 0,
+          fats: totalMacroCalories > 0 ? Math.round((avgFats * 9 / totalMacroCalories) * 100) : 0
+        };
+      }
+    }
 
     // Mock exercise and water data (can be expanded later)
     const exerciseData = await Storage.get('exerciseData') || { current: 4, target: 5 };
@@ -284,6 +370,10 @@ export class AnalyticsManager {
       weightProgress = WeightTracker.calculateWeightProgress(weightStats.currentWeight, weightGoal);
     }
 
+    // For calories goal progress, use appropriate data based on period
+    const todayData = await this.getDayData(new Date());
+    const currentCalories = period === 'day' ? todayData.calories : avgCalories;
+
     return {
       weeklyData,
       avgCalories,
@@ -291,9 +381,9 @@ export class AnalyticsManager {
       macroBreakdown,
       goalProgress: {
         calories: {
-          current: todayData.calories,
+          current: currentCalories,
           target: dailyGoals.calories,
-          percentage: Math.round((todayData.calories / dailyGoals.calories) * 100)
+          percentage: Math.round((currentCalories / dailyGoals.calories) * 100)
         },
         exercise: {
           current: exerciseData.current,
