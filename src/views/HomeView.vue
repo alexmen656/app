@@ -250,64 +250,47 @@ const showPremiumBanner = ref(true)
 const showScanLimitBlocker = ref(false)
 const currentScanUsage = ref<any>(null)
 
-// Open native scanner directly
 async function openNativeScanner() {
     try {
-        // Check scan limits first
         const usage = await checkScanLimit()
         currentScanUsage.value = usage
 
         if (!usage.canScan && !usage.isPremium) {
-            // Show premium blocker for free users who hit the limit
             console.log(`Scan limit reached: ${usage.currentCount}/${usage.limit} scans used today`)
             showScanLimitBlocker.value = true
             return
         }
 
-        // Show mode selector
-        // Direkter Start mit Barcode-Modus (Benutzer kann in der Swift UI zwischen Modi wechseln)
         await startScanningWithMode('barcode')
-
     } catch (error) {
         console.error('Failed to check scan limits:', error)
-        // Continue with scanning anyway
-        // Direkter Start mit Barcode-Modus
         await startScanningWithMode('barcode')
     }
 }
 
-// Start scanning with specific mode
 async function startScanningWithMode(mode: 'barcode' | 'photo' | 'label') {
     try {
         await startScanning({
             mode: mode,
-            timeout: 0, // No timeout
+            timeout: 0,
             showControls: true
         })
 
-        // Refresh scan history when we return from scanner
         loadScanHistory()
-
-        // Update scan usage after successful scan
         await getScanUsage()
-
     } catch (error) {
         console.error('Failed to open scanner:', error)
 
-        // Handle scan limit errors
         if (error instanceof Error && error.message?.includes('SCAN_LIMIT_REACHED')) {
-            // Show premium upgrade prompt
             showScanLimitBlocker.value = true
         }
     }
 }
 
-// Close scan limit blocker
 function closeScanLimitBlocker() {
     showScanLimitBlocker.value = false
 }
 
-// Handle premium upgrade from scan limit blocker
 function handleScanLimitUpgrade() {
     showScanLimitBlocker.value = false
     router.push('/upgrade')
@@ -426,8 +409,6 @@ async function loadScanHistory() {
         await calculateTodaysNutrition()
         await WidgetDataManager.updateWidgetData()
         await syncToHealthKit()
-
-        // Reset inactivity timer when new scans are detected
         await NotificationService.resetInactivityTimer()
     } catch (error) {
         console.error('Error loading scan history:', error)
@@ -488,7 +469,6 @@ async function loadStreak() {
 
 async function syncToHealthKit() {
     try {
-        // Premium-Check für HealthKit-Sync
         if (!isPremiumUser.value) {
             console.log('🔒 HealthKit sync skipped - Premium feature');
             return;
