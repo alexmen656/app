@@ -448,7 +448,7 @@ const fetchProduct = async (barcode) => {
         }
 
         console.log('Fetching product data from API for barcode:', barcode);
-        const response = await fetch(`https://kaloriq-api.vercel.app/api/product/${barcode}`);
+        const response = await fetch(`https://v2-1.api.kalbuddy.com/api/product/${barcode}`);
 
         if (!response.ok) {
             throw new Error(`KaloriQ API error: ${response.status}`);

@@ -291,7 +291,7 @@ function openTerms() {
 }
 
 function openPrivacy() {
-  window.open('https://kaloriq.sites.control-center.eu/privacy-policy.html', '_blank')
+  window.open('https://kalbuddy.com/privacy-policy.html', '_blank')
 }
 
 onMounted(async () => {

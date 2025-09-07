@@ -317,7 +317,7 @@ const analyzeFoodPhoto = async (photoDataUrl) => {
     formData.append('image', blob, 'photo.jpg');
 
     // Send to KaloriQ Food Analyze API
-    const apiResponse = await fetch('https://kaloriq-api.vercel.app/api/food/analyze', {
+    const apiResponse = await fetch('https://v2-1.api.kalbuddy.com/api/food/analyze', {
       method: 'POST',
       body: formData
     });

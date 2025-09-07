@@ -347,7 +347,7 @@
           <router-link to="/sources-disclaimer" class="setting-link">{{ $t('sourcesDisclaimer.title') }}</router-link>
         </div>
         <div class="setting-item">
-          <a class="setting-link" href="https://kaloriq.sites.control-center.eu/privacy-policy.html" target="_blank"
+          <a class="setting-link" href="https://kalbuddy.com/privacy-policy.html" target="_blank"
             rel="noopener">{{ $t('settings.privacy') }}</a>
         </div>
         <div class="setting-item">

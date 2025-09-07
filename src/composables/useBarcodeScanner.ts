@@ -349,7 +349,7 @@ export function useBarcodeScanner() {
       const formData = new FormData()
       formData.append('image', blob, 'photo.jpg')
       
-      const apiResponse = await fetch('https://kaloriq-api.vercel.app/api/food/analyze', {
+      const apiResponse = await fetch('https://v2-1.api.kalbuddy.com/api/food/analyze', {
         method: 'POST',
         body: formData
       })
@@ -390,7 +390,7 @@ export function useBarcodeScanner() {
       const formData = new FormData()
       formData.append('image', blob, 'label.jpg')
 
-      const apiResponse = await fetch('https://kaloriq-api.vercel.app/api/label/analyze', {
+      const apiResponse = await fetch('https://v2-1.api.kalbuddy.com/api/label/analyze', {
         method: 'POST',
         body: formData
       })

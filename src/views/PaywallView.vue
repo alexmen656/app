@@ -292,7 +292,7 @@ function openTerms() {
 
 function openPrivacy() {
     // Open privacy policy
-    location.href = 'https://kaloriq.sites.control-center.eu/privacy-policy.html'
+    location.href = 'https://kalbuddy.com/privacy-policy.html'
     console.log('Open Privacy Policy')
 }
 
