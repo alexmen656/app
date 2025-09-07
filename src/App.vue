@@ -17,7 +17,7 @@ const router = useRouter()
 
 onMounted(async () => {
   try {
-    await analyticsActions.loadAnalyticsData('week')
+    await analyticsActions.loadAnalyticsData('day')
   } catch (error) {
     console.warn('Failed to preload analytics data:', error)
   }

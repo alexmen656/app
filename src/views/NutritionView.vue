@@ -802,7 +802,7 @@ async function saveAndReturn() {
         await WidgetDataManager.updateWidgetData();
 
         try {
-            analyticsActions.loadAnalyticsData('week')
+            analyticsActions.loadAnalyticsData('day')
         } catch (error) {
             console.warn('Failed to preload analytics data:', error)
         }
