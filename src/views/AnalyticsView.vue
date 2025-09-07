@@ -28,7 +28,8 @@
           <h3>{{ selectedPeriod === 'day' ? $t('analytics.todaysCalories') : $t('analytics.avgDailyCalories') }}</h3>
           <span class="trend up">{{ calorieTrend }}</span>
         </div>
-        <div class="card-value">{{ selectedPeriod === 'day' ? (analyticsData?.goalProgress.calories.current || 0) : (analyticsData?.avgCalories || 0) }}</div>
+        <div class="card-value">{{ selectedPeriod === 'day' ? (analyticsData?.goalProgress.calories.current || 0) :
+          (analyticsData?.avgCalories || 0) }}</div>
       </div>
 
       <div class="summary-card">
@@ -36,7 +37,9 @@
           <h3>{{ selectedPeriod === 'day' ? $t('analytics.calorieGoal') : $t('analytics.daysOnTrack') }}</h3>
           <span class="trend up">{{ daysOnTrackTrend }}</span>
         </div>
-        <div class="card-value">{{ selectedPeriod === 'day' ? (analyticsData?.goalProgress.calories.current || 0) + '/' + (analyticsData?.goalProgress.calories.target || 0) : (analyticsData?.daysOnTrack || 0) + '/' + (selectedPeriod === 'week' ? '7' : selectedPeriod === 'month' ? '30' : '365') }}</div>
+        <div class="card-value">{{ selectedPeriod === 'day' ? (analyticsData?.goalProgress.calories.current || 0) + '/'
+          + (analyticsData?.goalProgress.calories.target || 0) : (analyticsData?.daysOnTrack || 0) + '/' +
+          (selectedPeriod === 'week' ? '7' : selectedPeriod === 'month' ? '30' : '365') }}</div>
       </div>
     </div>
 
@@ -135,7 +138,7 @@
               <span v-if="analyticsData?.goalProgress.weight.change !== null" class="weight-change"
                 :class="{ 'positive': (analyticsData?.goalProgress.weight.change || 0) >= 0, 'negative': (analyticsData?.goalProgress.weight.change || 0) < 0 }">
                 ({{ (analyticsData?.goalProgress.weight.change || 0) >= 0 ? '+' : '' }}{{
-                  Math.round((analyticsData?.goalProgress.weight.change || 0) * 10)/10 }}{{ $t('analytics.kg') }})
+                  Math.round((analyticsData?.goalProgress.weight.change || 0) * 10) / 10 }}{{ $t('analytics.kg') }})
               </span>
             </span>
           </div>
@@ -153,40 +156,21 @@
         🐛 Debug Analytics
         <span class="debug-badge">DEV</span>
       </h3>
-      
+
       <div class="debug-charts-grid">
-        <DebugChart 
-          title="Performance Metrics" 
-          type="performance" 
-        />
-        
-        <DebugChart 
-          title="Storage Analysis" 
-          type="storage" 
-        />
-        
-        <DebugChart 
-          title="Usage Pattern" 
-          type="usage" 
-        />
+        <DebugChart title="Performance Metrics" type="performance" />
+
+        <DebugChart title="Storage Analysis" type="storage" />
+
+        <DebugChart title="Usage Pattern" type="usage" />
       </div>
     </div>
 
     <!-- BMI Section -->
     <div v-if="analyticsData?.bmiData.value" class="bmi-section" @click="navigateToBMIDetail">
-      <div class="section-header">
-        <h3 class="section-title">
-          {{ $t('analytics.bmiHealthStatus') }}
-          <button class="info-btn" @click.stop="showBMIInfoModal = true">
-            i
-          </button>
-        </h3>
-        <button class="detail-btn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
-          </svg>
-        </button>
-      </div>
+      <h3 class="section-title">
+        {{ $t('analytics.bmiHealthStatus') }}
+      </h3>
       <div class="bmi-container">
         <div class="bmi-display">
           <div class="bmi-value" :style="{ color: analyticsData?.bmiData.categoryColor || '#ffffff' }">
@@ -209,28 +193,20 @@
       </div>
     </div>
 
+    <div class="bmi-buttons">
+      <button class="info-btn" @click.stop="showBMIInfoModal = true">
+        info
+      </button>
+      <button @click="navigateToBMIDetail" class="detail-btn">
+        Details 
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+        </svg>
+      </button>
+    </div>
     <!-- Weight Chart Section -->
     <div class="weight-section">
-      <div class="section-header">
-        <h3 class="section-title">{{ $t('analytics.weightProgress') }}</h3>
-        <div class="header-buttons">
-          <button @click="navigateToWeightDetail" class="detail-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
-            </svg>
-          </button>
-          <button @click="showWeightLogModal = true" class="log-weight-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
-            </svg>
-            {{ $t('analytics.logWeight') }}
-          </button>
-        </div>
-      </div>
-
-
-
-
+      <h3 class="section-title">{{ $t('analytics.weightProgress') }}</h3>
 
       <!-- Enhanced Chart -->
       <WeightChart v-if="analyticsData?.goalProgress.weight.target" :data="analyticsData?.weightChartData || []"
@@ -271,6 +247,20 @@
           <button @click="logWeight" class="modal-btn primary" :disabled="!newWeight">{{ $t('common.save') }}</button>
         </div>
       </div>
+    </div>
+    <div class="header-buttons">
+      <button @click="showWeightLogModal = true" class="log-weight-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+        </svg>
+        {{ $t('analytics.logWeight') }}
+      </button>
+      <button @click="navigateToWeightDetail" class="detail-btn">
+        Details 
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+        </svg>
+      </button>
     </div>
 
     <!-- BMI Info Modal -->
@@ -516,7 +506,7 @@ async function loadStreakData() {
 onMounted(async () => {
   await loadAnalyticsData()
   await loadStreakData()
-  
+
   // Initialize debug mode from storage and sync with local state
   await initializeDebugMode()
   showDebugInfo.value = isDebugMode.value
@@ -725,27 +715,26 @@ function handleTouchEnd(event: TouchEvent) {
 }
 
 .info-btn {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
   border: none;
-  border-radius: 50%;
+  border-radius: 0 0 0 16px;
+  width: 50%;
   color: white;
-  width: 24px;
-  height: 24px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  opacity: 0.7;
-  flex-shrink: 0;
 }
 
 .info-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  opacity: 1;
-  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.15);
 }
-
+ 
 .chart-container {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 16px;
@@ -914,8 +903,14 @@ function handleTouchEnd(event: TouchEvent) {
   background: linear-gradient(90deg, #42a5f5, #64b5f6);
 }
 
-.bmi-section {
+.bmi-buttons {
   margin-bottom: 32px;
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.bmi-section {
   cursor: pointer;
   transition: transform 0.2s ease;
 }
@@ -930,7 +925,7 @@ function handleTouchEnd(event: TouchEvent) {
 
 .bmi-container {
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
+  border-radius: 16px 16px 0 0;
   padding: 24px;
   backdrop-filter: blur(10px);
 }
@@ -1040,10 +1035,11 @@ function handleTouchEnd(event: TouchEvent) {
 
 .weight-chart-container {
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
+  border-radius: 16px 16px 0 0;
   padding: 6px;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 0;
   position: relative;
   overflow: hidden;
 }
@@ -1175,23 +1171,17 @@ function handleTouchEnd(event: TouchEvent) {
   opacity: 0.7;
 }
 
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
 .header-buttons {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
+  margin-top: 4px;
 }
 
 .detail-btn {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
   border: none;
-  border-radius: 8px;
+  border-radius: 0 0 16px 0;
   color: white;
   padding: 8px;
   font-size: 12px;
@@ -1201,7 +1191,7 @@ function handleTouchEnd(event: TouchEvent) {
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  width: 32px;
+  width: 50%;
   height: 32px;
 }
 
@@ -1210,15 +1200,17 @@ function handleTouchEnd(event: TouchEvent) {
 }
 
 .log-weight-btn {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
   border: none;
-  border-radius: 8px;
+  border-radius: 0 0 0 16px;
+  width: 50%;
   color: white;
   padding: 8px 12px;
   font-size: 12px;
   font-weight: 500;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   cursor: pointer;
   transition: all 0.2s ease;
