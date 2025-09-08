@@ -586,6 +586,7 @@
     "calories": {
       "title": "Kalorien",
       "chartTitle": "Kalorienverlauf",
+      "trendTitle": "Kalorientrend-Vergleich",
       "aboutTitle": "Über Kalorien",
       "aboutText": "Kalorien sind die Energieeinheit, die Ihr Körper aus der Nahrung gewinnt. Ein ausgewogenes Verhältnis zwischen aufgenommenen und verbrauchten Kalorien ist entscheidend für die Gewichtskontrolle.",
       "tipsTitle": "Tipps für gesunde Kalorienzufuhr",
@@ -597,6 +598,7 @@
     "protein": {
       "title": "Protein",
       "chartTitle": "Proteinverlauf",
+      "trendTitle": "Proteintrend-Vergleich",
       "aboutTitle": "Über Protein",
       "aboutText": "Protein ist essentiell für den Muskelaufbau, die Reparatur von Gewebe und viele Körperfunktionen. Eine ausreichende Proteinzufuhr unterstützt den Stoffwechsel und hält Sie länger satt.",
       "tipsTitle": "Tipps für optimale Proteinzufuhr",
@@ -608,6 +610,7 @@
     "carbs": {
       "title": "Kohlenhydrate",
       "chartTitle": "Kohlenhydratverlauf",
+      "trendTitle": "Kohlenhydrattrend-Vergleich",
       "aboutTitle": "Über Kohlenhydrate",
       "aboutText": "Kohlenhydrate sind die Hauptenergiequelle für Ihr Gehirn und Ihre Muskeln. Komplexe Kohlenhydrate liefern nachhaltige Energie und wichtige Nährstoffe.",
       "tipsTitle": "Tipps für gesunde Kohlenhydrate",
@@ -619,6 +622,7 @@
     "fats": {
       "title": "Fette",
       "chartTitle": "Fettverlauf",
+      "trendTitle": "Fetttrend-Vergleich",
       "aboutTitle": "Über Fette",
       "aboutText": "Gesunde Fette sind wichtig für die Hormonproduktion, Vitaminaufnahme und Gehirnfunktion. Nicht alle Fette sind gleich - wählen Sie ungesättigte Fette.",
       "tipsTitle": "Tipps für gesunde Fette",

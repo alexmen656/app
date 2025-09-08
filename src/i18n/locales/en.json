@@ -586,6 +586,7 @@
     "calories": {
       "title": "Calories",
       "chartTitle": "Calorie History",
+      "trendTitle": "Calorie Trend Comparison",
       "aboutTitle": "About Calories",
       "aboutText": "Calories are the unit of energy your body gets from food. A balanced relationship between consumed and burned calories is crucial for weight management.",
       "tipsTitle": "Tips for healthy calorie intake",
@@ -597,6 +598,7 @@
     "protein": {
       "title": "Protein",
       "chartTitle": "Protein History",
+      "trendTitle": "Protein Trend Comparison",
       "aboutTitle": "About Protein",
       "aboutText": "Protein is essential for muscle building, tissue repair, and many body functions. Adequate protein intake supports metabolism and keeps you fuller longer.",
       "tipsTitle": "Tips for optimal protein intake",
@@ -608,6 +610,7 @@
     "carbs": {
       "title": "Carbohydrates",
       "chartTitle": "Carbohydrate History",
+      "trendTitle": "Carbohydrate Trend Comparison",
       "aboutTitle": "About Carbohydrates",
       "aboutText": "Carbohydrates are the main energy source for your brain and muscles. Complex carbohydrates provide sustained energy and important nutrients.",
       "tipsTitle": "Tips for healthy carbohydrates",
@@ -619,6 +622,7 @@
     "fats": {
       "title": "Fats",
       "chartTitle": "Fat History",
+      "trendTitle": "Fat Trend Comparison",
       "aboutTitle": "About Fats",
       "aboutText": "Healthy fats are important for hormone production, vitamin absorption, and brain function. Not all fats are equal - choose unsaturated fats.",
       "tipsTitle": "Tips for healthy fats",

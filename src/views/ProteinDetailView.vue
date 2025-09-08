@@ -60,6 +60,17 @@
             </div>
         </div>
 
+        <!-- Trend Comparison Chart -->
+        <div class="trend-section">
+            <div class="trend-header">
+                <h3>{{ $t('detail.protein.trendTitle') }}</h3>
+                <div class="trend-subtitle">{{ trendComparisonText }}</div>
+            </div>
+            <div class="trend-container">
+                <apexchart type="line" height="250" :options="trendChartOptions" :series="trendChartSeries" />
+            </div>
+        </div>
+
         <!-- Statistics -->
         <div class="stats-section">
             <h3>{{ $t('detail.statistics') }}</h3>
@@ -140,6 +151,7 @@ const currentValue = ref(0)
 const goalValue = computed(() => dailyGoals.protein)
 const selectedPeriod = ref<'week' | 'month' | 'year'>('week')
 const chartData = ref<Array<{ date: string; protein: number }>>([])
+const trendData = ref<Array<{ date: string; current: number; previous: number }>>([])
 
 // Debug mode (synchronized with global debug mode)
 const showDebugInfo = ref(false)
@@ -159,6 +171,71 @@ const selectedPeriodLabel = computed(() => {
     const period = periods.find(p => p.value === selectedPeriod.value)
     return period?.label || ''
 })
+
+const trendComparisonText = computed(() => {
+    const current = selectedPeriod.value === 'week' ? 'Diese Woche' : 
+                   selectedPeriod.value === 'month' ? 'Dieser Monat' : 'Dieses Jahr'
+    const previous = selectedPeriod.value === 'week' ? 'vs. Letzte Woche' : 
+                    selectedPeriod.value === 'month' ? 'vs. Letzter Monat' : 'vs. Letztes Jahr'
+    return `${current} ${previous}`
+})
+
+const trendChartSeries = computed(() => [
+    {
+        name: 'Aktuell',
+        data: trendData.value.map(item => item.current)
+    },
+    {
+        name: 'Vorherig',
+        data: trendData.value.map(item => item.previous)
+    }
+])
+
+const trendChartOptions = computed(() => ({
+    chart: {
+        type: 'line',
+        background: 'transparent',
+        toolbar: { show: false },
+        animations: { enabled: true, easing: 'easeinout', speed: 800 }
+    },
+    theme: { mode: 'dark' },
+    colors: ['#ff6b6b', 'rgba(255, 107, 107, 0.5)'],
+    stroke: {
+        curve: 'smooth',
+        width: 3
+    },
+    markers: {
+        size: 6,
+        strokeWidth: 2,
+        fillOpacity: 1,
+        strokeOpacity: 1
+    },
+    xaxis: {
+        categories: trendData.value.map(item => formatTrendLabel(item.date)),
+        labels: { style: { colors: 'rgba(255, 255, 255, 0.7)', fontSize: '12px' } },
+        axisBorder: { show: false },
+        axisTicks: { show: false }
+    },
+    yaxis: {
+        labels: { 
+            style: { colors: 'rgba(255, 255, 255, 0.7)', fontSize: '12px' },
+            formatter: (value: number) => `${Math.round(value)}g`
+        }
+    },
+    grid: { borderColor: 'rgba(255, 255, 255, 0.1)', strokeDashArray: 3 },
+    tooltip: {
+        theme: 'dark',
+        style: { fontSize: '12px' },
+        y: {
+            formatter: (value: number) => `${Math.round(value)}g`
+        }
+    },
+    legend: {
+        show: true,
+        position: 'top',
+        labels: { colors: 'rgba(255, 255, 255, 0.8)' }
+    }
+}))
 
 const chartSeries = computed(() => [
     {
@@ -278,6 +355,67 @@ function formatDateLabel(dateStr: string): string {
     }
 }
 
+function formatTrendLabel(dateStr: string): string {
+    const date = new Date(dateStr)
+    if (selectedPeriod.value === 'week') {
+        return date.toLocaleDateString('de-DE', { weekday: 'short' })
+    } else if (selectedPeriod.value === 'month') {
+        return `KW ${getWeekNumber(date)}`
+    } else {
+        return `Q${Math.ceil((date.getMonth() + 1) / 3)}`
+    }
+}
+
+function getWeekNumber(date: Date): number {
+    const firstDayOfYear = new Date(date.getFullYear(), 0, 1)
+    const pastDaysOfYear = (date.getTime() - firstDayOfYear.getTime()) / 86400000
+    return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7)
+}
+
+function aggregateDataByPeriod(data: Array<{ date: string; protein: number }>) {
+    if (selectedPeriod.value === 'week') {
+        return data // No aggregation needed for week
+    }
+    
+    const aggregated: Array<{ date: string; protein: number }> = []
+    
+    if (selectedPeriod.value === 'month') {
+        // Aggregate by weeks (4 weeks)
+        for (let week = 0; week < 4; week++) {
+            const weekStart = week * 7
+            const weekEnd = Math.min(weekStart + 7, data.length)
+            const weekData = data.slice(weekStart, weekEnd)
+            
+            if (weekData.length > 0) {
+                const avgProtein = weekData.reduce((sum, item) => sum + item.protein, 0) / weekData.length
+                const weekDate = weekData[Math.floor(weekData.length / 2)].date // Use middle date as representative
+                aggregated.push({
+                    date: weekDate,
+                    protein: Math.round(avgProtein)
+                })
+            }
+        }
+    } else {
+        // Aggregate by quarters (4 quarters)
+        for (let quarter = 0; quarter < 4; quarter++) {
+            const quarterStart = quarter * Math.floor(data.length / 4)
+            const quarterEnd = quarter === 3 ? data.length : (quarter + 1) * Math.floor(data.length / 4)
+            const quarterData = data.slice(quarterStart, quarterEnd)
+            
+            if (quarterData.length > 0) {
+                const avgProtein = quarterData.reduce((sum, item) => sum + item.protein, 0) / quarterData.length
+                const quarterDate = quarterData[Math.floor(quarterData.length / 2)].date
+                aggregated.push({
+                    date: quarterDate,
+                    protein: Math.round(avgProtein)
+                })
+            }
+        }
+    }
+    
+    return aggregated
+}
+
 async function loadData() {
     try {
         const history = await ScanHistory.get()
@@ -301,7 +439,7 @@ async function loadData() {
         currentValue.value = Math.round(todayProtein)
 
         // Generate chart data based on selected period
-        const data = []
+        const rawData = []
         const days = selectedPeriod.value === 'week' ? 7 : selectedPeriod.value === 'month' ? 30 : 365
 
         for (let i = days - 1; i >= 0; i--) {
@@ -323,13 +461,61 @@ async function loadData() {
                 }
             })
 
-            data.push({
+            rawData.push({
                 date: dateStr,
                 protein: Math.round(dayProtein)
             })
         }
 
-        chartData.value = data
+        // Aggregate data for longer periods
+        chartData.value = aggregateDataByPeriod(rawData)
+
+        // Generate trend comparison data
+        const trendRawData = []
+        const previousPeriodDays = days * 2 // Get data for current + previous period
+
+        for (let i = previousPeriodDays - 1; i >= 0; i--) {
+            const date = new Date(today)
+            date.setDate(date.getDate() - i)
+            const dateStr = date.toISOString().split('T')[0]
+
+            const dayScans = history.filter(scan => {
+                const scanDate = new Date(scan.timestamp).toISOString().split('T')[0]
+                return scanDate === dateStr
+            })
+
+            let dayProtein = 0
+            dayScans.forEach(scan => {
+                if (scan.type === 'food' && scan.data.total) {
+                    dayProtein += scan.data.total.protein || 0
+                } else if (scan.type === 'barcode' && scan.data.nutriments) {
+                    dayProtein += scan.data.nutriments.proteins_100g || 0
+                }
+            })
+
+            trendRawData.push({
+                date: dateStr,
+                protein: Math.round(dayProtein)
+            })
+        }
+
+        // Split into current and previous periods
+        const currentPeriodData = aggregateDataByPeriod(trendRawData.slice(-days))
+        const previousPeriodData = aggregateDataByPeriod(trendRawData.slice(0, days))
+
+        // Create trend comparison data
+        const trendComparison = []
+        const maxLength = Math.max(currentPeriodData.length, previousPeriodData.length)
+        
+        for (let i = 0; i < maxLength; i++) {
+            trendComparison.push({
+                date: currentPeriodData[i]?.date || '',
+                current: currentPeriodData[i]?.protein || 0,
+                previous: previousPeriodData[i]?.protein || 0
+            })
+        }
+
+        trendData.value = trendComparison
     } catch (error) {
         console.error('Error loading protein data:', error)
     }
@@ -529,6 +715,32 @@ watch(isDebugMode, (newValue) => {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 16px;
     /*padding: 20px;*/
+    backdrop-filter: blur(10px);
+}
+
+.trend-section {
+    margin: 0 20px 32px;
+}
+
+.trend-header {
+    margin-bottom: 16px;
+}
+
+.trend-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+}
+
+.trend-subtitle {
+    font-size: 14px;
+    opacity: 0.7;
+}
+
+.trend-container {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 20px;
     backdrop-filter: blur(10px);
 }
 
