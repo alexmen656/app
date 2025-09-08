@@ -426,7 +426,7 @@ const fetchProduct = async (barcode) => {
             }
 
             product.value = {
-                names: cachedProduct.names || { de: cachedProduct.name || 'Unbekanntes Produkt', en: 'Unknown Product' },
+                names: cachedProduct.names || { de: cachedProduct.name || 'Unbekanntes Produkt', en: cachedProduct.name || 'Unknown Product', es: cachedProduct.name || 'Unknown Product' },
                 calories,
                 protein,
                 carbs,
@@ -462,7 +462,7 @@ const fetchProduct = async (barcode) => {
 
         const nutrition = data.product.nutrition?.perServing || data.product.nutrition?.per100g || {};
         const productData = {
-            names: data.product.names || { de: data.product.name || 'Unbekanntes Produkt', en: 'Unknown Product' },
+            names: data.product.names || { de: data.product.name || 'Unbekanntes Produkt', en: data.product.name || 'Unknown Product', es: data.product.name || 'Unknown Product' },
             calories: nutrition.calories || 0,
             protein: nutrition.protein || 0,
             carbs: nutrition.carbs || 0,
