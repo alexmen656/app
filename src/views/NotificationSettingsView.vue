@@ -125,7 +125,7 @@
           </div>
 
           <!-- Weekly Reports -->
-          <div class="setting-item meal-setting">
+          <div v-if="showDebugInfo"class="setting-item meal-setting">
             <div class="meal-header">
               <label class="setting-label">Weekly Reports</label>
               <div class="toggle-switch">
@@ -140,7 +140,7 @@
           </div>
 
           <!-- Goal Achievements -->
-          <div class="setting-item meal-setting">
+          <div v-if="showDebugInfo"class="setting-item meal-setting">
             <div class="meal-header">
               <label class="setting-label">Goal Achievements</label>
               <div class="toggle-switch">
@@ -157,7 +157,7 @@
       </div>
 
       <!-- Status info when enabled -->
-      <div v-if="notificationSettings.enabled && isNotificationSupported" class="settings-section">
+      <div v-if="notificationSettings.enabled && isNotificationSupported && showDebugInfo" class="settings-section">
         <div class="settings-card">
           <div class="setting-item">
             <div class="notification-status">
@@ -168,7 +168,7 @@
       </div>
 
       <!-- Test Notification -->
-      <div v-if="notificationSettings.enabled && isNotificationSupported" class="settings-section">
+      <div v-if="notificationSettings.enabled && isNotificationSupported && showDebugInfo" class="settings-section">
         <h3 class="section-title">Test & Debug</h3>
         <div class="settings-card">
           <div class="setting-item">
@@ -186,12 +186,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
 import { 
   getNotificationSettings,
   setNotificationSettings as saveNotificationSettingsToStore
 } from '../stores/preferencesStore'
 import { NotificationService, type NotificationSettings } from '../services/notifications'
+import { isDebugMode, initializeDebugMode } from '../stores/preferencesStore'
+
+const showDebugInfo = ref(false)
 
 // Extended interface for additional settings
 interface ExtendedNotificationSettings extends NotificationSettings {
@@ -251,11 +254,20 @@ onMounted(async () => {
       ...defaultSettings,
       ...savedSettings
     }
+
+     // Initialize debug mode
+    initializeDebugMode().then(() => {
+        showDebugInfo.value = isDebugMode.value
+    })
   } catch (error) {
     console.error('Error loading notification settings:', error)
     notificationSettings.value = defaultSettings
   }
 })
+
+watch(isDebugMode, (newValue) => {
+    showDebugInfo.value = newValue
+}, { immediate: true })
 </script>
 
 <style scoped>
