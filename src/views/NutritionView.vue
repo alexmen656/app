@@ -390,7 +390,7 @@ const showFixModal = ref(false);
 const showDetailsModal = ref(false);
 const showSourceModal = ref(false);
 const editedProduct = ref({});
-const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+const time = new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', hour12: false });
 
 // Computed property for editing the product name
 const editedProductName = computed({

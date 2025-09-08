@@ -29,9 +29,11 @@ const props = withDefaults(defineProps<ChartProps>(), {
 
 const chartData = computed(() => {
   if (props.data?.length) {
+    console.log('📊 CalorieChart received data:', props.data, 'period:', props.period)
     return props.data
   }
   // Fallback mock data
+  console.log('⚠️ CalorieChart using fallback mock data, period:', props.period)
   return [
     /* { label: 'Mo', calories: 2200 },
      { label: 'Di', calories: 2400 },
@@ -52,7 +54,13 @@ const chartData = computed(() => {
 
 // whether any data point is non-zero
 const hasNonZero = computed(() => {
-  return chartData.value.some(item => (item.calories ?? 0) > 0)
+  const result = chartData.value.some(item => (item.calories ?? 0) > 0)
+  console.log('📈 CalorieChart hasNonZero check:', {
+    chartDataLength: chartData.value.length,
+    chartData: chartData.value,
+    hasNonZero: result
+  })
+  return result
 })
 
 const chartSeries = computed(() => {

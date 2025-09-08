@@ -59,11 +59,26 @@ export class AnalyticsManager {
     const dateStr = this.getDateString(date);
     const history = await ScanHistory.get();
     
+    console.log('📅 Getting day data for:', dateStr);
+    console.log('📚 Total scan history:', history.length, 'items');
+    
     // Filter scans for the specific date
     const dayScans = history.filter(scan => {
       const scanDate = new Date(scan.timestamp).toISOString().split('T')[0];
-      return scanDate === dateStr;
+      const matches = scanDate === dateStr;
+      if (matches) {
+        console.log('✅ Scan matches date:', {
+          scanId: scan.id,
+          scanDate,
+          targetDate: dateStr,
+          time: scan.time,
+          type: scan.type
+        });
+      }
+      return matches;
     });
+    
+    console.log('🔍 Found', dayScans.length, 'scans for date:', dateStr);
 
     let totalCalories = 0;
     let totalProtein = 0;
@@ -174,7 +189,9 @@ export class AnalyticsManager {
         // Aggregate data by hour
         todayData.foods.forEach(food => {
           if (food.time) {
+            // Parse hour from time string (format: "HH:MM")
             const hour = food.time.split(':')[0];
+            console.log('🕒 Processing food time:', food.time, 'hour:', hour, 'calories:', food.calories);
             if (hourlyData[hour]) {
               hourlyData[hour].calories += food.calories;
               hourlyData[hour].count++;
@@ -184,10 +201,10 @@ export class AnalyticsManager {
         
         // Convert to chart data - show 6 time periods throughout the day
         const timeSlots = [
-          { label: '6AM', hours: ['06', '07', '08', '09'] },
+          { label: '6AM', hours: ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09'] },
           { label: '10AM', hours: ['10', '11'] },
           { label: '12PM', hours: ['12', '13'] },
-          { label: '2PM', hours: ['14', '15'] },
+          { label: '2PM', hours: ['14', '15', '16', '17'] },
           { label: '6PM', hours: ['18', '19'] },
           { label: '8PM', hours: ['20', '21', '22', '23'] }
         ];
@@ -195,12 +212,17 @@ export class AnalyticsManager {
         timeSlots.forEach(slot => {
           let slotCalories = 0;
           slot.hours.forEach(hour => {
-            slotCalories += hourlyData[hour]?.calories || 0;
+            const hourCalories = hourlyData[hour]?.calories || 0;
+            slotCalories += hourCalories;
+            if (hourCalories > 0) {
+              console.log('🍽️ Adding calories for', slot.label, 'hour', hour, ':', hourCalories, 'kcal');
+            }
           });
           periodData.push({
             day: slot.label,
             calories: Math.round(slotCalories)
           });
+          console.log('📊 Final slot data:', slot.label, 'total:', Math.round(slotCalories), 'kcal');
         });
         break;
         

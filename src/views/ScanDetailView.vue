@@ -364,7 +364,7 @@ const editedNutrition = ref({});
 
 const time = computed(() => {
     if (!scanData.value) return '';
-    return scanData.value.time || new Date(scanData.value.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return scanData.value.time || new Date(scanData.value.timestamp).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', hour12: false });
 });
 
 const displayName = computed(() => {
@@ -542,7 +542,7 @@ async function updateAndReturn() {
         const updatedScan = {
             ...scanData.value,
             timestamp: new Date().toISOString(),
-            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            time: new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', hour12: false })
         };
 
         // If amount was changed, update the values
