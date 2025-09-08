@@ -6,7 +6,8 @@
     <div class="profile-section">
       <div class="profile-card">
         <div class="profile-avatar">
-          <img v-if="userProfile.profilePicture" :src="userProfile.profilePicture" alt="Profile" class="profile-image" />
+          <img v-if="userProfile.profilePicture" :src="userProfile.profilePicture" alt="Profile"
+            class="profile-image" />
           <svg v-else width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
             <path
               d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
@@ -23,13 +24,13 @@
           </svg>
         </button>
       </div>
-      
+
       <!-- Premium Upgrade Card -->
       <div v-if="!isSubscriptionActive" class="upgrade-card" @click="goToUpgrade">
         <div class="upgrade-content">
           <div class="upgrade-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
             </svg>
           </div>
           <div class="upgrade-info">
@@ -38,18 +39,18 @@
           </div>
           <div class="upgrade-arrow">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="m9 18 6-6-6-6"/>
+              <path d="m9 18 6-6-6-6" />
             </svg>
           </div>
         </div>
       </div>
-      
+
       <!-- Premium Status Card (for subscribed users) -->
       <div v-else class="premium-status-card">
         <div class="premium-content">
           <div class="premium-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
             </svg>
           </div>
           <div class="premium-info">
@@ -120,14 +121,15 @@
           </div>
           <div class="setting-controls">
             <div class="toggle-switch">
-              <input type="checkbox" :checked="healthKitStatus.isConnected" @change="toggleHealthKit" 
-                class="toggle-input" id="healthkit-main-toggle" :disabled="!healthKitStatus.isAvailable || !isPremiumUser" />
+              <input type="checkbox" :checked="healthKitStatus.isConnected" @change="toggleHealthKit"
+                class="toggle-input" id="healthkit-main-toggle"
+                :disabled="!healthKitStatus.isAvailable || !isPremiumUser" />
               <label for="healthkit-main-toggle" class="toggle-slider"></label>
             </div>
             <button class="detail-button" @click="goToHealthKitSettings">
               <span>Details</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="m9 18 6-6-6-6"/>
+                <path d="m9 18 6-6-6-6" />
               </svg>
             </button>
           </div>
@@ -190,7 +192,7 @@
             <button class="detail-button" @click="goToNotificationSettings">
               <span>Details</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="m9 18 6-6-6-6"/>
+                <path d="m9 18 6-6-6-6" />
               </svg>
             </button>
           </div>
@@ -209,6 +211,13 @@
     <div v-if="showDebugInfo" class="settings-section">
       <h3 class="section-title">{{ $t('settings.preferences') }}</h3>
       <div class="settings-card">
+
+        <div v-if="showDebugInfo" class="setting-item">
+          <label class="setting-label">UpgradeView</label>
+         <router-link to="/upgrade">here</router-link>
+        </div>
+
+
         <div class="setting-item">
           <label class="setting-label">{{ $t('settings.units') }}</label>
           <select v-model="userPreferences.units" @change="savePreferences" class="select-input">
@@ -343,12 +352,12 @@
     <div class="settings-section">
       <h3 class="section-title">{{ $t('settings.legal') }}</h3>
       <div class="settings-card">
-         <div class="setting-item">
+        <div class="setting-item">
           <router-link to="/sources-disclaimer" class="setting-link">{{ $t('sourcesDisclaimer.title') }}</router-link>
         </div>
         <div class="setting-item">
-          <a class="setting-link" href="https://kalbuddy.com/privacy-policy.html" target="_blank"
-            rel="noopener">{{ $t('settings.privacy') }}</a>
+          <a class="setting-link" href="https://kalbuddy.com/privacy-policy.html" target="_blank" rel="noopener">{{
+            $t('settings.privacy') }}</a>
         </div>
         <div class="setting-item">
           <a class="setting-link" href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"
@@ -442,7 +451,7 @@ const healthKitStatusText = computed(() => {
     isConnected: healthKitStatus.value.isConnected,
     isPremium: isPremiumUser.value
   })
-  
+
   if (!healthKitStatus.value.isAvailable) {
     return 'Not available on this device'
   }
@@ -549,7 +558,7 @@ onMounted(async () => {
   // Initialize and load debug mode state
   await initializeDebugMode()
   showDebugInfo.value = isDebugMode.value
-  
+
   if (showDebugInfo.value) {
     refreshDebugInfo()
   }
@@ -566,12 +575,12 @@ onMounted(async () => {
 
   // Initialize HealthKit status only for premium users
   //if (isPremiumUser.value) {
-    await loadHealthKitStatus()
+  await loadHealthKitStatus()
   //}
-  
+
   // Also ensure we're watching for changes correctly
   console.log('Settings view mounted - Premium status:', isPremiumUser.value, 'HealthKit status:', healthKitStatus.value)
-  
+
   // Listen for premium status changes
   const unsubscribe = onPremiumStatusChange(async (isPremium, type) => {
     console.log('🎉 Premium status changed in Settings:', { isPremium, type })
@@ -586,7 +595,7 @@ onMounted(async () => {
       })
     }
   })
-  
+
   // Cleanup
   onUnmounted(() => {
     unsubscribe()
@@ -652,7 +661,7 @@ async function loadHealthKitStatus() {
       healthKitPermissions.value.forEach(permission => {
         permission.granted = true
       })
-      
+
       // Nur lastSync setzen wenn wirklich verbunden
       healthKitStatus.value.lastSync = new Date().toISOString()
     } else {
@@ -678,26 +687,26 @@ async function loadHealthKitStatus() {
 // Easter egg: Build number click handler
 function handleBuildClick() {
   buildClickCount.value++
-  
+
   // Clear previous timeout
   if (buildClickTimeout.value) {
     clearTimeout(buildClickTimeout.value)
   }
-  
+
   // Reset click count after 2 seconds
   buildClickTimeout.value = setTimeout(() => {
     buildClickCount.value = 0
   }, 2000)
-  
+
   // Enable debug mode after 5 rapid clicks
   if (buildClickCount.value >= 5) {
     buildClickCount.value = 0
     if (buildClickTimeout.value) {
       clearTimeout(buildClickTimeout.value)
     }
-    
+
     console.log('Easter egg triggered - current debug mode:', isDebugMode.value)
-    
+
     toggleDebugMode().then((enabled) => {
       console.log('Debug mode toggled to:', enabled)
       // showDebugInfo wird automatisch durch den Watcher aktualisiert
@@ -1097,6 +1106,7 @@ function handleTouchEnd(event: TouchEvent) {
 .settings-section:last-of-type {
   margin-bottom: 0 !important;
 }
+
 .section-title {
   font-size: 18px;
   font-weight: 600;

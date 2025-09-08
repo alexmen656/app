@@ -3,7 +3,7 @@
     <div class="header">
       <button @click="goBack" class="back-button">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="m15 18-6-6 6-6"/>
+          <path d="m15 18-6-6 6-6" />
         </svg>
       </button>
       <h1 class="title">Upgrade to Premium</h1>
@@ -14,7 +14,7 @@
       <div class="hero-section">
         <div class="premium-badge">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
           </svg>
           <span>Premium</span>
         </div>
@@ -27,7 +27,8 @@
         <div class="feature-item">
           <div class="feature-icon premium">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
             </svg>
           </div>
           <div class="feature-content">
@@ -36,8 +37,8 @@
           </div>
           <div class="feature-lock">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-              <circle cx="12" cy="7" r="4"/>
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <circle cx="12" cy="7" r="4" />
             </svg>
           </div>
         </div>
@@ -45,7 +46,8 @@
         <div class="feature-item">
           <div class="feature-icon premium">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+              <path
+                d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" />
             </svg>
           </div>
           <div class="feature-content">
@@ -54,8 +56,8 @@
           </div>
           <div class="feature-lock">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-              <circle cx="12" cy="7" r="4"/>
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <circle cx="12" cy="7" r="4" />
             </svg>
           </div>
         </div>
@@ -63,7 +65,8 @@
         <div class="feature-item">
           <div class="feature-icon premium">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
             </svg>
           </div>
           <div class="feature-content">
@@ -72,8 +75,8 @@
           </div>
           <div class="feature-lock">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-              <circle cx="12" cy="7" r="4"/>
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <circle cx="12" cy="7" r="4" />
             </svg>
           </div>
         </div>
@@ -81,7 +84,7 @@
         <div class="feature-item">
           <div class="feature-icon premium">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
             </svg>
           </div>
           <div class="feature-content">
@@ -90,8 +93,8 @@
           </div>
           <div class="feature-lock">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-              <circle cx="12" cy="7" r="4"/>
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <circle cx="12" cy="7" r="4" />
             </svg>
           </div>
         </div>
@@ -100,10 +103,8 @@
       <!-- Pricing -->
       <div class="pricing-section" v-if="subscriptionPlans.length > 0">
         <div class="plans-container">
-          <div v-for="plan in subscriptionPlans" :key="plan.id" 
-               class="plan-card" 
-               :class="{ active: selectedPlan === plan.id, popular: plan.isPopular }"
-               @click="selectPlan(plan.id)">
+          <div v-for="plan in subscriptionPlans" :key="plan.id" class="plan-card"
+            :class="{ active: selectedPlan === plan.id, popular: plan.isPopular }" @click="selectPlan(plan.id)">
             <div v-if="plan.isPopular" class="popular-badge">Most Popular</div>
             <div class="plan-header">
               <h3 class="plan-title">{{ plan.title }}</h3>
@@ -138,29 +139,23 @@
 
       <!-- Action Buttons -->
       <div class="action-section" v-if="subscriptionPlans.length > 0">
-        <button 
-          @click="purchaseSelected" 
-          :disabled="!selectedPlan || isLoading"
-          class="upgrade-button"
-          :class="{ loading: isLoading }"
-        >
+        <button @click="purchaseSelected" :disabled="!selectedPlan || isLoading" class="upgrade-button"
+          :class="{ loading: isLoading }">
           <div v-if="isLoading" class="loading-spinner"></div>
           {{ getPurchaseButtonText }}
         </button>
 
-        <button 
-          @click="restorePurchases" 
-          :disabled="isLoading"
-          class="restore-button"
-        >
+        <button @click="restorePurchases" :disabled="isLoading" class="restore-button">
           Restore Purchases
         </button>
 
         <!-- Legal Links -->
         <div class="legal-links">
-          <a href="#" @click.prevent="openTerms" class="legal-link">Terms of Service</a>
+          <a href="#" @cxlick.prevent="openTerms" class="legal-link">Terms of Service</a>
           <span class="separator">•</span>
           <a href="#" @click.prevent="openPrivacy" class="legal-link">Privacy Policy</a>
+          <span v-if="isIOS" class="separator">•</span>
+          <a v-if="isIOS" href="#" @click.prevent="openMore" class="legal-link">{{ $t('paywall.redeemCode') }}</a>
         </div>
       </div>
 
@@ -178,6 +173,7 @@ import { useRouter } from 'vue-router'
 import { revenueCatService, type SubscriptionPlan } from '../services/revenuecat'
 import { updateSubscriptionStatus } from '../stores/userStore'
 import { PremiumManager } from '../utils/premiumManager'
+import { Capacitor } from '@capacitor/core'
 
 const router = useRouter()
 
@@ -185,6 +181,7 @@ const selectedPlan = ref<string>('annual')
 const subscriptionPlans = ref<SubscriptionPlan[]>([])
 const isLoading = ref(false)
 const errorMessage = ref('')
+const isIOS = Capacitor.getPlatform() === 'ios'
 
 const getPurchaseButtonText = computed(() => {
   if (!selectedPlan.value) return 'Select a Plan'
@@ -210,7 +207,7 @@ async function loadSubscriptionPlans() {
   try {
     const plans = await revenueCatService.getOfferings()
     subscriptionPlans.value = plans
-    
+
     // Auto-select the popular plan
     const popularPlan = plans.find((p: SubscriptionPlan) => p.isPopular)
     if (popularPlan) {
@@ -240,12 +237,12 @@ async function purchaseSelected() {
 
   try {
     const success = await revenueCatService.purchasePackage(selectedPlan.value)
-    
+
     if (success) {
       await updateSubscriptionStatus(true, 'Premium')
       // Force update premium status für immediate UI updates
       await PremiumManager.forceUpdatePremiumStatus()
-      
+
       console.log('🎉 Purchase successful - navigating to home')
       router.push('/')
     } else {
@@ -267,12 +264,12 @@ async function restorePurchases() {
 
   try {
     const success = await revenueCatService.restorePurchases()
-    
+
     if (success) {
       await updateSubscriptionStatus(true, 'Premium')
       // Force update premium status für immediate UI updates
       await PremiumManager.forceUpdatePremiumStatus()
-      
+
       console.log('🎉 Restore successful - navigating to home')
       router.push('/')
     } else {
@@ -292,6 +289,10 @@ function openTerms() {
 
 function openPrivacy() {
   window.open('https://kalbuddy.com/privacy-policy.html', '_blank')
+}
+
+function openMore() {
+    router.push('/coupon')
 }
 
 onMounted(async () => {
@@ -525,7 +526,8 @@ onMounted(async () => {
   font-weight: 600;
 }
 
-.loading-state, .error-state {
+.loading-state,
+.error-state {
   text-align: center;
   padding: 40px 20px;
 }
@@ -585,7 +587,7 @@ onMounted(async () => {
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -613,6 +615,7 @@ onMounted(async () => {
   cursor: pointer;
   transition: all 0.2s;
   margin-bottom: 24px;
+  width: 100%;
 }
 
 .restore-button:hover:not(:disabled) {
@@ -679,21 +682,21 @@ onMounted(async () => {
     padding-left: 16px;
     padding-right: 16px;
   }
-  
+
   .hero-title {
     font-size: 24px;
   }
-  
+
   .hero-subtitle {
     font-size: 14px;
   }
-  
+
   .plan-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
   }
-  
+
   .plan-price {
     text-align: left;
   }

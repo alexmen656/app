@@ -285,20 +285,15 @@ async function restorePurchases() {
 }
 
 function openTerms() {
-    // Open terms of service
     location.href = 'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/'
-    console.log('Open Terms of Service')
 }
 
 function openPrivacy() {
-    // Open privacy policy
     location.href = 'https://kalbuddy.com/privacy-policy.html'
-    console.log('Open Privacy Policy')
 }
 
 function openMore() {
     router.push('/coupon')
-    console.log('Feature not available - subscription required')
 }
 
 // Close menu when clicking outside
