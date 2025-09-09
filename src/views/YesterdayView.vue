@@ -1,5 +1,23 @@
 <template>
     <div class="yesterday-view" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
+        <!-- Photo Processing Overlay -->
+        <div v-if="isProcessingPhoto" class="processing-overlay">
+            <div class="processing-content">
+                <div class="processing-spinner"></div>
+                <h3>{{ $t('scanner.analyzingFood') }}</h3>
+                <p>{{ $t('scanner.pleaseWait') }}</p>
+            </div>
+        </div>
+
+        <!-- Label Processing Overlay -->
+        <div v-if="isProcessingLabel" class="processing-overlay">
+            <div class="processing-content">
+                <div class="processing-spinner"></div>
+                <h3>{{ $t('scanner.analyzingLabel') }}</h3>
+                <p>{{ $t('scanner.pleaseWait') }}</p>
+            </div>
+        </div>
+
         <!-- Header -->
         <header class="header">
             <div class="logo-section">
@@ -164,26 +182,42 @@
         </div>
 
         <BottomNavigation />
-
-        <router-link to="/scan" class="add-button">
+        <div @click="openNativeScanner" class="add-button">
             <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
                 <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
             </svg>
-        </router-link>
+        </div>
+
+        <!-- Scan Limit Blocker -->
+        <PremiumBlocker v-if="showScanLimitBlocker" feature="unlimited_food_scans"
+            :title="$t('premium.scanLimit.title')" :description="$t('premium.scanLimit.description')" :features="[
+                $t('premium.scanLimit.feature1'),
+                $t('premium.scanLimit.feature2'),
+                $t('premium.scanLimit.feature3')
+            ]" :show-usage-info="true" :scans-used="currentScanUsage?.currentCount || 0"
+            :scans-total="currentScanUsage?.limit || 10" @close="closeScanLimitBlocker"
+            @upgrade="handleScanLimitUpgrade" />
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-//import { useI18n } from 'vue-i18n'
+import { useI18n } from 'vue-i18n'
 import { dailyGoals } from '../stores/userStore'
 import { AnalyticsManager, type DayData } from '../utils/analyticsData'
 import { StreakManager } from '../utils/widgetData'
+import { useBarcodeScanner } from '../composables/useBarcodeScanner'
+import PremiumBlocker from '../components/PremiumBlocker.vue'
 import BottomNavigation from '../components/BottomNavigation.vue'
 
 const router = useRouter()
-//const { t } = useI18n()
+// @ts-ignore - t is used in template
+const { t } = useI18n()
+const { startScanning, isProcessingPhoto, isProcessingLabel, checkScanLimit, getScanUsage } = useBarcodeScanner()
+
+const showScanLimitBlocker = ref(false)
+const currentScanUsage = ref<any>(null)
 
 // Type definitions
 interface FoodItem {
@@ -224,6 +258,53 @@ async function loadYesterdayData() {
 
 function goToStreak() {
     router.push('/streak')
+}
+
+// Scanner functions
+async function openNativeScanner() {
+    try {
+        const usage = await checkScanLimit()
+        currentScanUsage.value = usage
+
+        if (!usage.canScan && !usage.isPremium) {
+            console.log(`Scan limit reached: ${usage.currentCount}/${usage.limit} scans used today`)
+            showScanLimitBlocker.value = true
+            return
+        }
+
+        await startScanningWithMode('barcode')
+    } catch (error) {
+        console.error('Failed to check scan limits:', error)
+        await startScanningWithMode('barcode')
+    }
+}
+
+async function startScanningWithMode(mode: 'barcode' | 'photo' | 'label') {
+    try {
+        await startScanning({
+            mode: mode,
+            timeout: 0,
+            showControls: true
+        })
+
+        await loadYesterdayData()
+        await getScanUsage()
+    } catch (error) {
+        console.error('Failed to open scanner:', error)
+
+        if (error instanceof Error && error.message?.includes('SCAN_LIMIT_REACHED')) {
+            showScanLimitBlocker.value = true
+        }
+    }
+}
+
+function closeScanLimitBlocker() {
+    showScanLimitBlocker.value = false
+}
+
+function handleScanLimitUpgrade() {
+    showScanLimitBlocker.value = false
+    router.push('/upgrade')
 }
 
 // Convert yesterdayData to food items format
@@ -631,5 +712,55 @@ onMounted(() => {
 
 .add-button:hover {
     transform: scale(1.1);
+}
+
+/* Processing Overlays */
+.processing-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.processing-content {
+    text-align: center;
+    padding: 30px;
+    background: rgba(30, 30, 46, 0.95);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.processing-content h3 {
+    margin: 20px 0 10px 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.processing-content p {
+    margin: 0;
+    opacity: 0.8;
+    font-size: 14px;
+}
+
+.processing-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top: 3px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 </style>

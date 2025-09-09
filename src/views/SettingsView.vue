@@ -216,6 +216,10 @@
           <label class="setting-label">UpgradeView</label>
          <router-link to="/upgrade">here</router-link>
         </div>
+        <div v-if="showDebugInfo" class="setting-item">
+          <label class="setting-label">Old ScanView</label>
+         <router-link to="/scan">here</router-link>
+        </div>
 
 
         <div class="setting-item">
@@ -372,12 +376,12 @@
       <div class="settings-card">
         <div class="setting-item">
           <span class="setting-label">{{ $t('settings.version') }}</span>
-          <span class="setting-value">2.0.0</span>
+          <span class="setting-value">2.1.0</span>
         </div>
 
         <div class="setting-item">
           <span class="setting-label">{{ $t('settings.build') }}</span>
-          <span class="setting-value build-clickable" @click="handleBuildClick">2025.09.002</span>
+          <span class="setting-value build-clickable" @click="handleBuildClick">2025.09.003</span>
         </div>
 
         <!--<button class="action-button" @click="checkUpdates">
@@ -803,7 +807,7 @@ async function exportData() {
       },
       exportDate: new Date().toISOString(),
       exportVersion: '1.0',
-      appVersion: '2.0.0'
+      appVersion: '2.1.0'
     }
 
     const jsonString = JSON.stringify(data, null, 2)
