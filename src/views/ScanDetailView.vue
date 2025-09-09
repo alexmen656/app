@@ -351,6 +351,7 @@ import { useI18n } from 'vue-i18n';
 import { ScanHistory } from '../utils/storage';
 import { WidgetDataManager, StreakManager } from '../utils/widgetData';
 import { getLocalizedName, getLocalizedNotes, capitalizeIfLetter } from '../utils/localization';
+import NutritionDetailsModal from '../components/NutritionDetailsModal.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -360,6 +361,7 @@ const scanData = ref(null);
 const amount = ref(1.0);
 const showFixModal = ref(false);
 const showSourceModal = ref(false);
+const showDetailsModal = ref(false);
 const editedNutrition = ref({});
 
 const time = computed(() => {
@@ -402,14 +404,29 @@ const baseNutrition = computed(() => {
     if (!scanData.value) return { calories: 0, protein: 0, carbs: 0, fats: 0 };
     
     if (scanData.value.type === 'food') {
+        // For AI scans, use the stored base nutrition values if available
+        // This ensures we calculate from the original per-unit values, not the total consumed
+        const baseNutr = scanData.value.data.baseNutrition;
+        if (baseNutr) {
+            return {
+                calories: baseNutr.calories || 0,
+                protein: baseNutr.protein || 0,
+                carbs: baseNutr.carbs || 0,
+                fats: baseNutr.fats || 0
+            };
+        }
+        
+        // Fallback: if no base nutrition stored, try to derive from total/amount
         const total = scanData.value.data.total || {};
+        const storedAmount = scanData.value.amount || 1.0;
         return {
-            calories: total.calories || 0,
-            protein: total.protein || 0,
-            carbs: total.carbs || 0,
-            fats: total.fat || total.fats || 0
+            calories: (total.calories || 0) / storedAmount,
+            protein: (total.protein || 0) / storedAmount,
+            carbs: (total.carbs || 0) / storedAmount,
+            fats: (total.fat || total.fats || 0) / storedAmount
         };
     } else {
+        // For barcode products, always use per-100g values
         const nutriments = scanData.value.data.nutriments || {};
         return {
             calories: nutriments.energy_kcal_100g || 0,
@@ -464,6 +481,26 @@ const backgroundStyle = computed(() => {
     };
 });
 
+const productForModal = computed(() => {
+    if (!scanData.value) return null;
+    
+    // Convert scan data to the format expected by NutritionDetailsModal
+    return {
+        product_name: displayName.value,
+        nutriments: scanData.value.type === 'barcode' 
+            ? scanData.value.data.nutriments 
+            : {
+                energy_kcal_100g: baseNutrition.value.calories,
+                proteins_100g: baseNutrition.value.protein,
+                carbohydrates_100g: baseNutrition.value.carbs,
+                fat_100g: baseNutrition.value.fats
+            },
+        image_url: scanData.value.image,
+        serving_size: servingInfo.value,
+        quantity: packageInfo.value
+    };
+});
+
 function increaseAmount() {
     amount.value = Math.round((amount.value + 0.1) * 10) / 10;
 }
@@ -507,11 +544,49 @@ function getSourceDisplay(source) {
 }
 
 function editMacro(type) {
+    // Initialize with base nutrition values
     editedNutrition.value = { ...baseNutrition.value };
+    
+    // Add the product name
+    editedNutrition.value.name = displayName.value;
+    
+    // Add product information for the modal
+    if (scanData.value.type === 'food') {
+        // For AI scans, include detected foods if available
+        const foods = scanData.value.data.foods || [];
+        editedNutrition.value.foods = foods.map(food => ({
+            name: food.food?.toLowerCase() || food.name || '',
+            amount: food.amount || food.quantity || '',
+            calories: food.calories || 0,
+            protein: food.protein || 0,
+            carbs: food.carbs || 0,
+            fats: food.fats || food.fat || 0
+        }));
+    }
+    
+    // Add additional nutrition fields
+    editedNutrition.value.fiber = 0;
+    editedNutrition.value.sugar = 0;
+    editedNutrition.value.salt = 0;
+    
     showFixModal.value = true;
 }
 
 function applyFix() {
+    // Update product name
+    if (editedNutrition.value.name) {
+        if (scanData.value.type === 'food') {
+            // For AI scans, update the first food's name if available
+            if (scanData.value.data.foods && scanData.value.data.foods.length > 0) {
+                scanData.value.data.foods[0].name = editedNutrition.value.name;
+                scanData.value.data.foods[0].food = editedNutrition.value.name;
+            }
+        } else {
+            // For barcode products, update the product name
+            scanData.value.data.product_name = editedNutrition.value.name;
+        }
+    }
+    
     // Update base nutrition values
     if (scanData.value.type === 'food') {
         if (!scanData.value.data.total) {
@@ -545,30 +620,42 @@ async function updateAndReturn() {
             time: new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', hour12: false })
         };
 
-        // If amount was changed, update the values
-        if (amount.value !== 1.0) {
-            if (scanData.value.type === 'food') {
-                updatedScan.data.total = {
-                    calories: Math.round(baseNutrition.value.calories * amount.value),
-                    protein: Math.round(baseNutrition.value.protein * amount.value),
-                    carbs: Math.round(baseNutrition.value.carbs * amount.value),
-                    fat: Math.round(baseNutrition.value.fats * amount.value)
-                };
-            } else {
-                updatedScan.data.nutriments = {
-                    ...scanData.value.data.nutriments,
-                    energy_kcal_100g: Math.round(baseNutrition.value.calories * amount.value),
-                    proteins_100g: Math.round(baseNutrition.value.protein * amount.value),
-                    carbohydrates_100g: Math.round(baseNutrition.value.carbs * amount.value),
-                    fat_100g: Math.round(baseNutrition.value.fats * amount.value)
-                };
-            }
+        // Store the amount multiplier for both types
+        updatedScan.amount = amount.value;
+
+        // Update nutrition values based on current amount and any manual edits
+        if (scanData.value.type === 'food') {
+            // For AI scans, store the actual consumed amounts (total values)
+            updatedScan.data.total = {
+                calories: Math.round(calculatedNutrition.value.calories),
+                protein: Math.round(calculatedNutrition.value.protein),
+                carbs: Math.round(calculatedNutrition.value.carbs),
+                fat: Math.round(calculatedNutrition.value.fats)
+            };
+            // Also store the per-unit base values for future calculations
+            updatedScan.data.baseNutrition = {
+                calories: baseNutrition.value.calories,
+                protein: baseNutrition.value.protein,
+                carbs: baseNutrition.value.carbs,
+                fats: baseNutrition.value.fats
+            };
+        } else {
+            // For barcode products, keep the original per-100g values unchanged
+            // The amount multiplier will be used for display calculations
+            updatedScan.data.nutriments = {
+                ...scanData.value.data.nutriments,
+                // Ensure we keep the original per-100g values (not multiplied)
+                energy_kcal_100g: baseNutrition.value.calories,
+                proteins_100g: baseNutrition.value.protein,
+                carbohydrates_100g: baseNutrition.value.carbs,
+                fat_100g: baseNutrition.value.fats
+            };
         }
 
-        await ScanHistory.add(updatedScan);
+        // Update the existing entry instead of adding a new one
+        await ScanHistory.update(scanData.value.id, updatedScan);
         await StreakManager.updateStreak();
         await WidgetDataManager.updateWidgetData();
-        window.dispatchEvent(new CustomEvent('scanHistoryUpdated'));
         router.push({ path: '/' });
 
     } catch (error) {
@@ -589,10 +676,33 @@ async function loadScanData(scanId) {
         }
 
         scanData.value = scan;
+        // Load the previously saved amount if available
+        amount.value = scan.amount || 1.0;
+        baseNutrition.value.name = displayName.value;
         editedNutrition.value = { ...baseNutrition.value };
     } catch (error) {
         console.error('Error loading scan data:', error);
         router.push({ path: '/' });
+    }
+}
+
+// Functions for adding/removing foods in the nutrition editor modal
+function addFood() {
+    if (!editedNutrition.value.foods) {
+        editedNutrition.value.foods = [];
+    }
+    editedNutrition.value.foods.push({
+        name: '',
+        calories: 0,
+        protein: 0,
+        carbs: 0,
+        fats: 0
+    });
+}
+
+function removeFood(index) {
+    if (editedNutrition.value.foods) {
+        editedNutrition.value.foods.splice(index, 1);
     }
 }
 

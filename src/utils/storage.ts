@@ -190,6 +190,11 @@ export class ScanHistory {
     try {
       const history = await this.get();
       
+      // Ensure item has an ID
+      if (!item.id) {
+        item.id = Date.now();
+      }
+      
       // Add to beginning
       history.unshift(item);
       
@@ -205,6 +210,49 @@ export class ScanHistory {
       
     } catch (error) {
       console.error('Scan history add error:', error);
+    }
+  }
+
+  // Update existing item in scan history
+  static async update(itemId: number, updatedItem: any): Promise<void> {
+    try {
+      const history = await this.get();
+      const index = history.findIndex(item => item.id === itemId);
+      
+      if (index !== -1) {
+        // Keep the original ID and update the item
+        history[index] = { ...updatedItem, id: itemId };
+        
+        await Storage.set(this.HISTORY_KEY, history);
+        
+        // Dispatch event for UI updates
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('scanHistoryUpdated'));
+        }
+      } else {
+        console.warn('Item with ID', itemId, 'not found in scan history');
+      }
+      
+    } catch (error) {
+      console.error('Scan history update error:', error);
+    }
+  }
+
+  // Remove item from scan history
+  static async remove(itemId: number): Promise<void> {
+    try {
+      const history = await this.get();
+      const filteredHistory = history.filter(item => item.id !== itemId);
+      
+      await Storage.set(this.HISTORY_KEY, filteredHistory);
+      
+      // Dispatch event for UI updates
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('scanHistoryUpdated'));
+      }
+      
+    } catch (error) {
+      console.error('Scan history remove error:', error);
     }
   }
 

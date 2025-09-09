@@ -373,6 +373,7 @@ interface ScanData {
     timestamp: string
     time: string
     image?: string
+    amount?: number
     data: any
 }
 
@@ -433,16 +434,20 @@ async function calculateTodaysNutrition() {
         let totalFats = 0
 
         todaysScans.forEach(scan => {
+            const amount = scan.amount || 1.0; // Default to 1.0 if no amount stored
+            
             if (scan.type === 'food' && scan.data.total) {
+                // For AI scans, use the stored total values (already calculated for the consumed amount)
                 totalCalories += scan.data.total.calories || 0
                 totalProtein += scan.data.total.protein || 0
                 totalCarbs += scan.data.total.carbs || 0
                 totalFats += scan.data.total.fat || 0
             } else if (scan.type === 'barcode' && scan.data.nutriments) {
-                totalCalories += scan.data.nutriments.energy_kcal_100g || 0
-                totalProtein += scan.data.nutriments.proteins_100g || 0
-                totalCarbs += scan.data.nutriments.carbohydrates_100g || 0
-                totalFats += scan.data.nutriments.fat_100g || 0
+                // For barcode products, multiply per-100g values by the actual amount consumed
+                totalCalories += (scan.data.nutriments.energy_kcal_100g || 0) * amount
+                totalProtein += (scan.data.nutriments.proteins_100g || 0) * amount
+                totalCarbs += (scan.data.nutriments.carbohydrates_100g || 0) * amount
+                totalFats += (scan.data.nutriments.fat_100g || 0) * amount
             }
         })
 
@@ -519,8 +524,10 @@ function goToNutritionDetail(item: FoodItem) {
 
 const recentFoods = computed((): FoodItem[] => {
     return scanHistory.value.map((scan: ScanData): FoodItem | null => {
+        const amount = scan.amount || 1.0; // Default to 1.0 if no amount stored
+        
         if (scan.type === 'food') {
-            // For food scans, use total nutrition data
+            // For food scans, use total nutrition data (already calculated for consumed amount)
             const total = scan.data.total
             const firstFood = scan.data.foods?.[0]
             return {
@@ -535,15 +542,15 @@ const recentFoods = computed((): FoodItem[] => {
                 type: 'food'
             }
         } else if (scan.type === 'barcode') {
-            // For barcode scans, use product data and barcode photo
+            // For barcode scans, multiply per-100g values by actual consumed amount
             const nutriments = scan.data.nutriments || {}
             return {
                 id: scan.id,
                 name: scan.data.product_name || t('home.unknownProduct'),
-                calories: Math.round(nutriments.energy_kcal_100g || 0),
-                protein: Math.round(nutriments.proteins_100g || 0),
-                carbs: Math.round(nutriments.carbohydrates_100g || 0),
-                fats: Math.round(nutriments.fat_100g || 0),
+                calories: Math.round((nutriments.energy_kcal_100g || 0) * amount),
+                protein: Math.round((nutriments.proteins_100g || 0) * amount),
+                carbs: Math.round((nutriments.carbohydrates_100g || 0) * amount),
+                fats: Math.round((nutriments.fat_100g || 0) * amount),
                 time: scan.time,
                 image: scan.image || '/api/placeholder/60/60', // Use barcode photo from scan
                 type: 'barcode'
