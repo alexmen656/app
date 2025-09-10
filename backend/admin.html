@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KalBuddy Food Database Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e1e2e 0%, #2a2d37 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #007052, #00b894);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .tab {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #007052, #00b894);
+        }
+
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .tab.active:hover {
+            background: linear-gradient(135deg, #008c63, #00d4aa);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #007052;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #007052, #00b894);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, #008c63, #00d4aa);
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .message {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .message.success {
+            background: rgba(0, 184, 148, 0.2);
+            border: 1px solid #00b894;
+            color: #00d4aa;
+        }
+
+        .message.error {
+            background: rgba(255, 107, 107, 0.2);
+            border: 1px solid #ff6b6b;
+            color: #ff8787;
+        }
+
+        .foods-list {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .food-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .food-icon {
+            font-size: 32px;
+            width: 50px;
+            text-align: center;
+        }
+
+        .food-info {
+            flex: 1;
+        }
+
+        .food-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .food-details {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍎 KalBuddy Food Database Admin</h1>
+            <p>Verwalte Kategorien und Lebensmittel für die App</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('categories')">Kategorien</button>
+            <button class="tab" onclick="showTab('foods')">Lebensmittel</button>
+            <button class="tab" onclick="showTab('view')">Übersicht</button>
+        </div>
+
+        <!-- Categories Tab -->
+        <div id="categories" class="tab-content active">
+            <div class="form-container">
+                <h2>Neue Kategorie hinzufügen</h2>
+                <div id="category-message"></div>
+                
+                <form id="category-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Code (eindeutig)</label>
+                            <input type="text" id="category-code" placeholder="z.B. fruits" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Icon (Emoji)</label>
+                            <input type="text" id="category-icon" placeholder="🍎" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Name (Deutsch)</label>
+                            <input type="text" id="category-name-de" placeholder="Obst" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Name (English)</label>
+                            <input type="text" id="category-name-en" placeholder="Fruits" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Name (Español)</label>
+                            <input type="text" id="category-name-es" placeholder="Frutas" required>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn">Kategorie hinzufügen</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Foods Tab -->
+        <div id="foods" class="tab-content">
+            <div class="form-container">
+                <h2>Neues Lebensmittel hinzufügen</h2>
+                <div id="food-message"></div>
+                
+                <form id="food-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Code (eindeutig)</label>
+                            <input type="text" id="food-code" placeholder="z.B. apple" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Icon (Emoji)</label>
+                            <input type="text" id="food-icon" placeholder="🍎" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Kategorie</label>
+                            <select id="food-category" required>
+                                <option value="">Wähle Kategorie</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Einheit</label>
+                            <select id="food-unit" required>
+                                <option value="">Wähle Einheit</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Name (Deutsch)</label>
+                            <input type="text" id="food-name-de" placeholder="Apfel" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Name (English)</label>
+                            <input type="text" id="food-name-en" placeholder="Apple" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Name (Español)</label>
+                            <input type="text" id="food-name-es" placeholder="Manzana" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Kalorien</label>
+                            <input type="number" step="0.01" id="food-calories" placeholder="52" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Protein (g)</label>
+                            <input type="number" step="0.01" id="food-protein" placeholder="0.3">
+                        </div>
+                        <div class="form-group">
+                            <label>Kohlenhydrate (g)</label>
+                            <input type="number" step="0.01" id="food-carbs" placeholder="14">
+                        </div>
+                        <div class="form-group">
+                            <label>Fette (g)</label>
+                            <input type="number" step="0.01" id="food-fats" placeholder="0.2">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Ballaststoffe (g) <small>(optional)</small></label>
+                            <input type="number" step="0.01" id="food-fiber" placeholder="2.4">
+                        </div>
+                        <div class="form-group">
+                            <label>Zucker (g) <small>(optional)</small></label>
+                            <input type="number" step="0.01" id="food-sugar" placeholder="10.4">
+                        </div>
+                        <div class="form-group">
+                            <label>Natrium (mg) <small>(optional)</small></label>
+                            <input type="number" step="0.01" id="food-sodium" placeholder="1">
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn">Lebensmittel hinzufügen</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- View Tab -->
+        <div id="view" class="tab-content">
+            <div class="form-container">
+                <h2>Aktuelle Lebensmittel</h2>
+                <button class="btn btn-secondary" onclick="loadFoods()">Aktualisieren</button>
+                <div id="foods-list" class="foods-list">
+                    <div class="loading">Lade Lebensmittel...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+            
+            if (tabName === 'foods') {
+                loadCategories();
+                loadUnits();
+            } else if (tabName === 'view') {
+                loadFoods();
+            }
+        }
+
+        // Load categories for dropdown
+        async function loadCategories() {
+            try {
+                const response = await fetch('get_categories.php');
+                const data = await response.json();
+                
+                const select = document.getElementById('food-category');
+                select.innerHTML = '<option value="">Wähle Kategorie</option>';
+                
+                data.data.forEach(category => {
+                    if (category.code !== 'all') { // Skip 'all' category
+                        select.innerHTML += `<option value="${category.id}">${category.name}</option>`;
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading categories:', error);
+            }
+        }
+
+        // Load units for dropdown
+        async function loadUnits() {
+            try {
+                const response = await fetch('get_units.php');
+                const data = await response.json();
+                
+                const select = document.getElementById('food-unit');
+                select.innerHTML = '<option value="">Wähle Einheit</option>';
+                
+                data.data.forEach(unit => {
+                    select.innerHTML += `<option value="${unit.id}">${unit.name}</option>`;
+                });
+            } catch (error) {
+                console.error('Error loading units:', error);
+            }
+        }
+
+        // Load foods for display
+        async function loadFoods() {
+            const container = document.getElementById('foods-list');
+            container.innerHTML = '<div class="loading">Lade Lebensmittel...</div>';
+            
+            try {
+                const response = await fetch('get_foods.php');
+                const data = await response.json();
+                
+                if (data.success) {
+                    let html = `<h3>Gesamt: ${data.count} Lebensmittel</h3>`;
+                    
+                    data.data.forEach(food => {
+                        html += `
+                            <div class="food-item">
+                                <div class="food-icon">${food.icon}</div>
+                                <div class="food-info">
+                                    <div class="food-name">${food.name}</div>
+                                    <div class="food-details">
+                                        ${food.calories} kcal/${food.unit_name} | 
+                                        P: ${food.protein}g | C: ${food.carbs}g | F: ${food.fats}g
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = `<div class="message error">Fehler: ${data.error}</div>`;
+                }
+            } catch (error) {
+                container.innerHTML = `<div class="message error">Fehler beim Laden: ${error.message}</div>`;
+            }
+        }
+
+        // Show message
+        function showMessage(containerId, message, isSuccess = true) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `
+                <div class="message ${isSuccess ? 'success' : 'error'}">
+                    ${message}
+                </div>
+            `;
+            
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+
+        // Category form submission
+        document.getElementById('category-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('category-code').value,
+                icon: document.getElementById('category-icon').value,
+                name_de: document.getElementById('category-name-de').value,
+                name_en: document.getElementById('category-name-en').value,
+                name_es: document.getElementById('category-name-es').value
+            };
+            
+            try {
+                const response = await fetch('add_category.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage('category-message', 'Kategorie erfolgreich hinzugefügt!');
+                    document.getElementById('category-form').reset();
+                } else {
+                    showMessage('category-message', data.error, false);
+                }
+            } catch (error) {
+                showMessage('category-message', 'Fehler: ' + error.message, false);
+            }
+        });
+
+        // Food form submission
+        document.getElementById('food-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                code: document.getElementById('food-code').value,
+                category_id: document.getElementById('food-category').value,
+                unit_id: document.getElementById('food-unit').value,
+                icon: document.getElementById('food-icon').value,
+                name_de: document.getElementById('food-name-de').value,
+                name_en: document.getElementById('food-name-en').value,
+                name_es: document.getElementById('food-name-es').value,
+                calories: parseFloat(document.getElementById('food-calories').value),
+                protein: parseFloat(document.getElementById('food-protein').value) || 0,
+                carbs: parseFloat(document.getElementById('food-carbs').value) || 0,
+                fats: parseFloat(document.getElementById('food-fats').value) || 0,
+                fiber: document.getElementById('food-fiber').value ? parseFloat(document.getElementById('food-fiber').value) : null,
+                sugar: document.getElementById('food-sugar').value ? parseFloat(document.getElementById('food-sugar').value) : null,
+                sodium: document.getElementById('food-sodium').value ? parseFloat(document.getElementById('food-sodium').value) : null
+            };
+            
+            try {
+                const response = await fetch('add_food.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage('food-message', 'Lebensmittel erfolgreich hinzugefügt!');
+                    document.getElementById('food-form').reset();
+                } else {
+                    showMessage('food-message', data.error, false);
+                }
+            } catch (error) {
+                showMessage('food-message', 'Fehler: ' + error.message, false);
+            }
+        });
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCategories();
+            loadUnits();
+        });
+    </script>
+</body>
+</html>
