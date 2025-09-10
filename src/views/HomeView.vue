@@ -144,6 +144,21 @@
             </div>
         </div>
 
+        <!-- Quick Add Section -->
+        <div class="quick-add-section">
+            <h3 class="section-title">{{ $t('home.quickAdd') }}</h3>
+            <div class="quick-add-buttons">
+                <button class="quick-add-btn" @click="goToFoodDatabase">
+                    <div class="quick-add-icon">🍎</div>
+                    <span>{{ $t('home.foodDatabase') }}</span>
+                </button>
+                <button class="quick-add-btn" @click="openNativeScanner">
+                    <div class="quick-add-icon">📱</div>
+                    <span>{{ $t('home.scanFood') }}</span>
+                </button>
+            </div>
+        </div>
+
         <!-- Recently Uploaded Section -->
         <div class="recent-section">
             <h3 class="section-title">{{ $t('home.recentlyUploaded') }}</h3>
@@ -509,6 +524,10 @@ function goToPremium() {
     router.push('/upgrade')
 }
 
+function goToFoodDatabase() {
+    router.push('/food-database')
+}
+
 function hidePremiumBanner() {
     showPremiumBanner.value = false
 }
@@ -867,6 +886,56 @@ function handleTouchEnd(event: TouchEvent) {
     font-size: 20px;
     font-weight: 600;
     margin-bottom: 16px;
+}
+
+.quick-add-section {
+    margin-bottom: 32px;
+}
+
+.quick-add-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.quick-add-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    border-radius: 15px;
+    padding: 20px 16px;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    backdrop-filter: blur(10px);
+    min-height: 80px;
+}
+
+.quick-add-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.quick-add-btn:active {
+    transform: translateY(0px);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.quick-add-icon {
+    font-size: 24px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
 }
 
 .empty-state {

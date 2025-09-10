@@ -22,6 +22,7 @@ import BMIDetailView from "../views/BMIDetailView.vue";
 import WeightDetailView from "../views/WeightDetailView.vue";
 import AllScansView from "../views/AllScansView.vue";
 import ScanDetailView from "../views/ScanDetailView.vue";
+import FoodDatabaseView from "../views/FoodDatabaseView.vue";
 import { isOnboardingCompleted } from "../stores/userStore";
 
 const routes = [
@@ -139,6 +140,11 @@ const routes = [
     path: "/weight-detail",
     name: "WeightDetail",
     component: WeightDetailView,
+  },
+  {
+    path: "/food-database",
+    name: "FoodDatabase",
+    component: FoodDatabaseView,
   },
 ];
 
