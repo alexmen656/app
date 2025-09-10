@@ -15,9 +15,9 @@ try {
             c.name as category_name,
             u.code as unit_code,
             u.name_$lang as unit_name
-        FROM foods f
-        LEFT JOIN categories c ON f.category_id = c.id
-        LEFT JOIN units u ON f.unit_id = u.id
+        FROM kalbuddy_foods f
+        LEFT JOIN kalbuddy_categories c ON f.category_id = c.id
+        LEFT JOIN kalbuddy_units u ON f.unit_id = u.id
         WHERE f.is_active = 1
     ";
     

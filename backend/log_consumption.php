@@ -19,7 +19,7 @@ try {
     }
     
     // Get food details
-    $stmt = $pdo->prepare("SELECT * FROM foods WHERE id = :id AND is_active = 1");
+    $stmt = $pdo->prepare("SELECT * FROM kalbuddy_foods WHERE id = :id AND is_active = 1");
     $stmt->execute(['id' => (int)$input['food_id']]);
     $food = $stmt->fetch();
     
@@ -38,7 +38,7 @@ try {
     
     // Log consumption
     $stmt = $pdo->prepare("
-        INSERT INTO food_consumption (
+        INSERT INTO kalbuddy_food_consumption (
             user_id, food_id, amount,
             total_calories, total_protein, total_carbs, total_fats
         ) VALUES (

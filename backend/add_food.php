@@ -22,7 +22,7 @@ try {
     }
     
     // Check if code already exists
-    $stmt = $pdo->prepare("SELECT id FROM foods WHERE code = :code");
+    $stmt = $pdo->prepare("SELECT id FROM kalbuddy_foods WHERE code = :code");
     $stmt->execute(['code' => $input['code']]);
     if ($stmt->fetch()) {
         echo json_encode(['success' => false, 'error' => 'Food code already exists']);
@@ -30,7 +30,7 @@ try {
     }
     
     $stmt = $pdo->prepare("
-        INSERT INTO foods (
+        INSERT INTO kalbuddy_foods (
             code, category_id, unit_id, icon,
             name_de, name_en, name_es,
             calories, protein, carbs, fats,

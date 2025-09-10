@@ -7,7 +7,7 @@ require_once 'db.php';
 try {
     $lang = $_GET['lang'] ?? 'en';
     
-    $stmt = $pdo->query("SELECT * FROM units ORDER BY id");
+    $stmt = $pdo->query("SELECT * FROM kalbuddy_units ORDER BY id");
     $units = $stmt->fetchAll();
     
     $result = [];

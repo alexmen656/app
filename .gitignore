@@ -25,3 +25,4 @@ dist-ssr
 
 android_/*
 ios/App/Kaloriq.storekit
+backend/db.php

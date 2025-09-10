@@ -38,7 +38,7 @@
                     @click="selectCategory(category.id)"
                 >
                     <span class="category-icon">{{ category.icon }}</span>
-                    <span class="category-name">{{ $t(`foodDatabase.categoryNames.${category.id}`) }}</span>
+                    <span class="category-name">{{ category.name || $t(`foodDatabase.categoryNames.${category.id}`) }}</span>
                 </button>
             </div>
         </div>
@@ -58,12 +58,12 @@
                 >
                     <div class="food-icon">{{ food.icon }}</div>
                     <div class="food-info">
-                        <h4 class="food-name">{{ $t(`foodDatabase.foods.${food.id}.name`) }}</h4>
+                        <h4 class="food-name">{{ food.name || $t(`foodDatabase.foods.${food.id}.name`) }}</h4>
                         <div class="food-calories">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="#ff6b35">
                                 <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z"/>
                             </svg>
-                            <span>{{ food.calories }} kcal/{{ $t(`foodDatabase.units.${food.unit}`) }}</span>
+                            <span>{{ food.calories }} kcal/{{ food.unit_name || $t(`foodDatabase.units.${food.unit}`) }}</span>
                         </div>
                         <div class="food-macros">
                             <span class="macro protein">P: {{ food.protein }}g</span>
@@ -79,7 +79,7 @@
         <div v-if="selectedFood" class="modal-overlay" @click="closeFoodModal">
             <div class="modal-content" @click.stop>
                 <div class="modal-header">
-                    <h3>{{ $t(`foodDatabase.foods.${selectedFood.id}.name`) }}</h3>
+                    <h3>{{ selectedFood?.name || $t(`foodDatabase.foods.${selectedFood?.id}.name`) }}</h3>
                     <button class="close-button" @click="closeFoodModal">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
@@ -89,23 +89,23 @@
 
                 <div class="modal-body">
                     <div class="food-preview">
-                        <div class="food-large-icon">{{ selectedFood.icon }}</div>
+                        <div class="food-large-icon">{{ selectedFood?.icon }}</div>
                         <div class="food-nutrition">
                             <div class="nutrition-item">
                                 <span class="nutrition-label">{{ $t('foodDatabase.calories') }}</span>
-                                <span class="nutrition-value">{{ Math.round(selectedFood.calories * selectedAmount) }} kcal</span>
+                                <span class="nutrition-value">{{ Math.round((selectedFood?.calories || 0) * selectedAmount) }} kcal</span>
                             </div>
                             <div class="nutrition-item">
                                 <span class="nutrition-label">{{ $t('foodDatabase.protein') }}</span>
-                                <span class="nutrition-value">{{ Math.round(selectedFood.protein * selectedAmount) }}g</span>
+                                <span class="nutrition-value">{{ Math.round((selectedFood?.protein || 0) * selectedAmount) }}g</span>
                             </div>
                             <div class="nutrition-item">
                                 <span class="nutrition-label">{{ $t('foodDatabase.carbs') }}</span>
-                                <span class="nutrition-value">{{ Math.round(selectedFood.carbs * selectedAmount) }}g</span>
+                                <span class="nutrition-value">{{ Math.round((selectedFood?.carbs || 0) * selectedAmount) }}g</span>
                             </div>
                             <div class="nutrition-item">
                                 <span class="nutrition-label">{{ $t('foodDatabase.fats') }}</span>
-                                <span class="nutrition-value">{{ Math.round(selectedFood.fats * selectedAmount) }}g</span>
+                                <span class="nutrition-value">{{ Math.round((selectedFood?.fats || 0) * selectedAmount) }}g</span>
                             </div>
                         </div>
                     </div>
@@ -132,13 +132,13 @@
                                 </svg>
                             </button>
                         </div>
-                        <span class="unit-label">{{ $t(`foodDatabase.units.${selectedFood.unit}`) }}</span>
+                        <span class="unit-label">{{ selectedFood?.unit_name || $t(`foodDatabase.units.${selectedFood?.unit}`) }}</span>
                     </div>
 
                     <!-- Quick Amount Buttons -->
                     <div class="quick-amounts">
                         <button 
-                            v-for="quickAmount in getQuickAmounts(selectedFood.unit)" 
+                            v-for="quickAmount in getQuickAmounts(selectedFood?.unit || 'piece')" 
                             :key="quickAmount.value"
                             class="quick-amount-btn"
                             :class="{ active: selectedAmount === quickAmount.value }"
@@ -168,71 +168,114 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ScanHistory } from '../utils/storage'
 
+// TypeScript interfaces
+interface Category {
+  id: string
+  icon: string
+  name?: string
+  dbId: number
+}
+
+interface Food {
+  id: string
+  dbId: number
+  category: string
+  icon: string
+  name?: string
+  calories: number
+  protein: number
+  carbs: number
+  fats: number
+  unit: string
+  unit_name?: string
+}
+
 const router = useRouter()
-const { t } = useI18n()
+const { t, locale } = useI18n()
+
+// API Configuration
+const API_BASE = 'https://alex.polan.sk/kalbuddy'
 
 const searchQuery = ref('')
 const selectedCategory = ref('all')
-const selectedFood = ref<any>(null)
+const selectedFood = ref<Food | null>(null)
 const selectedAmount = ref(1)
 const isAdding = ref(false)
+const isLoading = ref(false)
 
-// Food categories
-const categories = ref([
-    { id: 'all', icon: '🍽️' },
-    { id: 'fruits', icon: '🍎' },
-    { id: 'vegetables', icon: '🥬' },
-    { id: 'proteins', icon: '🥩' },
-    { id: 'grains', icon: '🌾' },
-    { id: 'dairy', icon: '🥛' },
-    { id: 'nuts', icon: '🥜' },
-    { id: 'beverages', icon: '☕' }
-])
+// Dynamic data from API
+const categories = ref<Category[]>([])
+const foods = ref<Food[]>([])
+const allFoods = ref<Food[]>([])
 
-// Food database (nutrition per 100g or per piece)
-const foods = ref([
-    // Fruits
-    { id: 'apple', category: 'fruits', icon: '🍎', calories: 52, protein: 0.3, carbs: 14, fats: 0.2, unit: 'piece' },
-    { id: 'banana', category: 'fruits', icon: '🍌', calories: 89, protein: 1.1, carbs: 23, fats: 0.3, unit: 'piece' },
-    { id: 'orange', category: 'fruits', icon: '🍊', calories: 47, protein: 0.9, carbs: 12, fats: 0.1, unit: 'piece' },
-    { id: 'strawberry', category: 'fruits', icon: '🍓', calories: 32, protein: 0.7, carbs: 8, fats: 0.3, unit: '100g' },
-    { id: 'grapes', category: 'fruits', icon: '🍇', calories: 62, protein: 0.6, carbs: 16, fats: 0.2, unit: '100g' },
-    
-    // Vegetables
-    { id: 'broccoli', category: 'vegetables', icon: '🥦', calories: 25, protein: 3, carbs: 5, fats: 0.3, unit: '100g' },
-    { id: 'carrot', category: 'vegetables', icon: '🥕', calories: 41, protein: 0.9, carbs: 10, fats: 0.2, unit: '100g' },
-    { id: 'tomato', category: 'vegetables', icon: '🍅', calories: 18, protein: 0.9, carbs: 3.9, fats: 0.2, unit: 'piece' },
-    { id: 'cucumber', category: 'vegetables', icon: '🥒', calories: 16, protein: 0.7, carbs: 4, fats: 0.1, unit: '100g' },
-    { id: 'spinach', category: 'vegetables', icon: '🥬', calories: 23, protein: 2.9, carbs: 3.6, fats: 0.4, unit: '100g' },
-    
-    // Proteins
-    { id: 'chicken_breast', category: 'proteins', icon: '🍗', calories: 165, protein: 31, carbs: 0, fats: 3.6, unit: '100g' },
-    { id: 'egg', category: 'proteins', icon: '🥚', calories: 70, protein: 6, carbs: 0.4, fats: 5, unit: 'piece' },
-    { id: 'salmon', category: 'proteins', icon: '🐟', calories: 208, protein: 20, carbs: 0, fats: 13, unit: '100g' },
-    { id: 'tuna', category: 'proteins', icon: '🐟', calories: 144, protein: 30, carbs: 0, fats: 1, unit: '100g' },
-    
-    // Grains
-    { id: 'rice', category: 'grains', icon: '🍚', calories: 130, protein: 2.7, carbs: 28, fats: 0.3, unit: '100g' },
-    { id: 'pasta', category: 'grains', icon: '🍝', calories: 131, protein: 5, carbs: 25, fats: 1.1, unit: '100g' },
-    { id: 'bread', category: 'grains', icon: '🍞', calories: 265, protein: 9, carbs: 49, fats: 3.2, unit: 'slice' },
-    { id: 'oats', category: 'grains', icon: '🌾', calories: 389, protein: 17, carbs: 66, fats: 7, unit: '100g' },
-    
-    // Dairy
-    { id: 'milk', category: 'dairy', icon: '🥛', calories: 64, protein: 3.2, carbs: 4.8, fats: 3.6, unit: '100ml' },
-    { id: 'yogurt', category: 'dairy', icon: '🥛', calories: 59, protein: 10, carbs: 3.6, fats: 0.4, unit: '100g' },
-    { id: 'cheese', category: 'dairy', icon: '🧀', calories: 402, protein: 25, carbs: 1.3, fats: 33, unit: '100g' },
-    
-    // Nuts
-    { id: 'almonds', category: 'nuts', icon: '🥜', calories: 579, protein: 21, carbs: 22, fats: 50, unit: '100g' },
-    { id: 'walnuts', category: 'nuts', icon: '🥜', calories: 654, protein: 15, carbs: 14, fats: 65, unit: '100g' },
-    
-    // Beverages
-    { id: 'water', category: 'beverages', icon: '💧', calories: 0, protein: 0, carbs: 0, fats: 0, unit: '100ml' },
-    { id: 'coffee', category: 'beverages', icon: '☕', calories: 2, protein: 0.3, carbs: 0, fats: 0, unit: 'cup' }
-])
+// Load categories from API
+async function loadCategories() {
+    try {
+        isLoading.value = true
+        const response = await fetch(`${API_BASE}/get_categories.php?lang=${locale.value}`)
+        const data = await response.json()
+        
+        if (data.success) {
+            // Add 'all' category at the beginning
+            const allCategories = [
+                { id: 'all', icon: '🍽️', name: t('foodDatabase.categoryNames.all'), dbId: 0 },
+                ...data.data.map((cat: any) => ({
+                    id: cat.code,
+                    icon: cat.icon,
+                    name: cat.name,
+                    dbId: cat.id
+                }))
+            ]
+            categories.value = allCategories
+        } else {
+            console.error('Failed to load categories:', data.error)
+        }
+    } catch (error) {
+        console.error('Error loading categories:', error)
+    } finally {
+        isLoading.value = false
+    }
+}
+
+// Load foods from API
+async function loadFoods() {
+    try {
+        isLoading.value = true
+        const response = await fetch(`${API_BASE}/get_foods.php?lang=${locale.value}`)
+        const data = await response.json()
+        
+        if (data.success) {
+            allFoods.value = data.data.map((food: any) => ({
+                id: food.code,
+                dbId: food.id,
+                category: getCategoryCodeById(food.category_id),
+                icon: food.icon,
+                name: food.name,
+                calories: food.calories,
+                protein: food.protein,
+                carbs: food.carbs,
+                fats: food.fats,
+                unit: food.unit,
+                unit_name: food.unit_name
+            }))
+        } else {
+            console.error('Failed to load foods:', data.error)
+        }
+    } catch (error) {
+        console.error('Error loading foods:', error)
+    } finally {
+        isLoading.value = false
+    }
+}
+
+// Helper function to get category code by ID
+function getCategoryCodeById(categoryId: number): string {
+    const category = categories.value.find(cat => cat.dbId === categoryId)
+    return category ? category.id : 'all'
+}
 
 const filteredFoods = computed(() => {
-    let result = foods.value
+    let result = allFoods.value
 
     // Filter by category
     if (selectedCategory.value !== 'all') {
@@ -242,9 +285,11 @@ const filteredFoods = computed(() => {
     // Filter by search query
     if (searchQuery.value.trim()) {
         const query = searchQuery.value.toLowerCase()
-        result = result.filter(food => 
-            t(`foodDatabase.foods.${food.id}.name`).toLowerCase().includes(query)
-        )
+        result = result.filter(food => {
+            // Use the food name from API if available, otherwise fallback to translation
+            const name = food.name || t(`foodDatabase.foods.${food.id}.name`)
+            return name.toLowerCase().includes(query)
+        })
     }
 
     return result
@@ -254,7 +299,7 @@ function selectCategory(categoryId: string) {
     selectedCategory.value = categoryId
 }
 
-function selectFood(food: any) {
+function selectFood(food: Food) {
     selectedFood.value = food
     selectedAmount.value = 1
 }
@@ -339,10 +384,10 @@ async function addFoodToHistory() {
             image: '', // No image for database foods
             data: {
                 foods: [{
-                    name: t(`foodDatabase.foods.${food.id}.name`),
-                    name_de: t(`foodDatabase.foods.${food.id}.name`),
-                    name_en: t(`foodDatabase.foods.${food.id}.name`),
-                    name_es: t(`foodDatabase.foods.${food.id}.name`)
+                    name: food.name || t(`foodDatabase.foods.${food.id}.name`),
+                    name_de: food.name || t(`foodDatabase.foods.${food.id}.name`),
+                    name_en: food.name || t(`foodDatabase.foods.${food.id}.name`),
+                    name_es: food.name || t(`foodDatabase.foods.${food.id}.name`)
                 }],
                 total: {
                     calories: totalCalories,
@@ -374,8 +419,13 @@ function goBack() {
     router.back()
 }
 
-onMounted(() => {
-    // Load any additional data if needed
+onMounted(async () => {
+    // Load categories and foods from API
+    await loadCategories()
+    await loadFoods()
+    
+    // Set initial filtered foods
+    foods.value = allFoods.value
 })
 </script>
 

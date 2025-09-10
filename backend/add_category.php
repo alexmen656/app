@@ -19,7 +19,7 @@ try {
     }
     
     $stmt = $pdo->prepare("
-        INSERT INTO categories (name, icon, name_de, name_en, name_es) 
+        INSERT INTO kalbuddy_categories (name, icon, name_de, name_en, name_es) 
         VALUES (:name, :icon, :name_de, :name_en, :name_es)
     ");
     

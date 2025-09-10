@@ -7,7 +7,7 @@ CREATE DATABASE IF NOT EXISTS kalbuddy_food_db CHARACTER SET utf8mb4 COLLATE utf
 USE kalbuddy_food_db;
 
 -- Categories table
-CREATE TABLE categories (
+CREATE TABLE kalbuddy_categories (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
     icon VARCHAR(10) NOT NULL,
@@ -19,7 +19,7 @@ CREATE TABLE categories (
 );
 
 -- Food units table
-CREATE TABLE units (
+CREATE TABLE kalbuddy_units (
     id INT AUTO_INCREMENT PRIMARY KEY,
     code VARCHAR(20) NOT NULL UNIQUE,
     name_de VARCHAR(50) NOT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE units (
 );
 
 -- Foods table
-CREATE TABLE foods (
+CREATE TABLE kalbuddy_foods (
     id INT AUTO_INCREMENT PRIMARY KEY,
     code VARCHAR(50) NOT NULL UNIQUE,
     category_id INT NOT NULL,
@@ -49,27 +49,27 @@ CREATE TABLE foods (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     
-    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE,
-    FOREIGN KEY (unit_id) REFERENCES units(id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES kalbuddy_categories(id) ON DELETE CASCADE,
+    FOREIGN KEY (unit_id) REFERENCES kalbuddy_units(id) ON DELETE CASCADE,
     INDEX idx_category (category_id),
     INDEX idx_active (is_active),
     INDEX idx_code (code)
 );
 
 -- User favorites table (for future use)
-CREATE TABLE user_favorites (
+CREATE TABLE kalbuddy_user_favorites (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id VARCHAR(100) NOT NULL,
     food_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     
-    FOREIGN KEY (food_id) REFERENCES foods(id) ON DELETE CASCADE,
+    FOREIGN KEY (food_id) REFERENCES kalbuddy_foods(id) ON DELETE CASCADE,
     UNIQUE KEY unique_user_food (user_id, food_id),
     INDEX idx_user (user_id)
 );
 
 -- Food consumption history (for analytics)
-CREATE TABLE food_consumption (
+CREATE TABLE kalbuddy_food_consumption (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id VARCHAR(100) NOT NULL,
     food_id INT NOT NULL,
@@ -80,13 +80,13 @@ CREATE TABLE food_consumption (
     total_fats DECIMAL(8,2) NOT NULL,
     consumed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     
-    FOREIGN KEY (food_id) REFERENCES foods(id) ON DELETE CASCADE,
+    FOREIGN KEY (food_id) REFERENCES kalbuddy_foods(id) ON DELETE CASCADE,
     INDEX idx_user_date (user_id, consumed_at),
     INDEX idx_food (food_id)
 );
 
 -- Insert categories
-INSERT INTO categories (name, icon, name_de, name_en, name_es) VALUES
+INSERT INTO kalbuddy_categories (name, icon, name_de, name_en, name_es) VALUES
 ('all', '🍽️', 'Alle', 'All', 'Todos'),
 ('fruits', '🍎', 'Obst', 'Fruits', 'Frutas'),
 ('vegetables', '🥬', 'Gemüse', 'Vegetables', 'Verduras'),
@@ -97,7 +97,7 @@ INSERT INTO categories (name, icon, name_de, name_en, name_es) VALUES
 ('beverages', '☕', 'Getränke', 'Beverages', 'Bebidas');
 
 -- Insert units
-INSERT INTO units (code, name_de, name_en, name_es) VALUES
+INSERT INTO kalbuddy_units (code, name_de, name_en, name_es) VALUES
 ('piece', 'Stück', 'piece', 'pieza'),
 ('100g', '100g', '100g', '100g'),
 ('100ml', '100ml', '100ml', '100ml'),
@@ -105,7 +105,7 @@ INSERT INTO units (code, name_de, name_en, name_es) VALUES
 ('cup', 'Tasse', 'cup', 'taza');
 
 -- Insert foods
-INSERT INTO foods (code, category_id, unit_id, icon, name_de, name_en, name_es, calories, protein, carbs, fats) VALUES
+INSERT INTO kalbuddy_foods (code, category_id, unit_id, icon, name_de, name_en, name_es, calories, protein, carbs, fats) VALUES
 -- Fruits
 ('apple', 2, 1, '🍎', 'Apfel', 'Apple', 'Manzana', 52.00, 0.30, 14.00, 0.20),
 ('banana', 2, 1, '🍌', 'Banane', 'Banana', 'Plátano', 89.00, 1.10, 23.00, 0.30),
