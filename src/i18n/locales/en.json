@@ -160,7 +160,35 @@
     "database": {
       "title": "Food Database",
       "description": "Browse and search our comprehensive food database"
+    },
+    "manual": {
+      "title": "Describe Food",
+      "description": "Manually describe what you ate in text form"
     }
+  },
+  "manualEntry": {
+    "title": "Describe Your Food",
+    "analyzing": "Analyzing your description...",
+    "pleaseWait": "Please wait while we process your text",
+    "instructions": {
+      "title": "How to describe your meal",
+      "description": "Describe in detail what you ate, including quantities, preparation methods, and ingredients. The more specific you are, the more accurate the nutritional analysis will be."
+    },
+    "examples": {
+      "title": "Examples:",
+      "example1": "2 slices of whole grain bread with 1 tbsp peanut butter",
+      "example2": "Grilled chicken breast (150g) with steamed broccoli and brown rice",
+      "example3": "Large apple, medium banana, and a handful of almonds"
+    },
+    "whatDidYouEat": "What did you eat?",
+    "placeholder": "Describe your meal in detail... e.g., 'I had a chicken salad with mixed greens, tomatoes, cucumbers, and olive oil dressing, plus a slice of whole grain bread'",
+    "analyzeButton": "Analyze Food",
+    "analysisConfidence": "Analysis Confidence",
+    "detectedFoods": "Detected Foods",
+    "editFood": "Edit",
+    "totalNutrition": "Total Nutrition",
+    "addToDiary": "Add to Diary",
+    "tryAgain": "Try Again"
   },
   "settings": {
     "dailyGoals": "Daily Goals",

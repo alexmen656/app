@@ -214,7 +214,7 @@
         </div>
 
         <!-- Add Food Modal -->
-        <AddFoodModal :show="isAddFoodModalVisible" @close="closeAddFoodModal" @select-scanner="handleSelectScanner" @select-database="handleSelectDatabase" />
+        <AddFoodModal :show="isAddFoodModalVisible" @close="closeAddFoodModal" @select-scanner="handleSelectScanner" @select-database="handleSelectDatabase" @select-manual="handleSelectManual" />
 
         <!-- Scan Limit Blocker -->
         <PremiumBlocker v-if="showScanLimitBlocker" feature="unlimited_food_scans"
@@ -531,6 +531,11 @@ async function handleSelectScanner() {
 function handleSelectDatabase() {
     closeAddFoodModal()
     router.push('/food-database')
+}
+
+function handleSelectManual() {
+    closeAddFoodModal()
+    router.push('/manual-entry')
 }
 
 function hidePremiumBanner() {

@@ -160,7 +160,35 @@
     "database": {
       "title": "Lebensmittel-Datenbank",
       "description": "Durchsuche unsere umfassende Lebensmittel-Datenbank"
+    },
+    "manual": {
+      "title": "Essen beschreiben",
+      "description": "Beschreibe manuell in Textform was du gegessen hast"
     }
+  },
+  "manualEntry": {
+    "title": "Beschreibe dein Essen",
+    "analyzing": "Analysiere deine Beschreibung...",
+    "pleaseWait": "Bitte warten während wir deinen Text verarbeiten",
+    "instructions": {
+      "title": "Wie beschreibst du dein Essen",
+      "description": "Beschreibe detailliert was du gegessen hast, einschließlich Mengen, Zubereitungsart und Zutaten. Je spezifischer du bist, desto genauer wird die Nährwertanalyse."
+    },
+    "examples": {
+      "title": "Beispiele:",
+      "example1": "2 Scheiben Vollkornbrot mit 1 EL Erdnussbutter",
+      "example2": "Gegrillte Hähnchenbrust (150g) mit gedämpftem Brokkoli und braunem Reis",
+      "example3": "Großer Apfel, mittlere Banane und eine Handvoll Mandeln"
+    },
+    "whatDidYouEat": "Was hast du gegessen?",
+    "placeholder": "Beschreibe dein Essen im Detail... z.B. 'Ich hatte einen Hühnersalat mit gemischten Blättern, Tomaten, Gurken und Olivenöl-Dressing, plus eine Scheibe Vollkornbrot'",
+    "analyzeButton": "Essen analysieren",
+    "analysisConfidence": "Analyse-Vertrauen",
+    "detectedFoods": "Erkannte Lebensmittel",
+    "editFood": "Bearbeiten",
+    "totalNutrition": "Gesamte Nährwerte",
+    "addToDiary": "Zu Tagebuch hinzufügen",
+    "tryAgain": "Erneut versuchen"
   },
   "settings": {
     "dailyGoals": "Tagesziele",

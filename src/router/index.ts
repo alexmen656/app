@@ -23,6 +23,7 @@ import WeightDetailView from "../views/WeightDetailView.vue";
 import AllScansView from "../views/AllScansView.vue";
 import ScanDetailView from "../views/ScanDetailView.vue";
 import FoodDatabaseView from "../views/FoodDatabaseView.vue";
+import ManualFoodEntryView from "../views/ManualFoodEntryView.vue";
 import { isOnboardingCompleted } from "../stores/userStore";
 
 const routes = [
@@ -145,6 +146,11 @@ const routes = [
     path: "/food-database",
     name: "FoodDatabase",
     component: FoodDatabaseView,
+  },
+  {
+    path: "/manual-entry",
+    name: "ManualFoodEntry",
+    component: ManualFoodEntryView,
   },
 ];
 

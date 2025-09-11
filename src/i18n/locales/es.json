@@ -160,7 +160,35 @@
     "database": {
       "title": "Base de Datos de Alimentos",
       "description": "Navega y busca en nuestra completa base de datos de alimentos"
+    },
+    "manual": {
+      "title": "Describir Comida",
+      "description": "Describe manualmente en texto lo que comiste"
     }
+  },
+  "manualEntry": {
+    "title": "Describe tu Comida",
+    "analyzing": "Analizando tu descripción...",
+    "pleaseWait": "Por favor espera mientras procesamos tu texto",
+    "instructions": {
+      "title": "Cómo describir tu comida",
+      "description": "Describe en detalle lo que comiste, incluyendo cantidades, métodos de preparación e ingredientes. Mientras más específico seas, más preciso será el análisis nutricional."
+    },
+    "examples": {
+      "title": "Ejemplos:",
+      "example1": "2 rebanadas de pan integral con 1 cucharada de mantequilla de maní",
+      "example2": "Pechuga de pollo a la parrilla (150g) con brócoli al vapor y arroz integral",
+      "example3": "Manzana grande, plátano mediano y un puñado de almendras"
+    },
+    "whatDidYouEat": "¿Qué comiste?",
+    "placeholder": "Describe tu comida en detalle... ej. 'Comí una ensalada de pollo con hojas mixtas, tomates, pepinos y aderezo de aceite de oliva, más una rebanada de pan integral'",
+    "analyzeButton": "Analizar Comida",
+    "analysisConfidence": "Confianza del Análisis",
+    "detectedFoods": "Alimentos Detectados",
+    "editFood": "Editar",
+    "totalNutrition": "Nutrición Total",
+    "addToDiary": "Agregar al Diario",
+    "tryAgain": "Intentar de Nuevo"
   },
   "settings": {
     "dailyGoals": "Objetivos Diarios",
