@@ -86,6 +86,34 @@
             <div v-if="analysisResult" class="results-card">
                 <h3 class="results-title">{{ $t('manualEntry.detectedFoods') }}</h3>
                 
+                <!-- AI Generated Image -->
+                <div v-if="analysisResult.image" class="ai-image-section">
+                    <h4 class="ai-image-title">{{ $t('manualEntry.aiVisualization') }}</h4>
+                    <div class="ai-image-container">
+                        <img 
+                            :src="`data:image/png;base64,${analysisResult.image.data}`" 
+                            :alt="$t('manualEntry.aiImageAlt')"
+                            class="ai-generated-image"
+                            loading="lazy"
+                            @click="showImageFullscreen"
+                        />
+                        <div class="image-info">
+                            <span class="image-badge">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                </svg>
+                                {{ $t('manualEntry.generatedByAI') }}
+                            </span>
+                            <span class="image-model">{{ analysisResult.image.model }}</span>
+                        </div>
+                        <button class="fullscreen-btn" @click="showImageFullscreen">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
                 <!-- Food Items -->
                 <div class="detected-foods">
                     <div 
@@ -179,6 +207,31 @@
             </div>
         </div>
     </div>
+
+    <!-- Fullscreen Image Modal -->
+    <div v-if="showFullscreenImage && analysisResult?.image" class="fullscreen-modal" @click="closeFullscreenImage">
+        <div class="fullscreen-content" @click.stop>
+            <button class="close-fullscreen-btn" @click="closeFullscreenImage">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+            </button>
+            <img 
+                :src="`data:image/png;base64,${analysisResult.image.data}`" 
+                :alt="$t('manualEntry.aiImageAlt')"
+                class="fullscreen-image"
+            />
+            <div class="fullscreen-image-info">
+                <span class="fullscreen-image-badge">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                    {{ $t('manualEntry.generatedByAI') }}
+                </span>
+                <span class="fullscreen-image-model">{{ analysisResult.image.model }}</span>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -196,6 +249,7 @@ const foodDescription = ref('')
 const isProcessing = ref(false)
 const analysisResult = ref<AnalysisResult | null>(null)
 const errorMessage = ref('')
+const showFullscreenImage = ref(false)
 
 // Types
 interface FoodItem {
@@ -211,6 +265,14 @@ interface LocalizedText {
     de: string
     en: string
     es: string
+}
+
+interface ImageData {
+    data: string
+    format: string
+    type: string
+    size: string
+    model: string
 }
 
 interface APIResponse {
@@ -229,6 +291,7 @@ interface APIResponse {
         timestamp: string
         model: string
         source: string
+        image?: ImageData
     }
     message: string
 }
@@ -243,6 +306,7 @@ interface AnalysisResult {
     }
     confidence: 'high' | 'medium' | 'low'
     notes: LocalizedText
+    image?: ImageData
 }
 
 // Computed
@@ -290,7 +354,8 @@ async function analyzeFood() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                description: foodDescription.value.trim()
+                description: foodDescription.value.trim(),
+                generateImage: true
             })
         })
 
@@ -317,7 +382,8 @@ async function analyzeFood() {
             foods: apiResponse.data.foods,
             total: apiResponse.data.total,
             confidence,
-            notes: apiResponse.data.notes
+            notes: apiResponse.data.notes,
+            image: apiResponse.data.image
         }
         
     } catch (error) {
@@ -398,6 +464,14 @@ async function addToDiary() {
 function tryAgain() {
     analysisResult.value = null
     foodDescription.value = ''
+}
+
+function showImageFullscreen() {
+    showFullscreenImage.value = true
+}
+
+function closeFullscreenImage() {
+    showFullscreenImage.value = false
 }
 </script>
 
@@ -605,6 +679,81 @@ function tryAgain() {
     margin-bottom: 24px;
 }
 
+/* AI Image Section */
+.ai-image-section {
+    margin-bottom: 32px;
+}
+
+.ai-image-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 16px 0;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ai-image-container {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease;
+}
+
+.ai-image-container:hover {
+    transform: translateY(-2px);
+}
+
+.ai-generated-image {
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+    object-fit: cover;
+    display: block;
+    border-radius: 15px;
+    transition: transform 0.3s ease;
+}
+
+.ai-generated-image:hover {
+    transform: scale(1.02);
+}
+
+.image-info {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    right: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.image-badge {
+    background: rgba(0, 0, 0, 0.8);
+    color: #FFD700;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    backdrop-filter: blur(10px);
+}
+
+.image-model {
+    background: rgba(255, 255, 255, 0.9);
+    color: #1e1e2e;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+}
+
 .food-result {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 15px;
@@ -749,6 +898,28 @@ function tryAgain() {
 .total-item.carbs .total-value { color: #ffa726; }
 .total-item.fats .total-value { color: #42a5f5; }
 
+/* Analysis Notes */
+.analysis-notes {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 24px;
+    border-left: 4px solid #4caf50;
+}
+
+.analysis-notes h4 {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    color: white;
+}
+
+.analysis-notes p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.5;
+    font-size: 14px;
+}
+
 /* Final Actions */
 .final-actions {
     display: flex;
@@ -857,6 +1028,153 @@ function tryAgain() {
     
     .food-macros {
         grid-template-columns: 1fr;
+    }
+}
+
+/* Fullscreen Button Styles */
+.fullscreen-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(0, 0, 0, 0.6);
+    border: none;
+    border-radius: 8px;
+    padding: 8px;
+    color: white;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+
+.ai-image-container:hover .fullscreen-btn {
+    opacity: 1;
+}
+
+.fullscreen-btn:hover {
+    background: rgba(0, 0, 0, 0.8);
+    transform: scale(1.1);
+}
+
+/* Fullscreen Modal Styles */
+.fullscreen-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+}
+
+.fullscreen-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.close-fullscreen-btn {
+    position: absolute;
+    top: -50px;
+    right: 0;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 1001;
+}
+
+.close-fullscreen-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+.fullscreen-image {
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+.fullscreen-image-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.fullscreen-image-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #10b981;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.fullscreen-image-model {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    font-family: 'SF Mono', Monaco, monospace;
+}
+
+/* Mobile Responsiveness for Fullscreen */
+@media (max-width: 768px) {
+    .close-fullscreen-btn {
+        top: -40px;
+        width: 36px;
+        height: 36px;
+    }
+    
+    .fullscreen-image {
+        max-height: 70vh;
+    }
+    
+    .fullscreen-image-info {
+        margin-top: 16px;
+        padding: 12px;
+    }
+    
+    .fullscreen-image-badge {
+        font-size: 14px;
+    }
+    
+    .fullscreen-image-model {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .fullscreen-content {
+        max-width: 95vw;
+        max-height: 95vh;
+    }
+    
+    .close-fullscreen-btn {
+        top: -35px;
+        width: 32px;
+        height: 32px;
     }
 }
 </style>

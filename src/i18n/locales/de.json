@@ -189,7 +189,10 @@
     "totalNutrition": "Gesamte Nährwerte",
     "analysisNotes": "Analyse-Notizen",
     "addToDiary": "Zu Tagebuch hinzufügen",
-    "tryAgain": "Erneut versuchen"
+    "tryAgain": "Erneut versuchen",
+    "aiVisualization": "KI-Visualisierung",
+    "aiImageAlt": "KI-generiertes Bild deines beschriebenen Essens",
+    "generatedByAI": "Von KI generiert"
   },
   "settings": {
     "dailyGoals": "Tagesziele",

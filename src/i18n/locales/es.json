@@ -189,7 +189,10 @@
     "totalNutrition": "Nutrición Total",
     "analysisNotes": "Notas de Análisis",
     "addToDiary": "Agregar al Diario",
-    "tryAgain": "Intentar de Nuevo"
+    "tryAgain": "Intentar de Nuevo",
+    "aiVisualization": "Visualización de IA",
+    "aiImageAlt": "Imagen generada por IA de tu comida descrita",
+    "generatedByAI": "Generado por IA"
   },
   "settings": {
     "dailyGoals": "Objetivos Diarios",
