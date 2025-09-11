@@ -46,7 +46,7 @@
                 <div class="nutrition-macros">
                     <div class="macro calories">
                         <div class="macro-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="#ff6b35">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="#ff6b35">
                                 <path
                                     d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z" />
                             </svg>
@@ -55,7 +55,7 @@
                             <div class="macro-label">{{ $t('nutrition.calories') }}</div>
                             <div class="macro-value">{{ Math.round(calculatedNutrition.calories) }}</div>
                             <button class="macro-edit" @click="editMacro('calories')">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                                     <path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
                                     <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z"
                                         stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -66,16 +66,16 @@
                     </div>
                     <div class="macro protein">
                         <div class="macro-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="#ff6b6b">
-                                <path
-                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                            <svg width="28" height="28" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+                                <path fill="#ff6b6b"
+                                    d="M224 329.2C224 337.7 220.6 345.8 214.6 351.8L187.8 378.6C175.5 390.9 155.3 390 138.4 385.8C133.8 384.7 128.9 384 123.9 384C90.8 384 63.9 410.9 63.9 444C63.9 477.1 90.8 504 123.9 504C130.2 504 135.9 509.7 135.9 516C135.9 549.1 162.8 576 195.9 576C229 576 255.9 549.1 255.9 516C255.9 511 255.3 506.2 254.1 501.5C249.9 484.6 248.9 464.4 261.3 452.1L288.1 425.3C294.1 419.3 302.2 415.9 310.7 415.9L399.9 415.9C406.2 415.9 412.3 415.6 418.4 414.9C430.3 413.7 434.8 399.4 429.2 388.9C420.7 373.1 415.9 355.1 415.9 335.9C415.9 274 466 223.9 527.9 223.9C535.9 223.9 543.6 224.7 551.1 226.3C562.8 228.8 575.2 220.4 573.1 208.7C558.4 126.4 486.4 63.9 399.9 63.9C302.7 63.9 223.9 142.7 223.9 239.9L223.9 329.1z" />
                             </svg>
                         </div>
                         <div class="macro-info">
                             <div class="macro-label">{{ $t('nutrition.protein') }}</div>
                             <div class="macro-value">{{ Math.round(calculatedNutrition.protein) }}g</div>
                             <button class="macro-edit" @click="editMacro('protein')">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                                     <path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
                                     <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z"
                                         stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -86,16 +86,16 @@
                     </div>
                     <div class="macro carbs">
                         <div class="macro-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="#ffa726">
-                                <path
-                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                          <svg width="28" height="28" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                                <path fill="#ffa726"
+                                    d="M79.7 234.6c6.2-4.1 14.7-3.4 20.1 2.1l46.1 46.1 6.1 6.7c19.7 23.8 26.3 55 19.2 83.9 31.7-7.7 66.2 1 90.6 25.3l46.1 46.1c6.2 6.2 6.2 16.4 0 22.6l-7.4 7.4c-37.5 37.5-98.3 37.5-135.8 0L134.1 444.3 49.4 529c-9.4 9.4-24.5 9.4-33.9 0-9.4-9.4-9.4-24.6 0-33.9l84.7-84.7-30.5-30.5c-37.5-37.5-37.5-98.3 0-135.7l7.4-7.4 2.5-2.1zm104-104c6.2-4.1 14.7-3.4 20.1 2.1l46.1 46.1 6.1 6.7c19.7 23.8 26.3 55 19.2 83.9 31.7-7.7 66.2 1 90.6 25.3l46.1 46.1c6.2 6.2 6.2 16.4 0 22.6l-7.4 7.4c-37.5 37.5-98.3 37.5-135.8 0l-94.9-94.9c-37.5-37.5-37.5-98.3 0-135.7l7.4-7.4 2.5-2.1zM495.2 15c9.4-9.4 24.6-9.4 34 0 8.8 8.8 9.3 22.7 1.6 32.2L529.2 49 414.7 163.4c7.7 1 15.2 3 22.5 5.9L495.5 111c9.4-9.4 24.6-9.4 34 0 8.8 8.8 9.3 22.7 1.6 32.1l-1.7 1.8-52.7 52.7 39 39c6.2 6.2 6.2 16.4 0 22.6l-7.4 7.4c-37.5 37.5-98.3 37.5-135.8 0l-94.9-94.9c-37.5-37.5-37.5-98.3 0-135.7l7.4-7.4 2.5-2.1c6.2-4.1 14.7-3.4 20.1 2.1l39 39 52.7-52.7c9.4-9.4 24.6-9.4 34 0 8.8 8.8 9.3 22.7 1.6 32.1l-1.7 1.8-58.3 58.3c2.8 7.1 4.7 14.5 5.7 22.1L495.2 15z" />
                             </svg>
                         </div>
                         <div class="macro-info">
                             <div class="macro-label">{{ $t('nutrition.carbs') }}</div>
                             <div class="macro-value">{{ Math.round(calculatedNutrition.carbs) }}g</div>
                             <button class="macro-edit" @click="editMacro('carbs')">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                                     <path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
                                     <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z"
                                         stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -106,16 +106,16 @@
                     </div>
                     <div class="macro fats">
                         <div class="macro-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="#42a5f5">
-                                <path
-                                    d="M9 11H7v9h2v-9zm4 0h-2v9h2v-9zm4 0h-2v9h2v-9zm2-7H4v2h1v11c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V6h1V4zm-2 13H6V6h12v11z" />
+                            <svg width="28" height="28" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+                                <path fill="#42a5f5"
+                                    d="M240 64C240 46.3 254.3 32 272 32L368 32C385.7 32 400 46.3 400 64C400 81.7 385.7 96 368 96L368 199.3C432.9 219.7 480 280.3 480 352L480 544C480 579.3 451.3 608 416 608L224 608C188.7 608 160 579.3 160 544L160 352C160 280.4 207.1 219.7 272 199.3L272 96C254.3 96 240 81.7 240 64zM320 480C355.3 480 384 447.6 384 416C384 394.8 355.1 351.5 336.1 325.4C328 314.3 311.9 314.3 303.8 325.4C284.8 351.5 255.9 394.8 255.9 416C255.9 447.6 284.6 480 319.9 480z" />
                             </svg>
                         </div>
                         <div class="macro-info">
                             <div class="macro-label">{{ $t('nutrition.fat') }}</div>
                             <div class="macro-value">{{ Math.round(calculatedNutrition.fats) }}g</div>
                             <button class="macro-edit" @click="editMacro('fats')">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                                     <path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
                                     <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z"
                                         stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -166,7 +166,7 @@
                         </svg>
                     </div>
                     <div class="health-info">
-                        <div class="health-label">{{ $t('nutrition.healthScore') }}</div>
+                        <!--<div class="health-label">{{ $t('nutrition.healthScore') }}</div>-->
                         <div class="health-score">{{ healthScore }}/10</div>
                     </div>
                     <div class="health-bar">
@@ -969,7 +969,7 @@ onMounted(() => {
 .macro {
     background: #f8f9fa;
     border-radius: 20px;
-    padding: 20px 16px;
+    padding: 18px 14px;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -990,7 +990,7 @@ onMounted(() => {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 1px;
 }
 
 .macro-label {
@@ -1010,7 +1010,7 @@ onMounted(() => {
 .macro-edit {
     background: transparent;
     border: none;
-    padding: 4px;
+    padding: 5px;
     border-radius: 8px;
     opacity: 0.7;
     transition: all 0.2s ease;
@@ -1023,8 +1023,8 @@ onMounted(() => {
 .nutrition-health {
     background: #f8f9fa;
     border-radius: 20px;
-    padding: 20px;
-    margin-bottom: 24px;
+    padding: 18px 14px;
+    margin-bottom: 10px;
     display: flex;
     align-items: center;
     gap: 16px;
@@ -1052,7 +1052,6 @@ onMounted(() => {
     font-size: 20px;
     font-weight: 700;
     color: #1a1a1a;
-    margin-bottom: 8px;
 }
 
 .health-bar {
@@ -1147,7 +1146,7 @@ onMounted(() => {
     background: #f8f9fa;
     border-radius: 16px;
     padding: 16px;
-    margin-bottom: 24px;
+    margin-bottom: 10px;
 }
 
 .analysis-confidence {
