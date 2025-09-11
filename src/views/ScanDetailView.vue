@@ -2,7 +2,7 @@
     <div>
         <div v-if="scanData" class="nutrition-container">
             <div class="nutrition-header">
-                <div class="nutrition-image-wrap" :style="backgroundStyle">
+                <div class="nutrition-image-wrap" :style="backgroundStyle" @touchstart="handleTouchStart" @touchend="handleTouchEnd" @dblclick="showImagePreview">
                     <div class="statusbar-spacer"></div>
                     <div class="header-controls">
                         <button class="nutrition-back" @click="$router.go(-1)">
@@ -341,6 +341,26 @@
                 </div>
             </div>
         </div>
+
+        <!-- Image Preview Modal -->
+        <div v-if="showImageModal" class="modal-overlay image-preview-overlay" @click="showImageModal = false">
+            <div class="image-preview-modal" @click.stop>
+                <div class="image-preview-header">
+                    <button class="image-preview-close" @click="showImageModal = false">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="image-preview-content">
+                    <img v-if="scanData?.image" :src="scanData.image" alt="Food image" class="preview-image"/>
+                    <div v-else class="no-image-placeholder">
+                        <div class="no-image-icon">📷</div>
+                        <p>{{ $t('nutrition.noImageAvailable') }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -362,7 +382,13 @@ const amount = ref(1.0);
 const showFixModal = ref(false);
 const showSourceModal = ref(false);
 const showDetailsModal = ref(false);
+const showImageModal = ref(false);
 const editedNutrition = ref({});
+const isLoading = ref(true);
+
+// Touch handling for double-tap
+const lastTap = ref(0);
+const tapTimeout = ref(null);
 
 const time = computed(() => {
     if (!scanData.value) return '';
@@ -706,6 +732,43 @@ function removeFood(index) {
     }
 }
 
+function showImagePreview() {
+    if (scanData.value?.image) {
+        showImageModal.value = true;
+    }
+}
+
+function handleTouchStart(event) {
+    // Prevent default to avoid interfering with other touch events
+    const now = Date.now();
+    const timeSinceLastTap = now - lastTap.value;
+    
+    if (timeSinceLastTap < 300 && timeSinceLastTap > 0) {
+        // Double tap detected
+        event.preventDefault();
+        if (tapTimeout.value) {
+            clearTimeout(tapTimeout.value);
+            tapTimeout.value = null;
+        }
+        showImagePreview();
+        lastTap.value = 0; // Reset to prevent triple tap
+    } else {
+        lastTap.value = now;
+    }
+}
+
+function handleTouchEnd(event) {
+    // Set a timeout to reset the tap if no second tap occurs
+    if (tapTimeout.value) {
+        clearTimeout(tapTimeout.value);
+    }
+    
+    tapTimeout.value = setTimeout(() => {
+        lastTap.value = 0;
+        tapTimeout.value = null;
+    }, 300);
+}
+
 onMounted(() => {
     const scanId = route.query.scanId;
     if (scanId) {
@@ -714,6 +777,11 @@ onMounted(() => {
         console.error('No scan ID provided');
         router.push({ path: '/' });
     }
+    
+    // Prevent hover effects for a short time after loading
+    setTimeout(() => {
+        isLoading.value = false;
+    }, 300);
 });
 </script>
 
@@ -729,6 +797,12 @@ onMounted(() => {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    /* Prevent hover effects on initial load */
+    pointer-events: auto;
+}
+
+.nutrition-container.loading {
+    pointer-events: none;
 }
 
 .nutrition-header {
@@ -764,12 +838,6 @@ onMounted(() => {
     backdrop-filter: blur(10px);
     cursor: pointer;
     transition: all 0.2s ease;
-}
-
-.nutrition-back:hover,
-.nutrition-menu:hover {
-    background: rgba(255, 255, 255, 1);
-    transform: scale(1.05);
 }
 
 .nutrition-content {
@@ -862,11 +930,6 @@ onMounted(() => {
     line-height: 5px;
 }
 
-.amount-btn:hover {
-    background: #f0f0f0;
-    border-color: #ccc;
-}
-
 .amount-btn.minus {
     color: #666;
 }
@@ -915,9 +978,6 @@ onMounted(() => {
     transition: all 0.2s ease;
 }
 
-.macro:hover {
-    background: #f0f0f0;
-}
 
 .macro-icon {
     flex-shrink: 0;
@@ -958,11 +1018,6 @@ onMounted(() => {
     position: absolute;
     top: 12px;
     right: 12px;
-}
-
-.macro-edit:hover {
-    opacity: 1;
-    background: rgba(0, 0, 0, 0.05);
 }
 
 .nutrition-health {
@@ -1176,10 +1231,6 @@ onMounted(() => {
     transition: color 0.2s ease;
 }
 
-.source-link:hover {
-    color: #0056cc;
-}
-
 .nutrition-actions {
     display: flex;
     gap: 16px;
@@ -1204,10 +1255,6 @@ onMounted(() => {
     cursor: pointer;
 }
 
-.fix-btn:hover {
-    background: #f8f9fa;
-}
-
 .done-btn {
     flex: 1;
     background: #000;
@@ -1219,10 +1266,6 @@ onMounted(() => {
     font-weight: 600;
     transition: all 0.2s ease;
     cursor: pointer;
-}
-
-.done-btn:hover {
-    background: #333;
 }
 
 .modal-overlay {
@@ -1304,10 +1347,6 @@ onMounted(() => {
     transition: all 0.2s ease;
 }
 
-.cancel-btn:hover {
-    background: #f8f9fa;
-}
-
 .save-btn {
     flex: 1;
     background: #000;
@@ -1319,10 +1358,6 @@ onMounted(() => {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-}
-
-.save-btn:hover {
-    background: #333;
 }
 
 .source-explanation {
@@ -1402,11 +1437,6 @@ onMounted(() => {
         color: #fff;
     }
 
-    .amount-btn:hover {
-        background: #3a3a3c;
-        border-color: #4a4a4c;
-    }
-
     .amount-btn.plus {
         background: #fff;
         color: #000;
@@ -1421,20 +1451,12 @@ onMounted(() => {
         background: #1c1c1e;
     }
 
-    .macro:hover {
-        background: #2c2c2e;
-    }
-
     .macro-label {
         color: #8e8e93;
     }
 
     .macro-value {
         color: #fff;
-    }
-
-    .macro-edit:hover {
-        background: rgba(255, 255, 255, 0.1);
     }
 
     .nutrition-health {
@@ -1508,17 +1530,9 @@ onMounted(() => {
         color: #fff;
     }
 
-    .fix-btn:hover {
-        background: #2c2c2e;
-    }
-
     .done-btn {
         background: #fff;
         color: #000;
-    }
-
-    .done-btn:hover {
-        background: #e5e5e7;
     }
 
     .modal {
@@ -1550,17 +1564,9 @@ onMounted(() => {
         color: #8e8e93;
     }
 
-    .cancel-btn:hover {
-        background: #2c2c2e;
-    }
-
     .save-btn {
         background: #fff;
         color: #000;
-    }
-
-    .save-btn:hover {
-        background: #e5e5e7;
     }
 
     .source-explanation {
@@ -1585,10 +1591,80 @@ onMounted(() => {
         background: rgba(28, 28, 30, 0.9);
         color: #fff;
     }
+}
 
-    .nutrition-back:hover,
-    .nutrition-menu:hover {
-        background: rgba(28, 28, 30, 1);
-    }
+/* Image Preview Modal */
+.image-preview-overlay {
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
+}
+
+.image-preview-modal {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.image-preview-header {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 10;
+}
+
+.image-preview-close {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
+}
+
+.image-preview-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.preview-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 12px;
+}
+
+.no-image-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: white;
+    text-align: center;
+}
+
+.no-image-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+    opacity: 0.7;
+}
+
+.no-image-placeholder p {
+    font-size: 18px;
+    opacity: 0.8;
+    margin: 0;
 }
 </style>

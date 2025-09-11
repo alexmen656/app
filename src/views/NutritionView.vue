@@ -2,7 +2,7 @@
     <div>
         <div v-if="product" class="nutrition-container">
             <div class="nutrition-header">
-                <div class="nutrition-image-wrap" :style="backgroundStyle">
+                <div class="nutrition-image-wrap" :style="backgroundStyle" @touchstart="handleTouchStart" @touchend="handleTouchEnd" @dblclick="showImagePreview">
                     <div class="statusbar-spacer"></div>
                     <div class="header-controls">
                         <button class="nutrition-back" @click="$router.go(-1)">
@@ -383,6 +383,26 @@
                 </div>
             </div>
         </div>
+
+        <!-- Image Preview Modal -->
+        <div v-if="showImageModal" class="modal-overlay image-preview-overlay" @click="showImageModal = false">
+            <div class="image-preview-modal" @click.stop>
+                <div class="image-preview-header">
+                    <button class="image-preview-close" @click="showImageModal = false">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="image-preview-content">
+                    <img v-if="productImage" :src="productImage" alt="Food image" class="preview-image"/>
+                    <div v-else class="no-image-placeholder">
+                        <div class="no-image-icon">📷</div>
+                        <p>{{ $t('nutrition.noImageAvailable') || 'No image available' }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -405,7 +425,13 @@ const amount = ref(1.0);
 const showFixModal = ref(false);
 const showDetailsModal = ref(false);
 const showSourceModal = ref(false);
+const showImageModal = ref(false);
 const editedProduct = ref({});
+const isLoading = ref(true);
+
+// Touch handling for double-tap
+const lastTap = ref(0);
+const tapTimeout = ref(null);
 const time = new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', hour12: false });
 
 // Computed property for editing the product name
@@ -682,6 +708,11 @@ onMounted(async () => {
             editedProduct.value = { ...product.value };
         }
     }
+    
+    // Prevent hover effects for a short time after loading
+    setTimeout(() => {
+        isLoading.value = false;
+    }, 300);
 });
 
 const backgroundStyle = computed(() => {
@@ -712,6 +743,10 @@ const backgroundStyle = computed(() => {
     };
 });
 
+const productImage = computed(() => {
+    return route.query.photo || product.value?.image;
+});
+
 const hasAdditionalNutrition = computed(() => {
     return product.value && (
         (product.value.fiber && product.value.fiber > 0) ||
@@ -735,6 +770,43 @@ function validateAmount() {
         amount.value = 0.1;
     }
     amount.value = Math.round(amount.value * 10) / 10;
+}
+
+function showImagePreview() {
+    if (productImage.value) {
+        showImageModal.value = true;
+    }
+}
+
+function handleTouchStart(event) {
+    // Prevent default to avoid interfering with other touch events
+    const now = Date.now();
+    const timeSinceLastTap = now - lastTap.value;
+    
+    if (timeSinceLastTap < 300 && timeSinceLastTap > 0) {
+        // Double tap detected
+        event.preventDefault();
+        if (tapTimeout.value) {
+            clearTimeout(tapTimeout.value);
+            tapTimeout.value = null;
+        }
+        showImagePreview();
+        lastTap.value = 0; // Reset to prevent triple tap
+    } else {
+        lastTap.value = now;
+    }
+}
+
+function handleTouchEnd(event) {
+    // Set a timeout to reset the tap if no second tap occurs
+    if (tapTimeout.value) {
+        clearTimeout(tapTimeout.value);
+    }
+    
+    tapTimeout.value = setTimeout(() => {
+        lastTap.value = 0;
+        tapTimeout.value = null;
+    }, 300);
 }
 
 function getSourceDisplay(source) {
@@ -896,6 +968,12 @@ async function saveAndReturn() {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    /* Prevent hover effects on initial load */
+    pointer-events: auto;
+}
+
+.nutrition-container.loading {
+    pointer-events: none;
 }
 
 .nutrition-header {
@@ -2184,5 +2262,85 @@ async function saveAndReturn() {
     .nutrition-menu:hover {
         background: rgba(28, 28, 30, 1);
     }
+}
+
+/* Image Preview Modal */
+.image-preview-overlay {
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
+}
+
+.image-preview-modal {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.image-preview-header {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 10;
+}
+
+.image-preview-close {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
+}
+
+.image-preview-close:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.05);
+}
+
+.image-preview-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.preview-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 12px;
+}
+
+.no-image-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: white;
+    text-align: center;
+}
+
+.no-image-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+    opacity: 0.7;
+}
+
+.no-image-placeholder p {
+    font-size: 18px;
+    opacity: 0.8;
+    margin: 0;
 }
 </style>
