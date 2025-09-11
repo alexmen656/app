@@ -151,6 +151,17 @@
     "manualEntry": "Entrada Manual",
     "visitOpenFoodFacts": "Visitar Open Food Facts"
   },
+  "addFood": {
+    "title": "Agregar Comida",
+    "scanner": {
+      "title": "Escanear Comida",
+      "description": "Usa la cámara para escanear códigos de barras o analizar fotos de comida"
+    },
+    "database": {
+      "title": "Base de Datos de Alimentos",
+      "description": "Navega y busca en nuestra completa base de datos de alimentos"
+    }
+  },
   "settings": {
     "dailyGoals": "Objetivos Diarios",
     "language": "Idioma",

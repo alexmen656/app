@@ -151,6 +151,17 @@
     "manualEntry": "Manual Entry",
     "visitOpenFoodFacts": "Visit Open Food Facts"
   },
+  "addFood": {
+    "title": "Add Food",
+    "scanner": {
+      "title": "Scan Food",
+      "description": "Use camera to scan barcodes or analyze food photos"
+    },
+    "database": {
+      "title": "Food Database",
+      "description": "Browse and search our comprehensive food database"
+    }
+  },
   "settings": {
     "dailyGoals": "Daily Goals",
     "language": "Language",

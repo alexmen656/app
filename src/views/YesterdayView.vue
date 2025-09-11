@@ -182,11 +182,14 @@
         </div>
 
         <BottomNavigation />
-        <div @click="openNativeScanner" class="add-button">
+        <div @click="showAddFoodModal" class="add-button">
             <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
                 <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
             </svg>
         </div>
+
+        <!-- Add Food Modal -->
+        <AddFoodModal :show="isAddFoodModalVisible" @close="closeAddFoodModal" @select-scanner="handleSelectScanner" @select-database="handleSelectDatabase" />
 
         <!-- Scan Limit Blocker -->
         <PremiumBlocker v-if="showScanLimitBlocker" feature="unlimited_food_scans"
@@ -210,6 +213,7 @@ import { StreakManager } from '../utils/widgetData'
 import { useBarcodeScanner } from '../composables/useBarcodeScanner'
 import PremiumBlocker from '../components/PremiumBlocker.vue'
 import BottomNavigation from '../components/BottomNavigation.vue'
+import AddFoodModal from '../components/AddFoodModal.vue'
 
 const router = useRouter()
 // @ts-ignore - t is used in template
@@ -218,6 +222,7 @@ const { startScanning, isProcessingPhoto, isProcessingLabel, checkScanLimit, get
 
 const showScanLimitBlocker = ref(false)
 const currentScanUsage = ref<any>(null)
+const isAddFoodModalVisible = ref(false)
 
 // Type definitions
 interface FoodItem {
@@ -258,6 +263,25 @@ async function loadYesterdayData() {
 
 function goToStreak() {
     router.push('/streak')
+}
+
+// Modal functions
+function showAddFoodModal() {
+    isAddFoodModalVisible.value = true
+}
+
+function closeAddFoodModal() {
+    isAddFoodModalVisible.value = false
+}
+
+async function handleSelectScanner() {
+    closeAddFoodModal()
+    await openNativeScanner()
+}
+
+function handleSelectDatabase() {
+    closeAddFoodModal()
+    router.push('/food-database')
 }
 
 // Scanner functions

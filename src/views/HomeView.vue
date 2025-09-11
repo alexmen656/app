@@ -144,21 +144,6 @@
             </div>
         </div>
 
-        <!-- Quick Add Section -->
-        <div class="quick-add-section">
-            <h3 class="section-title">{{ $t('home.quickAdd') }}</h3>
-            <div class="quick-add-buttons">
-                <button class="quick-add-btn" @click="goToFoodDatabase">
-                    <div class="quick-add-icon">🍎</div>
-                    <span>{{ $t('home.foodDatabase') }}</span>
-                </button>
-                <button class="quick-add-btn" @click="openNativeScanner">
-                    <div class="quick-add-icon">📱</div>
-                    <span>{{ $t('home.scanFood') }}</span>
-                </button>
-            </div>
-        </div>
-
         <!-- Recently Uploaded Section -->
         <div class="recent-section">
             <h3 class="section-title">{{ $t('home.recentlyUploaded') }}</h3>
@@ -222,11 +207,14 @@
         </div>
 
       <BottomNavigation />
-        <div @click="openNativeScanner" class="add-button">
+        <div @click="showAddFoodModal" class="add-button">
             <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
                 <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
             </svg>
         </div>
+
+        <!-- Add Food Modal -->
+        <AddFoodModal :show="isAddFoodModalVisible" @close="closeAddFoodModal" @select-scanner="handleSelectScanner" @select-database="handleSelectDatabase" />
 
         <!-- Scan Limit Blocker -->
         <PremiumBlocker v-if="showScanLimitBlocker" feature="unlimited_food_scans"
@@ -256,6 +244,7 @@ import { isPremiumUser, onPremiumStatusChange } from '../utils/premiumManager' /
 import { getLocalizedName } from '../utils/localization'
 import PremiumBlocker from '../components/PremiumBlocker.vue'
 import BottomNavigation from '../components/BottomNavigation.vue'
+import AddFoodModal from '../components/AddFoodModal.vue'
 
 const router = useRouter()
 const { t } = useI18n()
@@ -264,6 +253,7 @@ const { startScanning, isProcessingPhoto, isProcessingLabel, checkScanLimit, get
 const showPremiumBanner = ref(true)
 const showScanLimitBlocker = ref(false)
 const currentScanUsage = ref<any>(null)
+const isAddFoodModalVisible = ref(false)
 
 async function openNativeScanner() {
     try {
@@ -524,7 +514,22 @@ function goToPremium() {
     router.push('/upgrade')
 }
 
-function goToFoodDatabase() {
+// Modal functions
+function showAddFoodModal() {
+    isAddFoodModalVisible.value = true
+}
+
+function closeAddFoodModal() {
+    isAddFoodModalVisible.value = false
+}
+
+async function handleSelectScanner() {
+    closeAddFoodModal()
+    await openNativeScanner()
+}
+
+function handleSelectDatabase() {
+    closeAddFoodModal()
     router.push('/food-database')
 }
 
@@ -886,56 +891,6 @@ function handleTouchEnd(event: TouchEvent) {
     font-size: 20px;
     font-weight: 600;
     margin-bottom: 16px;
-}
-
-.quick-add-section {
-    margin-bottom: 32px;
-}
-
-.quick-add-buttons {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-}
-
-.quick-add-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: none;
-    border-radius: 15px;
-    padding: 20px 16px;
-    color: white;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    backdrop-filter: blur(10px);
-    min-height: 80px;
-}
-
-.quick-add-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateY(-2px);
-}
-
-.quick-add-btn:active {
-    transform: translateY(0px);
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.quick-add-icon {
-    font-size: 24px;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
 }
 
 .empty-state {

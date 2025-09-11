@@ -151,6 +151,17 @@
     "manualEntry": "Manuelle Eingabe",
     "visitOpenFoodFacts": "Open Food Facts besuchen"
   },
+  "addFood": {
+    "title": "Essen hinzufügen",
+    "scanner": {
+      "title": "Essen scannen",
+      "description": "Kamera verwenden um Barcodes zu scannen oder Essen zu analysieren"
+    },
+    "database": {
+      "title": "Lebensmittel-Datenbank",
+      "description": "Durchsuche unsere umfassende Lebensmittel-Datenbank"
+    }
+  },
   "settings": {
     "dailyGoals": "Tagesziele",
     "language": "Sprache",
