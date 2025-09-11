@@ -190,8 +190,8 @@
                     </div>
                 </div>
 
-                <!-- Analysis confidence and notes -->
-                <div class="nutrition-analysis" v-if="product.type === 'food' && (product.confidence || product.notes)">
+                <!-- Analysis confidence and notes for food and manual entries -->
+                <div class="nutrition-analysis" v-if="(product.type === 'food' || product.type === 'manual') && (product.confidence || product.notes)">
                     <div class="analysis-confidence" v-if="product.confidence">
                         <div class="confidence-label">{{ $t('nutrition.analysisConfidence') }}</div>
                         <div class="confidence-badge" :class="product.confidence">
@@ -206,6 +206,11 @@
                     <div class="analysis-error" v-if="product.analysisError">
                         <div class="error-icon">⚠️</div>
                         <div class="error-text">{{ $t('nutrition.analysisError') }}</div>
+                    </div>
+                    <!-- Original description for manual entries -->
+                    <div class="original-description" v-if="product.type === 'manual' && product.originalText">
+                        <div class="description-label">{{ $t('nutrition.originalDescription') }}:</div>
+                        <div class="description-text">{{ product.originalText }}</div>
                     </div>
                 </div>
 
@@ -357,9 +362,20 @@
                             <span>{{ $t('nutrition.accuracyWarning') }}</span>
                         </div>
                     </div>
-                    <div v-else>
+                    <div v-else-if="product.type === 'manual' || product.source === 'manual'">
                         <h4>{{ $t('nutrition.manualEntry') }}</h4>
                         <p>{{ $t('nutrition.sourceExplanation.manual') }}</p>
+                        <div class="accuracy-warning">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="#f59e0b">
+                                <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z" />
+                                <path d="M12 8v4M12 16h.01" stroke="#fff" stroke-width="2" stroke-linecap="round" />
+                            </svg>
+                            <span>{{ $t('nutrition.aiAccuracyWarning') }}</span>
+                        </div>
+                    </div>
+                    <div v-else>
+                        <h4>{{ $t('nutrition.unknownSource') }}</h4>
+                        <p>{{ $t('nutrition.sourceExplanation.unknown') }}</p>
                     </div>
                 </div>
                 <div class="modal-actions">
@@ -513,7 +529,7 @@ const fetchProduct = async (barcode) => {
     }
 };
 
-onMounted(() => {
+onMounted(async () => {
     if (route.query.barcode) {
         fetchProduct(route.query.barcode);
     } else if (route.query.foodData) {
@@ -563,6 +579,57 @@ onMounted(() => {
                 healthScore: 5,
                 ingredients: [],
                 type: 'food',
+                analysisError: true
+            };
+            editedProduct.value = { ...product.value };
+        }
+    } else if (route.query.manualData) {
+        try {
+            const manualData = JSON.parse(route.query.manualData);
+            console.log('🔍 DEBUG: Received manualData:', manualData);
+
+            const total = manualData.total || {};
+
+            product.value = {
+                names: manualData.names || { de: manualData.name || 'Manueller Eintrag', en: manualData.name || 'Manual Entry', es: manualData.name || 'Entrada Manual' },
+                image: route.query.photo,
+                calories: total.calories || 0,
+                protein: total.protein || 0,
+                carbs: total.carbs || 0,
+                fats: total.fat || 0,
+                fiber: total.fiber || 0,
+                sugar: total.sugar || 0,
+                salt: total.salt || 0,
+                healthScore: manualData.healthScore || 7,
+                ingredients: manualData.foods ? manualData.foods.map(f => `${getLocalizedName(f)} (${getLocalizedAmount(f) || 'ca. 100g'})`) : [],
+                type: 'manual',
+                source: 'manual',
+                confidence: manualData.confidence || 'medium',
+                notes: manualData.notes || null,
+                foods: manualData.foods || [],
+                originalText: manualData.originalText || null,
+                analysisError: manualData.error || false
+            };
+
+            console.log('🔍 DEBUG: Final manual product value:', product.value);
+            editedProduct.value = { ...product.value };
+        } catch (e) {
+            console.error('Error parsing manual data:', e);
+
+            product.value = {
+                names: { de: 'Manueller Eintrag', en: 'Manual Entry', es: 'Entrada Manual' },
+                image: route.query.photo,
+                calories: 0,
+                protein: 0,
+                carbs: 0,
+                fats: 0,
+                fiber: 0,
+                sugar: 0,
+                salt: 0,
+                healthScore: 5,
+                ingredients: [],
+                type: 'manual',
+                source: 'manual',
                 analysisError: true
             };
             editedProduct.value = { ...product.value };
@@ -677,6 +744,7 @@ function getSourceDisplay(source) {
         'food': 'AI',
         'AI': 'AI',
         'Manual': 'Manual',
+        'manual': 'Manual',
         'OpenFoodFacts': 'Open Food Facts',
         'API': 'Database'
     };
@@ -1350,6 +1418,30 @@ async function saveAndReturn() {
     line-height: 1.4;
 }
 
+.original-description {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #e1e5e9;
+}
+
+.description-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #666;
+    margin-bottom: 6px;
+}
+
+.description-text {
+    font-size: 14px;
+    line-height: 1.4;
+    color: #333;
+    font-style: italic;
+    background: #f8f9fa;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border-left: 3px solid #007aff;
+}
+
 /* Source Information */
 .nutrition-source {
     background: #f8f9fa;
@@ -1929,6 +2021,16 @@ async function saveAndReturn() {
 
     .analysis-error {
         background: #3a1a1a;
+    }
+
+    .description-label {
+        color: #8e8e93;
+    }
+
+    .description-text {
+        color: #fff;
+        background: #2c2c2e;
+        border-color: #007aff;
     }
 
     .nutrition-source {

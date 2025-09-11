@@ -107,6 +107,7 @@
     "medium": "Medium",
     "low": "Low",
     "notes": "Notes",
+    "originalDescription": "Original Description",
     "analysisError": "Automatic analysis could not be performed. Please correct the values manually.",
     "fixResults": "Fix Results",
     "done": "Done",
@@ -143,12 +144,15 @@
       "database": "This data comes from our comprehensive product database with verified nutrition information.",
       "openFoodFacts": "This nutritional data comes from Open Food Facts, a collaborative, free and open database of food products from around the world. The information is contributed by users and verified by the community.",
       "ai": "This analysis was performed using artificial intelligence to identify foods and estimate nutritional values.",
-      "manual": "This information was entered manually and may need verification."
+      "manual": "This entry was created through AI analysis of a text description. The nutritional values were automatically estimated.",
+      "unknown": "The source of this information is unknown."
     },
     "accuracyWarning": "AI analysis results may not be 100% accurate. Please verify important values.",
+    "aiAccuracyWarning": "AI text analysis results may not be 100% accurate. Please verify important values.",
     "database": "Database",
     "aiAnalysis": "AI Analysis", 
     "manualEntry": "Manual Entry",
+    "unknownSource": "Unknown Source",
     "visitOpenFoodFacts": "Visit Open Food Facts"
   },
   "addFood": {

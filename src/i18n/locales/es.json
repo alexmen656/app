@@ -107,6 +107,7 @@
     "medium": "Media",
     "low": "Baja",
     "notes": "Notas",
+    "originalDescription": "Descripción Original",
     "analysisError": "No se pudo realizar el análisis automático. Por favor corrija los valores manualmente.",
     "fixResults": "Corregir Resultados",
     "done": "Listo",
@@ -143,12 +144,15 @@
       "database": "Estos datos provienen de nuestra completa base de datos de productos con información nutricional verificada.",
       "openFoodFacts": "Esta información nutricional proviene de Open Food Facts, una base de datos colaborativa, gratuita y abierta de productos alimentarios de todo el mundo. La información es aportada por usuarios y verificada por la comunidad.",
       "ai": "Este análisis fue realizado usando inteligencia artificial para identificar alimentos y estimar valores nutricionales.",
-      "manual": "Esta información fue ingresada manualmente y puede necesitar verificación."
+      "manual": "Esta entrada fue creada a través del análisis de IA de una descripción de texto. Los valores nutricionales fueron estimados automáticamente.",
+      "unknown": "La fuente de esta información es desconocida."
     },
     "accuracyWarning": "Los resultados del análisis de IA pueden no ser 100% precisos. Por favor verifique los valores importantes.",
+    "aiAccuracyWarning": "Los resultados del análisis de texto con IA pueden no ser 100% precisos. Por favor verifique los valores importantes.",
     "database": "Base de datos",
     "aiAnalysis": "Análisis IA", 
     "manualEntry": "Entrada Manual",
+    "unknownSource": "Fuente Desconocida",
     "visitOpenFoodFacts": "Visitar Open Food Facts"
   },
   "addFood": {
