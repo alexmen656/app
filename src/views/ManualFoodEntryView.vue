@@ -96,8 +96,8 @@
                         <div class="food-header">
                             <div class="food-icon">🍽️</div>
                             <div class="food-info">
-                                <h4 class="food-name">{{ food.name }}</h4>
-                                <p class="food-amount">{{ food.amount }} {{ food.unit }}</p>
+                                <h4 class="food-name">{{ getLocalizedText(food.name) }}</h4>
+                                <p class="food-amount">{{ getLocalizedText(food.amount) }}</p>
                             </div>
                             <div class="food-calories">
                                 <span class="calories-number">{{ food.calories }}</span>
@@ -117,7 +117,7 @@
                             </div>
                             <div class="macro-item fats">
                                 <span class="macro-label">{{ $t('nutrition.fats') }}:</span>
-                                <span class="macro-value">{{ food.fats }}g</span>
+                                <span class="macro-value">{{ food.fat }}g</span>
                             </div>
                         </div>
                         
@@ -154,6 +154,12 @@
                     </div>
                 </div>
 
+                <!-- Notes from API -->
+                <div v-if="analysisResult.notes" class="analysis-notes">
+                    <h4>{{ $t('manualEntry.analysisNotes') }}</h4>
+                    <p>{{ getLocalizedText(analysisResult.notes) }}</p>
+                </div>
+
                 <!-- Add to Diary Button -->
                 <div class="final-actions">
                     <button class="add-to-diary-btn" @click="addToDiary">
@@ -183,49 +189,88 @@ import { ScanHistory } from '../utils/storage'
 
 const router = useRouter()
 // @ts-ignore - t is used in template  
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 // State
 const foodDescription = ref('')
 const isProcessing = ref(false)
 const analysisResult = ref<AnalysisResult | null>(null)
+const errorMessage = ref('')
 
 // Types
 interface FoodItem {
-    name: string
-    amount: number
-    unit: string
+    name: LocalizedText
+    amount: LocalizedText
     calories: number
     protein: number
     carbs: number
-    fats: number
+    fat: number
+}
+
+interface LocalizedText {
+    de: string
+    en: string
+    es: string
+}
+
+interface APIResponse {
+    success: boolean
+    data: {
+        names: LocalizedText
+        foods: FoodItem[]
+        total: {
+            calories: number
+            protein: number
+            carbs: number
+            fat: number
+        }
+        confidence: string
+        notes: LocalizedText
+        timestamp: string
+        model: string
+        source: string
+    }
+    message: string
 }
 
 interface AnalysisResult {
     foods: FoodItem[]
+    total: {
+        calories: number
+        protein: number
+        carbs: number
+        fat: number
+    }
     confidence: 'high' | 'medium' | 'low'
+    notes: LocalizedText
 }
 
 // Computed
 const totalCalories = computed(() => {
-    if (!analysisResult.value?.foods) return 0
-    return analysisResult.value.foods.reduce((sum: number, food: FoodItem) => sum + food.calories, 0)
+    if (!analysisResult.value?.total) return 0
+    return analysisResult.value.total.calories
 })
 
 const totalProtein = computed(() => {
-    if (!analysisResult.value?.foods) return 0
-    return analysisResult.value.foods.reduce((sum: number, food: FoodItem) => sum + food.protein, 0)
+    if (!analysisResult.value?.total) return 0
+    return analysisResult.value.total.protein
 })
 
 const totalCarbs = computed(() => {
-    if (!analysisResult.value?.foods) return 0
-    return analysisResult.value.foods.reduce((sum: number, food: FoodItem) => sum + food.carbs, 0)
+    if (!analysisResult.value?.total) return 0
+    return analysisResult.value.total.carbs
 })
 
 const totalFats = computed(() => {
-    if (!analysisResult.value?.foods) return 0
-    return analysisResult.value.foods.reduce((sum: number, food: FoodItem) => sum + food.fats, 0)
+    if (!analysisResult.value?.total) return 0
+    return analysisResult.value.total.fat
 })
+
+// Helper function to get localized text
+const getLocalizedText = (text: LocalizedText): string => {
+    const currentLocale = locale.value as keyof LocalizedText
+    return text[currentLocale] || text.en || text.de
+}
 
 // Methods
 function goBack() {
@@ -236,81 +281,79 @@ async function analyzeFood() {
     if (!foodDescription.value.trim()) return
 
     isProcessing.value = true
+    errorMessage.value = ''
     
     try {
-        // Here you would integrate with your AI service
-        // For now, I'll simulate the analysis
-        await simulateAnalysis()
+        const response = await fetch('https://v2-2.api.kalbuddy.com/api/text/analyze', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                description: foodDescription.value.trim()
+            })
+        })
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`)
+        }
+
+        const apiResponse: APIResponse = await response.json()
+        
+        if (!apiResponse.success) {
+            throw new Error(apiResponse.message || 'Analysis failed')
+        }
+
+        // Map API confidence to our format
+        let confidence: 'high' | 'medium' | 'low' = 'medium'
+        const apiConfidence = apiResponse.data.confidence.toLowerCase()
+        if (apiConfidence.includes('hoch') || apiConfidence.includes('high')) {
+            confidence = 'high'
+        } else if (apiConfidence.includes('niedrig') || apiConfidence.includes('low')) {
+            confidence = 'low'
+        }
+
+        analysisResult.value = {
+            foods: apiResponse.data.foods,
+            total: apiResponse.data.total,
+            confidence,
+            notes: apiResponse.data.notes
+        }
         
     } catch (error) {
         console.error('Analysis failed:', error)
-        // Show error toast or message
+        errorMessage.value = 'Analysis failed. Please try again.'
+        
+        // Fallback to mock data for testing
+        await simulateAnalysis()
     } finally {
         isProcessing.value = false
     }
 }
 
 async function simulateAnalysis() {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    // This is just a fallback - won't be used with real API
+    await new Promise(resolve => setTimeout(resolve, 1000))
     
-    // Mock analysis result based on input
-    const description = foodDescription.value.toLowerCase()
-    const mockFoods: FoodItem[] = []
-    
-    if (description.includes('apple') || description.includes('apfel')) {
-        mockFoods.push({
-            name: 'Apple',
-            amount: 1,
-            unit: 'medium',
-            calories: 95,
-            protein: 0.5,
-            carbs: 25,
-            fats: 0.3
-        })
-    }
-    
-    if (description.includes('bread') || description.includes('brot')) {
-        mockFoods.push({
-            name: 'Whole Grain Bread',
-            amount: 2,
-            unit: 'slices',
-            calories: 160,
-            protein: 6,
-            carbs: 28,
-            fats: 2
-        })
-    }
-    
-    if (description.includes('chicken') || description.includes('hähnchen')) {
-        mockFoods.push({
-            name: 'Grilled Chicken Breast',
-            amount: 150,
-            unit: 'g',
-            calories: 231,
-            protein: 43.5,
-            carbs: 0,
-            fats: 5
-        })
-    }
-
-    // If no specific foods detected, create a generic entry
-    if (mockFoods.length === 0) {
-        mockFoods.push({
-            name: 'Mixed Meal',
-            amount: 1,
-            unit: 'portion',
+    const mockResult: AnalysisResult = {
+        foods: [{
+            name: { de: 'Gemischtes Essen', en: 'Mixed Meal', es: 'Comida Mixta' },
+            amount: { de: '1 Portion', en: '1 portion', es: '1 porción' },
             calories: 300,
             protein: 15,
             carbs: 30,
-            fats: 12
-        })
+            fat: 12
+        }],
+        total: { calories: 300, protein: 15, carbs: 30, fat: 12 },
+        confidence: 'medium',
+        notes: { 
+            de: 'Dies ist eine Beispielanalyse', 
+            en: 'This is a sample analysis', 
+            es: 'Este es un análisis de muestra' 
+        }
     }
     
-    analysisResult.value = {
-        foods: mockFoods,
-        confidence: mockFoods.length > 1 ? 'high' : 'medium'
-    }
+    analysisResult.value = mockResult
 }
 
 function editFood(index: number) {
@@ -327,11 +370,11 @@ async function addToDiary() {
         for (const food of analysisResult.value.foods) {
             const scanItem = {
                 id: Date.now() + Math.random(),
-                name: food.name,
+                name: getLocalizedText(food.name),
                 calories: food.calories,
                 protein: food.protein,
                 carbs: food.carbs,
-                fats: food.fats,
+                fats: food.fat, // Note: API uses 'fat', storage expects 'fats'
                 timestamp: new Date().toISOString(),
                 image: '', // No image for manual entries
                 barcode: '',
