@@ -78,24 +78,8 @@
                 <span class="beta-badge">BETA</span>
             </div>
             <div class="apple-health-trend-container">
-                <div class="trend-insight">
-                    <div class="trend-icon">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffa726">
-                            <path d="M12 2L13.09 8.26L22 9L17 14L18.18 21L12 17.77L5.82 21L7 14L2 9L10.91 8.26L12 2Z"/>
-                        </svg>
-                    </div>
-                    <div class="trend-content">
-                        <div class="trend-title">{{ $t('detail.carbs.title') }}</div>
-                        <div class="trend-description">
-                            {{ $t('detail.trends.stable', { period: $t('detail.trends.days') }) }}
-                        </div>
-                    </div>
-                </div>
                 <div class="trend-chart-wrapper">
-                    <AppleHealthTrendChart 
-                        :chart-data="carbsChartData"
-                        :selected-period="selectedPeriod"
-                    />
+                    <AppleHealthTrendChart :chart-data="carbsChartData" :selected-period="selectedPeriod" />
                 </div>
             </div>
         </div>
@@ -186,10 +170,10 @@ const selectedPeriodLabel = computed(() => {
 })
 
 const trendComparisonText = computed(() => {
-    const current = selectedPeriod.value === 'week' ? 'Diese Woche' : 
-                   selectedPeriod.value === 'month' ? 'Dieser Monat' : 'Dieses Jahr'
-    const previous = selectedPeriod.value === 'week' ? 'vs. Letzte Woche' : 
-                    selectedPeriod.value === 'month' ? 'vs. Letzter Monat' : 'vs. Letztes Jahr'
+    const current = selectedPeriod.value === 'week' ? 'Diese Woche' :
+        selectedPeriod.value === 'month' ? 'Dieser Monat' : 'Dieses Jahr'
+    const previous = selectedPeriod.value === 'week' ? 'vs. Letzte Woche' :
+        selectedPeriod.value === 'month' ? 'vs. Letzter Monat' : 'vs. Letztes Jahr'
     return `${current} ${previous}`
 })
 
@@ -230,7 +214,7 @@ const trendChartOptions = computed(() => ({
         axisTicks: { show: false }
     },
     yaxis: {
-        labels: { 
+        labels: {
             style: { colors: 'rgba(255, 255, 255, 0.7)', fontSize: '12px' },
             formatter: (value: number) => `${Math.round(value)}g`
         }
@@ -303,7 +287,7 @@ const chartOptions = computed(() => ({
         axisBorder: { show: false },
         axisTicks: { show: false }
     },
-   yaxis: {
+    yaxis: {
         labels: { show: false }
     },
     grid: { borderColor: 'rgba(255, 255, 255, 0.1)', strokeDashArray: 3 },
@@ -389,16 +373,16 @@ function aggregateDataByPeriod(data: Array<{ date: string; carbs: number }>) {
     if (selectedPeriod.value === 'week') {
         return data // No aggregation needed for week
     }
-    
+
     const aggregated: Array<{ date: string; carbs: number }> = []
-    
+
     if (selectedPeriod.value === 'month') {
         // Aggregate by weeks (4 weeks)
         for (let week = 0; week < 4; week++) {
             const weekStart = week * 7
             const weekEnd = Math.min(weekStart + 7, data.length)
             const weekData = data.slice(weekStart, weekEnd)
-            
+
             if (weekData.length > 0) {
                 const avgCarbs = weekData.reduce((sum, item) => sum + item.carbs, 0) / weekData.length
                 const weekDate = weekData[Math.floor(weekData.length / 2)].date // Use middle date as representative
@@ -414,7 +398,7 @@ function aggregateDataByPeriod(data: Array<{ date: string; carbs: number }>) {
             const quarterStart = quarter * Math.floor(data.length / 4)
             const quarterEnd = quarter === 3 ? data.length : (quarter + 1) * Math.floor(data.length / 4)
             const quarterData = data.slice(quarterStart, quarterEnd)
-            
+
             if (quarterData.length > 0) {
                 const avgCarbs = quarterData.reduce((sum, item) => sum + item.carbs, 0) / quarterData.length
                 const quarterDate = quarterData[Math.floor(quarterData.length / 2)].date
@@ -425,7 +409,7 @@ function aggregateDataByPeriod(data: Array<{ date: string; carbs: number }>) {
             }
         }
     }
-    
+
     return aggregated
 }
 
@@ -519,7 +503,7 @@ async function loadData() {
         // Create trend comparison data
         const trendComparison = []
         const maxLength = Math.max(currentPeriodData.length, previousPeriodData.length)
-        
+
         for (let i = 0; i < maxLength; i++) {
             trendComparison.push({
                 date: currentPeriodData[i]?.date || '',
@@ -862,7 +846,7 @@ watch(selectedPeriod, () => {
 .apple-health-trend-container {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 20px;
-    padding: 20px;
+    padding:8px;
     backdrop-filter: blur(10px);
 }
 
@@ -908,10 +892,6 @@ watch(selectedPeriod, () => {
     font-size: 14px;
     color: rgba(255, 255, 255, 0.8);
     line-height: 1.4;
-}
-
-.trend-chart-wrapper {
-    margin-top: 20px;
 }
 
 .trend-chart-labels {

@@ -13,7 +13,7 @@
 
         <!-- Current Value Card -->
         <div class="current-value-card">
-             <div class="progress-ring-large">
+            <div class="progress-ring-large">
                 <svg class="progress-svg-large" width="120" height="120" viewBox="0 0 120 120">
                     <circle cx="60" cy="60" r="50" stroke="#2a2d37" stroke-width="8" fill="none" />
                     <circle cx="60" cy="60" r="50" stroke="#ff6b6b" stroke-width="8" fill="none"
@@ -78,29 +78,8 @@
                 <span class="beta-badge">BETA</span>
             </div>
             <div class="apple-health-trend-container">
-                <div class="trend-insight" @click="onTrendInsightClick">
-                    <div class="trend-icon">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="#ff6b6b">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                    </div>
-                    <div class="trend-content">
-                        <div class="trend-title">{{ $t('detail.protein.title') }}</div>
-                        <div class="trend-description">
-                            {{ trendInsightText }}
-                        </div>
-                    </div>
-                    <div class="trend-arrow">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="rgba(255, 255, 255, 0.5)">
-                            <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z"/>
-                        </svg>
-                    </div>
-                </div>
                 <div class="trend-chart-wrapper">
-                    <AppleHealthTrendChart 
-                        :chart-data="proteinChartData"
-                        :selected-period="selectedPeriod"
-                    />
+                    <AppleHealthTrendChart :chart-data="proteinChartData" :selected-period="selectedPeriod" />
                 </div>
             </div>
         </div>
@@ -134,17 +113,11 @@
                 🐛 Debug Analytics - Protein
                 <span class="debug-badge">DEV</span>
             </h3>
-            
+
             <div class="debug-charts-grid">
-                <DebugChart 
-                    title="Protein Trends" 
-                    type="trend" 
-                />
-                
-                <DebugChart 
-                    title="Usage Pattern" 
-                    type="usage" 
-                />
+                <DebugChart title="Protein Trends" type="trend" />
+
+                <DebugChart title="Usage Pattern" type="usage" />
             </div>
         </div>
 
@@ -216,10 +189,10 @@ const selectedPeriodLabel = computed(() => {
 })
 
 const trendComparisonText = computed(() => {
-    const current = selectedPeriod.value === 'week' ? 'Diese Woche' : 
-                   selectedPeriod.value === 'month' ? 'Dieser Monat' : 'Dieses Jahr'
-    const previous = selectedPeriod.value === 'week' ? 'vs. Letzte Woche' : 
-                    selectedPeriod.value === 'month' ? 'vs. Letzter Monat' : 'vs. Letztes Jahr'
+    const current = selectedPeriod.value === 'week' ? 'Diese Woche' :
+        selectedPeriod.value === 'month' ? 'Dieser Monat' : 'Dieses Jahr'
+    const previous = selectedPeriod.value === 'week' ? 'vs. Letzte Woche' :
+        selectedPeriod.value === 'month' ? 'vs. Letzter Monat' : 'vs. Letztes Jahr'
     return `${current} ${previous}`
 })
 
@@ -260,7 +233,7 @@ const trendChartOptions = computed(() => ({
         axisTicks: { show: false }
     },
     yaxis: {
-        labels: { 
+        labels: {
             style: { colors: 'rgba(255, 255, 255, 0.7)', fontSize: '12px' },
             formatter: (value: number) => `${Math.round(value)}g`
         }
@@ -382,41 +355,6 @@ const daysOnTrack = computed(() => {
     return chartData.value.filter(item => item.protein >= goalValue.value).length.toString()
 })
 
-// Apple Health Style Trend Chart Computed Properties
-const trendInsightText = computed(() => {
-    if (chartData.value.length < 2) {
-        return t('detail.trends.noData')
-    }
-    
-    const recent = chartData.value.slice(-3)
-    const older = chartData.value.slice(0, -3)
-    
-    if (recent.length === 0 || older.length === 0) {
-        return t('detail.trends.insufficientData')
-    }
-    
-    const recentAvg = recent.reduce((sum, item) => sum + item.protein, 0) / recent.length
-    const olderAvg = older.reduce((sum, item) => sum + item.protein, 0) / older.length
-    
-    const trend = recentAvg - olderAvg
-    const periodText = selectedPeriod.value === 'week' ? t('detail.trends.days') : 
-                     selectedPeriod.value === 'month' ? t('detail.trends.weeks') : t('detail.trends.months')
-    
-    if (Math.abs(trend) < 5) {
-        return t('detail.trends.stable', { period: periodText })
-    } else if (trend > 0) {
-        return t('detail.trends.increased', { period: periodText })
-    } else {
-        return t('detail.trends.decreased', { period: periodText })
-    }
-})
-
-// Functions
-function onTrendInsightClick() {
-    // Could navigate to more detailed trend analysis
-    console.log('Trend insight clicked')
-}
-
 function goBack() {
     router.back()
 }
@@ -453,16 +391,16 @@ function aggregateDataByPeriod(data: Array<{ date: string; protein: number }>) {
     if (selectedPeriod.value === 'week') {
         return data // No aggregation needed for week
     }
-    
+
     const aggregated: Array<{ date: string; protein: number }> = []
-    
+
     if (selectedPeriod.value === 'month') {
         // Aggregate by weeks (4 weeks)
         for (let week = 0; week < 4; week++) {
             const weekStart = week * 7
             const weekEnd = Math.min(weekStart + 7, data.length)
             const weekData = data.slice(weekStart, weekEnd)
-            
+
             if (weekData.length > 0) {
                 const avgProtein = weekData.reduce((sum, item) => sum + item.protein, 0) / weekData.length
                 const weekDate = weekData[Math.floor(weekData.length / 2)].date // Use middle date as representative
@@ -478,7 +416,7 @@ function aggregateDataByPeriod(data: Array<{ date: string; protein: number }>) {
             const quarterStart = quarter * Math.floor(data.length / 4)
             const quarterEnd = quarter === 3 ? data.length : (quarter + 1) * Math.floor(data.length / 4)
             const quarterData = data.slice(quarterStart, quarterEnd)
-            
+
             if (quarterData.length > 0) {
                 const avgProtein = quarterData.reduce((sum, item) => sum + item.protein, 0) / quarterData.length
                 const quarterDate = quarterData[Math.floor(quarterData.length / 2)].date
@@ -489,7 +427,7 @@ function aggregateDataByPeriod(data: Array<{ date: string; protein: number }>) {
             }
         }
     }
-    
+
     return aggregated
 }
 
@@ -583,7 +521,7 @@ async function loadData() {
         // Create trend comparison data
         const trendComparison = []
         const maxLength = Math.max(currentPeriodData.length, previousPeriodData.length)
-        
+
         for (let i = 0; i < maxLength; i++) {
             trendComparison.push({
                 date: currentPeriodData[i]?.date || '',
@@ -600,7 +538,7 @@ async function loadData() {
 
 onMounted(() => {
     loadData()
-    
+
     // Initialize debug mode
     initializeDebugMode().then(() => {
         showDebugInfo.value = isDebugMode.value
@@ -935,7 +873,7 @@ watch(isDebugMode, (newValue) => {
 .apple-health-trend-container {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 20px;
-    padding: 20px;
+    padding: 8px;
     backdrop-filter: blur(10px);
 }
 
@@ -990,10 +928,6 @@ watch(isDebugMode, (newValue) => {
 
 .trend-insight:hover .trend-arrow {
     opacity: 1;
-}
-
-.trend-chart-wrapper {
-    margin-top: 20px;
 }
 
 .trend-chart-labels {
