@@ -23,6 +23,9 @@ export interface DayData {
 export interface WeeklyData {
   day: string;
   calories: number;
+  protein: number;
+  carbs: number;
+  fats: number;
 }
 
 export interface AnalyticsData {
@@ -220,7 +223,10 @@ export class AnalyticsManager {
           });
           periodData.push({
             day: slot.label,
-            calories: Math.round(slotCalories)
+            calories: Math.round(slotCalories),
+            protein: 0, // Hourly protein data would need additional aggregation
+            carbs: 0,   // Hourly carbs data would need additional aggregation  
+            fats: 0     // Hourly fats data would need additional aggregation
           });
           console.log('📊 Final slot data:', slot.label, 'total:', Math.round(slotCalories), 'kcal');
         });
@@ -234,7 +240,10 @@ export class AnalyticsManager {
           const dayData = await this.getDayData(date);
           periodData.push({
             day: dayNames[date.getDay()],
-            calories: dayData.calories
+            calories: dayData.calories,
+            protein: dayData.protein,
+            carbs: dayData.carbs,
+            fats: dayData.fats
           });
         }
         break;
@@ -248,6 +257,9 @@ export class AnalyticsManager {
           startDate.setDate(startDate.getDate() - 6);
           
           let totalCalories = 0;
+          let totalProtein = 0;
+          let totalCarbs = 0;
+          let totalFats = 0;
           let daysCount = 0;
           
           for (let j = 0; j < 7; j++) {
@@ -255,15 +267,24 @@ export class AnalyticsManager {
             date.setDate(startDate.getDate() + j);
             const dayData = await this.getDayData(date);
             totalCalories += dayData.calories;
+            totalProtein += dayData.protein;
+            totalCarbs += dayData.carbs;
+            totalFats += dayData.fats;
             if (dayData.calories > 0) daysCount++;
           }
           
           const avgCalories = daysCount > 0 ? Math.round(totalCalories / 7) : 0;
+          const avgProtein = daysCount > 0 ? Math.round(totalProtein / 7) : 0;
+          const avgCarbs = daysCount > 0 ? Math.round(totalCarbs / 7) : 0;
+          const avgFats = daysCount > 0 ? Math.round(totalFats / 7) : 0;
           const weekLabel = `W${4-i}`;
           
           periodData.push({
             day: weekLabel,
-            calories: avgCalories
+            calories: avgCalories,
+            protein: avgProtein,
+            carbs: avgCarbs,
+            fats: avgFats
           });
         }
         break;
@@ -278,6 +299,9 @@ export class AnalyticsManager {
           // Calculate average for the month
           const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
           let totalCalories = 0;
+          let totalProtein = 0;
+          let totalCarbs = 0;
+          let totalFats = 0;
           let daysCount = 0;
           
           for (let day = 1; day <= daysInMonth; day++) {
@@ -285,15 +309,24 @@ export class AnalyticsManager {
             if (dayDate <= new Date()) { // Only include past days
               const dayData = await this.getDayData(dayDate);
               totalCalories += dayData.calories;
+              totalProtein += dayData.protein;
+              totalCarbs += dayData.carbs;
+              totalFats += dayData.fats;
               if (dayData.calories > 0) daysCount++;
             }
           }
           
           const avgCalories = daysCount > 0 ? Math.round(totalCalories / Math.max(daysCount, 1)) : 0;
+          const avgProtein = daysCount > 0 ? Math.round(totalProtein / Math.max(daysCount, 1)) : 0;
+          const avgCarbs = daysCount > 0 ? Math.round(totalCarbs / Math.max(daysCount, 1)) : 0;
+          const avgFats = daysCount > 0 ? Math.round(totalFats / Math.max(daysCount, 1)) : 0;
           
           periodData.push({
             day: monthNames[date.getMonth()],
-            calories: avgCalories
+            calories: avgCalories,
+            protein: avgProtein,
+            carbs: avgCarbs,
+            fats: avgFats
           });
         }
         break;

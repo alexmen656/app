@@ -286,6 +286,11 @@
     "protein": "Protein",
     "carbs": "Carbs",
     "fats": "Fats",
+    "trendAnalysis": "Trend Analysis",
+    "caloriesTrend": "Calories Trend",
+    "proteinTrend": "Protein Trend",
+    "carbsTrend": "Carbs Trend",
+    "fatsTrend": "Fats Trend",
     "bmiExplanation": {
       "title": "About BMI",
       "whatIs": "What is BMI?",

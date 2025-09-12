@@ -286,6 +286,11 @@
     "protein": "Proteína",
     "carbs": "Carbohidratos",
     "fats": "Grasas",
+    "trendAnalysis": "Análisis de Tendencias",
+    "caloriesTrend": "Tendencia de Calorías",
+    "proteinTrend": "Tendencia de Proteína",
+    "carbsTrend": "Tendencia de Carbohidratos",
+    "fatsTrend": "Tendencia de Grasas",
     "bmiExplanation": {
       "title": "Acerca del IMC",
       "whatIs": "¿Qué es el IMC?",

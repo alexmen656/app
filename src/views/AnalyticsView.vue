@@ -62,6 +62,119 @@
       <CalorieChart v-else :data="getChartData()" :period="selectedPeriod" :goal="2500" />
     </div>
 
+    <!-- Beta Trend Charts Slider (only visible for week, month, year periods) -->
+    <div v-if="selectedPeriod !== 'day'" class="trend-charts-slider-section">
+      <div class="trend-slider-header">
+        <h3 class="section-title">{{ $t('analytics.trendAnalysis') }}</h3>
+        <span class="beta-badge">BETA</span>
+      </div>
+      
+      <div class="trend-charts-container">
+        <div class="trend-charts-slider" :style="{ transform: `translateX(-${currentTrendIndex * 100}%)` }">
+          <!-- Calories Trend Chart -->
+          <div class="trend-chart-item">
+            <div class="trend-chart-header">
+              <div class="trend-icon calories">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+              </div>
+              <div class="trend-chart-title">
+                <h4>{{ $t('analytics.caloriesTrend') }}</h4>
+                <span class="trend-period">{{ selectedPeriodLabel }}</span>
+              </div>
+            </div>
+            <div class="trend-chart-wrapper">
+              <AppleHealthTrendChart 
+                :chart-data="caloriesTrendData"
+                :selected-period="selectedPeriod"
+                color="#ff6b35"
+              />
+            </div>
+          </div>
+
+          <!-- Protein Trend Chart -->
+          <div class="trend-chart-item">
+            <div class="trend-chart-header">
+              <div class="trend-icon protein">
+                <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+                  <path fill="currentColor" d="M224 329.2C224 337.7 220.6 345.8 214.6 351.8L187.8 378.6C175.5 390.9 155.3 390 138.4 385.8C133.8 384.7 128.9 384 123.9 384C90.8 384 63.9 410.9 63.9 444C63.9 477.1 90.8 504 123.9 504C130.2 504 135.9 509.7 135.9 516C135.9 549.1 162.8 576 195.9 576C229 576 255.9 549.1 255.9 516C255.9 511 255.3 506.2 254.1 501.5C249.9 484.6 248.9 464.4 261.3 452.1L288.1 425.3C294.1 419.3 302.2 415.9 310.7 415.9L399.9 415.9C406.2 415.9 412.3 415.6 418.4 414.9C430.3 413.7 434.8 399.4 429.2 388.9C420.7 373.1 415.9 355.1 415.9 335.9C415.9 274 466 223.9 527.9 223.9C535.9 223.9 543.6 224.7 551.1 226.3C562.8 228.8 575.2 220.4 573.1 208.7C558.4 126.4 486.4 63.9 399.9 63.9C302.7 63.9 223.9 142.7 223.9 239.9L223.9 329.1z" />
+                </svg>
+              </div>
+              <div class="trend-chart-title">
+                <h4>{{ $t('analytics.proteinTrend') }}</h4>
+                <span class="trend-period">{{ selectedPeriodLabel }}</span>
+              </div>
+            </div>
+            <div class="trend-chart-wrapper">
+              <AppleHealthTrendChart 
+                :chart-data="proteinTrendData"
+                :selected-period="selectedPeriod"
+                color="#ff6b6b"
+              />
+            </div>
+          </div>
+
+          <!-- Carbs Trend Chart -->
+          <div class="trend-chart-item">
+            <div class="trend-chart-header">
+              <div class="trend-icon carbs">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+              </div>
+              <div class="trend-chart-title">
+                <h4>{{ $t('analytics.carbsTrend') }}</h4>
+                <span class="trend-period">{{ selectedPeriodLabel }}</span>
+              </div>
+            </div>
+            <div class="trend-chart-wrapper">
+              <AppleHealthTrendChart 
+                :chart-data="carbsTrendData"
+                :selected-period="selectedPeriod"
+                color="#ffa726"
+              />
+            </div>
+          </div>
+
+          <!-- Fats Trend Chart -->
+          <div class="trend-chart-item">
+            <div class="trend-chart-header">
+              <div class="trend-icon fats">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+              </div>
+              <div class="trend-chart-title">
+                <h4>{{ $t('analytics.fatsTrend') }}</h4>
+                <span class="trend-period">{{ selectedPeriodLabel }}</span>
+              </div>
+            </div>
+            <div class="trend-chart-wrapper">
+              <AppleHealthTrendChart 
+                :chart-data="fatsTrendData"
+                :selected-period="selectedPeriod"
+                color="#42a5f5"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slider Navigation Dots -->
+      <div class="trend-slider-dots">
+        <button 
+          v-for="(chart, index) in trendCharts" 
+          :key="index"
+          class="slider-dot"
+          :class="{ active: currentTrendIndex === index }"
+          @click="currentTrendIndex = index"
+        >
+          <span class="sr-only">{{ chart.name }}</span>
+        </button>
+      </div>
+    </div>
+
     <!-- Macro Breakdown -->
     <div class="macro-breakdown">
       <h3 class="section-title">{{ $t('analytics.macroDistribution') }}</h3>
@@ -346,6 +459,7 @@ import { StreakManager } from '../utils/widgetData'
 import CalorieChart from '../components/charts/CalorieChart.vue'
 import WeightChart from '../components/charts/WeightChart.vue'
 import DebugChart from '../components/charts/DebugChart.vue'
+import AppleHealthTrendChart from '../components/charts/AppleHealthTrendChart.vue'
 import PremiumBlocker from '../components/PremiumBlocker.vue'
 import { premiumManager, isPremiumUser, premiumFeatures } from '../utils/premiumManager'
 import { analyticsStore, analyticsActions } from '../stores/analyticsStore'
@@ -374,6 +488,17 @@ const showBMIInfoModal = ref(false)
 
 // Debug mode (synchronized with global debug mode)
 const showDebugInfo = ref(false)
+
+// Trend charts slider state
+const currentTrendIndex = ref(0)
+
+// Trend charts configuration
+const trendCharts = [
+  { name: 'Calories', color: '#ff6b35' },
+  { name: 'Protein', color: '#ff6b6b' },
+  { name: 'Carbs', color: '#ffa726' },
+  { name: 'Fats', color: '#42a5f5' }
+]
 
 // Premium access check
 const shouldShowPremiumOverlay = computed(() => {
@@ -468,6 +593,53 @@ const chartTitle = computed(() => {
     default:
       return t('analytics.dailyProgress')
   }
+})
+
+// Computed property for selected period label
+const selectedPeriodLabel = computed(() => {
+  switch (selectedPeriod.value) {
+    case 'week':
+      return t('analytics.thisWeek')
+    case 'month':
+      return t('analytics.thisMonth')
+    case 'year':
+      return t('analytics.thisYear')
+    default:
+      return t('analytics.today')
+  }
+})
+
+// Trend chart data for each macro using REAL data from analytics
+const caloriesTrendData = computed(() => {
+  if (!analyticsData.value?.weeklyData) return []
+  return analyticsData.value.weeklyData.map(item => ({
+    date: item.day,
+    calories: item.calories
+  }))
+})
+
+const proteinTrendData = computed(() => {
+  if (!analyticsData.value?.weeklyData) return []
+  return analyticsData.value.weeklyData.map(item => ({
+    date: item.day,
+    calories: item.protein
+  }))
+})
+
+const carbsTrendData = computed(() => {
+  if (!analyticsData.value?.weeklyData) return []
+  return analyticsData.value.weeklyData.map(item => ({
+    date: item.day,
+    calories: item.carbs
+  }))
+})
+
+const fatsTrendData = computed(() => {
+  if (!analyticsData.value?.weeklyData) return []
+  return analyticsData.value.weeklyData.map(item => ({
+    date: item.day,
+    calories: item.fats
+  }))
 })
 
 // Get actual streak value
@@ -610,6 +782,25 @@ function handleTouchEnd(event: TouchEvent) {
 
   // Check if it's more horizontal than vertical
   if (Math.abs(deltaX) > Math.abs(deltaY)) {
+    // Check if touch started within trend charts area
+    const target = event.target as HTMLElement
+    const trendChartElement = target.closest('.trend-charts-slider-section')
+    
+    if (trendChartElement && selectedPeriod.value !== 'day') {
+      // Handle trend chart swiping
+      if (deltaX > swipeThreshold && currentTrendIndex.value > 0) {
+        // Swipe right - go to previous chart
+        currentTrendIndex.value--
+        return
+      }
+      if (deltaX < -swipeThreshold && currentTrendIndex.value < trendCharts.length - 1) {
+        // Swipe left - go to next chart
+        currentTrendIndex.value++
+        return
+      }
+    }
+    
+    // Default navigation behavior if not in trend charts area
     // Swipe right (from left to right) - go back to home
     if (deltaX > swipeThreshold) {
       router.push('/')
@@ -1761,5 +1952,174 @@ function handleTouchEnd(event: TouchEvent) {
   .debug-charts-grid {
     grid-template-columns: repeat(3, 1fr);
   }
+}
+
+/* Trend Charts Slider Styles */
+.trend-charts-slider-section {
+  margin-bottom: 32px;
+}
+
+.trend-slider-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 0 4px;
+}
+
+.trend-slider-header .section-title {
+  margin: 0;
+}
+
+.beta-badge {
+  background: rgba(255, 167, 38, 0.2);
+  color: #ffa726;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.trend-charts-container {
+  overflow: hidden;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  touch-action: pan-x; /* Enable horizontal swipe gestures */
+}
+
+.trend-charts-slider {
+  display: flex;
+  transition: transform 0.3s ease-in-out;
+  will-change: transform; /* Optimize for smooth transitions */
+}
+
+.trend-chart-item {
+  min-width: 100%;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.trend-chart-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.trend-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.trend-icon.calories {
+  background: rgba(255, 107, 53, 0.2);
+  color: #ff6b35;
+}
+
+.trend-icon.protein {
+  background: rgba(255, 107, 107, 0.2);
+  color: #ff6b6b;
+}
+
+.trend-icon.carbs {
+  background: rgba(255, 167, 38, 0.2);
+  color: #ffa726;
+}
+
+.trend-icon.fats {
+  background: rgba(66, 165, 245, 0.2);
+  color: #42a5f5;
+}
+
+.trend-chart-title {
+  flex: 1;
+}
+
+.trend-chart-title h4 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  color: white;
+}
+
+.trend-period {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.trend-chart-wrapper {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
+  padding: 8px;
+  backdrop-filter: blur(5px);
+  min-height: 280px; /* Ensure consistent height */
+}
+
+.trend-slider-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 0 20px;
+}
+
+.slider-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  touch-action: manipulation; /* Optimize for touch */
+}
+
+.slider-dot.active {
+  background: rgba(255, 255, 255, 0.8);
+  transform: scale(1.2);
+}
+
+.slider-dot:hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+/* Responsive improvements */
+@media (min-width: 768px) {
+  .trend-chart-item {
+    padding: 24px;
+  }
+  
+  .trend-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .trend-chart-title h4 {
+    font-size: 18px;
+  }
+  
+  .trend-period {
+    font-size: 14px;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 </style>
