@@ -92,21 +92,10 @@
                     </div>
                 </div>
                 <div class="trend-chart-wrapper">
-                    <div class="trend-chart-labels">
-                        <span class="chart-label">{{ $t('detail.trends.longTermWeeks') }}</span>
-                        <span class="chart-label highlight">{{ $t('detail.trends.shortTermWeeks') }}</span>
-                    </div>
-                    <div class="trend-chart">
-                        <svg width="100%" height="120" viewBox="0 0 300 120">
-                            <!-- Simplified static trend for demo -->
-                            <path d="M 20 80 Q 50 75 80 70 Q 110 75 140 80 Q 170 85 200 80 Q 230 75 260 70 Q 280 65 290 60" 
-                                  stroke="rgba(255, 255, 255, 0.3)" stroke-width="2" fill="none"/>
-                            <path d="M 140 80 Q 170 75 200 70 Q 230 65 260 60 Q 280 55 290 50" 
-                                  stroke="#ffa726" stroke-width="3" fill="none"/>
-                            <circle cx="290" cy="50" r="4" fill="#ffa726"/>
-                            <text x="295" y="45" fill="#ffa726" font-size="12" font-weight="600">{{ currentValue }}g</text>
-                        </svg>
-                    </div>
+                    <AppleHealthTrendChart 
+                        :chart-data="carbsChartData"
+                        :selected-period="selectedPeriod"
+                    />
                 </div>
             </div>
         </div>
@@ -159,6 +148,7 @@ import { useI18n } from 'vue-i18n'
 import { default as ApexCharts } from 'vue3-apexcharts'
 import { dailyGoals } from '../stores/userStore'
 import { ScanHistory } from '../utils/storage'
+import AppleHealthTrendChart from '../components/charts/AppleHealthTrendChart.vue'
 
 const apexchart = ApexCharts
 const router = useRouter()
@@ -170,6 +160,14 @@ const goalValue = computed(() => dailyGoals.carbs)
 const selectedPeriod = ref<'week' | 'month' | 'year'>('week')
 const chartData = ref<Array<{ date: string; carbs: number }>>([])
 const trendData = ref<Array<{ date: string; current: number; previous: number }>>([])
+
+// Transform chartData for AppleHealthTrendChart component
+const carbsChartData = computed(() => {
+    return chartData.value.map(item => ({
+        date: item.date,
+        calories: item.carbs // AppleHealthTrendChart expects calories property
+    }))
+})
 
 const periods = [
     { value: 'week' as const, label: t('detail.week') },

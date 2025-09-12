@@ -1,26 +1,26 @@
 <template>
     <div class="apple-health-trend-chart">
-        <svg width="100%" height="250" viewBox="0 0 360 250" class="dynamic-trend-chart">
+        <svg width="100%" height="290" viewBox="0 0 415 290" class="dynamic-trend-chart">
             <!-- Grid lines (horizontal trend lines) -->
             <defs>
                 <pattern id="grid" width="50" height="30" patternUnits="userSpaceOnUse">
                     <path d="M 50 0 L 0 0 0 30" fill="none" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1"/>
                 </pattern>
             </defs>
-            <rect width="350" height="200" x="5" y="25" fill="url(#grid)" opacity="0.3"/>
+            <rect width="405" height="240" x="5" y="25" fill="url(#grid)" opacity="0.3"/>
             
             <!-- Horizontal reference lines -->
             <line v-if="chartData.length > 0" 
-                  x1="15" y1="50" x2="350" y2="50" 
+                  x1="15" y1="50" x2="405" y2="50" 
                   stroke="rgba(255, 255, 255, 0.15)" stroke-width="2" stroke-dasharray="3,3"/>
             <line v-if="chartData.length > 0" 
-                  x1="15" y1="100" x2="350" y2="100" 
+                  x1="15" y1="120" x2="405" y2="120" 
                   stroke="rgba(255, 255, 255, 0.15)" stroke-width="2" stroke-dasharray="3,3"/>
             <line v-if="chartData.length > 0" 
-                  x1="15" y1="150" x2="350" y2="150" 
+                  x1="15" y1="190" x2="405" y2="190" 
                   stroke="rgba(255, 255, 255, 0.15)" stroke-width="2" stroke-dasharray="3,3"/>
             <line v-if="chartData.length > 0" 
-                  x1="15" y1="200" x2="350" y2="200" 
+                  x1="15" y1="260" x2="405" y2="260" 
                   stroke="rgba(255, 255, 255, 0.15)" stroke-width="2" stroke-dasharray="3,3"/>
             
             <!-- Background: Individual data points curve -->
@@ -41,7 +41,7 @@
             <!-- Background line (older period average) - FULL WIDTH on left half -->
             <path v-if="longTermTrendPath" 
                   :d="longTermTrendPath" 
-                  stroke="rgba(255, 255, 255, 0.4)" stroke-width="8" fill="none"
+                  stroke="rgba(255, 255, 255, 0.4)" stroke-width="6" fill="none"
                   stroke-linecap="round"/>
             
             <!-- Background average value label -->
@@ -55,7 +55,7 @@
             <!-- Foreground line (recent 3-day average) - FULL WIDTH on right half -->
             <path v-if="shortTermTrendPath" 
                   :d="shortTermTrendPath" 
-                  stroke="#ff6b35" stroke-width="10" fill="none"
+                  stroke="#ff6b35" stroke-width="8" fill="none"
                   stroke-linecap="round"/>
             
             <!-- Foreground average value label -->
@@ -68,10 +68,10 @@
             
             <!-- Period labels -->
             <g v-if="chartData.length >= 6">
-                <text x="120" y="240" fill="rgba(255, 255, 255, 0.5)" font-size="14" font-weight="600" text-anchor="middle">
+                <text x="140" y="280" fill="rgba(255, 255, 255, 0.5)" font-size="14" font-weight="600" text-anchor="middle">
                     Vorherige Periode
                 </text>
-                <text x="270" y="240" fill="rgba(255, 255, 255, 0.5)" font-size="14" font-weight="600" text-anchor="middle">
+                <text x="310" y="280" fill="rgba(255, 255, 255, 0.5)" font-size="14" font-weight="600" text-anchor="middle">
                     Letzte 3 Tage
                 </text>
             </g>
@@ -94,8 +94,8 @@ const props = defineProps<{
 }>()
 
 // Chart dimensions - using full width
-const svgWidth = 360  // Increased for full width
-const svgHeight = 250
+const svgWidth = 415  // Increased by 15% for better width usage
+const svgHeight = 290  // Increased by 15% for proportional height
 const padding = 5     // Minimal padding for maximum width usage
 const usableWidth = svgWidth - 2 * padding
 const usableHeight = svgHeight - 50
@@ -260,7 +260,7 @@ function formatDateLabel(dateStr: string): string {
 
 <style scoped>
 .apple-health-trend-chart {
-    height: 250px;
+    height: 290px;
     width: 100%;
     min-width: 0;
     overflow: visible;
@@ -314,7 +314,7 @@ function formatDateLabel(dateStr: string): string {
 /* Responsive adjustments */
 @media (max-width: 480px) {
     .apple-health-trend-chart {
-        height: 200px;
+        height: 250px;
     }
 }
 </style>

@@ -97,45 +97,10 @@
                     </div>
                 </div>
                 <div class="trend-chart-wrapper">
-                    <div class="trend-chart-labels">
-                        <span class="chart-label">{{ longTermAverageLabel }}</span>
-                        <span class="chart-label highlight">{{ shortTermAverageLabel }}</span>
-                    </div>
-                    <div class="trend-chart">
-                        <svg width="100%" height="120" viewBox="0 0 300 120" class="dynamic-trend-chart">
-                            <!-- Background line (long-term average) -->
-                            <path :d="longTermTrendPath" 
-                                  stroke="rgba(255, 255, 255, 0.3)" stroke-width="2" fill="none"/>
-                            <!-- Data points for background -->
-                            <circle v-for="(point, index) in longTermTrendPoints" :key="'long-' + index"
-                                    :cx="point.x" :cy="point.y" r="3" fill="rgba(255, 255, 255, 0.3)"/>
-                            
-                            <!-- Foreground line (short-term average) -->
-                            <path :d="shortTermTrendPath" 
-                                  stroke="#ff6b6b" stroke-width="3" fill="none"/>
-                            <!-- Data points for foreground -->
-                            <circle v-for="(point, index) in shortTermTrendPoints" :key="'short-' + index"
-                                    :cx="point.x" :cy="point.y" r="4" fill="#ff6b6b"/>
-                            
-                            <!-- Current value indicator -->
-                            <line v-if="currentValuePoint" 
-                                  :x1="currentValuePoint.x" :y1="currentValuePoint.y" 
-                                  :x2="currentValuePoint.x + 20" :y2="currentValuePoint.y - 15" 
-                                  stroke="#ff6b6b" stroke-width="2"/>
-                            <text v-if="currentValuePoint" 
-                                  :x="currentValuePoint.x + 25" :y="currentValuePoint.y - 18" 
-                                  fill="#ff6b6b" font-size="12" font-weight="600">{{ currentTrendValue }}</text>
-                            
-                            <!-- Baseline indicator -->
-                            <line v-if="baselinePoint" 
-                                  :x1="baselinePoint.x" :y1="baselinePoint.y" 
-                                  :x2="baselinePoint.x + 20" :y2="baselinePoint.y - 15" 
-                                  stroke="rgba(255, 255, 255, 0.5)" stroke-width="2"/>
-                            <text v-if="baselinePoint" 
-                                  :x="baselinePoint.x + 25" :y="baselinePoint.y - 18" 
-                                  fill="rgba(255, 255, 255, 0.7)" font-size="12">{{ baselineTrendValue }}</text>
-                        </svg>
-                    </div>
+                    <AppleHealthTrendChart 
+                        :chart-data="proteinChartData"
+                        :selected-period="selectedPeriod"
+                    />
                 </div>
             </div>
         </div>
@@ -209,6 +174,7 @@ import { default as ApexCharts } from 'vue3-apexcharts'
 import { dailyGoals } from '../stores/userStore'
 import { ScanHistory } from '../utils/storage'
 import DebugChart from '../components/charts/DebugChart.vue'
+import AppleHealthTrendChart from '../components/charts/AppleHealthTrendChart.vue'
 import { isDebugMode, initializeDebugMode } from '../stores/preferencesStore'
 
 const apexchart = ApexCharts
@@ -221,6 +187,14 @@ const goalValue = computed(() => dailyGoals.protein)
 const selectedPeriod = ref<'week' | 'month' | 'year'>('week')
 const chartData = ref<Array<{ date: string; protein: number }>>([])
 const trendData = ref<Array<{ date: string; current: number; previous: number }>>([])
+
+// Transform chartData for AppleHealthTrendChart component
+const proteinChartData = computed(() => {
+    return chartData.value.map(item => ({
+        date: item.date,
+        calories: item.protein // AppleHealthTrendChart expects calories property
+    }))
+})
 
 // Debug mode (synchronized with global debug mode)
 const showDebugInfo = ref(false)
@@ -435,118 +409,6 @@ const trendInsightText = computed(() => {
     } else {
         return t('detail.trends.decreased', { period: periodText })
     }
-})
-
-const longTermAverageLabel = computed(() => {
-    const period = selectedPeriod.value === 'week' ? t('detail.trends.longTermWeeks') : 
-                  selectedPeriod.value === 'month' ? t('detail.trends.longTermMonths') : t('detail.trends.longTermYears')
-    return period
-})
-
-const shortTermAverageLabel = computed(() => {
-    const period = selectedPeriod.value === 'week' ? t('detail.trends.shortTermWeeks') : 
-                  selectedPeriod.value === 'month' ? t('detail.trends.shortTermMonths') : t('detail.trends.shortTermYears')
-    return period
-})
-
-const longTermTrendPoints = computed(() => {
-    if (chartData.value.length === 0) return []
-    
-    const points: Array<{ x: number; y: number; value: number }> = []
-    const svgWidth = 300
-    const svgHeight = 120
-    const padding = 20
-    const usableWidth = svgWidth - 2 * padding
-    const usableHeight = svgHeight - 40
-    
-    const maxValue = Math.max(...chartData.value.map(item => item.protein))
-    const minValue = Math.min(...chartData.value.map(item => item.protein))
-    const valueRange = maxValue - minValue || 1
-    
-    chartData.value.forEach((item, index) => {
-        const x = padding + (index / (chartData.value.length - 1)) * usableWidth
-        const y = padding + ((maxValue - item.protein) / valueRange) * usableHeight
-        points.push({ x, y, value: item.protein })
-    })
-    
-    return points
-})
-
-const shortTermTrendPoints = computed(() => {
-    if (chartData.value.length < 3) return []
-    
-    const recentData = chartData.value.slice(-Math.ceil(chartData.value.length / 2))
-    const points: Array<{ x: number; y: number; value: number }> = []
-    const svgWidth = 300
-    const svgHeight = 120
-    const padding = 20
-    const usableWidth = svgWidth - 2 * padding
-    const usableHeight = svgHeight - 40
-    
-    const maxValue = Math.max(...chartData.value.map(item => item.protein))
-    const minValue = Math.min(...chartData.value.map(item => item.protein))
-    const valueRange = maxValue - minValue || 1
-    
-    recentData.forEach((item, index) => {
-        const totalIndex = chartData.value.length - recentData.length + index
-        const x = padding + (totalIndex / (chartData.value.length - 1)) * usableWidth
-        const y = padding + ((maxValue - item.protein) / valueRange) * usableHeight
-        points.push({ x, y, value: item.protein })
-    })
-    
-    return points
-})
-
-const longTermTrendPath = computed(() => {
-    if (longTermTrendPoints.value.length < 2) return ''
-    
-    let path = `M ${longTermTrendPoints.value[0].x} ${longTermTrendPoints.value[0].y}`
-    
-    for (let i = 1; i < longTermTrendPoints.value.length; i++) {
-        const point = longTermTrendPoints.value[i]
-        const prevPoint = longTermTrendPoints.value[i - 1]
-        const cpx = (prevPoint.x + point.x) / 2
-        path += ` Q ${cpx} ${prevPoint.y} ${point.x} ${point.y}`
-    }
-    
-    return path
-})
-
-const shortTermTrendPath = computed(() => {
-    if (shortTermTrendPoints.value.length < 2) return ''
-    
-    let path = `M ${shortTermTrendPoints.value[0].x} ${shortTermTrendPoints.value[0].y}`
-    
-    for (let i = 1; i < shortTermTrendPoints.value.length; i++) {
-        const point = shortTermTrendPoints.value[i]
-        const prevPoint = shortTermTrendPoints.value[i - 1]
-        const cpx = (prevPoint.x + point.x) / 2
-        path += ` Q ${cpx} ${prevPoint.y} ${point.x} ${point.y}`
-    }
-    
-    return path
-})
-
-const currentValuePoint = computed(() => {
-    if (shortTermTrendPoints.value.length === 0) return null
-    return shortTermTrendPoints.value[shortTermTrendPoints.value.length - 1]
-})
-
-const baselinePoint = computed(() => {
-    if (longTermTrendPoints.value.length === 0) return null
-    return longTermTrendPoints.value[0]
-})
-
-const currentTrendValue = computed(() => {
-    if (shortTermTrendPoints.value.length === 0) return '0'
-    const lastPoint = shortTermTrendPoints.value[shortTermTrendPoints.value.length - 1]
-    return `${Math.round(lastPoint.value)}`
-})
-
-const baselineTrendValue = computed(() => {
-    if (longTermTrendPoints.value.length === 0) return '0g'
-    const firstPoint = longTermTrendPoints.value[0]
-    return `${Math.round(firstPoint.value)}g`
 })
 
 // Functions
