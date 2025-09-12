@@ -78,29 +78,7 @@
                 <span class="beta-badge">BETA</span>
             </div>
             <div class="apple-health-trend-container">
-                <div class="trend-insight" @click="onTrendInsightClick">
-                    <div class="trend-icon">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="#ff6b35">
-                            <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z"/>
-                        </svg>
-                    </div>
-                    <div class="trend-content">
-                        <div class="trend-title">{{ $t('detail.calories.title') }}</div>
-                        <div class="trend-description">
-                            {{ trendInsightText }}
-                        </div>
-                    </div>
-                    <div class="trend-arrow">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="rgba(255, 255, 255, 0.5)">
-                            <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z"/>
-                        </svg>
-                    </div>
-                </div>
                 <div class="trend-chart-wrapper">
-                    <div class="trend-chart-labels">
-                        <span class="chart-label">{{ $t('detail.trends.longTerm') }}</span>
-                        <span class="chart-label highlight">{{ $t('detail.trends.recent') }}</span>
-                    </div>
                     <div class="trend-chart">
                         <svg width="100%" height="120" viewBox="0 0 300 120" class="dynamic-trend-chart">
                             <!-- Grid lines (horizontal trend lines) -->
@@ -146,114 +124,56 @@
                                   :x="295" :y="goalLineY + 4" 
                                   fill="rgba(255, 167, 38, 0.8)" font-size="10" font-weight="500">{{ goalValue }}</text>
                             
-                            <!-- Background line (all data points) with dynamic curves -->
+                            <!-- Background: Individual data points curve -->
+                            <path v-if="individualDataPath" 
+                                  :d="individualDataPath" 
+                                  stroke="rgba(255, 255, 255, 0.2)" stroke-width="2" fill="none"
+                                  stroke-linecap="round" stroke-linejoin="round"/>
+                            
+                            <!-- Background: Individual data points -->
+                            <g v-for="(point, index) in individualDataPoints" :key="'data-' + index">
+                                <circle :cx="point.x" :cy="point.y" r="2" 
+                                        fill="rgba(255, 255, 255, 0.3)" 
+                                        stroke="rgba(30, 30, 46, 0.8)" stroke-width="0.5">
+                                    <title>{{ formatDateLabel(point.date) }}: {{ point.value }} kcal</title>
+                                </circle>
+                            </g>
+                            
+                            <!-- Background line (older period average) -->
                             <path v-if="longTermTrendPath" 
                                   :d="longTermTrendPath" 
-                                  stroke="rgba(255, 255, 255, 0.4)" stroke-width="2.5" fill="none"
-                                  stroke-linecap="round" stroke-linejoin="round"/>
+                                  stroke="rgba(255, 255, 255, 0.4)" stroke-width="3" fill="none"
+                                  stroke-linecap="round"/>
                             
-                            <!-- ALL data points (not just averages) -->
-                            <g v-for="(point, index) in longTermTrendPoints" :key="'long-' + index">
-                                <circle :cx="point.x" :cy="point.y" r="2.5" 
-                                        fill="rgba(255, 255, 255, 0.4)" 
-                                        stroke="rgba(30, 30, 46, 0.8)" stroke-width="0.5"
-                                        class="data-point">
-                                    <title>{{ formatDateLabel(point.date) }}: {{ point.value }} kcal</title>
-                                </circle>
+                            <!-- Background average value label -->
+                            <g v-if="longTermTrendPoints.length > 0">
+                                <text :x="longTermTrendPoints[0].x + 40" :y="longTermTrendPoints[0].y - 8" 
+                                      fill="rgba(255, 255, 255, 0.6)" font-size="11" font-weight="600">
+                                    Ø {{ baselineTrendValue }}
+                                </text>
                             </g>
                             
-                            <!-- Foreground line (recent data) with dynamic curves -->
+                            <!-- Foreground line (recent 3-day average) -->
                             <path v-if="shortTermTrendPath" 
                                   :d="shortTermTrendPath" 
-                                  stroke="#ff6b35" stroke-width="3.5" fill="none"
-                                  stroke-linecap="round" stroke-linejoin="round"/>
+                                  stroke="#ff6b35" stroke-width="4" fill="none"
+                                  stroke-linecap="round"/>
                             
-                            <!-- Recent data points with enhanced visibility -->
-                            <g v-for="(point, index) in shortTermTrendPoints" :key="'short-' + index">
-                                <circle :cx="point.x" :cy="point.y" r="4" 
-                                        fill="#ff6b35" 
-                                        stroke="rgba(30, 30, 46, 0.9)" stroke-width="1.5"
-                                        class="trend-point">
-                                    <animate attributeName="r" values="4;5;4" dur="2s" 
-                                             :begin="index * 0.3 + 's'" repeatCount="indefinite"/>
-                                    <title>{{ formatDateLabel(point.date) }}: {{ point.value }} kcal</title>
-                                </circle>
-                                <!-- Value labels on hover -->
-                                <text :x="point.x" :y="point.y - 10" 
-                                      fill="#ff6b35" font-size="9" font-weight="600" 
-                                      text-anchor="middle" class="point-label" opacity="0">
-                                    {{ Math.round(point.value) }}
+                            <!-- Foreground average value label -->
+                            <g v-if="shortTermTrendPoints.length > 0">
+                                <text :x="shortTermTrendPoints[0].x + 40" :y="shortTermTrendPoints[0].y - 8" 
+                                      fill="#ff6b35" font-size="11" font-weight="700">
+                                    Ø {{ currentTrendValue }}
                                 </text>
                             </g>
                             
-                            <!-- Current value indicator (last data point) -->
-                            <g v-if="currentValuePoint">
-                                <!-- Indicator line -->
-                                <line :x1="currentValuePoint.x" :y1="currentValuePoint.y" 
-                                      :x2="currentValuePoint.x + 30" :y2="currentValuePoint.y - 25" 
-                                      stroke="#ff6b35" stroke-width="2"/>
-                                
-                                <!-- Value background -->
-                                <rect :x="currentValuePoint.x + 32" :y="currentValuePoint.y - 35" 
-                                      width="40" height="18" rx="9" 
-                                      fill="rgba(255, 107, 53, 0.9)" opacity="0.95"/>
-                                
-                                <!-- Current value text -->
-                                <text :x="currentValuePoint.x + 52" :y="currentValuePoint.y - 24" 
-                                      fill="white" font-size="11" font-weight="700" 
-                                      text-anchor="middle">{{ currentTrendValue }}</text>
-                                
-                                <!-- Pulsing current point -->
-                                <circle :cx="currentValuePoint.x" :cy="currentValuePoint.y" r="6" 
-                                        fill="#ff6b35" stroke="white" stroke-width="2" class="current-point">
-                                    <animate attributeName="r" values="6;8;6" dur="1.5s" repeatCount="indefinite"/>
-                                    <animate attributeName="opacity" values="1;0.7;1" dur="1.5s" repeatCount="indefinite"/>
-                                </circle>
-                            </g>
-                            
-                            <!-- Starting point indicator (first data point) -->
-                            <g v-if="baselinePoint">
-                                <!-- Indicator line -->
-                                <line :x1="baselinePoint.x" :y1="baselinePoint.y" 
-                                      :x2="baselinePoint.x - 30" :y2="baselinePoint.y - 25" 
-                                      stroke="rgba(255, 255, 255, 0.6)" stroke-width="1.5"/>
-                                
-                                <!-- Value background -->
-                                <rect :x="baselinePoint.x - 72" :y="baselinePoint.y - 35" 
-                                      width="40" height="18" rx="9" 
-                                      fill="rgba(255, 255, 255, 0.15)" opacity="0.9"/>
-                                
-                                <!-- Starting value text -->
-                                <text :x="baselinePoint.x - 52" :y="baselinePoint.y - 24" 
-                                      fill="rgba(255, 255, 255, 0.8)" font-size="10" font-weight="600" 
-                                      text-anchor="middle">{{ baselineTrendValue }}</text>
-                                
-                                <!-- Starting point -->
-                                <circle :cx="baselinePoint.x" :cy="baselinePoint.y" r="4" 
-                                        fill="rgba(255, 255, 255, 0.6)" 
-                                        stroke="rgba(30, 30, 46, 0.8)" stroke-width="1"/>
-                            </g>
-                            
-                            <!-- Trend direction arrow -->
-                            <g v-if="trendDirection !== 'stable'">
-                                <path v-if="trendDirection === 'up'" 
-                                      d="M 15 105 L 20 95 L 25 105 Z" 
-                                      fill="#4ade80" opacity="0.8"/>
-                                <path v-if="trendDirection === 'down'" 
-                                      d="M 15 95 L 20 105 L 25 95 Z" 
-                                      fill="#f87171" opacity="0.8"/>
-                            </g>
-                            
-                            <!-- Time markers on x-axis with actual dates -->
-                            <g v-if="chartData.length > 0">
-                                <text x="30" y="115" fill="rgba(255, 255, 255, 0.5)" font-size="8" text-anchor="middle">
-                                    {{ formatTimeLabel(0) }}
+                            <!-- Period labels -->
+                            <g v-if="chartData.length >= 6">
+                                <text x="70" y="115" fill="rgba(255, 255, 255, 0.5)" font-size="8" text-anchor="middle">
+                                    Vorherige Periode
                                 </text>
-                                <text x="150" y="115" fill="rgba(255, 255, 255, 0.5)" font-size="8" text-anchor="middle">
-                                    {{ formatTimeLabel(Math.floor(chartData.length / 2)) }}
-                                </text>
-                                <text x="270" y="115" fill="rgba(255, 255, 255, 0.5)" font-size="8" text-anchor="middle">
-                                    {{ formatTimeLabel(chartData.length - 1) }}
+                                <text x="230" y="115" fill="rgba(255, 255, 255, 0.5)" font-size="8" text-anchor="middle">
+                                    Letzte 3 Tage
                                 </text>
                             </g>
                         </svg>
@@ -530,36 +450,47 @@ const daysOnTrack = computed(() => {
     return chartData.value.filter(item => item.calories <= goalValue.value).length.toString()
 })
 
-// Apple Health Style Trend Chart Computed Properties
-const trendInsightText = computed(() => {
-    if (chartData.value.length < 2) {
-        return t('detail.trends.noData')
-    }
+const longTermTrendPoints = computed(() => {
+    if (chartData.value.length < 6) return []
     
-    const recent = chartData.value.slice(-3)
-    const older = chartData.value.slice(0, -3)
+    // Split data into two halves
+    const halfPoint = Math.floor(chartData.value.length / 2)
+    const olderData = chartData.value.slice(0, halfPoint)
     
-    if (recent.length === 0 || older.length === 0) {
-        return t('detail.trends.insufficientData')
-    }
+    if (olderData.length === 0) return []
     
-    const recentAvg = recent.reduce((sum, item) => sum + item.calories, 0) / recent.length
-    const olderAvg = older.reduce((sum, item) => sum + item.calories, 0) / older.length
+    // Calculate average of older period
+    const olderAverage = olderData.reduce((sum, item) => sum + item.calories, 0) / olderData.length
     
-    const trend = recentAvg - olderAvg
-    const periodText = selectedPeriod.value === 'week' ? t('detail.trends.days') : 
-                     selectedPeriod.value === 'month' ? t('detail.trends.weeks') : t('detail.trends.months')
+    const points: Array<{ x: number; y: number; value: number }> = []
+    const svgWidth = 300
+    const svgHeight = 120
+    const padding = 20
+    const usableWidth = svgWidth - 2 * padding
+    const usableHeight = svgHeight - 40
     
-    if (Math.abs(trend) < 50) {
-        return t('detail.trends.stable', { period: periodText })
-    } else if (trend > 0) {
-        return t('detail.trends.increased', { period: periodText })
-    } else {
-        return t('detail.trends.decreased', { period: periodText })
-    }
+    // Use all data for scaling
+    const allValues = chartData.value.map(item => item.calories)
+    const maxValue = Math.max(...allValues)
+    const minValue = Math.min(...allValues)
+    const valueRange = maxValue - minValue || 1
+    
+    // Create horizontal line for older period average
+    const normalizedValue = (olderAverage - minValue) / valueRange
+    const y = padding + ((1 - normalizedValue) * usableHeight)
+    
+    // Create points spanning the first half of the timeline
+    const startX = padding
+    const endX = padding + (halfPoint / Math.max(chartData.value.length - 1, 1)) * usableWidth
+    
+    points.push({ x: startX, y, value: olderAverage })
+    points.push({ x: endX, y, value: olderAverage })
+    
+    return points
 })
 
-const longTermTrendPoints = computed(() => {
+// Add computed property for individual data points (background chart)
+const individualDataPoints = computed(() => {
     if (chartData.value.length === 0) return []
     
     const points: Array<{ x: number; y: number; value: number; date: string }> = []
@@ -569,13 +500,13 @@ const longTermTrendPoints = computed(() => {
     const usableWidth = svgWidth - 2 * padding
     const usableHeight = svgHeight - 40
     
-    // Use ALL chart data points for full trend visualization
+    // Use all data for scaling
     const allValues = chartData.value.map(item => item.calories)
     const maxValue = Math.max(...allValues)
     const minValue = Math.min(...allValues)
     const valueRange = maxValue - minValue || 1
     
-    // Create points for EACH individual day/period (not averages!)
+    // Create points for EACH individual day/period
     chartData.value.forEach((item, index) => {
         const x = padding + (index / Math.max(chartData.value.length - 1, 1)) * usableWidth
         const normalizedValue = (item.calories - minValue) / valueRange
@@ -586,33 +517,66 @@ const longTermTrendPoints = computed(() => {
     return points
 })
 
-const shortTermTrendPoints = computed(() => {
-    if (chartData.value.length < 2) return []
+// Add computed property for individual data path (background line)
+const individualDataPath = computed(() => {
+    if (individualDataPoints.value.length < 2) return ''
     
-    // Show last 50% of data points as "recent trend"
-    const recentDataLength = Math.max(2, Math.ceil(chartData.value.length * 0.5))
-    const recentData = chartData.value.slice(-recentDataLength)
-    const points: Array<{ x: number; y: number; value: number; date: string }> = []
+    const points = individualDataPoints.value
+    
+    // Use smooth curve (Bézier curves) for better visualization
+    let path = `M ${points[0].x} ${points[0].y}`
+    
+    for (let i = 1; i < points.length; i++) {
+        const prevPoint = points[i - 1]
+        const currentPoint = points[i]
+        
+        // Calculate control points for smooth curves
+        const cp1x = prevPoint.x + (currentPoint.x - prevPoint.x) * 0.3
+        const cp1y = prevPoint.y
+        const cp2x = currentPoint.x - (currentPoint.x - prevPoint.x) * 0.3
+        const cp2y = currentPoint.y
+        
+        path += ` C ${cp1x} ${cp1y} ${cp2x} ${cp2y} ${currentPoint.x} ${currentPoint.y}`
+    }
+    
+    return path
+})
+
+const shortTermTrendPoints = computed(() => {
+    if (chartData.value.length < 6) return []
+    
+    // Get last 3 days for recent trend
+    const recentData = chartData.value.slice(-3)
+    
+    if (recentData.length === 0) return []
+    
+    // Calculate average of recent 3 days
+    const recentAverage = recentData.reduce((sum, item) => sum + item.calories, 0) / recentData.length
+    
+    const points: Array<{ x: number; y: number; value: number }> = []
     const svgWidth = 300
     const svgHeight = 120
     const padding = 20
     const usableWidth = svgWidth - 2 * padding
     const usableHeight = svgHeight - 40
     
-    // Use same scale as long-term for consistency
+    // Use all data for scaling
     const allValues = chartData.value.map(item => item.calories)
     const maxValue = Math.max(...allValues)
     const minValue = Math.min(...allValues)
     const valueRange = maxValue - minValue || 1
     
-    // Map recent data to their correct positions on the full timeline
-    recentData.forEach((item, index) => {
-        const totalIndex = chartData.value.length - recentDataLength + index
-        const x = padding + (totalIndex / Math.max(chartData.value.length - 1, 1)) * usableWidth
-        const normalizedValue = (item.calories - minValue) / valueRange
-        const y = padding + ((1 - normalizedValue) * usableHeight)
-        points.push({ x, y, value: item.calories, date: item.date })
-    })
+    // Create horizontal line for recent period average
+    const normalizedValue = (recentAverage - minValue) / valueRange
+    const y = padding + ((1 - normalizedValue) * usableHeight)
+    
+    // Create points spanning the last 3 days of the timeline
+    const startIndex = chartData.value.length - 3
+    const startX = padding + (startIndex / Math.max(chartData.value.length - 1, 1)) * usableWidth
+    const endX = padding + usableWidth
+    
+    points.push({ x: startX, y, value: recentAverage })
+    points.push({ x: endX, y, value: recentAverage })
     
     return points
 })
@@ -621,70 +585,31 @@ const longTermTrendPath = computed(() => {
     if (longTermTrendPoints.value.length < 2) return ''
     
     const points = longTermTrendPoints.value
-    
-    // Use smooth curve (Bézier curves) for better visualization
-    let path = `M ${points[0].x} ${points[0].y}`
-    
-    for (let i = 1; i < points.length; i++) {
-        const prevPoint = points[i - 1]
-        const currentPoint = points[i]
-        
-        // Calculate control points for smooth curves
-        const cp1x = prevPoint.x + (currentPoint.x - prevPoint.x) * 0.3
-        const cp1y = prevPoint.y
-        const cp2x = currentPoint.x - (currentPoint.x - prevPoint.x) * 0.3
-        const cp2y = currentPoint.y
-        
-        path += ` C ${cp1x} ${cp1y} ${cp2x} ${cp2y} ${currentPoint.x} ${currentPoint.y}`
-    }
-    
-    return path
+    // Simple straight line for average
+    return `M ${points[0].x} ${points[0].y} L ${points[1].x} ${points[1].y}`
 })
 
 const shortTermTrendPath = computed(() => {
     if (shortTermTrendPoints.value.length < 2) return ''
     
     const points = shortTermTrendPoints.value
-    
-    // Use smooth curve (Bézier curves) for better visualization
-    let path = `M ${points[0].x} ${points[0].y}`
-    
-    for (let i = 1; i < points.length; i++) {
-        const prevPoint = points[i - 1]
-        const currentPoint = points[i]
-        
-        // Calculate control points for smooth curves
-        const cp1x = prevPoint.x + (currentPoint.x - prevPoint.x) * 0.3
-        const cp1y = prevPoint.y
-        const cp2x = currentPoint.x - (currentPoint.x - prevPoint.x) * 0.3
-        const cp2y = currentPoint.y
-        
-        path += ` C ${cp1x} ${cp1y} ${cp2x} ${cp2y} ${currentPoint.x} ${currentPoint.y}`
-    }
-    
-    return path
-})
-
-const currentValuePoint = computed(() => {
-    if (shortTermTrendPoints.value.length === 0) return null
-    return shortTermTrendPoints.value[shortTermTrendPoints.value.length - 1]
-})
-
-const baselinePoint = computed(() => {
-    if (longTermTrendPoints.value.length === 0) return null
-    return longTermTrendPoints.value[0]
+    // Simple straight line for average
+    return `M ${points[0].x} ${points[0].y} L ${points[1].x} ${points[1].y}`
 })
 
 const currentTrendValue = computed(() => {
-    if (chartData.value.length === 0) return '0'
-    const lastEntry = chartData.value[chartData.value.length - 1]
-    return `${Math.round(lastEntry.calories)}`
+    if (chartData.value.length < 3) return '0'
+    const recent3Days = chartData.value.slice(-3)
+    const average = recent3Days.reduce((sum, item) => sum + item.calories, 0) / recent3Days.length
+    return `${Math.round(average)}`
 })
 
 const baselineTrendValue = computed(() => {
-    if (chartData.value.length === 0) return '0'
-    const firstEntry = chartData.value[0]
-    return `${Math.round(firstEntry.calories)}`
+    if (chartData.value.length < 6) return '0'
+    const halfPoint = Math.floor(chartData.value.length / 2)
+    const olderData = chartData.value.slice(0, halfPoint)
+    const average = olderData.reduce((sum, item) => sum + item.calories, 0) / olderData.length
+    return `${Math.round(average)}`
 })
 
 // Advanced Chart computed properties
@@ -702,44 +627,6 @@ const goalLineY = computed(() => {
     const normalizedGoal = (goalValue.value - minValue) / valueRange
     return padding + ((1 - normalizedGoal) * usableHeight)
 })
-
-const trendDirection = computed(() => {
-    if (chartData.value.length < 2) return 'stable'
-    
-    const recent = chartData.value.slice(-3)
-    const older = chartData.value.slice(0, -3)
-    
-    if (recent.length === 0 || older.length === 0) return 'stable'
-    
-    const recentAvg = recent.reduce((sum, item) => sum + item.calories, 0) / recent.length
-    const olderAvg = older.reduce((sum, item) => sum + item.calories, 0) / older.length
-    
-    const trend = recentAvg - olderAvg
-    
-    if (Math.abs(trend) < 50) return 'stable'
-    return trend > 0 ? 'up' : 'down'
-})
-
-// Functions
-function formatTimeLabel(index: number): string {
-    if (chartData.value.length === 0) return ''
-    if (index >= chartData.value.length) return ''
-    
-    const date = new Date(chartData.value[index].date)
-    
-    if (selectedPeriod.value === 'week') {
-        return date.toLocaleDateString('de-DE', { weekday: 'short' })
-    } else if (selectedPeriod.value === 'month') {
-        return date.toLocaleDateString('de-DE', { day: '2-digit', month: 'short' })
-    } else {
-        return date.toLocaleDateString('de-DE', { month: 'short' })
-    }
-}
-
-function onTrendInsightClick() {
-    // Could navigate to more detailed trend analysis
-    console.log('Trend insight clicked')
-}
 
 function goBack() {
     router.back()
