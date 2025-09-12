@@ -142,6 +142,7 @@
             <div v-else class="food-item" v-for="item in yesterdayFoods" :key="item.id">
                 <div class="food-image">
                     <img v-if="item.image && !item.image.includes('placeholder')" :src="item.image" :alt="item.name" />
+                    <span v-else-if="item.icon" class="food-db-icon">{{ item.icon }}</span>
                     <span v-else>{{ item.type === 'food' ? '🍽️' : '📦' }}</span>
                 </div>
                 <div class="food-info">
@@ -235,6 +236,7 @@ interface FoodItem {
     time: string
     image: string
     type: string
+    icon?: string // Add icon field for database foods
 }
 
 // State
@@ -349,7 +351,8 @@ const yesterdayFoods = computed((): FoodItem[] => {
         fats: food.fats,
         time: food.time,
         image: food.image || "/api/placeholder/60/60",
-        type: food.type
+        type: food.type,
+        icon: food.icon // Include icon from database foods
     }))
 })
 
@@ -683,6 +686,10 @@ onMounted(() => {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+.food-db-icon {
+    font-size: 28px;
 }
 
 .food-info {

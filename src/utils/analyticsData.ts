@@ -17,6 +17,7 @@ export interface DayData {
     time: string;
     type: string;
     image?: string;
+    icon?: string; // Add icon field for database foods
   }>;
 }
 
@@ -149,7 +150,8 @@ export class AnalyticsManager {
         fats: Math.round(fats),
         time: scan.time,
         type: scan.type,
-        image: scan.image
+        image: scan.image,
+        icon: scan.icon // Include icon from database foods
       });
     });
 

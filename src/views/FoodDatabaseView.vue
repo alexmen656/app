@@ -382,6 +382,7 @@ async function addFoodToHistory() {
             }),
             amount: amount,
             image: '', // No image for database foods
+            icon: food.icon, // Add the food icon from database
             data: {
                 foods: [{
                     name: food.name || t(`foodDatabase.foods.${food.id}.name`),

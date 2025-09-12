@@ -157,6 +157,7 @@
             <div v-else class="food-item" @click="goToNutritionDetail(item)" v-for="item in recentFoods" :key="item.id">
                 <div class="food-image">
                     <img v-if="item.image && !item.image.includes('placeholder')" :src="item.image" :alt="item.name" />
+                    <span v-else-if="item.icon" class="food-db-icon">{{ item.icon }}</span>
                     <span v-else>{{ item.type === 'food' ? '🍽️' : '📦' }}</span>
                 </div>
                 <div class="food-info">
@@ -379,6 +380,7 @@ interface ScanData {
     time: string
     image?: string
     amount?: number
+    icon?: string // Add icon field for database foods
     data: any
 }
 
@@ -392,6 +394,7 @@ interface FoodItem {
     time: string
     image: string
     type: string
+    icon?: string // Add icon field for food items
 }
 
 const dailyCalories = computed(() => dailyGoals.calories)
@@ -568,7 +571,8 @@ const recentFoods = computed((): FoodItem[] => {
                 fats: total.fat || 0,
                 time: scan.time,
                 image: scan.image || '/api/placeholder/60/60',
-                type: 'food'
+                type: 'food',
+                icon: scan.icon // Include icon from database foods
             }
         } else if (scan.type === 'barcode') {
             // For barcode scans, multiply per-100g values by actual consumed amount
@@ -582,7 +586,8 @@ const recentFoods = computed((): FoodItem[] => {
                 fats: Math.round((nutriments.fat_100g || 0) * amount),
                 time: scan.time,
                 image: scan.image || '/api/placeholder/60/60', // Use barcode photo from scan
-                type: 'barcode'
+                type: 'barcode',
+                icon: undefined // Barcode items don't have specific icons
             }
         }
         return null
@@ -961,6 +966,10 @@ function handleTouchEnd(event: TouchEvent) {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+.food-db-icon {
+    font-size: 30px;
 }
 
 .food-info {
