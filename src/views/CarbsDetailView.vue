@@ -79,7 +79,7 @@
             </div>
             <div class="apple-health-trend-container">
                 <div class="trend-chart-wrapper">
-                    <AppleHealthTrendChart :chart-data="carbsChartData" :selected-period="selectedPeriod" />
+                    <AppleHealthTrendChart :chart-data="carbsChartData" :selected-period="selectedPeriod" color="#ffa726"/>
                 </div>
             </div>
         </div>

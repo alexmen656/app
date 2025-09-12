@@ -55,13 +55,13 @@
             <!-- Foreground line (recent 3-day average) - FULL WIDTH on right half -->
             <path v-if="shortTermTrendPath" 
                   :d="shortTermTrendPath" 
-                  stroke="#ff6b35" stroke-width="8" fill="none"
+                  :stroke="color ? color : '#ff6b35'" stroke-width="8" fill="none"
                   stroke-linecap="round"/>
             
             <!-- Foreground average value label -->
             <g v-if="shortTermTrendPoints.length > 0">
                 <text :x="shortTermTrendPoints[1].x - 60" :y="shortTermTrendPoints[0].y - 8" 
-                      fill="#ff6b35" font-size="16" font-weight="800">
+                      :fill="color ? color : '#ff6b35'" font-size="16" font-weight="800">
                     Ø {{ currentTrendValue }}
                 </text>
             </g>
@@ -85,12 +85,13 @@ import { computed } from 'vue'
 // Props
 interface ChartDataPoint {
     date: string
-    calories: number
+    calories: number,
 }
 
 const props = defineProps<{
     chartData: ChartDataPoint[]
     selectedPeriod: 'week' | 'month' | 'year'
+    color: string
 }>()
 
 // Chart dimensions - using full width

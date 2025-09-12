@@ -82,6 +82,7 @@
                     <AppleHealthTrendChart 
                         :chart-data="chartData"
                         :selected-period="selectedPeriod"
+                        color="#ff6b35"
                     />
                 </div>
             </div>
