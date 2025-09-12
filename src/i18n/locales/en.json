@@ -633,6 +633,19 @@
     "week": "Week",
     "month": "Month",
     "year": "Year",
+    "trends": {
+      "title": "Trends",
+      "longTerm": "Long-term progress",
+      "recent": "Recent trend",
+      "noData": "Not enough data available for trend analysis",
+      "insufficientData": "More data needed for detailed trend analysis",
+      "stable": "Your values have been stable over the last {period}",
+      "increased": "Your values have increased over the last {period}",
+      "decreased": "Your values have decreased over the last {period}",
+      "days": "days",
+      "weeks": "weeks",
+      "months": "months"
+    },
     "calories": {
       "title": "Calories",
       "chartTitle": "Calorie History",

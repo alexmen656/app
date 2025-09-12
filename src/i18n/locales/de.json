@@ -633,6 +633,19 @@
     "week": "Woche",
     "month": "Monat",
     "year": "Jahr",
+    "trends": {
+      "title": "Trends",
+      "longTerm": "Langzeit-Verlauf",
+      "recent": "Aktueller Trend",
+      "noData": "Nicht genügend Daten für Trend-Analyse verfügbar",
+      "insufficientData": "Mehr Daten benötigt für detaillierte Trend-Analyse",
+      "stable": "Ihre Werte waren in den letzten {period} stabil",
+      "increased": "Ihre Werte sind in den letzten {period} gestiegen",
+      "decreased": "Ihre Werte sind in den letzten {period} gesunken",
+      "days": "Tagen",
+      "weeks": "Wochen",
+      "months": "Monaten"
+    },
     "calories": {
       "title": "Kalorien",
       "chartTitle": "Kalorienverlauf",

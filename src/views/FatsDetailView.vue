@@ -71,6 +71,46 @@
             </div>
         </div>
 
+        <!-- Apple Health Style Trend Chart -->
+        <div class="apple-health-trend-section">
+            <div class="apple-health-trend-header">
+                <h3>{{ $t('detail.trends.title') }}</h3>
+                <span class="beta-badge">BETA</span>
+            </div>
+            <div class="apple-health-trend-container">
+                <div class="trend-insight">
+                    <div class="trend-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="#42a5f5">
+                            <path d="M12 2L13.09 8.26L22 9L17 14L18.18 21L12 17.77L5.82 21L7 14L2 9L10.91 8.26L12 2Z"/>
+                        </svg>
+                    </div>
+                    <div class="trend-content">
+                        <div class="trend-title">{{ $t('detail.fats.title') }}</div>
+                        <div class="trend-description">
+                            {{ $t('detail.trends.stable', { period: $t('detail.trends.days') }) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="trend-chart-wrapper">
+                    <div class="trend-chart-labels">
+                        <span class="chart-label">{{ $t('detail.trends.longTermWeeks') }}</span>
+                        <span class="chart-label highlight">{{ $t('detail.trends.shortTermWeeks') }}</span>
+                    </div>
+                    <div class="trend-chart">
+                        <svg width="100%" height="120" viewBox="0 0 300 120">
+                            <!-- Simplified static trend for demo -->
+                            <path d="M 20 70 Q 50 75 80 80 Q 110 75 140 70 Q 170 65 200 70 Q 230 75 260 80 Q 280 85 290 90" 
+                                  stroke="rgba(255, 255, 255, 0.3)" stroke-width="2" fill="none"/>
+                            <path d="M 140 70 Q 170 65 200 60 Q 230 55 260 50 Q 280 45 290 40" 
+                                  stroke="#42a5f5" stroke-width="3" fill="none"/>
+                            <circle cx="290" cy="40" r="4" fill="#42a5f5"/>
+                            <text x="295" y="35" fill="#42a5f5" font-size="12" font-weight="600">{{ currentValue }}g</text>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Statistics -->
         <div class="stats-section">
             <h3>{{ $t('detail.statistics') }}</h3>
@@ -790,5 +830,115 @@ watch(selectedPeriod, () => {
     font-weight: bold;
     position: absolute;
     left: 0;
+}
+
+/* Apple Health Style Trend Chart */
+.apple-health-trend-section {
+    margin: 0 20px 32px;
+}
+
+.apple-health-trend-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.apple-health-trend-header h3 {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0;
+    color: white;
+}
+
+.beta-badge {
+    background: rgba(66, 165, 245, 0.2);
+    color: #42a5f5;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.apple-health-trend-container {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.trend-insight {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.trend-insight:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 8px;
+    margin: -8px -8px 12px -8px;
+}
+
+.trend-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(66, 165, 245, 0.2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.trend-content {
+    flex: 1;
+}
+
+.trend-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #42a5f5;
+    margin-bottom: 4px;
+}
+
+.trend-description {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.4;
+}
+
+.trend-chart-wrapper {
+    margin-top: 20px;
+}
+
+.trend-chart-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.chart-label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chart-label.highlight {
+    color: #42a5f5;
+    font-weight: 600;
+}
+
+.trend-chart {
+    height: 120px;
+    width: 100%;
+}
+
+.trend-chart svg {
+    width: 100%;
+    height: 100%;
 }
 </style>

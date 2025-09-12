@@ -71,6 +71,75 @@
             </div>
         </div>
 
+        <!-- Apple Health Style Trend Chart -->
+        <div class="apple-health-trend-section">
+            <div class="apple-health-trend-header">
+                <h3>{{ $t('detail.trends.title') }}</h3>
+                <span class="beta-badge">BETA</span>
+            </div>
+            <div class="apple-health-trend-container">
+                <div class="trend-insight" @click="onTrendInsightClick">
+                    <div class="trend-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="#ff6b6b">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </div>
+                    <div class="trend-content">
+                        <div class="trend-title">{{ $t('detail.protein.title') }}</div>
+                        <div class="trend-description">
+                            {{ trendInsightText }}
+                        </div>
+                    </div>
+                    <div class="trend-arrow">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="rgba(255, 255, 255, 0.5)">
+                            <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="trend-chart-wrapper">
+                    <div class="trend-chart-labels">
+                        <span class="chart-label">{{ longTermAverageLabel }}</span>
+                        <span class="chart-label highlight">{{ shortTermAverageLabel }}</span>
+                    </div>
+                    <div class="trend-chart">
+                        <svg width="100%" height="120" viewBox="0 0 300 120" class="dynamic-trend-chart">
+                            <!-- Background line (long-term average) -->
+                            <path :d="longTermTrendPath" 
+                                  stroke="rgba(255, 255, 255, 0.3)" stroke-width="2" fill="none"/>
+                            <!-- Data points for background -->
+                            <circle v-for="(point, index) in longTermTrendPoints" :key="'long-' + index"
+                                    :cx="point.x" :cy="point.y" r="3" fill="rgba(255, 255, 255, 0.3)"/>
+                            
+                            <!-- Foreground line (short-term average) -->
+                            <path :d="shortTermTrendPath" 
+                                  stroke="#ff6b6b" stroke-width="3" fill="none"/>
+                            <!-- Data points for foreground -->
+                            <circle v-for="(point, index) in shortTermTrendPoints" :key="'short-' + index"
+                                    :cx="point.x" :cy="point.y" r="4" fill="#ff6b6b"/>
+                            
+                            <!-- Current value indicator -->
+                            <line v-if="currentValuePoint" 
+                                  :x1="currentValuePoint.x" :y1="currentValuePoint.y" 
+                                  :x2="currentValuePoint.x + 20" :y2="currentValuePoint.y - 15" 
+                                  stroke="#ff6b6b" stroke-width="2"/>
+                            <text v-if="currentValuePoint" 
+                                  :x="currentValuePoint.x + 25" :y="currentValuePoint.y - 18" 
+                                  fill="#ff6b6b" font-size="12" font-weight="600">{{ currentTrendValue }}</text>
+                            
+                            <!-- Baseline indicator -->
+                            <line v-if="baselinePoint" 
+                                  :x1="baselinePoint.x" :y1="baselinePoint.y" 
+                                  :x2="baselinePoint.x + 20" :y2="baselinePoint.y - 15" 
+                                  stroke="rgba(255, 255, 255, 0.5)" stroke-width="2"/>
+                            <text v-if="baselinePoint" 
+                                  :x="baselinePoint.x + 25" :y="baselinePoint.y - 18" 
+                                  fill="rgba(255, 255, 255, 0.7)" font-size="12">{{ baselineTrendValue }}</text>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Statistics -->
         <div class="stats-section">
             <h3>{{ $t('detail.statistics') }}</h3>
@@ -339,7 +408,153 @@ const daysOnTrack = computed(() => {
     return chartData.value.filter(item => item.protein >= goalValue.value).length.toString()
 })
 
+// Apple Health Style Trend Chart Computed Properties
+const trendInsightText = computed(() => {
+    if (chartData.value.length < 2) {
+        return t('detail.trends.noData')
+    }
+    
+    const recent = chartData.value.slice(-3)
+    const older = chartData.value.slice(0, -3)
+    
+    if (recent.length === 0 || older.length === 0) {
+        return t('detail.trends.insufficientData')
+    }
+    
+    const recentAvg = recent.reduce((sum, item) => sum + item.protein, 0) / recent.length
+    const olderAvg = older.reduce((sum, item) => sum + item.protein, 0) / older.length
+    
+    const trend = recentAvg - olderAvg
+    const periodText = selectedPeriod.value === 'week' ? t('detail.trends.days') : 
+                     selectedPeriod.value === 'month' ? t('detail.trends.weeks') : t('detail.trends.months')
+    
+    if (Math.abs(trend) < 5) {
+        return t('detail.trends.stable', { period: periodText })
+    } else if (trend > 0) {
+        return t('detail.trends.increased', { period: periodText })
+    } else {
+        return t('detail.trends.decreased', { period: periodText })
+    }
+})
+
+const longTermAverageLabel = computed(() => {
+    const period = selectedPeriod.value === 'week' ? t('detail.trends.longTermWeeks') : 
+                  selectedPeriod.value === 'month' ? t('detail.trends.longTermMonths') : t('detail.trends.longTermYears')
+    return period
+})
+
+const shortTermAverageLabel = computed(() => {
+    const period = selectedPeriod.value === 'week' ? t('detail.trends.shortTermWeeks') : 
+                  selectedPeriod.value === 'month' ? t('detail.trends.shortTermMonths') : t('detail.trends.shortTermYears')
+    return period
+})
+
+const longTermTrendPoints = computed(() => {
+    if (chartData.value.length === 0) return []
+    
+    const points: Array<{ x: number; y: number; value: number }> = []
+    const svgWidth = 300
+    const svgHeight = 120
+    const padding = 20
+    const usableWidth = svgWidth - 2 * padding
+    const usableHeight = svgHeight - 40
+    
+    const maxValue = Math.max(...chartData.value.map(item => item.protein))
+    const minValue = Math.min(...chartData.value.map(item => item.protein))
+    const valueRange = maxValue - minValue || 1
+    
+    chartData.value.forEach((item, index) => {
+        const x = padding + (index / (chartData.value.length - 1)) * usableWidth
+        const y = padding + ((maxValue - item.protein) / valueRange) * usableHeight
+        points.push({ x, y, value: item.protein })
+    })
+    
+    return points
+})
+
+const shortTermTrendPoints = computed(() => {
+    if (chartData.value.length < 3) return []
+    
+    const recentData = chartData.value.slice(-Math.ceil(chartData.value.length / 2))
+    const points: Array<{ x: number; y: number; value: number }> = []
+    const svgWidth = 300
+    const svgHeight = 120
+    const padding = 20
+    const usableWidth = svgWidth - 2 * padding
+    const usableHeight = svgHeight - 40
+    
+    const maxValue = Math.max(...chartData.value.map(item => item.protein))
+    const minValue = Math.min(...chartData.value.map(item => item.protein))
+    const valueRange = maxValue - minValue || 1
+    
+    recentData.forEach((item, index) => {
+        const totalIndex = chartData.value.length - recentData.length + index
+        const x = padding + (totalIndex / (chartData.value.length - 1)) * usableWidth
+        const y = padding + ((maxValue - item.protein) / valueRange) * usableHeight
+        points.push({ x, y, value: item.protein })
+    })
+    
+    return points
+})
+
+const longTermTrendPath = computed(() => {
+    if (longTermTrendPoints.value.length < 2) return ''
+    
+    let path = `M ${longTermTrendPoints.value[0].x} ${longTermTrendPoints.value[0].y}`
+    
+    for (let i = 1; i < longTermTrendPoints.value.length; i++) {
+        const point = longTermTrendPoints.value[i]
+        const prevPoint = longTermTrendPoints.value[i - 1]
+        const cpx = (prevPoint.x + point.x) / 2
+        path += ` Q ${cpx} ${prevPoint.y} ${point.x} ${point.y}`
+    }
+    
+    return path
+})
+
+const shortTermTrendPath = computed(() => {
+    if (shortTermTrendPoints.value.length < 2) return ''
+    
+    let path = `M ${shortTermTrendPoints.value[0].x} ${shortTermTrendPoints.value[0].y}`
+    
+    for (let i = 1; i < shortTermTrendPoints.value.length; i++) {
+        const point = shortTermTrendPoints.value[i]
+        const prevPoint = shortTermTrendPoints.value[i - 1]
+        const cpx = (prevPoint.x + point.x) / 2
+        path += ` Q ${cpx} ${prevPoint.y} ${point.x} ${point.y}`
+    }
+    
+    return path
+})
+
+const currentValuePoint = computed(() => {
+    if (shortTermTrendPoints.value.length === 0) return null
+    return shortTermTrendPoints.value[shortTermTrendPoints.value.length - 1]
+})
+
+const baselinePoint = computed(() => {
+    if (longTermTrendPoints.value.length === 0) return null
+    return longTermTrendPoints.value[0]
+})
+
+const currentTrendValue = computed(() => {
+    if (shortTermTrendPoints.value.length === 0) return '0'
+    const lastPoint = shortTermTrendPoints.value[shortTermTrendPoints.value.length - 1]
+    return `${Math.round(lastPoint.value)}`
+})
+
+const baselineTrendValue = computed(() => {
+    if (longTermTrendPoints.value.length === 0) return '0g'
+    const firstPoint = longTermTrendPoints.value[0]
+    return `${Math.round(firstPoint.value)}g`
+})
+
 // Functions
+function onTrendInsightClick() {
+    // Could navigate to more detailed trend analysis
+    console.log('Trend insight clicked')
+}
+
 function goBack() {
     router.back()
 }
@@ -824,5 +1039,124 @@ watch(isDebugMode, (newValue) => {
     font-weight: bold;
     position: absolute;
     left: 0;
+}
+
+/* Apple Health Style Trend Chart */
+.apple-health-trend-section {
+    margin: 0 20px 32px;
+}
+
+.apple-health-trend-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.apple-health-trend-header h3 {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0;
+    color: white;
+}
+
+.beta-badge {
+    background: rgba(255, 107, 107, 0.2);
+    color: #ff6b6b;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.apple-health-trend-container {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.trend-insight {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.trend-insight:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 8px;
+    margin: -8px -8px 12px -8px;
+}
+
+.trend-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 107, 107, 0.2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.trend-content {
+    flex: 1;
+}
+
+.trend-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #ff6b6b;
+    margin-bottom: 4px;
+}
+
+.trend-description {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.4;
+}
+
+.trend-arrow {
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+}
+
+.trend-insight:hover .trend-arrow {
+    opacity: 1;
+}
+
+.trend-chart-wrapper {
+    margin-top: 20px;
+}
+
+.trend-chart-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.chart-label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.chart-label.highlight {
+    color: #ff6b6b;
+    font-weight: 600;
+}
+
+.trend-chart {
+    height: 120px;
+    width: 100%;
+}
+
+.trend-chart svg {
+    width: 100%;
+    height: 100%;
 }
 </style>
