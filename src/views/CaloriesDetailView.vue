@@ -80,49 +80,41 @@
             <div class="apple-health-trend-container">
                 <div class="trend-chart-wrapper">
                     <div class="trend-chart">
-                        <svg width="100%" height="120" viewBox="0 0 300 120" class="dynamic-trend-chart">
+                        <svg width="100%" height="250" viewBox="0 0 340 250" class="dynamic-trend-chart">
                             <!-- Grid lines (horizontal trend lines) -->
                             <defs>
-                                <pattern id="grid" width="50" height="20" patternUnits="userSpaceOnUse">
-                                    <path d="M 50 0 L 0 0 0 20" fill="none" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1"/>
+                                <pattern id="grid" width="50" height="30" patternUnits="userSpaceOnUse">
+                                    <path d="M 50 0 L 0 0 0 30" fill="none" stroke="rgba(255, 255, 255, 0.1)" stroke-width="1"/>
                                 </pattern>
                             </defs>
-                            <rect width="280" height="80" x="20" y="20" fill="url(#grid)" opacity="0.3"/>
+                            <rect width="320" height="200" x="10" y="25" fill="url(#grid)" opacity="0.3"/>
                             
                             <!-- Value scale indicators on left -->
                             <g v-if="chartData.length > 0">
-                                <text x="15" y="25" fill="rgba(255, 255, 255, 0.4)" font-size="8" text-anchor="end">
+                                <text x="15" y="35" fill="rgba(255, 255, 255, 0.4)" font-size="10" text-anchor="end">
                                     {{ Math.max(...chartData.map(d => d.calories)) }}
                                 </text>
-                                <text x="15" y="60" fill="rgba(255, 255, 255, 0.4)" font-size="8" text-anchor="end">
+                                <text x="15" y="125" fill="rgba(255, 255, 255, 0.4)" font-size="10" text-anchor="end">
                                     {{ Math.round((Math.max(...chartData.map(d => d.calories)) + Math.min(...chartData.map(d => d.calories))) / 2) }}
                                 </text>
-                                <text x="15" y="95" fill="rgba(255, 255, 255, 0.4)" font-size="8" text-anchor="end">
+                                <text x="15" y="215" fill="rgba(255, 255, 255, 0.4)" font-size="10" text-anchor="end">
                                     {{ Math.min(...chartData.map(d => d.calories)) }}
                                 </text>
                             </g>
                             
                             <!-- Horizontal reference lines -->
                             <line v-if="chartData.length > 0" 
-                                  x1="20" y1="30" x2="290" y2="30" 
+                                  x1="20" y1="50" x2="320" y2="50" 
                                   stroke="rgba(255, 255, 255, 0.15)" stroke-width="1" stroke-dasharray="3,3"/>
                             <line v-if="chartData.length > 0" 
-                                  x1="20" y1="50" x2="290" y2="50" 
+                                  x1="20" y1="100" x2="320" y2="100" 
                                   stroke="rgba(255, 255, 255, 0.15)" stroke-width="1" stroke-dasharray="3,3"/>
                             <line v-if="chartData.length > 0" 
-                                  x1="20" y1="70" x2="290" y2="70" 
+                                  x1="20" y1="150" x2="320" y2="150" 
                                   stroke="rgba(255, 255, 255, 0.15)" stroke-width="1" stroke-dasharray="3,3"/>
                             <line v-if="chartData.length > 0" 
-                                  x1="20" y1="90" x2="290" y2="90" 
+                                  x1="20" y1="200" x2="320" y2="200" 
                                   stroke="rgba(255, 255, 255, 0.15)" stroke-width="1" stroke-dasharray="3,3"/>
-                            
-                            <!-- Goal line -->
-                            <line v-if="goalLineY !== null" 
-                                  :x1="20" :y1="goalLineY" :x2="290" :y2="goalLineY" 
-                                  stroke="rgba(255, 167, 38, 0.6)" stroke-width="2" stroke-dasharray="5,5"/>
-                            <text v-if="goalLineY !== null" 
-                                  :x="295" :y="goalLineY + 4" 
-                                  fill="rgba(255, 167, 38, 0.8)" font-size="10" font-weight="500">{{ goalValue }}</text>
                             
                             <!-- Background: Individual data points curve -->
                             <path v-if="individualDataPath" 
@@ -169,10 +161,10 @@
                             
                             <!-- Period labels -->
                             <g v-if="chartData.length >= 6">
-                                <text x="70" y="115" fill="rgba(255, 255, 255, 0.5)" font-size="8" text-anchor="middle">
+                                <text x="100" y="240" fill="rgba(255, 255, 255, 0.5)" font-size="10" text-anchor="middle">
                                     Vorherige Periode
                                 </text>
-                                <text x="230" y="115" fill="rgba(255, 255, 255, 0.5)" font-size="8" text-anchor="middle">
+                                <text x="250" y="240" fill="rgba(255, 255, 255, 0.5)" font-size="10" text-anchor="middle">
                                     Letzte 3 Tage
                                 </text>
                             </g>
@@ -463,11 +455,11 @@ const longTermTrendPoints = computed(() => {
     const olderAverage = olderData.reduce((sum, item) => sum + item.calories, 0) / olderData.length
     
     const points: Array<{ x: number; y: number; value: number }> = []
-    const svgWidth = 300
-    const svgHeight = 120
-    const padding = 20
+    const svgWidth = 340  // Increased width for better utilization
+    const svgHeight = 250  // Much larger height (was 120)
+    const padding = 10    // Reduced padding for more chart space
     const usableWidth = svgWidth - 2 * padding
-    const usableHeight = svgHeight - 40
+    const usableHeight = svgHeight - 50  // More space for larger chart
     
     // Use all data for scaling
     const allValues = chartData.value.map(item => item.calories)
@@ -494,11 +486,11 @@ const individualDataPoints = computed(() => {
     if (chartData.value.length === 0) return []
     
     const points: Array<{ x: number; y: number; value: number; date: string }> = []
-    const svgWidth = 300
-    const svgHeight = 120
-    const padding = 20
+    const svgWidth = 340  // Increased width for better utilization
+    const svgHeight = 250  // Much larger height (was 120)
+    const padding = 10    // Reduced padding for more chart space
     const usableWidth = svgWidth - 2 * padding
-    const usableHeight = svgHeight - 40
+    const usableHeight = svgHeight - 50  // More space for larger chart
     
     // Use all data for scaling
     const allValues = chartData.value.map(item => item.calories)
@@ -554,11 +546,11 @@ const shortTermTrendPoints = computed(() => {
     const recentAverage = recentData.reduce((sum, item) => sum + item.calories, 0) / recentData.length
     
     const points: Array<{ x: number; y: number; value: number }> = []
-    const svgWidth = 300
-    const svgHeight = 120
-    const padding = 20
+    const svgWidth = 340  // Increased width for better utilization
+    const svgHeight = 250  // Much larger height (was 120)
+    const padding = 10    // Reduced padding for more chart space
     const usableWidth = svgWidth - 2 * padding
-    const usableHeight = svgHeight - 40
+    const usableHeight = svgHeight - 50  // More space for larger chart
     
     // Use all data for scaling
     const allValues = chartData.value.map(item => item.calories)
@@ -610,22 +602,6 @@ const baselineTrendValue = computed(() => {
     const olderData = chartData.value.slice(0, halfPoint)
     const average = olderData.reduce((sum, item) => sum + item.calories, 0) / olderData.length
     return `${Math.round(average)}`
-})
-
-// Advanced Chart computed properties
-const goalLineY = computed(() => {
-    if (chartData.value.length === 0) return null
-    
-    const allValues = chartData.value.map(item => item.calories)
-    const maxValue = Math.max(...allValues)
-    const minValue = Math.min(...allValues)
-    const valueRange = maxValue - minValue || 1
-    
-    const padding = 20
-    const usableHeight = 80 // 120 - 40 for padding
-    
-    const normalizedGoal = (goalValue.value - minValue) / valueRange
-    return padding + ((1 - normalizedGoal) * usableHeight)
 })
 
 function goBack() {
@@ -1179,7 +1155,7 @@ watch(isDebugMode, (newValue) => {
 .apple-health-trend-container {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 20px;
-    padding: 20px;
+    padding: 8px;
     backdrop-filter: blur(10px);
 }
 
@@ -1236,14 +1212,10 @@ watch(isDebugMode, (newValue) => {
     opacity: 1;
 }
 
-.trend-chart-wrapper {
-    margin-top: 20px;
-}
-
 .trend-chart-labels {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 16px;
+    margin-bottom: 12px;  /* Reduced margin for more chart space */
 }
 
 .chart-label {
@@ -1257,8 +1229,10 @@ watch(isDebugMode, (newValue) => {
 }
 
 .trend-chart {
-    height: 120px;
+    height: 250px;  /* Much larger height (was 120px) */
     width: 100%;
+    min-width: 0;  /* Ensure the chart can shrink/expand properly */
+    overflow: visible;  /* Allow chart elements to be visible outside bounds if needed */
 }
 
 .trend-chart svg {
@@ -1328,7 +1302,7 @@ watch(isDebugMode, (newValue) => {
 /* Responsive adjustments */
 @media (max-width: 480px) {
     .trend-chart {
-        height: 100px;
+        height: 200px;  /* Still large on mobile (was 100px) */
     }
     
     .apple-health-trend-header h3 {
