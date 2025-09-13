@@ -749,12 +749,7 @@ function handleTouchEnd(event: TouchEvent) {
     transition: transform 0.2s, background 0.2s;*/
 }
 
-/*.main-card:hover {
-    transform: translateY(-2px);
-    background: rgba(255, 255, 255, 0.08);
-}
-
-.main-card:active {
+/*.main-card:active {
     transform: translateY(0px);
     background: rgba(255, 255, 255, 0.12);
 }*/
@@ -810,12 +805,7 @@ function handleTouchEnd(event: TouchEvent) {
     transition: transform 0.2s, background 0.2s;*/
 }
 
-/*.macro-card:hover {
-    transform: translateY(-2px);
-    background: rgba(255, 255, 255, 0.08);
-}
-
-.macro-card:active {
+/*.macro-card:active {
     transform: translateY(0px);
     background: rgba(255, 255, 255, 0.12);
 }*/
@@ -1012,11 +1002,6 @@ function handleTouchEnd(event: TouchEvent) {
     transition: all 0.2s;
 }
 
-.show-all-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateY(-1px);
-}
-
 .show-all-btn:active {
     transform: translateY(0px);
     background: rgba(255, 255, 255, 0.2);
@@ -1037,10 +1022,6 @@ function handleTouchEnd(event: TouchEvent) {
     text-decoration: none;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     transition: transform 0.2s;
-}
-
-.add-button:hover {
-    transform: scale(1.1);
 }
 
 a {
@@ -1155,11 +1136,6 @@ a {
     text-align: left;
 }
 
-.mode-option:hover {
-    border-color: #007052;
-    background: #f8fffe;
-}
-
 .mode-icon {
     font-size: 32px;
     margin-right: 16px;
@@ -1192,10 +1168,6 @@ a {
     transition: all 0.2s ease;
 }
 
-.mode-cancel:hover {
-    background: #f5f5f5;
-}
-
 /* Premium Banner */
 .premium-banner {
     /*margin: 16px 20px 0;*/
@@ -1207,11 +1179,6 @@ a {
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
-}
-
-.premium-banner:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(255, 215, 0, 0.4);
 }
 
 .banner-content {
@@ -1262,10 +1229,6 @@ a {
     flex-shrink: 0;
 }
 
-.banner-close:hover {
-    background: rgba(30, 30, 46, 0.2);
-}
-
 .kalbuddy-chat-link {
     display: flex;
     align-items: center;
@@ -1276,13 +1239,6 @@ a {
     color: white;
     transition: all 0.3s ease;
     box-shadow: 0 4px 16px rgba(0, 112, 82, 0.2);
-}
-
-.kalbuddy-chat-link:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 112, 82, 0.3);
-    text-decoration: none;
-    color: white;
 }
 
 .chat-icon {
@@ -1319,10 +1275,6 @@ a {
     flex-shrink: 0;
     opacity: 0.8;
     transition: transform 0.3s ease;
-}
-
-.kalbuddy-chat-link:hover .chat-arrow {
-    transform: translateX(4px);
 }
 
 .kalbuddy-chat-section {
