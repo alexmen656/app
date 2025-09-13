@@ -11,13 +11,21 @@
                                     stroke-linejoin="round" />
                             </svg>
                         </button>
-                        <button class="nutrition-menu" @click="showDetailsModal = true">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                <circle cx="12" cy="12" r="2" />
-                                <circle cx="12" cy="5" r="2" />
-                                <circle cx="12" cy="19" r="2" />
-                            </svg>
-                        </button>
+                        <div class="header-actions">
+                            <button class="nutrition-share" @click="shareNutrition" :disabled="isSharing">
+                                <svg v-if="!isSharing" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                <div v-else class="share-spinner"></div>
+                            </button>
+                            <button class="nutrition-menu" @click="showDetailsModal = true">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <circle cx="12" cy="12" r="2" />
+                                    <circle cx="12" cy="5" r="2" />
+                                    <circle cx="12" cy="19" r="2" />
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -410,6 +418,8 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
+import { Share } from '@capacitor/share';
+import { Filesystem, Directory } from '@capacitor/filesystem';
 import { BarcodeCache, ScanHistory } from '../utils/storage';
 import { WidgetDataManager, StreakManager } from '../utils/widgetData';
 import { getLocalizedName, getLocalizedNotes, getLocalizedAmount, capitalizeIfLetter } from '../utils/localization';
@@ -428,6 +438,7 @@ const showSourceModal = ref(false);
 const showImageModal = ref(false);
 const editedProduct = ref({});
 const isLoading = ref(true);
+const isSharing = ref(false);
 
 // Touch handling for double-tap
 const lastTap = ref(0);
@@ -772,6 +783,182 @@ function validateAmount() {
     amount.value = Math.round(amount.value * 10) / 10;
 }
 
+// Share nutrition function with preview image
+async function shareNutrition() {
+    if (!product.value || isSharing.value) return;
+    
+    isSharing.value = true;
+    
+    try {
+        // Create preview image as data URL
+        const imageDataUrl = await createNutritionPreviewImage();
+        
+        // Convert data URL to blob and save as temporary file
+        const response = await fetch(imageDataUrl);
+        const blob = await response.blob();
+        
+        // Convert blob to base64 for Filesystem API
+        const base64Data = await blobToBase64(blob);
+        
+        // Generate unique filename
+        const fileName = `nutrition-share-${Date.now()}.png`;
+        
+        // Write file to temporary directory
+        const result = await Filesystem.writeFile({
+            path: fileName,
+            data: base64Data,
+            directory: Directory.Cache
+        });
+        
+        // Share the nutrition data with the image file
+        await Share.share({
+            title: `${getLocalizedName(product.value)} - Kalbuddy`,
+            text: `🥗 ${getLocalizedName(product.value)}\n\n📊 Nährwerte pro ${amount.value} Portion:\n🔥 ${Math.round(product.value.calories * amount.value)} kcal\n🥩 ${Math.round(product.value.protein * amount.value)}g Protein\n🍞 ${Math.round(product.value.carbs * amount.value)}g Kohlenhydrate\n🥑 ${Math.round(product.value.fats * amount.value)}g Fett\n\n📱 Verfolge deine Ernährung mit Kalbuddy`,
+            files: [result.uri],
+            dialogTitle: 'Nährwerte teilen'
+        });
+        
+        // Track analytics
+        analyticsActions.track('nutrition_shared', {
+            product_name: getLocalizedName(product.value),
+            amount: amount.value
+        });
+        
+        // Clean up the temporary file after sharing
+        setTimeout(async () => {
+            try {
+                await Filesystem.deleteFile({
+                    path: fileName,
+                    directory: Directory.Cache
+                });
+            } catch (error) {
+                console.log('Could not delete temporary file:', error);
+            }
+        }, 5000);
+        
+    } catch (error) {
+        console.error('Error sharing nutrition:', error);
+    } finally {
+        isSharing.value = false;
+    }
+}
+
+// Helper function to convert blob to base64
+function blobToBase64(blob) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            const base64 = reader.result.split(',')[1]; // Remove data:image/png;base64, prefix
+            resolve(base64);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+    });
+}
+
+// Create nutrition preview image
+async function createNutritionPreviewImage() {
+    return new Promise((resolve) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Helper function for rounded rectangles
+        function roundRect(x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+        
+        // Set canvas size
+        canvas.width = 800;
+        canvas.height = 1200;
+        
+        // Background gradient
+        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        gradient.addColorStop(0, '#667eea');
+        gradient.addColorStop(1, '#764ba2');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Add some styling
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+        ctx.fillRect(0, 0, canvas.width, 200);
+        
+        // Product name
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 48px system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        const productName = getLocalizedName(product.value);
+        ctx.fillText(productName, canvas.width / 2, 120);
+        
+        // Amount info
+        ctx.font = '32px system-ui, -apple-system, sans-serif';
+        ctx.fillText(`${amount.value} Portion${amount.value !== 1 ? 'en' : ''}`, canvas.width / 2, 180);
+        
+        // Nutrition box background
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+        roundRect(60, 250, canvas.width - 120, 600, 24);
+        ctx.fill();
+        
+        // Nutrition title
+        ctx.fillStyle = '#1a1a1a';
+        ctx.font = 'bold 36px system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Nährwerte', canvas.width / 2, 320);
+        
+        // Nutrition values
+        const nutritionData = [
+            { label: 'Kalorien', value: Math.round(product.value.calories * amount.value), unit: 'kcal', color: '#ff6b35' },
+            { label: 'Protein', value: Math.round(product.value.protein * amount.value), unit: 'g', color: '#ff6b6b' },
+            { label: 'Kohlenhydrate', value: Math.round(product.value.carbs * amount.value), unit: 'g', color: '#ffa726' },
+            { label: 'Fett', value: Math.round(product.value.fats * amount.value), unit: 'g', color: '#42a5f5' }
+        ];
+        
+        // Draw nutrition items
+        nutritionData.forEach((item, index) => {
+            const y = 420 + (index * 100);
+            
+            // Color indicator
+            ctx.fillStyle = item.color;
+            ctx.fillRect(100, y - 25, 8, 50);
+            
+            // Label
+            ctx.fillStyle = '#666';
+            ctx.font = '28px system-ui, -apple-system, sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText(item.label, 130, y);
+            
+            // Value
+            ctx.fillStyle = '#1a1a1a';
+            ctx.font = 'bold 36px system-ui, -apple-system, sans-serif';
+            ctx.textAlign = 'right';
+            ctx.fillText(`${item.value}${item.unit}`, canvas.width - 100, y);
+        });
+        
+        // Kalbuddy logo text
+        ctx.fillStyle = '#22c55e';
+        ctx.font = 'bold 48px system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Kalbuddy', canvas.width / 2, 1050);
+        
+        // Subtitle
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '24px system-ui, -apple-system, sans-serif';
+        ctx.fillText('Dein Kalorien-Tracker', canvas.width / 2, 1100);
+        
+        // Convert to data URL
+        resolve(canvas.toDataURL('image/png', 0.9));
+    });
+}
+
 function showImagePreview() {
     if (productImage.value) {
         showImageModal.value = true;
@@ -1006,8 +1193,15 @@ async function saveAndReturn() {
     z-index: 3;
 }
 
+.header-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
 .nutrition-back,
-.nutrition-menu {
+.nutrition-menu,
+.nutrition-share {
     background: rgba(255, 255, 255, 0.9);
     border: none;
     border-radius: 50%;
@@ -1022,10 +1216,30 @@ async function saveAndReturn() {
     transition: all 0.2s ease;
 }
 
+.nutrition-share:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 .nutrition-back:hover,
-.nutrition-menu:hover {
+.nutrition-menu:hover,
+.nutrition-share:hover:not(:disabled) {
     background: rgba(255, 255, 255, 1);
     transform: scale(1.05);
+}
+
+.share-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #333;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .nutrition-content {
@@ -2252,14 +2466,21 @@ async function saveAndReturn() {
 
     /* Header buttons dark mode */
     .nutrition-back,
-    .nutrition-menu {
+    .nutrition-menu,
+    .nutrition-share {
         background: rgba(28, 28, 30, 0.9);
         color: #fff;
     }
 
     .nutrition-back:hover,
-    .nutrition-menu:hover {
+    .nutrition-menu:hover,
+    .nutrition-share:hover:not(:disabled) {
         background: rgba(28, 28, 30, 1);
+    }
+
+    .share-spinner {
+        border-color: #3a3a3c;
+        border-top-color: #fff;
     }
 }
 
