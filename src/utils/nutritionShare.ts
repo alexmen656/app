@@ -86,10 +86,10 @@ export async function createNutritionPreviewImage(nutritionData: NutritionData, 
 }
 
 function drawNutritionPanel(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, nutritionData: NutritionData, amount: number) {
-  // Floating white panel with premium design
+  // Floating white panel with premium design - much larger for readability
   const margin = 60;
   const panelWidth = canvas.width - (margin * 2);
-  const panelHeight = 280; // Increased height for better layout
+  const panelHeight = 400; // Much bigger for readability
   const panelX = margin;
   const panelY = canvas.height - panelHeight - margin;
   const cornerRadius = 32;
@@ -100,14 +100,6 @@ function drawNutritionPanel(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasEle
   ctx.shadowOffsetY = 20;
   ctx.fillStyle = 'rgba(255, 255, 255, 0.98)';
   roundRect(ctx, panelX, panelY, panelWidth, panelHeight, cornerRadius);
-  ctx.fill();
-  
-  // Subtle inner shadow for depth
-  const innerGradient = ctx.createLinearGradient(0, panelY, 0, panelY + 20);
-  innerGradient.addColorStop(0, 'rgba(0, 0, 0, 0.02)');
-  innerGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
-  ctx.fillStyle = innerGradient;
-  roundRect(ctx, panelX, panelY, panelWidth, 20, cornerRadius);
   ctx.fill();
   
   // Reset shadow
@@ -121,48 +113,44 @@ function drawNutritionPanel(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasEle
   const totalCarbs = Math.round(nutritionData.carbs * amount);
   const totalFats = Math.round(nutritionData.fats * amount);
   
-  // Nutrition data with beautiful colors
+  // Nutrition data with proper colors and no emojis
   const nutritionItems = [
     { 
       value: totalCalories, 
       unit: 'kcal', 
       label: 'Kalorien',
-      color: '#FF6B35',
-      bgColor: 'rgba(255, 107, 53, 0.1)',
-      icon: '🔥'
+      color: '#ff6b35',
+      bgColor: 'rgba(255, 107, 53, 0.15)'
     },
     { 
       value: totalProtein, 
       unit: 'g', 
       label: 'Protein',
-      color: '#E74C3C',
-      bgColor: 'rgba(231, 76, 60, 0.1)',
-      icon: '💪'
+      color: '#ff6b6b',
+      bgColor: 'rgba(255, 107, 107, 0.15)'
     },
     { 
       value: totalCarbs, 
       unit: 'g', 
       label: 'Carbs',
-      color: '#F39C12',
-      bgColor: 'rgba(243, 156, 18, 0.1)',
-      icon: '🍞'
+      color: '#ffa726',
+      bgColor: 'rgba(255, 167, 38, 0.15)'
     },
     { 
       value: totalFats, 
       unit: 'g', 
       label: 'Fats',
-      color: '#3498DB',
-      bgColor: 'rgba(52, 152, 219, 0.1)',
-      icon: '🥑'
+      color: '#42a5f5',
+      bgColor: 'rgba(66, 165, 245, 0.15)'
     }
   ];
   
-  // Create 2x2 grid layout
-  const cardWidth = (panelWidth - 100) / 2; // Space for margins and gap
-  const cardHeight = 100;
-  const gap = 20;
-  const startX = panelX + 40; // Left margin
-  const startY = panelY + 40; // Top margin
+  // Create 2x2 grid layout with bigger cards
+  const cardWidth = (panelWidth - 120) / 2; // More space for margins
+  const cardHeight = 140; // Much bigger cards
+  const gap = 30; // Bigger gap
+  const startX = panelX + 60; // More left margin
+  const startY = panelY + 50; // More top margin
   
   nutritionItems.forEach((item, index) => {
     const row = Math.floor(index / 2);
@@ -170,57 +158,82 @@ function drawNutritionPanel(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasEle
     const x = startX + col * (cardWidth + gap);
     const y = startY + row * (cardHeight + gap);
     
-    // Card background with gradient
+    // Card background with subtle gradient
     const cardGradient = ctx.createLinearGradient(x, y, x, y + cardHeight);
-    cardGradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
+    cardGradient.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
     cardGradient.addColorStop(1, item.bgColor);
     ctx.fillStyle = cardGradient;
-    roundRect(ctx, x, y, cardWidth, cardHeight, 16);
+    roundRect(ctx, x, y, cardWidth, cardHeight, 20);
     ctx.fill();
     
     // Subtle border
-    ctx.strokeStyle = item.color + '30';
-    ctx.lineWidth = 1.5;
-    roundRect(ctx, x, y, cardWidth, cardHeight, 16);
+    ctx.strokeStyle = item.color + '40';
+    ctx.lineWidth = 2;
+    roundRect(ctx, x, y, cardWidth, cardHeight, 20);
     ctx.stroke();
     
-    // Color accent bar at top
+    // Color accent bar at top - thicker
     ctx.fillStyle = item.color;
-    roundRect(ctx, x, y, cardWidth, 5, 3);
+    roundRect(ctx, x, y, cardWidth, 8, 4);
     ctx.fill();
     
-    // Icon (emoji)
-    ctx.font = '24px system-ui';
-    ctx.textAlign = 'left';
-    ctx.fillText(item.icon, x + 16, y + 35);
-    
-    // Main value with color
+    // Draw proper SVG-style icons (simplified versions)
     ctx.fillStyle = item.color;
-    ctx.font = 'bold 32px system-ui, -apple-system, BlinkMacSystemFont, sans-serif';
-    ctx.textAlign = 'right';
-    ctx.fillText(`${item.value}${item.unit}`, x + cardWidth - 16, y + 45);
+    ctx.strokeStyle = item.color;
+    ctx.lineWidth = 3;
     
-    // Label
+    const iconX = x + 20;
+    const iconY = y + 35;
+    
+    if (index === 0) { // Calories - flame icon
+      ctx.beginPath();
+      ctx.moveTo(iconX + 12, iconY);
+      ctx.bezierCurveTo(iconX + 8, iconY + 8, iconX + 16, iconY + 12, iconX + 12, iconY + 20);
+      ctx.bezierCurveTo(iconX + 8, iconY + 16, iconX + 4, iconY + 8, iconX + 12, iconY);
+      ctx.fill();
+    } else if (index === 1) { // Protein - dumbbell simplified
+      ctx.fillRect(iconX + 2, iconY + 10, 20, 4);
+      ctx.fillRect(iconX, iconY + 6, 4, 12);
+      ctx.fillRect(iconX + 20, iconY + 6, 4, 12);
+    } else if (index === 2) { // Carbs - wheat simplified
+      ctx.beginPath();
+      ctx.moveTo(iconX + 12, iconY);
+      ctx.lineTo(iconX + 12, iconY + 20);
+      ctx.stroke();
+      for (let i = 0; i < 5; i++) {
+        ctx.beginPath();
+        ctx.arc(iconX + 8 + (i % 2) * 8, iconY + 4 + i * 3, 2, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+    } else { // Fats - avocado simplified
+      ctx.beginPath();
+      ctx.ellipse(iconX + 12, iconY + 12, 10, 12, 0, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.ellipse(iconX + 12, iconY + 12, 4, 6, 0, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.fillStyle = item.color;
+    }
+    
+    // Main value with much larger font
+    ctx.fillStyle = item.color;
+    ctx.font = 'bold 42px system-ui, -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText(`${item.value}${item.unit}`, x + cardWidth - 20, y + 80);
+    
+    // Label with bigger font
     ctx.fillStyle = '#666666';
-    ctx.font = '16px system-ui, -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.font = '20px system-ui, -apple-system, BlinkMacSystemFont, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText(item.label, x + 50, y + 70);
+    ctx.fillText(item.label, x + 55, y + 105);
   });
   
-  // Premium branding at bottom
-  ctx.fillStyle = '#8B5CF6';
-  ctx.font = 'bold 18px system-ui, -apple-system, BlinkMacSystemFont, sans-serif';
+  // Premium branding at bottom - correct green color and spelling
+  ctx.fillStyle = '#007052'; // Correct green color from HomeView
+  ctx.font = 'bold 24px system-ui, -apple-system, BlinkMacSystemFont, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('Kalbuddy', canvas.width / 2, panelY + panelHeight - 20);
-  
-  // Subtle sparkle effect
-  ctx.fillStyle = '#FFD700';
-  ctx.beginPath();
-  ctx.arc(panelX + panelWidth - 30, panelY + 25, 3, 0, 2 * Math.PI);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.arc(panelX + 30, panelY + panelHeight - 40, 2, 0, 2 * Math.PI);
-  ctx.fill();
+  ctx.fillText('KalBuddy', canvas.width / 2, panelY + panelHeight - 30); // Correct spelling
 }
 
 function createFallbackImage(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, nutritionData: NutritionData, amount: number) {
