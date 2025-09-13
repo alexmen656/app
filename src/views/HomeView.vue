@@ -144,6 +144,26 @@
             </div>
         </div>
 
+        <!-- KalBuddy Chat Link -->
+        <div class="kalbuddy-chat-section">
+            <router-link to="/chat" class="kalbuddy-chat-link">
+                <div class="chat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+                    </svg>
+                </div>
+                <div class="chat-content">
+                    <h3 class="chat-title">{{ $t('home.chatWithKalBuddy') }}</h3>
+                    <p class="chat-subtitle">{{ getChatSubtitle() }}</p>
+                </div>
+                <div class="chat-arrow">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                    </svg>
+                </div>
+            </router-link>
+        </div>
+
         <!-- Recently Uploaded Section -->
         <div class="recent-section">
             <h3 class="section-title">{{ $t('home.recentlyUploaded') }}</h3>
@@ -539,6 +559,10 @@ function handleSelectDatabase() {
 function handleSelectManual() {
     closeAddFoodModal()
     router.push('/manual-entry')
+}
+
+function getChatSubtitle(): string {
+    return t('home.chatSubtitle')
 }
 
 function hidePremiumBanner() {
@@ -1292,5 +1316,69 @@ a {
 
 .banner-close:hover {
     background: rgba(30, 30, 46, 0.2);
+}
+
+/* KalBuddy Chat Section */
+.kalbuddy-chat-section {
+    margin: 16px 20px;
+}
+
+.kalbuddy-chat-link {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    background: linear-gradient(135deg, #007052, #005e4a);
+    border-radius: 16px;
+    text-decoration: none;
+    color: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(0, 112, 82, 0.2);
+}
+
+.kalbuddy-chat-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 112, 82, 0.3);
+    text-decoration: none;
+    color: white;
+}
+
+.chat-icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+}
+
+.chat-content {
+    flex: 1;
+}
+
+.chat-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+    color: white;
+}
+
+.chat-subtitle {
+    font-size: 14px;
+    margin: 0;
+    opacity: 0.9;
+    color: white;
+}
+
+.chat-arrow {
+    flex-shrink: 0;
+    opacity: 0.8;
+    transition: transform 0.3s ease;
+}
+
+.kalbuddy-chat-link:hover .chat-arrow {
+    transform: translateX(4px);
 }
 </style>

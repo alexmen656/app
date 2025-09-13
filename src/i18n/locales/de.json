@@ -21,6 +21,8 @@
     "quickAdd": "Schnell hinzufügen",
     "foodDatabase": "Lebensmittel-DB",
     "scanFood": "Essen scannen",
+    "chatWithKalBuddy": "Mit KalBuddy chatten",
+    "chatSubtitle": "Frage mich alles über Ernährung 🤖",
     "recentlyUploaded": "Kürzlich gescannt",
     "noScansYet": "Noch keine Scans vorhanden",
     "noScansSubtitle": "Nutzen Sie den Scan-Button um Ihr erstes Essen zu scannen!",
@@ -443,6 +445,26 @@
     "legal": {
       "text": "Abonnements werden automatisch verlängert, außer sie werden mindestens 24 Stunden vor Ende der aktuellen Periode deaktiviert."
     }
+  },
+  "chat": {
+    "title": "KalBuddy Chat",
+    "placeholder": "Stellen Sie Ihre Ernährungsfrage...",
+    "send": "Senden",
+    "examples": {
+      "title": "Fragen Sie mich alles über Ernährung:",
+      "example1": "Wie viele Kalorien sollte ich essen, um abzunehmen?",
+      "example2": "Was sind gute Proteinquellen für Vegetarier?",
+      "example3": "Ist diese Mahlzeit ausgewogen für meine Ziele?",
+      "example4": "Welche Nährstoffe fehlen mir heute?"
+    },
+    "greeting": "Hallo! Ich bin KalBuddy, Ihr KI-Ernährungsassistent. Wie kann ich Ihnen heute helfen?",
+    "typing": "KalBuddy tippt...",
+    "error": "Entschuldigung, das konnte ich nicht verarbeiten. Bitte versuchen Sie es erneut.",
+    "networkError": "Keine Internetverbindung. Bitte überprüfen Sie Ihr Netzwerk und versuchen Sie es erneut.",
+    "response1": "Das ist eine interessante Frage! Als KI-Ernährungsassistent kann ich dir dabei helfen. Lass mich das für dich analysieren...",
+    "response2": "Basierend auf deiner Frage würde ich empfehlen... (Dies ist ein Platzhalter für die AI-Antwort)",
+    "response3": "Gute Frage! Für eine personalisierte Antwort berücksichtige ich deine aktuellen Ernährungsziele...",
+    "response4": "Das kann ich dir beantworten! Hier sind einige wichtige Punkte dazu..."
   },
   "common": {
     "save": "Speichern",

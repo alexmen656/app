@@ -21,6 +21,8 @@
     "quickAdd": "Añadir Rápido",
     "foodDatabase": "Base de Datos",
     "scanFood": "Escanear Comida",
+    "chatWithKalBuddy": "Chatear con KalBuddy",
+    "chatSubtitle": "Pregúntame cualquier cosa sobre nutrición 🤖",
     "recentlyUploaded": "Subidos recientemente",
     "noScansYet": "Aún no hay escaneos",
     "noScansSubtitle": "¡Usa el botón de escanear para registrar tu primera comida!",
@@ -443,6 +445,26 @@
     "legal": {
       "text": "Las suscripciones se renuevan automáticamente a menos que se cancelen al menos 24 horas antes del final del período actual."
     }
+  },
+  "chat": {
+    "title": "Chat KalBuddy",
+    "placeholder": "Escribe tu pregunta sobre nutrición...",
+    "send": "Enviar",
+    "examples": {
+      "title": "Pregúntame cualquier cosa sobre nutrición:",
+      "example1": "¿Cuántas calorías debo comer para perder peso?",
+      "example2": "¿Cuáles son buenas fuentes de proteína para vegetarianos?",
+      "example3": "¿Esta comida está equilibrada para mis objetivos?",
+      "example4": "¿Qué nutrientes me faltan hoy?"
+    },
+    "greeting": "¡Hola! Soy KalBuddy, tu asistente de nutrición IA. ¿Cómo puedo ayudarte hoy?",
+    "typing": "KalBuddy está escribiendo...",
+    "error": "Lo siento, no pude procesar eso. Por favor intenta de nuevo.",
+    "networkError": "Sin conexión a internet. Por favor verifica tu red e intenta de nuevo.",
+    "response1": "¡Esa es una pregunta interesante! Como tu asistente de nutrición IA, puedo ayudarte con eso. Déjame analizar esto para ti...",
+    "response2": "Basado en tu pregunta, recomendaría... (Este es un marcador de posición para la respuesta de IA)",
+    "response3": "¡Excelente pregunta! Para una respuesta personalizada, estoy considerando tus objetivos nutricionales actuales...",
+    "response4": "¡Puedo responder eso por ti! Aquí tienes algunos puntos importantes sobre esto..."
   },
   "common": {
     "save": "Guardar",

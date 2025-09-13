@@ -21,6 +21,8 @@
     "quickAdd": "Quick Add",
     "foodDatabase": "Food Database",
     "scanFood": "Scan Food",
+    "chatWithKalBuddy": "Chat with KalBuddy",
+    "chatSubtitle": "Ask me anything about nutrition 🤖",
     "recentlyUploaded": "Recently uploaded",
     "noScansYet": "No scans yet",
     "noScansSubtitle": "Use the scan button to scan your first meal!",
@@ -443,6 +445,26 @@
     "legal": {
       "text": "Subscriptions automatically renew unless canceled at least 24 hours before the end of the current period."
     }
+  },
+  "chat": {
+    "title": "KalBuddy Chat",
+    "placeholder": "Type your nutrition question...",
+    "send": "Send",
+    "examples": {
+      "title": "Ask me anything about nutrition:",
+      "example1": "How many calories should I eat to lose weight?",
+      "example2": "What are good protein sources for vegetarians?",
+      "example3": "Is this meal balanced for my goals?",
+      "example4": "What nutrients am I missing today?"
+    },
+    "greeting": "Hi! I'm KalBuddy, your AI nutrition assistant. How can I help you today?",
+    "typing": "KalBuddy is typing...",
+    "error": "Sorry, I couldn't process that. Please try again.",
+    "networkError": "No internet connection. Please check your network and try again.",
+    "response1": "That's an interesting question! As your AI nutrition assistant, I can help you with that. Let me analyze this for you...",
+    "response2": "Based on your question, I would recommend... (This is a placeholder for the AI response)",
+    "response3": "Great question! For a personalized answer, I'm considering your current nutrition goals...",
+    "response4": "I can answer that for you! Here are some important points about this..."
   },
   "common": {
     "save": "Save",
