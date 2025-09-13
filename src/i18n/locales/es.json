@@ -461,6 +461,8 @@
     "typing": "KalBuddy está escribiendo...",
     "error": "Lo siento, no pude procesar eso. Por favor intenta de nuevo.",
     "networkError": "Sin conexión a internet. Por favor verifica tu red e intenta de nuevo.",
+    "rateLimitError": "Demasiados mensajes. Por favor espera un momento antes de enviar otro mensaje.",
+    "serviceUnavailable": "El servicio de IA no está disponible temporalmente. Por favor intenta más tarde.",
     "response1": "¡Esa es una pregunta interesante! Como tu asistente de nutrición IA, puedo ayudarte con eso. Déjame analizar esto para ti...",
     "response2": "Basado en tu pregunta, recomendaría... (Este es un marcador de posición para la respuesta de IA)",
     "response3": "¡Excelente pregunta! Para una respuesta personalizada, estoy considerando tus objetivos nutricionales actuales...",

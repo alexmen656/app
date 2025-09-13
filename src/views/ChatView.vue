@@ -118,14 +118,20 @@
 import { ref, computed, nextTick, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { userProfile, dailyGoals } from '../stores/userStore'
 
 const router = useRouter()
-const { t } = useI18n()
+const { t, locale } = useI18n()
+
+// API Configuration
+const API_BASE_URL = 'https://v2-2.api.kalbuddy.com/api/ai'
 
 // Reactive data
 const currentMessage = ref('')
 const isTyping = ref(false)
 const messagesContainer = ref<HTMLElement>()
+const conversationHistory = ref<Array<{role: string, content: string}>>([])
+const error = ref<string | null>(null)
 
 interface Message {
   text: string
@@ -142,6 +148,12 @@ const exampleQuestions = computed(() => [
   t('chat.examples.example3'),
   t('chat.examples.example4')
 ])
+
+// Get current language for API
+const currentLanguage = computed(() => {
+  const lang = locale.value
+  return ['de', 'en', 'es'].includes(lang) ? lang : 'en'
+})
 
 // Methods
 function goBack() {
@@ -175,7 +187,9 @@ async function sendMessage() {
   }
 
   messages.value.push(userMessage)
+  const messageText = currentMessage.value
   currentMessage.value = ''
+  error.value = null
   
   scrollToBottom()
 
@@ -183,32 +197,94 @@ async function sendMessage() {
   isTyping.value = true
   scrollToBottom()
 
-  // Simulate API call delay
-  setTimeout(() => {
+  try {
+    const response = await callChatAPI(messageText)
+    
     const botResponse: Message = {
-      text: getBotResponse(userMessage.text),
+      text: response.response,
       isUser: false,
       time: getCurrentTime()
     }
 
     isTyping.value = false
     messages.value.push(botResponse)
+    
+    // Update conversation history
+    conversationHistory.value = response.conversationHistory || []
+    
     scrollToBottom()
-  }, 1000 + Math.random() * 2000) // Random delay between 1-3 seconds
+  } catch (err) {
+    isTyping.value = false
+    
+    const errorMessage: Message = {
+      text: getErrorMessage(err),
+      isUser: false,
+      time: getCurrentTime()
+    }
+    
+    messages.value.push(errorMessage)
+    scrollToBottom()
+  }
 }
 
-function getBotResponse(userMessage: string): string {
-  // Placeholder responses - you'll replace this with actual AI logic later
-  const responses = [
-    t('chat.response1'),
-    t('chat.response2'), 
-    t('chat.response3'),
-    t('chat.response4'),
-  ]
+async function callChatAPI(message: string) {
+  const payload = {
+    message: message,
+    userProfile: buildUserProfile(),
+    conversationHistory: conversationHistory.value,
+    language: currentLanguage.value
+  }
+
+  const response = await fetch(`${API_BASE_URL}/chat`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload)
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}))
+    throw new Error(errorData.message || errorData.error || `HTTP ${response.status}`)
+  }
+
+  return await response.json()
+}
+
+function buildUserProfile() {
+  // Build user profile from your actual userStore
+  const profile: any = {}
   
-  // Use userMessage length to vary response (placeholder logic)
-  const responseIndex = userMessage.length % responses.length
-  return responses[responseIndex]
+  if (userProfile.age) profile.age = userProfile.age
+  if (userProfile.gender) profile.gender = userProfile.gender
+  if (userProfile.weight) profile.weight = userProfile.weight
+  if (userProfile.height) profile.height = userProfile.height
+  if (userProfile.activityLevel) profile.activityLevel = userProfile.activityLevel
+  if (userProfile.goal) profile.goals = [userProfile.goal]
+  
+  // Add daily goals if available
+  if (dailyGoals.calories) profile.dailyCalories = dailyGoals.calories
+  if (dailyGoals.protein) profile.dailyProtein = dailyGoals.protein
+  if (dailyGoals.carbs) profile.dailyCarbs = dailyGoals.carbs
+  if (dailyGoals.fats) profile.dailyFats = dailyGoals.fats
+  
+  return profile
+}
+
+function getErrorMessage(error: any): string {
+  if (error.message?.includes('rate_limit_exceeded')) {
+    return t('chat.rateLimitError')
+  }
+  
+  if (error.message?.includes('insufficient_quota')) {
+    return t('chat.serviceUnavailable')
+  }
+  
+  if (!navigator.onLine) {
+    return t('chat.networkError')
+  }
+  
+  return t('chat.error')
 }
 
 onMounted(() => {

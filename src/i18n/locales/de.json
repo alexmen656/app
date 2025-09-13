@@ -461,6 +461,8 @@
     "typing": "KalBuddy tippt...",
     "error": "Entschuldigung, das konnte ich nicht verarbeiten. Bitte versuchen Sie es erneut.",
     "networkError": "Keine Internetverbindung. Bitte überprüfen Sie Ihr Netzwerk und versuchen Sie es erneut.",
+    "rateLimitError": "Zu viele Nachrichten. Bitte warten Sie einen Moment, bevor Sie eine weitere Nachricht senden.",
+    "serviceUnavailable": "KI-Service ist vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut.",
     "response1": "Das ist eine interessante Frage! Als KI-Ernährungsassistent kann ich dir dabei helfen. Lass mich das für dich analysieren...",
     "response2": "Basierend auf deiner Frage würde ich empfehlen... (Dies ist ein Platzhalter für die AI-Antwort)",
     "response3": "Gute Frage! Für eine personalisierte Antwort berücksichtige ich deine aktuellen Ernährungsziele...",

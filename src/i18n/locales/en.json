@@ -461,6 +461,8 @@
     "typing": "KalBuddy is typing...",
     "error": "Sorry, I couldn't process that. Please try again.",
     "networkError": "No internet connection. Please check your network and try again.",
+    "rateLimitError": "Too many messages. Please wait a moment before sending another message.",
+    "serviceUnavailable": "AI service is temporarily unavailable. Please try again later.",
     "response1": "That's an interesting question! As your AI nutrition assistant, I can help you with that. Let me analyze this for you...",
     "response2": "Based on your question, I would recommend... (This is a placeholder for the AI response)",
     "response3": "Great question! For a personalized answer, I'm considering your current nutrition goals...",
