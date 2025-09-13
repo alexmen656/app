@@ -119,6 +119,8 @@ import { ref, computed, nextTick, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { userProfile, dailyGoals } from '../stores/userStore'
+import { ScanHistory } from '../utils/storage'
+import { WeightTracker } from '../utils/weightTracking'
 
 const router = useRouter()
 const { t, locale } = useI18n()
@@ -230,10 +232,12 @@ async function sendMessage() {
 async function callChatAPI(message: string) {
   const payload = {
     message: message,
-    userProfile: buildUserProfile(),
+    userProfile: await buildUserProfile(),
     conversationHistory: conversationHistory.value,
     language: currentLanguage.value
   }
+
+  console.log('Sending payload to chat API:', payload)
 
   const response = await fetch(`${API_BASE_URL}/chat`, {
     method: 'POST',
@@ -251,10 +255,11 @@ async function callChatAPI(message: string) {
   return await response.json()
 }
 
-function buildUserProfile() {
-  // Build user profile from your actual userStore
+async function buildUserProfile() {
+  // Build comprehensive user profile from your actual userStore and scan data
   const profile: any = {}
   
+  // Basic user information
   if (userProfile.age) profile.age = userProfile.age
   if (userProfile.gender) profile.gender = userProfile.gender
   if (userProfile.weight) profile.weight = userProfile.weight
@@ -262,13 +267,139 @@ function buildUserProfile() {
   if (userProfile.activityLevel) profile.activityLevel = userProfile.activityLevel
   if (userProfile.goal) profile.goals = [userProfile.goal]
   
-  // Add daily goals if available
-  if (dailyGoals.calories) profile.dailyCalories = dailyGoals.calories
-  if (dailyGoals.protein) profile.dailyProtein = dailyGoals.protein
-  if (dailyGoals.carbs) profile.dailyCarbs = dailyGoals.carbs
-  if (dailyGoals.fats) profile.dailyFats = dailyGoals.fats
+  // Daily goals and targets
+  profile.dailyGoals = {
+    calories: dailyGoals.calories,
+    protein: dailyGoals.protein,
+    carbs: dailyGoals.carbs,
+    fats: dailyGoals.fats
+  }
+  
+  // Get today's consumed foods
+  try {
+    const scanHistory = await ScanHistory.get()
+    const today = new Date().toISOString().split('T')[0]
+    
+    const todaysScans = scanHistory.filter(scan => {
+      const scanDate = new Date(scan.timestamp).toISOString().split('T')[0]
+      return scanDate === today
+    })
+
+    if (todaysScans.length > 0) {
+      profile.todaysNutrition = {
+        totalConsumed: calculateTotalNutrition(todaysScans),
+        mealsCount: todaysScans.length,
+        foods: todaysScans.map(scan => ({
+          name: extractFoodName(scan),
+          calories: extractCalories(scan),
+          protein: extractProtein(scan),
+          carbs: extractCarbs(scan),
+          fats: extractFats(scan),
+          time: scan.time,
+          amount: scan.amount || 1
+        }))
+      }
+    }
+  } catch (error) {
+    console.log('Could not load today\'s nutrition data:', error)
+  }
+
+  // Get recent weight history
+  try {
+    const weightEntries = await WeightTracker.getWeightEntries()
+    if (weightEntries.length > 0) {
+      profile.weightHistory = {
+        currentWeight: weightEntries[0].weight,
+        recentEntries: weightEntries.slice(0, 5).map(entry => ({
+          weight: entry.weight,
+          date: entry.date,
+          note: entry.note
+        }))
+      }
+    }
+  } catch (error) {
+    console.log('Could not load weight history:', error)
+  }
   
   return profile
+}
+
+function calculateTotalNutrition(scans: any[]) {
+  let totalCalories = 0
+  let totalProtein = 0
+  let totalCarbs = 0
+  let totalFats = 0
+
+  scans.forEach(scan => {
+    totalCalories += extractCalories(scan)
+    totalProtein += extractProtein(scan)
+    totalCarbs += extractCarbs(scan)
+    totalFats += extractFats(scan)
+  })
+
+  return {
+    calories: Math.round(totalCalories),
+    protein: Math.round(totalProtein),
+    carbs: Math.round(totalCarbs),
+    fats: Math.round(totalFats)
+  }
+}
+
+function extractFoodName(scan: any): string {
+  if (scan.type === 'food') {
+    return scan.data.foods?.[0]?.name || 'Unknown food'
+  } else if (scan.type === 'barcode') {
+    return scan.data.product?.product_name || 'Unknown product'
+  }
+  return 'Unknown'
+}
+
+function extractCalories(scan: any): number {
+  const amount = scan.amount || 1.0
+  
+  if (scan.type === 'food') {
+    return (scan.data.total?.calories || 0)
+  } else if (scan.type === 'barcode') {
+    const per100g = scan.data.nutriments?.['energy-kcal_100g'] || 0
+    return per100g * amount
+  }
+  return 0
+}
+
+function extractProtein(scan: any): number {
+  const amount = scan.amount || 1.0
+  
+  if (scan.type === 'food') {
+    return (scan.data.total?.protein || 0)
+  } else if (scan.type === 'barcode') {
+    const per100g = scan.data.nutriments?.['proteins_100g'] || 0
+    return per100g * amount
+  }
+  return 0
+}
+
+function extractCarbs(scan: any): number {
+  const amount = scan.amount || 1.0
+  
+  if (scan.type === 'food') {
+    return (scan.data.total?.carbs || 0)
+  } else if (scan.type === 'barcode') {
+    const per100g = scan.data.nutriments?.['carbohydrates_100g'] || 0
+    return per100g * amount
+  }
+  return 0
+}
+
+function extractFats(scan: any): number {
+  const amount = scan.amount || 1.0
+  
+  if (scan.type === 'food') {
+    return (scan.data.total?.fat || 0)
+  } else if (scan.type === 'barcode') {
+    const per100g = scan.data.nutriments?.['fat_100g'] || 0
+    return per100g * amount
+  }
+  return 0
 }
 
 function getErrorMessage(error: any): string {
