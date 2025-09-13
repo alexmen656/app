@@ -516,6 +516,7 @@ const fetchProduct = async (barcode) => {
         const nutrition = data.product.nutrition?.perServing || data.product.nutrition?.per100g || {};
         const productData = {
             names: data.product.names || { de: data.product.name || 'Unbekanntes Produkt', en: data.product.name || 'Unknown Product', es: data.product.name || 'Unknown Product' },
+            image: data.product.image || null,
             calories: nutrition.calories || 0,
             protein: nutrition.protein || 0,
             carbs: nutrition.carbs || 0,
@@ -862,100 +863,228 @@ async function createNutritionPreviewImage() {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         
-        // Helper function for rounded rectangles
-        function roundRect(x, y, width, height, radius) {
-            ctx.beginPath();
-            ctx.moveTo(x + radius, y);
-            ctx.lineTo(x + width - radius, y);
-            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-            ctx.lineTo(x + width, y + height - radius);
-            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-            ctx.lineTo(x + radius, y + height);
-            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-            ctx.lineTo(x, y + radius);
-            ctx.quadraticCurveTo(x, y, x + radius, y);
-            ctx.closePath();
-        }
-        
-        // Set canvas size
+        // Set canvas size (Instagram story format)
         canvas.width = 800;
         canvas.height = 1200;
         
-        // Background gradient
-        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-        gradient.addColorStop(0, '#667eea');
-        gradient.addColorStop(1, '#764ba2');
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        const productImageUrl = product.value?.image || productImage.value;
+        console.log('NutritionView - Looking for product image:', productImageUrl);
+        console.log('NutritionView - product.value?.image:', product.value?.image);
+        console.log('NutritionView - productImage.value:', productImage.value);
+        console.log('NutritionView - Full product.value:', product.value);
         
-        // Add some styling
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-        ctx.fillRect(0, 0, canvas.width, 200);
-        
-        // Product name
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 48px system-ui, -apple-system, sans-serif';
-        ctx.textAlign = 'center';
-        const productName = getLocalizedName(product.value);
-        ctx.fillText(productName, canvas.width / 2, 120);
-        
-        // Amount info
-        ctx.font = '32px system-ui, -apple-system, sans-serif';
-        ctx.fillText(`${amount.value} Portion${amount.value !== 1 ? 'en' : ''}`, canvas.width / 2, 180);
-        
-        // Nutrition box background
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-        roundRect(60, 250, canvas.width - 120, 600, 24);
-        ctx.fill();
-        
-        // Nutrition title
-        ctx.fillStyle = '#1a1a1a';
-        ctx.font = 'bold 36px system-ui, -apple-system, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('Nährwerte', canvas.width / 2, 320);
-        
-        // Nutrition values
-        const nutritionData = [
-            { label: 'Kalorien', value: Math.round(product.value.calories * amount.value), unit: 'kcal', color: '#ff6b35' },
-            { label: 'Protein', value: Math.round(product.value.protein * amount.value), unit: 'g', color: '#ff6b6b' },
-            { label: 'Kohlenhydrate', value: Math.round(product.value.carbs * amount.value), unit: 'g', color: '#ffa726' },
-            { label: 'Fett', value: Math.round(product.value.fats * amount.value), unit: 'g', color: '#42a5f5' }
-        ];
-        
-        // Draw nutrition items
-        nutritionData.forEach((item, index) => {
-            const y = 420 + (index * 100);
+        if (productImageUrl) {
+            // Load and draw product image as background
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = () => {
+                // Fill canvas with product image (cover style)
+                const aspectRatio = img.width / img.height;
+                const canvasAspectRatio = canvas.width / canvas.height;
+                
+                let drawWidth, drawHeight, offsetX, offsetY;
+                
+                if (aspectRatio > canvasAspectRatio) {
+                    // Image is wider than canvas
+                    drawHeight = canvas.height;
+                    drawWidth = drawHeight * aspectRatio;
+                    offsetX = (canvas.width - drawWidth) / 2;
+                    offsetY = 0;
+                } else {
+                    // Image is taller than canvas
+                    drawWidth = canvas.width;
+                    drawHeight = drawWidth / aspectRatio;
+                    offsetX = 0;
+                    offsetY = (canvas.height - drawHeight) / 2;
+                }
+                
+                ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+                
+                // No dark overlay for better photo visibility
+                
+                // Bottom white nutrition info panel like in reference image
+                const panelHeight = 320;
+                const panelY = canvas.height - panelHeight;
+                
+                // White background for nutrition panel with rounded top corners
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+                ctx.fillRect(0, panelY, canvas.width, panelHeight);
+                
+                // Add a subtle shadow at the top of the panel
+                const gradient = ctx.createLinearGradient(0, panelY - 20, 0, panelY + 20);
+                gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+                gradient.addColorStop(1, 'rgba(0, 0, 0, 0.1)');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, panelY - 20, canvas.width, 40);
+                
+                // Product name
+                ctx.fillStyle = '#1a1a1a';
+                ctx.font = 'bold 28px system-ui, -apple-system, sans-serif';
+                ctx.textAlign = 'center';
+                const title = getLocalizedName(product.value);
+                ctx.fillText(title, canvas.width / 2, panelY + 45);
+                
+                // Amount info
+                ctx.font = '18px system-ui, -apple-system, sans-serif';
+                ctx.fillStyle = '#666666';
+                ctx.fillText(`${amount.value} Portion${amount.value !== 1 ? 'en' : ''}`, canvas.width / 2, panelY + 75);
+                
+                // White background box for nutrition values like in reference
+                const nutritionBoxY = panelY + 100;
+                const nutritionBoxHeight = 160;
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(40, nutritionBoxY, canvas.width - 80, nutritionBoxHeight);
+                
+                // Add border around nutrition box
+                ctx.strokeStyle = '#e5e5e5';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(40, nutritionBoxY, canvas.width - 80, nutritionBoxHeight);
+                
+                // Title for nutrition box
+                ctx.fillStyle = '#1a1a1a';
+                ctx.font = 'bold 24px system-ui, -apple-system, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('Nährwerte', canvas.width / 2, nutritionBoxY + 35);
+                
+                // Nutrition values in rows like in reference image
+                const nutritionData = [
+                    { label: 'Kalorien', value: `${Math.round(product.value.calories * amount.value)}kcal`, color: '#ff6b35' },
+                    { label: 'Protein', value: `${Math.round(product.value.protein * amount.value)}g`, color: '#ff6b6b' },
+                    { label: 'Kohlenhydrate', value: `${Math.round(product.value.carbs * amount.value)}g`, color: '#ffa726' },
+                    { label: 'Fett', value: `${Math.round(product.value.fats * amount.value)}g`, color: '#42a5f5' }
+                ];
+                
+                nutritionData.forEach((item, index) => {
+                    const y = nutritionBoxY + 65 + (index * 22);
+                    
+                    // Color indicator line
+                    ctx.fillStyle = item.color;
+                    ctx.fillRect(60, y - 8, 4, 16);
+                    
+                    // Label
+                    ctx.fillStyle = '#666666';
+                    ctx.font = '18px system-ui, -apple-system, sans-serif';
+                    ctx.textAlign = 'left';
+                    ctx.fillText(item.label, 80, y);
+                    
+                    // Value
+                    ctx.fillStyle = '#1a1a1a';
+                    ctx.font = 'bold 20px system-ui, -apple-system, sans-serif';
+                    ctx.textAlign = 'right';
+                    ctx.fillText(item.value, canvas.width - 60, y);
+                });
+                
+                // Kalbuddy text
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 22px system-ui, -apple-system, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('Kalbuddy - Dein Kalorien-Tracker', canvas.width / 2, logoY + 32);
+                
+                resolve(canvas.toDataURL('image/png', 0.9));
+            };
             
-            // Color indicator
-            ctx.fillStyle = item.color;
-            ctx.fillRect(100, y - 25, 8, 50);
+            img.onerror = () => {
+                // Fallback to gradient if image fails to load
+                createFallbackImage();
+            };
             
-            // Label
-            ctx.fillStyle = '#666';
-            ctx.font = '28px system-ui, -apple-system, sans-serif';
-            ctx.textAlign = 'left';
-            ctx.fillText(item.label, 130, y);
+            img.src = productImageUrl;
+        } else {
+            // No image available, use fallback
+            createFallbackImage();
+        }
+        
+        function createFallbackImage() {
+            // Helper function for rounded rectangles
+            function roundRect(x, y, width, height, radius) {
+                ctx.beginPath();
+                ctx.moveTo(x + radius, y);
+                ctx.lineTo(x + width - radius, y);
+                ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+                ctx.lineTo(x + width, y + height - radius);
+                ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+                ctx.lineTo(x + radius, y + height);
+                ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+                ctx.lineTo(x, y + radius);
+                ctx.quadraticCurveTo(x, y, x + radius, y);
+                ctx.closePath();
+            }
             
-            // Value
+            // Background gradient
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Add some styling
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, 200);
+            
+            // Product name
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 48px system-ui, -apple-system, sans-serif';
+            ctx.textAlign = 'center';
+            const productName = getLocalizedName(product.value);
+            ctx.fillText(productName, canvas.width / 2, 120);
+            
+            // Amount info
+            ctx.font = '32px system-ui, -apple-system, sans-serif';
+            ctx.fillText(`${amount.value} Portion${amount.value !== 1 ? 'en' : ''}`, canvas.width / 2, 180);
+            
+            // Nutrition box background
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+            roundRect(60, 250, canvas.width - 120, 600, 24);
+            ctx.fill();
+            
+            // Nutrition title
             ctx.fillStyle = '#1a1a1a';
             ctx.font = 'bold 36px system-ui, -apple-system, sans-serif';
-            ctx.textAlign = 'right';
-            ctx.fillText(`${item.value}${item.unit}`, canvas.width - 100, y);
-        });
-        
-        // Kalbuddy logo text
-        ctx.fillStyle = '#22c55e';
-        ctx.font = 'bold 48px system-ui, -apple-system, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('Kalbuddy', canvas.width / 2, 1050);
-        
-        // Subtitle
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '24px system-ui, -apple-system, sans-serif';
-        ctx.fillText('Dein Kalorien-Tracker', canvas.width / 2, 1100);
-        
-        // Convert to data URL
-        resolve(canvas.toDataURL('image/png', 0.9));
+            ctx.textAlign = 'center';
+            ctx.fillText('Nährwerte', canvas.width / 2, 320);
+            
+            // Nutrition values
+            const nutritionData = [
+                { label: 'Kalorien', value: Math.round(product.value.calories * amount.value), unit: 'kcal', color: '#ff6b35' },
+                { label: 'Protein', value: Math.round(product.value.protein * amount.value), unit: 'g', color: '#ff6b6b' },
+                { label: 'Kohlenhydrate', value: Math.round(product.value.carbs * amount.value), unit: 'g', color: '#ffa726' },
+                { label: 'Fett', value: Math.round(product.value.fats * amount.value), unit: 'g', color: '#42a5f5' }
+            ];
+            
+            // Draw nutrition items
+            nutritionData.forEach((item, index) => {
+                const y = 420 + (index * 100);
+                
+                // Color indicator
+                ctx.fillStyle = item.color;
+                ctx.fillRect(100, y - 25, 8, 50);
+                
+                // Label
+                ctx.fillStyle = '#666';
+                ctx.font = '28px system-ui, -apple-system, sans-serif';
+                ctx.textAlign = 'left';
+                ctx.fillText(item.label, 130, y);
+                
+                // Value
+                ctx.fillStyle = '#1a1a1a';
+                ctx.font = 'bold 36px system-ui, -apple-system, sans-serif';
+                ctx.textAlign = 'right';
+                ctx.fillText(`${item.value}${item.unit}`, canvas.width - 100, y);
+            });
+            
+            // Kalbuddy logo text
+            ctx.fillStyle = '#22c55e';
+            ctx.font = 'bold 48px system-ui, -apple-system, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('Kalbuddy', canvas.width / 2, 1050);
+            
+            // Subtitle
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '24px system-ui, -apple-system, sans-serif';
+            ctx.fillText('Dein Kalorien-Tracker', canvas.width / 2, 1100);
+            
+            resolve(canvas.toDataURL('image/png', 0.9));
+        }
     });
 }
 
