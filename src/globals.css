@@ -28,7 +28,9 @@ body {
 body {
   margin: 0;
   padding: 0;
-  background: #1e1e2e;
+  background: linear-gradient(135deg, #1e1e2e 0%, #2a2d37 100%);
+  background-size: 100% 100vh;   /* Gesamtverlauf auf volle Höhe strecken */
+  background-position: top; 
   -webkit-text-size-adjust: none;
   overscroll-behavior: none;
 }
