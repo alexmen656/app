@@ -324,12 +324,7 @@ function handleScanLimitUpgrade() {
     router.push('/upgrade')
 }
 
-function onScanHistoryUpdated() {
-    loadScanHistory()
-    loadStreak()
-}
-
-function onFocus() {
+function loadScanHistoryAndStreak() {
     loadScanHistory()
     loadStreak()
 }
@@ -367,11 +362,9 @@ onMounted(async () => {
         console.error('Error loading notification settings:', error)
     }
 
-    loadScanHistory()
-    loadStreak()
-
-    window.addEventListener('scanHistoryUpdated', onScanHistoryUpdated)
-    window.addEventListener('focus', onFocus)
+    loadScanHistoryAndStreak()
+    window.addEventListener('scanHistoryUpdated', loadScanHistoryAndStreak)
+    window.addEventListener('focus', loadScanHistoryAndStreak)
 
     const unsubscribe = onPremiumStatusChange((isPremium) => {
         console.log('🎉 Premium status changed in HomeView:', isPremium)
@@ -384,8 +377,8 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
-    window.removeEventListener('scanHistoryUpdated', onScanHistoryUpdated)
-    window.removeEventListener('focus', onFocus)
+    window.removeEventListener('scanHistoryUpdated', loadScanHistoryAndStreak)
+    window.removeEventListener('focus', loadScanHistoryAndStreak)
 })
 
 interface ScanData {
@@ -421,7 +414,6 @@ const consumedCalories = computed(() => todaysNutrition.value.calories)
 const consumedProtein = computed(() => todaysNutrition.value.protein)
 const consumedCarbs = computed(() => todaysNutrition.value.carbs)
 const consumedFats = computed(() => todaysNutrition.value.fats)
-
 const scanHistory = ref<ScanData[]>([])
 const currentStreak = ref<number>(0)
 
