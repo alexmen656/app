@@ -68,7 +68,7 @@
         <h3 class="section-title">{{ $t('analytics.trendAnalysis') }}</h3>
         <span class="beta-badge">BETA</span>
       </div>
-      
+
       <div class="trend-charts-container">
         <div class="trend-charts-slider" :style="{ transform: `translateX(-${currentTrendIndex * 100}%)` }">
           <!-- Calories Trend Chart -->
@@ -76,7 +76,8 @@
             <div class="trend-chart-header">
               <div class="trend-icon calories">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                 </svg>
               </div>
               <div class="trend-chart-title">
@@ -85,11 +86,8 @@
               </div>
             </div>
             <div class="trend-chart-wrapper">
-              <AppleHealthTrendChart 
-                :chart-data="caloriesTrendData"
-                :selected-period="selectedPeriod"
-                color="#ff6b35"
-              />
+              <AppleHealthTrendChart :chart-data="caloriesTrendData" :selected-period="selectedPeriod"
+                color="#ff6b35" />
             </div>
           </div>
 
@@ -98,7 +96,8 @@
             <div class="trend-chart-header">
               <div class="trend-icon protein">
                 <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
-                  <path fill="currentColor" d="M224 329.2C224 337.7 220.6 345.8 214.6 351.8L187.8 378.6C175.5 390.9 155.3 390 138.4 385.8C133.8 384.7 128.9 384 123.9 384C90.8 384 63.9 410.9 63.9 444C63.9 477.1 90.8 504 123.9 504C130.2 504 135.9 509.7 135.9 516C135.9 549.1 162.8 576 195.9 576C229 576 255.9 549.1 255.9 516C255.9 511 255.3 506.2 254.1 501.5C249.9 484.6 248.9 464.4 261.3 452.1L288.1 425.3C294.1 419.3 302.2 415.9 310.7 415.9L399.9 415.9C406.2 415.9 412.3 415.6 418.4 414.9C430.3 413.7 434.8 399.4 429.2 388.9C420.7 373.1 415.9 355.1 415.9 335.9C415.9 274 466 223.9 527.9 223.9C535.9 223.9 543.6 224.7 551.1 226.3C562.8 228.8 575.2 220.4 573.1 208.7C558.4 126.4 486.4 63.9 399.9 63.9C302.7 63.9 223.9 142.7 223.9 239.9L223.9 329.1z" />
+                  <path fill="currentColor"
+                    d="M224 329.2C224 337.7 220.6 345.8 214.6 351.8L187.8 378.6C175.5 390.9 155.3 390 138.4 385.8C133.8 384.7 128.9 384 123.9 384C90.8 384 63.9 410.9 63.9 444C63.9 477.1 90.8 504 123.9 504C130.2 504 135.9 509.7 135.9 516C135.9 549.1 162.8 576 195.9 576C229 576 255.9 549.1 255.9 516C255.9 511 255.3 506.2 254.1 501.5C249.9 484.6 248.9 464.4 261.3 452.1L288.1 425.3C294.1 419.3 302.2 415.9 310.7 415.9L399.9 415.9C406.2 415.9 412.3 415.6 418.4 414.9C430.3 413.7 434.8 399.4 429.2 388.9C420.7 373.1 415.9 355.1 415.9 335.9C415.9 274 466 223.9 527.9 223.9C535.9 223.9 543.6 224.7 551.1 226.3C562.8 228.8 575.2 220.4 573.1 208.7C558.4 126.4 486.4 63.9 399.9 63.9C302.7 63.9 223.9 142.7 223.9 239.9L223.9 329.1z" />
                 </svg>
               </div>
               <div class="trend-chart-title">
@@ -107,11 +106,7 @@
               </div>
             </div>
             <div class="trend-chart-wrapper">
-              <AppleHealthTrendChart 
-                :chart-data="proteinTrendData"
-                :selected-period="selectedPeriod"
-                color="#ff6b6b"
-              />
+              <AppleHealthTrendChart :chart-data="proteinTrendData" :selected-period="selectedPeriod" color="#ff6b6b" />
             </div>
           </div>
 
@@ -120,7 +115,8 @@
             <div class="trend-chart-header">
               <div class="trend-icon carbs">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                  <path
+                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                 </svg>
               </div>
               <div class="trend-chart-title">
@@ -129,11 +125,7 @@
               </div>
             </div>
             <div class="trend-chart-wrapper">
-              <AppleHealthTrendChart 
-                :chart-data="carbsTrendData"
-                :selected-period="selectedPeriod"
-                color="#ffa726"
-              />
+              <AppleHealthTrendChart :chart-data="carbsTrendData" :selected-period="selectedPeriod" color="#ffa726" />
             </div>
           </div>
 
@@ -142,7 +134,8 @@
             <div class="trend-chart-header">
               <div class="trend-icon fats">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                 </svg>
               </div>
               <div class="trend-chart-title">
@@ -151,11 +144,7 @@
               </div>
             </div>
             <div class="trend-chart-wrapper">
-              <AppleHealthTrendChart 
-                :chart-data="fatsTrendData"
-                :selected-period="selectedPeriod"
-                color="#42a5f5"
-              />
+              <AppleHealthTrendChart :chart-data="fatsTrendData" :selected-period="selectedPeriod" color="#42a5f5" />
             </div>
           </div>
         </div>
@@ -163,13 +152,8 @@
 
       <!-- Slider Navigation Dots -->
       <div class="trend-slider-dots">
-        <button 
-          v-for="(chart, index) in trendCharts" 
-          :key="index"
-          class="slider-dot"
-          :class="{ active: currentTrendIndex === index }"
-          @click="currentTrendIndex = index"
-        >
+        <button v-for="(chart, index) in trendCharts" :key="index" class="slider-dot"
+          :class="{ active: currentTrendIndex === index }" @click="currentTrendIndex = index">
           <span class="sr-only">{{ chart.name }}</span>
         </button>
       </div>
@@ -311,7 +295,7 @@
         info
       </button>
       <button @click="navigateToBMIDetail" class="detail-btn">
-        Details 
+        Details
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
           <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
         </svg>
@@ -369,7 +353,7 @@
         {{ $t('analytics.logWeight') }}
       </button>
       <button @click="navigateToWeightDetail" class="detail-btn">
-        Details 
+        Details
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
           <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
         </svg>
@@ -785,7 +769,7 @@ function handleTouchEnd(event: TouchEvent) {
     // Check if touch started within trend charts area
     const target = event.target as HTMLElement
     const trendChartElement = target.closest('.trend-charts-slider-section')
-    
+
     if (trendChartElement && selectedPeriod.value !== 'day') {
       // Handle trend chart swiping
       if (deltaX > swipeThreshold && currentTrendIndex.value > 0) {
@@ -799,7 +783,7 @@ function handleTouchEnd(event: TouchEvent) {
         return
       }
     }
-    
+
     // Default navigation behavior if not in trend charts area
     // Swipe right (from left to right) - go back to home
     if (deltaX > swipeThreshold) {
@@ -816,11 +800,13 @@ function handleTouchEnd(event: TouchEvent) {
 <style scoped>
 .analytics-view {
   height: 100vh;
-  height: 100dvh;
+  height: calc(100vh - max(44px, env(safe-area-inset-top, 44px)));
   background: linear-gradient(135deg, #1e1e2e 0%, #2a2d37 100%);
+  background-size: 100% 100vh;
+  background-position: bottom;
   color: white;
-  padding: 16px;
-  padding-top: max(44px, env(safe-area-inset-top, 44px));
+  padding: 0 16px 16px 16px;
+  margin-top: max(44px, env(safe-area-inset-top, 44px));
   padding-bottom: max(80px, calc(80px + env(safe-area-inset-bottom, 0px)));
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   overflow-y: auto;
@@ -925,7 +911,7 @@ function handleTouchEnd(event: TouchEvent) {
 .info-btn:hover {
   background: rgba(255, 255, 255, 0.15);
 }
- 
+
 .chart-container {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 16px;
@@ -1987,13 +1973,15 @@ function handleTouchEnd(event: TouchEvent) {
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
-  touch-action: pan-x; /* Enable horizontal swipe gestures */
+  touch-action: pan-x;
+  /* Enable horizontal swipe gestures */
 }
 
 .trend-charts-slider {
   display: flex;
   transition: transform 0.3s ease-in-out;
-  will-change: transform; /* Optimize for smooth transitions */
+  will-change: transform;
+  /* Optimize for smooth transitions */
 }
 
 .trend-chart-item {
@@ -2060,7 +2048,8 @@ function handleTouchEnd(event: TouchEvent) {
   border-radius: 16px;
   padding: 8px;
   backdrop-filter: blur(5px);
-  min-height: 280px; /* Ensure consistent height */
+  min-height: 280px;
+  /* Ensure consistent height */
 }
 
 .trend-slider-dots {
@@ -2079,7 +2068,8 @@ function handleTouchEnd(event: TouchEvent) {
   background: rgba(255, 255, 255, 0.3);
   cursor: pointer;
   transition: all 0.2s ease;
-  touch-action: manipulation; /* Optimize for touch */
+  touch-action: manipulation;
+  /* Optimize for touch */
 }
 
 .slider-dot.active {
@@ -2096,16 +2086,16 @@ function handleTouchEnd(event: TouchEvent) {
   .trend-chart-item {
     padding: 24px;
   }
-  
+
   .trend-icon {
     width: 40px;
     height: 40px;
   }
-  
+
   .trend-chart-title h4 {
     font-size: 18px;
   }
-  
+
   .trend-period {
     font-size: 14px;
   }

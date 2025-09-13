@@ -185,11 +185,13 @@ function handleTouchEnd(event: TouchEvent) {
 <style scoped>
 .sources-disclaimer-view {
   height: 100vh;
-  height: 100dvh;
+  height: calc(100vh - max(44px, env(safe-area-inset-top, 44px)));
   background: linear-gradient(135deg, #1e1e2e 0%, #2a2d37 100%);
+  background-size: 100% 100vh;
+  background-position: bottom;
   color: white;
-  padding: 16px;
-  padding-top: max(44px, env(safe-area-inset-top, 44px));
+  padding: 0 16px 16px 16px;
+  margin-top: max(44px, env(safe-area-inset-top, 44px));
   padding-bottom: max(24px, env(safe-area-inset-bottom, 24px));
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   overflow-y: auto;

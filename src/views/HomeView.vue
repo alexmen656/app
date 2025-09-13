@@ -658,9 +658,8 @@ function handleTouchEnd(event: TouchEvent) {
     height: 100vh;
     height: calc(100vh - max(44px, env(safe-area-inset-top, 44px)));
     background: linear-gradient(135deg, #1e1e2e 0%, #2a2d37 100%);
-  background: linear-gradient(135deg, #1e1e2e 0%, #2a2d37 100%);
-  background-size: 100% 100vh;   /* gleicher Maßstab */
-  background-position: bottom; 
+    background-size: 100% 100vh;
+    background-position: bottom; 
     color: white;
     padding: 0 16px 16px 16px;
     margin-top: max(44px, env(safe-area-inset-top, 44px));
