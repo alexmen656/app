@@ -168,7 +168,7 @@
                         <div class="health-bar-inner" :style="{ width: (product.healthScore * 10) + '%' }"></div>
                     </div>
                 </div>
-                <div class="nutrition-ingredients" v-if="product.ingredients && product.ingredients.length > 0">
+                <div class="nutrition-ingredients" v-if="(product.type === 'barcode' || product.type === 'label') && product.ingredients && product.ingredients.length > 0">
                     <h3>{{ $t('nutrition.ingredients') }}</h3>
                     <div class="ingredient-text">{{ product.ingredients.join(', ') }}</div>
                 </div>
