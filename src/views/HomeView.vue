@@ -22,7 +22,7 @@
             <div class="logo-section">
                 <h1 class="app-title"><span style="color: #007052;">KalBuddy</span></h1><!--#005e4a #005f4a -->
             </div>
-            <div class="streak" @click="goToStreak">
+            <div class="streak" @click="goToView('streak')">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="#ff6b35">
                     <path
                         d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z" />
@@ -36,7 +36,7 @@
             <router-link to="/yesterday"> <button class="date-btn">{{ $t('app.yesterday') }}</button> </router-link>
         </div>
 
-        <div class="main-card" @click="goToCaloriesDetail">
+        <div class="main-card" @click="goToView('calories')">
             <div class="calories-section">
                 <h2 class="calories-number">{{ caloriesNumberDisplay }}</h2>
                 <p class="calories-label">{{ caloriesLabelDisplay }}</p>
@@ -57,7 +57,7 @@
             </div>
         </div>
         <!-- Premium Banner for Free Users -->
-        <div v-if="!isPremiumUser && showPremiumBanner" class="premium-banner" @click="goToPremium">
+        <div v-if="!isPremiumUser && showPremiumBanner" class="premium-banner" @click="goToView('upgrade')">
             <div class="banner-content">
                 <div class="banner-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="#FFD700">
@@ -80,7 +80,7 @@
 
         <!-- Macros Grid -->
         <div class="macros-grid">
-            <div class="macro-card protein" @click="goToProteinDetail">
+            <div class="macro-card protein" @click="goToView('protein')">
                 <div class="macro-amount">{{ proteinNumberDisplay }}</div>
                 <div class="macro-label">{{ proteinLabelDisplay }}</div>
                 <div class="macro-progress">
@@ -101,7 +101,7 @@
                 </div>
             </div>
 
-            <div class="macro-card carbs" @click="goToCarbsDetail">
+            <div class="macro-card carbs" @click="goToView('carbs')">
                 <div class="macro-amount">{{ carbsNumberDisplay }}</div>
                 <div class="macro-label">{{ carbsLabelDisplay }}</div>
                 <div class="macro-progress">
@@ -122,7 +122,7 @@
                 </div>
             </div>
 
-            <div class="macro-card fats" @click="goToFatsDetail">
+            <div class="macro-card fats" @click="goToView('fats')">
                 <div class="macro-amount">{{ fatsNumberDisplay }}</div>
                 <div class="macro-label">{{ fatsLabelDisplay }}</div>
                 <div class="macro-progress">
@@ -149,7 +149,8 @@
             <router-link to="/chat" class="kalbuddy-chat-link">
                 <div class="chat-icon">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+                        <path
+                            d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" />
                     </svg>
                 </div>
                 <div class="chat-content">
@@ -158,7 +159,7 @@
                 </div>
                 <div class="chat-arrow">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
                     </svg>
                 </div>
             </router-link>
@@ -227,7 +228,7 @@
             </div>
         </div>
 
-      <BottomNavigation />
+        <BottomNavigation />
         <div @click="showAddFoodModal" class="add-button">
             <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
                 <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
@@ -235,7 +236,8 @@
         </div>
 
         <!-- Add Food Modal -->
-        <AddFoodModal :show="isAddFoodModalVisible" @close="closeAddFoodModal" @select-scanner="handleSelectScanner" @select-database="handleSelectDatabase" @select-manual="handleSelectManual" />
+        <AddFoodModal :show="isAddFoodModalVisible" @close="closeAddFoodModal" @select-scanner="handleSelectScanner"
+            @select-database="handleSelectDatabase" @select-manual="handleSelectManual" />
 
         <!-- Scan Limit Blocker -->
         <PremiumBlocker v-if="showScanLimitBlocker" feature="unlimited_food_scans"
@@ -355,14 +357,9 @@ onMounted(async () => {
         return
     }
 
-    // Note: HealthKit initialization moved to Settings - only for Premium users
-
-    // Note: Notification permissions now requested only when user enables them in Settings
-    // Load notification settings but don't request permissions automatically
     try {
         const notificationSettings = await getNotificationSettings()
         if (notificationSettings.enabled && NotificationService.isSupported()) {
-            // Only schedule notifications if already enabled and permission granted
             await NotificationService.scheduleAllMealNotifications(notificationSettings)
             console.log('📅 Meal notifications scheduled')
         }
@@ -376,7 +373,6 @@ onMounted(async () => {
     window.addEventListener('scanHistoryUpdated', onScanHistoryUpdated)
     window.addEventListener('focus', onFocus)
 
-    // Listen for premium status changes to hide banner immediately
     const unsubscribe = onPremiumStatusChange((isPremium) => {
         console.log('🎉 Premium status changed in HomeView:', isPremium)
         if (isPremium) {
@@ -384,7 +380,6 @@ onMounted(async () => {
         }
     })
 
-    // Cleanup function will be called by onUnmounted
     window.addEventListener('beforeunload', unsubscribe)
 })
 
@@ -400,7 +395,7 @@ interface ScanData {
     time: string
     image?: string
     amount?: number
-    icon?: string // Add icon field for database foods
+    icon?: string
     data: any
 }
 
@@ -414,7 +409,7 @@ interface FoodItem {
     time: string
     image: string
     type: string
-    icon?: string // Add icon field for food items
+    icon?: string
 }
 
 const dailyCalories = computed(() => dailyGoals.calories)
@@ -462,16 +457,14 @@ async function calculateTodaysNutrition() {
         let totalFats = 0
 
         todaysScans.forEach(scan => {
-            const amount = scan.amount || 1.0; // Default to 1.0 if no amount stored
-            
+            const amount = scan.amount || 1.0;
+
             if (scan.type === 'food' && scan.data.total) {
-                // For AI scans, use the stored total values (already calculated for the consumed amount)
                 totalCalories += scan.data.total.calories || 0
                 totalProtein += scan.data.total.protein || 0
                 totalCarbs += scan.data.total.carbs || 0
                 totalFats += scan.data.total.fat || 0
             } else if (scan.type === 'barcode' && scan.data.nutriments) {
-                // For barcode products, multiply per-100g values by the actual amount consumed
                 totalCalories += (scan.data.nutriments.energy_kcal_100g || 0) * amount
                 totalProtein += (scan.data.nutriments.proteins_100g || 0) * amount
                 totalCarbs += (scan.data.nutriments.carbohydrates_100g || 0) * amount
@@ -513,31 +506,10 @@ async function syncToHealthKit() {
     }
 }
 
-function goToStreak() {
-    router.push('/streak')
+function goToView(view: string) {
+    router.push(`/${view}`)
 }
 
-function goToCaloriesDetail() {
-    router.push('/calories')
-}
-
-function goToProteinDetail() {
-    router.push('/protein')
-}
-
-function goToCarbsDetail() {
-    router.push('/carbs')
-}
-
-function goToFatsDetail() {
-    router.push('/fats')
-}
-
-function goToPremium() {
-    router.push('/upgrade')
-}
-
-// Modal functions
 function showAddFoodModal() {
     isAddFoodModalVisible.value = true
 }
@@ -580,10 +552,9 @@ function goToNutritionDetail(item: FoodItem) {
 
 const recentFoods = computed((): FoodItem[] => {
     return scanHistory.value.map((scan: ScanData): FoodItem | null => {
-        const amount = scan.amount || 1.0; // Default to 1.0 if no amount stored
-        
+        const amount = scan.amount || 1.0;
+
         if (scan.type === 'food') {
-            // For food scans, use total nutrition data (already calculated for consumed amount)
             const total = scan.data.total
             const firstFood = scan.data.foods?.[0]
             return {
@@ -596,10 +567,9 @@ const recentFoods = computed((): FoodItem[] => {
                 time: scan.time,
                 image: scan.image || '/api/placeholder/60/60',
                 type: 'food',
-                icon: scan.icon // Include icon from database foods
+                icon: scan.icon
             }
         } else if (scan.type === 'barcode') {
-            // For barcode scans, multiply per-100g values by actual consumed amount
             const nutriments = scan.data.nutriments || {}
             return {
                 id: scan.id,
@@ -609,16 +579,15 @@ const recentFoods = computed((): FoodItem[] => {
                 carbs: Math.round((nutriments.carbohydrates_100g || 0) * amount),
                 fats: Math.round((nutriments.fat_100g || 0) * amount),
                 time: scan.time,
-                image: scan.image || '/api/placeholder/60/60', // Use barcode photo from scan
+                image: scan.image || '/api/placeholder/60/60',
                 type: 'barcode',
-                icon: undefined // Barcode items don't have specific icons
+                icon: undefined
             }
         }
         return null
     }).filter((item): item is FoodItem => item !== null)
 })
 
-// Calculated remaining amounts (show left or over)
 const caloriesDiff = computed(() => Math.round(dailyCalories.value - consumedCalories.value))
 const caloriesIsOver = computed(() => caloriesDiff.value < 0)
 const caloriesAbs = computed(() => Math.abs(caloriesDiff.value))
@@ -643,23 +612,19 @@ const fatsAbs = computed(() => Math.abs(fatsDiff.value))
 const fatsNumberDisplay = computed(() => fatsIsOver.value ? `${fatsAbs.value}g` : `${fatsDiff.value}g`)
 const fatsLabelDisplay = computed(() => fatsIsOver.value ? t('home.fatsOver') : t('home.fatsLeft'))
 
-// Progress calculations (0 to 1)
 const caloriesProgress = computed(() => Math.min(consumedCalories.value / dailyCalories.value, 1))
 const proteinProgress = computed(() => Math.min(consumedProtein.value / dailyProtein.value, 1))
 const carbsProgress = computed(() => Math.min(consumedCarbs.value / dailyCarbs.value, 1))
 const fatsProgress = computed(() => Math.min(consumedFats.value / dailyFats.value, 1))
 
-// Calculate stroke-dashoffset for macro circles
 function calculateMacroOffset(progress: number, circumference: number): number {
-    // Ensure progress is between 0 and 1
     const clampedProgress = Math.max(0, Math.min(1, progress))
     return circumference - (circumference * clampedProgress)
 }
 
-// Touch/Swipe functionality
 let touchStartX = 0
 let touchStartY = 0
-const swipeThreshold = 50 // Minimum distance for a swipe
+const swipeThreshold = 50
 
 function handleTouchStart(event: TouchEvent) {
     touchStartX = event.touches[0].clientX
@@ -667,8 +632,6 @@ function handleTouchStart(event: TouchEvent) {
 }
 
 function handleTouchMove(event: TouchEvent) {
-    // Prevent default to avoid scrolling issues during swipe
-    // Only prevent if we're in a horizontal swipe
     const currentX = event.touches[0].clientX
     const currentY = event.touches[0].clientY
     const deltaX = Math.abs(currentX - touchStartX)
@@ -686,13 +649,11 @@ function handleTouchEnd(event: TouchEvent) {
     const deltaX = touchEndX - touchStartX
     const deltaY = touchEndY - touchStartY
 
-    // Check if it's more horizontal than vertical
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
-        // Swipe left (from right to left) - go to yesterday
         if (deltaX < -swipeThreshold) {
             router.push('/yesterday')
         }
-        // Swipe right (from left to right) could be used for future navigation
+
         // if (deltaX > swipeThreshold) {
         //     // Could navigate to a different view
         // }
@@ -704,7 +665,6 @@ function handleTouchEnd(event: TouchEvent) {
 .home-view {
     height: 100vh;
     height: 100dvh;
-    /* Dynamic viewport height for mobile */
     background: linear-gradient(135deg, #1e1e2e 0%, #2a2d37 100%);
     color: white;
     padding: 16px;
@@ -713,14 +673,10 @@ function handleTouchEnd(event: TouchEvent) {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
     overflow-y: auto;
     overflow-x: hidden;
-    /* Prevent text selection */
     -webkit-user-select: none;
     user-select: none;
-    /* Prevent touch callouts */
     -webkit-touch-callout: none;
-    /* Prevent tap highlights */
     -webkit-tap-highlight-color: transparent;
-    /* Prevent zoom on double tap */
     touch-action: manipulation;
 }
 
