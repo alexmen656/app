@@ -48,9 +48,9 @@ export async function createNutritionPreviewImage(nutritionData: NutritionData, 
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d')!;
     
-    // Set canvas size (Instagram story format)
-    canvas.width = 800;
-    canvas.height = 1200;
+    // Set canvas size to 1024x1024 as requested
+    canvas.width = 1024;
+    canvas.height = 1024;
     
     const productImageUrl = nutritionData.image;
     
@@ -59,27 +59,8 @@ export async function createNutritionPreviewImage(nutritionData: NutritionData, 
       const img = new Image();
       img.crossOrigin = 'anonymous';
       img.onload = () => {
-        // Fill canvas with product image (cover style)
-        const aspectRatio = img.width / img.height;
-        const canvasAspectRatio = canvas.width / canvas.height;
-        
-        let drawWidth, drawHeight, offsetX, offsetY;
-        
-        if (aspectRatio > canvasAspectRatio) {
-          // Image is wider than canvas
-          drawHeight = canvas.height;
-          drawWidth = drawHeight * aspectRatio;
-          offsetX = (canvas.width - drawWidth) / 2;
-          offsetY = 0;
-        } else {
-          // Image is taller than canvas
-          drawWidth = canvas.width;
-          drawHeight = drawWidth / aspectRatio;
-          offsetX = 0;
-          offsetY = (canvas.height - drawHeight) / 2;
-        }
-        
-        ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+        // Fill canvas with product image (cover style) - force to 1024x1024
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         
         // Add dark overlay with 0.2 opacity as requested
         ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
@@ -105,116 +86,56 @@ export async function createNutritionPreviewImage(nutritionData: NutritionData, 
 }
 
 function drawNutritionPanel(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, nutritionData: NutritionData, amount: number) {
-  // Bottom rounded panel like in the reference image
-  const panelHeight = 380;
-  const panelY = canvas.height - panelHeight;
-  const cornerRadius = 32;
+  // Floating white panel like in the reference image - with margins from all edges
+  const margin = 60; // Distance from edges
+  const panelWidth = canvas.width - (margin * 2);
+  const panelHeight = 200; // Smaller, more compact panel
+  const panelX = margin;
+  const panelY = canvas.height - panelHeight - margin; // Float above bottom with margin
+  const cornerRadius = 24;
   
-  // White background with rounded top corners
+  // White background with rounded corners and shadow
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.25)';
+  ctx.shadowBlur = 30;
+  ctx.shadowOffsetY = 15;
   ctx.fillStyle = 'rgba(255, 255, 255, 0.98)';
-  roundRect(ctx, 0, panelY, canvas.width, panelHeight, cornerRadius);
+  roundRect(ctx, panelX, panelY, panelWidth, panelHeight, cornerRadius);
   ctx.fill();
   
-  // Subtle shadow at the top of the panel
-  const shadowGradient = ctx.createLinearGradient(0, panelY - 15, 0, panelY + 15);
-  shadowGradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
-  shadowGradient.addColorStop(1, 'rgba(0, 0, 0, 0.08)');
-  ctx.fillStyle = shadowGradient;
-  ctx.fillRect(0, panelY - 15, canvas.width, 30);
+  // Reset shadow
+  ctx.shadowColor = 'transparent';
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetY = 0;
   
-  // Product name - large and bold
+  // Create nutrition data with larger text
+  const totalCalories = Math.round(nutritionData.calories * amount);
+  const totalProtein = Math.round(nutritionData.protein * amount);
+  const totalCarbs = Math.round(nutritionData.carbs * amount);
+  const totalFats = Math.round(nutritionData.fats * amount);
+  
+  // Main nutrition text - very large like in reference image
   ctx.fillStyle = '#1a1a1a';
-  ctx.font = 'bold 32px system-ui, -apple-system, BlinkMacSystemFont, sans-serif';
+  ctx.font = 'bold 48px system-ui, -apple-system, BlinkMacSystemFont, sans-serif';
   ctx.textAlign = 'center';
-  const title = getLocalizedName(nutritionData);
   
-  // Handle long text by wrapping or truncating
-  const maxWidth = canvas.width - 80;
-  const titleMetrics = ctx.measureText(title);
-  if (titleMetrics.width > maxWidth) {
-    ctx.font = 'bold 28px system-ui, -apple-system, BlinkMacSystemFont, sans-serif';
+  // Center all text vertically in the panel
+  const textY = panelY + panelHeight / 2;
+  
+  // Format text exactly like in reference image: "2000kcal 100g Protein 300g Carbs 100g fats"
+  const nutritionText = `${totalCalories}kcal  ${totalProtein}g Protein  ${totalCarbs}g Carbs  ${totalFats}g fats`;
+  
+  // Check if text fits, if not make it smaller
+  let fontSize = 48;
+  ctx.font = `bold ${fontSize}px system-ui, -apple-system, BlinkMacSystemFont, sans-serif`;
+  let textWidth = ctx.measureText(nutritionText).width;
+  
+  while (textWidth > panelWidth - 40 && fontSize > 24) {
+    fontSize -= 2;
+    ctx.font = `bold ${fontSize}px system-ui, -apple-system, BlinkMacSystemFont, sans-serif`;
+    textWidth = ctx.measureText(nutritionText).width;
   }
-  ctx.fillText(title, canvas.width / 2, panelY + 50);
   
-  // Amount info with better styling
-  ctx.font = '20px system-ui, -apple-system, BlinkMacSystemFont, sans-serif';
-  ctx.fillStyle = '#666666';
-  ctx.fillText(`${amount} Portion${amount !== 1 ? 'en' : ''}`, canvas.width / 2, panelY + 85);
-  
-  // Nutrition values in a clean grid layout
-  const nutritionBoxY = panelY + 120;
-  const nutritionData2 = [
-    { 
-      label: `${Math.round(nutritionData.calories * amount)}kcal`, 
-      sublabel: 'Kalorien', 
-      color: '#ff6b35',
-      bgColor: '#fff5f2'
-    },
-    { 
-      label: `${Math.round(nutritionData.protein * amount)}g`, 
-      sublabel: 'Protein', 
-      color: '#e74c3c',
-      bgColor: '#fdf2f2'
-    },
-    { 
-      label: `${Math.round(nutritionData.carbs * amount)}g`, 
-      sublabel: 'Carbs', 
-      color: '#f39c12',
-      bgColor: '#fffbf2'
-    },
-    { 
-      label: `${Math.round(nutritionData.fats * amount)}g`, 
-      sublabel: 'Fats', 
-      color: '#3498db',
-      bgColor: '#f2f9ff'
-    }
-  ];
-  
-  // Draw nutrition cards in 2x2 grid
-  const cardWidth = 160;
-  const cardHeight = 100;
-  const spacing = 20;
-  const startX = (canvas.width - (2 * cardWidth + spacing)) / 2;
-  
-  nutritionData2.forEach((item, index) => {
-    const row = Math.floor(index / 2);
-    const col = index % 2;
-    const x = startX + col * (cardWidth + spacing);
-    const y = nutritionBoxY + row * (cardHeight + spacing);
-    
-    // Card background with rounded corners
-    ctx.fillStyle = item.bgColor;
-    roundRect(ctx, x, y, cardWidth, cardHeight, 16);
-    ctx.fill();
-    
-    // Border
-    ctx.strokeStyle = item.color + '20';
-    ctx.lineWidth = 2;
-    roundRect(ctx, x, y, cardWidth, cardHeight, 16);
-    ctx.stroke();
-    
-    // Color accent line at top
-    ctx.fillStyle = item.color;
-    roundRect(ctx, x, y, cardWidth, 4, 2);
-    ctx.fill();
-    
-    // Main value (large)
-    ctx.fillStyle = '#1a1a1a';
-    ctx.font = 'bold 28px system-ui, -apple-system, BlinkMacSystemFont, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(item.label, x + cardWidth / 2, y + 45);
-    
-    // Label (smaller)
-    ctx.fillStyle = '#666666';
-    ctx.font = '16px system-ui, -apple-system, BlinkMacSystemFont, sans-serif';
-    ctx.fillText(item.sublabel, x + cardWidth / 2, y + 70);
-  });
-  
-  // Kalbuddy branding at bottom
-  ctx.fillStyle = '#333333';
-  ctx.font = 'bold 18px system-ui, -apple-system, BlinkMacSystemFont, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('Kalbuddy - Dein Kalorien-Tracker', canvas.width / 2, canvas.height - 30);
+  ctx.fillText(nutritionText, canvas.width / 2, textY + 10);
 }
 
 function createFallbackImage(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, nutritionData: NutritionData, amount: number) {
@@ -228,33 +149,12 @@ function createFallbackImage(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasEl
   
   // Add subtle pattern overlay
   ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
-  for (let i = 0; i < canvas.width; i += 60) {
-    for (let j = 0; j < canvas.height; j += 60) {
-      ctx.fillRect(i, j, 30, 2);
-      ctx.fillRect(i, j, 2, 30);
+  for (let i = 0; i < canvas.width; i += 80) {
+    for (let j = 0; j < canvas.height; j += 80) {
+      ctx.fillRect(i, j, 40, 2);
+      ctx.fillRect(i, j, 2, 40);
     }
   }
-  
-  // Large product name at top
-  ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 48px system-ui, -apple-system, BlinkMacSystemFont, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
-  ctx.shadowBlur = 10;
-  ctx.shadowOffsetY = 2;
-  
-  const productName = getLocalizedName(nutritionData);
-  const maxWidth = canvas.width - 80;
-  const nameMetrics = ctx.measureText(productName);
-  if (nameMetrics.width > maxWidth) {
-    ctx.font = 'bold 36px system-ui, -apple-system, BlinkMacSystemFont, sans-serif';
-  }
-  ctx.fillText(productName, canvas.width / 2, 150);
-  
-  // Reset shadow
-  ctx.shadowColor = 'transparent';
-  ctx.shadowBlur = 0;
-  ctx.shadowOffsetY = 0;
   
   drawNutritionPanel(ctx, canvas, nutritionData, amount);
 }
@@ -293,7 +193,7 @@ export async function shareNutrition(
     // Share the nutrition data with the image file
     await Share.share({
       title: `${getLocalizedName(nutritionData)} - Kalbuddy`,
-      text: `🥗 ${getLocalizedName(nutritionData)}\n\n📊 Nährwerte pro ${amount} Portion:\n🔥 ${Math.round(nutritionData.calories * amount)} kcal\n🥩 ${Math.round(nutritionData.protein * amount)}g Protein\n🍞 ${Math.round(nutritionData.carbs * amount)}g Kohlenhydrate\n🥑 ${Math.round(nutritionData.fats * amount)}g Fett\n\n📱 Verfolge deine Ernährung mit Kalbuddy`,
+      text: `🥗 ${getLocalizedName(nutritionData)}\n\n📊 Nährwerte:\n🔥 ${Math.round(nutritionData.calories * amount)} kcal\n🥩 ${Math.round(nutritionData.protein * amount)}g Protein\n🍞 ${Math.round(nutritionData.carbs * amount)}g Kohlenhydrate\n🥑 ${Math.round(nutritionData.fats * amount)}g Fett\n\n📱 Verfolge deine Ernährung mit Kalbuddy`,
       files: [result.uri],
       dialogTitle: 'Nährwerte teilen'
     });
