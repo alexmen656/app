@@ -68,6 +68,7 @@
             <div v-else class="scan-item" v-for="scan in paginatedScans" :key="scan.id" @click="viewScanDetails(scan)">
                 <div class="scan-image">
                     <img v-if="scan.image && !scan.image.includes('placeholder')" :src="scan.image" :alt="scan.name" />
+                    <span v-else-if="scan.icon" class="food-db-icon">{{ scan.icon }}</span>
                     <span v-else class="scan-type-icon">{{ scan.type === 'food' ? '🍽️' : '📦' }}</span>
                 </div>
 
@@ -135,7 +136,6 @@
         </div>
     </div>
 </template>
-
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
@@ -148,7 +148,7 @@ const { t } = useI18n()
 
 interface ScanData {
     id: number
-    type: 'food' | 'barcode'
+    type: 'food' | 'barcode' | 'manual'
     timestamp: string
     time: string
     image?: string
@@ -158,12 +158,13 @@ interface ScanData {
     protein: number
     carbs: number
     fats: number
+    icon?: string
 }
 
 // Data
 const allScans = ref<ScanData[]>([])
 const searchQuery = ref('')
-const selectedFilter = ref<'all' | 'food' | 'barcode'>('all')
+const selectedFilter = ref<'all' | 'food' | 'barcode' | 'manual' | 'foodDB'>('all')
 const sortBy = ref<'newest' | 'oldest' | 'name' | 'calories'>('newest')
 const currentPage = ref(1)
 const itemsPerPage = 20
@@ -172,7 +173,8 @@ const itemsPerPage = 20
 const filterOptions = [
     { value: 'all' as const, label: t('allScans.all') },
     { value: 'food' as const, label: t('allScans.foodScans') },
-    { value: 'barcode' as const, label: t('allScans.barcodeScans') }
+    { value: 'barcode' as const, label: t('allScans.barcodeScans') },
+    { value: 'manual' as const, label: t('allScans.manualEntries') },
 ]
 
 // Computed properties
@@ -274,41 +276,82 @@ function viewScanDetails(scan: ScanData) {
 async function loadAllScans() {
     try {
         const history = await ScanHistory.get()
+        console.log('Raw scan history:', history)
+
+        if (!history || !Array.isArray(history)) {
+            console.error('Invalid scan history data:', history)
+            allScans.value = []
+            return
+        }
 
         allScans.value = history.map((scan): ScanData => {
-            if (scan.type === 'food') {
-                const total = scan.data.total || {}
-                const firstFood = scan.data.foods?.[0]
-                return {
-                    id: scan.id,
-                    type: scan.type,
-                    timestamp: scan.timestamp,
-                    time: scan.time,
-                    image: scan.image,
-                    data: scan.data,
-                    name: getLocalizedName(firstFood) || t('home.scannedFood'),
-                    calories: Math.round(total.calories || 0),
-                    protein: Math.round(total.protein || 0),
-                    carbs: Math.round(total.carbs || 0),
-                    fats: Math.round(total.fat || 0)
+            try {
+                if (scan.type === 'food') {
+                    const total = scan.data?.total || {}
+                    const firstFood = scan.data?.foods?.[0]
+                    return {
+                        id: scan.id,
+                        type: scan.type,
+                        timestamp: scan.timestamp,
+                        time: scan.time,
+                        image: scan.image,
+                        data: scan.data,
+                        name: getLocalizedName(firstFood) || 'Scanned Food',
+                        calories: Math.round(total.calories || 0),
+                        protein: Math.round(total.protein || 0),
+                        carbs: Math.round(total.carbs || 0),
+                        fats: Math.round(total.fat || 0),
+                        icon: scan.icon
+                    }
+                } else if (scan.type === 'manual') {
+                    return {
+                        id: scan.id,
+                        type: scan.type,
+                        timestamp: scan.timestamp,
+                        time: scan.time,
+                        image: scan.image,
+                        data: scan.data,
+                        name: scan.data?.name || 'Manual Entry',
+                        calories: Math.round(scan.data?.calories || 0),
+                        protein: Math.round(scan.data?.protein || 0),
+                        carbs: Math.round(scan.data?.carbs || 0),
+                        fats: Math.round(scan.data?.fats || 0)
+                    }
+                } else {
+                    const nutriments = scan.data?.nutriments || {}
+                    return {
+                        id: scan.id,
+                        type: scan.type,
+                        timestamp: scan.timestamp,
+                        time: scan.time,
+                        image: scan.image,
+                        data: scan.data,
+                        name: scan.data?.product_name || 'Unknown Product',
+                        calories: Math.round(nutriments.energy_kcal_100g || 0),
+                        protein: Math.round(nutriments.proteins_100g || 0),
+                        carbs: Math.round(nutriments.carbohydrates_100g || 0),
+                        fats: Math.round(nutriments.fat_100g || 0)
+                    }
                 }
-            } else {
-                const nutriments = scan.data.nutriments || {}
+            } catch (scanError) {
+                console.error('Error processing scan item:', scan, scanError)
                 return {
-                    id: scan.id,
-                    type: scan.type,
-                    timestamp: scan.timestamp,
-                    time: scan.time,
+                    id: scan.id || 0,
+                    type: scan.type || 'unknown',
+                    timestamp: scan.timestamp || new Date().toISOString(),
+                    time: scan.time || 'Unknown',
                     image: scan.image,
-                    data: scan.data,
-                    name: scan.data.product_name || t('home.unknownProduct'),
-                    calories: Math.round(nutriments.energy_kcal_100g || 0),
-                    protein: Math.round(nutriments.proteins_100g || 0),
-                    carbs: Math.round(nutriments.carbohydrates_100g || 0),
-                    fats: Math.round(nutriments.fat_100g || 0)
+                    data: scan.data || {},
+                    name: 'Error loading item',
+                    calories: 0,
+                    protein: 0,
+                    carbs: 0,
+                    fats: 0
                 }
             }
-        })
+        }).filter(scan => scan !== null)
+
+        console.log('Processed scans:', allScans.value)
     } catch (error) {
         console.error('Error loading all scans:', error)
         allScans.value = []
@@ -526,11 +569,6 @@ onMounted(() => {
     transition: all 0.2s;
 }
 
-.scan-item:hover {
-    background: rgba(255, 255, 255, 0.08);
-    transform: translateY(-1px);
-}
-
 .scan-image {
     width: 60px;
     height: 60px;
@@ -651,9 +689,5 @@ onMounted(() => {
     font-size: 14px;
     cursor: pointer;
     transition: all 0.2s;
-}
-
-.load-more-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
 }
 </style>
