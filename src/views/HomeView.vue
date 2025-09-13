@@ -846,7 +846,7 @@ function handleTouchEnd(event: TouchEvent) {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
-    margin-bottom: 32px;
+    margin-bottom: 12px;
 }
 
 .macro-card {
@@ -1318,15 +1318,10 @@ a {
     background: rgba(30, 30, 46, 0.2);
 }
 
-/* KalBuddy Chat Section */
-.kalbuddy-chat-section {
-    margin: 16px 20px;
-}
-
 .kalbuddy-chat-link {
     display: flex;
     align-items: center;
-    padding: 16px;
+    padding: 12px;
     background: linear-gradient(135deg, #007052, #005e4a);
     border-radius: 16px;
     text-decoration: none;
@@ -1380,5 +1375,9 @@ a {
 
 .kalbuddy-chat-link:hover .chat-arrow {
     transform: translateX(4px);
+}
+
+.kalbuddy-chat-section {
+    margin-bottom: 32px;
 }
 </style>
