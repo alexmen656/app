@@ -1,0 +1,46 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle with gradient -->
+  <circle cx="128" cy="128" r="128" fill="url(#kalbuddyGradient)"/>
+  
+  <!-- Main chat bubble -->
+  <path d="M64 96C64 81.6406 75.6406 70 90 70H166C180.359 70 192 81.6406 192 96V144C192 158.359 180.359 170 166 170H110L80 194V170C69.7969 170 64 164.203 64 154V96Z" fill="white" fill-opacity="0.95"/>
+  
+  <!-- Chat dots inside bubble -->
+  <circle cx="106" cy="120" r="8" fill="#007052"/>
+  <circle cx="128" cy="120" r="8" fill="#007052"/>
+  <circle cx="150" cy="120" r="8" fill="#007052"/>
+  
+  <!-- Secondary smaller bubble for dynamic effect -->
+  <path d="M180 60C180 54.4772 184.477 50 190 50H210C215.523 50 220 54.4772 220 60V75C220 80.5228 215.523 85 210 85H195L185 95V85C182.239 85 180 82.7614 180 80V60Z" fill="white" fill-opacity="0.7"/>
+  <circle cx="195" cy="67.5" r="2.5" fill="#007052"/>
+  <circle cx="205" cy="67.5" r="2.5" fill="#007052"/>
+  
+  <!-- Nutrition symbols overlay -->
+  <!-- Protein symbol (dumbbell-like) -->
+  <g transform="translate(45, 190)" fill="white" fill-opacity="0.8">
+    <rect x="0" y="5" width="8" height="3" rx="1.5"/>
+    <rect x="16" y="5" width="8" height="3" rx="1.5"/>
+    <rect x="6" y="0" width="12" height="13" rx="2"/>
+  </g>
+  
+  <!-- Carbs symbol (wheat grain) -->
+  <g transform="translate(200, 45)" fill="white" fill-opacity="0.8">
+    <path d="M8 0C10.2091 0 12 1.79086 12 4V12C12 14.2091 10.2091 16 8 16C5.79086 16 4 14.2091 4 12V4C4 1.79086 5.79086 0 8 0Z"/>
+    <ellipse cx="8" cy="5" rx="3" ry="1"/>
+    <ellipse cx="8" cy="8" rx="2.5" ry="0.8"/>
+    <ellipse cx="8" cy="11" rx="2" ry="0.6"/>
+  </g>
+  
+  <!-- KalBuddy text -->
+  <text x="128" y="230" text-anchor="middle" fill="white" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="600">KalBuddy</text>
+  <text x="128" y="248" text-anchor="middle" fill="white" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="400" opacity="0.9">AI Nutrition Assistant</text>
+  
+  <!-- Gradient definitions -->
+  <defs>
+    <linearGradient id="kalbuddyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#007052;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#008060;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#005e4a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>

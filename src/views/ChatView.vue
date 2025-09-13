@@ -15,7 +15,7 @@
         </div>
       </div>
       <div class="kalbuddy-avatar">
-        <span class="avatar-emoji">🤖</span>
+        <img src="../assets/kalbuddy-chat-icon.svg" alt="KalBuddy" class="avatar-icon" />
       </div>
     </header>
 
@@ -24,7 +24,7 @@
       <!-- Welcome Message -->
       <div class="message bot-message" v-if="messages.length === 0">
         <div class="message-avatar">
-          <span>🤖</span>
+          <img src="../assets/kalbuddy-chat-icon.svg" alt="KalBuddy" class="message-avatar-icon" />
         </div>
         <div class="message-content">
           <div class="message-bubble">
@@ -57,7 +57,7 @@
         :class="{ 'user-message': message.isUser, 'bot-message': !message.isUser }"
       >
         <div class="message-avatar" v-if="!message.isUser">
-          <span>🤖</span>
+          <img src="../assets/kalbuddy-chat-icon.svg" alt="KalBuddy" class="message-avatar-icon" />
         </div>
         <div class="message-content">
           <div class="message-bubble">
@@ -73,7 +73,7 @@
       <!-- Typing Indicator -->
       <div class="message bot-message" v-if="isTyping">
         <div class="message-avatar">
-          <span>🤖</span>
+          <img src="../assets/kalbuddy-chat-icon.svg" alt="KalBuddy" class="message-avatar-icon" />
         </div>
         <div class="message-content">
           <div class="message-bubble typing-bubble">
@@ -143,13 +143,74 @@ interface Message {
 
 const messages = ref<Message[]>([])
 
-// Example questions based on current locale
-const exampleQuestions = computed(() => [
+// Dynamic example questions from API
+const exampleQuestions = ref<string[]>([
   t('chat.examples.example1'),
   t('chat.examples.example2'),
   t('chat.examples.example3'),
   t('chat.examples.example4')
 ])
+
+// Generate smart fallback suggestions based on context
+const generateFallbackSuggestions = () => {
+  const suggestions = []
+  const hour = new Date().getHours()
+  
+  // Time-based suggestions
+  if (hour >= 6 && hour < 10) {
+    suggestions.push("Was ist ein gesundes Frühstück für meine Ziele?")
+    suggestions.push("Wie wichtig ist ein proteinreiches Frühstück?")
+  } else if (hour >= 11 && hour < 14) {
+    suggestions.push("Welche gesunden Mittagsoptionen empfiehlst du?")
+    suggestions.push("Wie vermeide ich das Nachmittagstief nach dem Essen?")
+  } else if (hour >= 17 && hour < 21) {
+    suggestions.push("Hast du Ideen für ein ausgewogenes Abendessen?")
+    suggestions.push("Was sollte ich abends vermeiden zu essen?")
+  } else if (hour >= 21 || hour < 6) {
+    suggestions.push("Welche gesunden Snacks kann ich abends essen?")
+    suggestions.push("Wie wichtig ist das Timing der letzten Mahlzeit?")
+  }
+  
+  // Always relevant nutrition questions
+  suggestions.push("Wie erkenne ich versteckte Zucker in Lebensmitteln?")
+  suggestions.push("Welche Nährstoffe sollte ich täglich zu mir nehmen?")
+  suggestions.push("Was sind die häufigsten Ernährungsfehler?")
+  
+  // Return 4 suggestions, mixing time-specific and general
+  const timeSpecific = suggestions.slice(0, 2)
+  const general = suggestions.slice(-3)
+  return [...timeSpecific, ...general].slice(0, 4)
+}
+
+// Load suggestions from API
+const loadSuggestions = async () => {
+  try {
+    const userProfileData = await buildUserProfile()
+    const response = await fetch(`${API_BASE_URL}/suggestions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userProfile: userProfileData,
+        currentContext: messages.value.length > 0 ? 'ongoing_conversation' : 'new_conversation'
+      })
+    })
+
+    if (response.ok) {
+      const data = await response.json()
+      if (data.success && data.suggestions && data.suggestions.length > 0) {
+        exampleQuestions.value = data.suggestions
+        return
+      }
+    }
+  } catch (error) {
+    console.log('Could not load personalized suggestions:', error)
+  }
+  
+  // Fallback to smart contextual suggestions
+  exampleQuestions.value = generateFallbackSuggestions()
+}
 
 // Get current language for API
 const currentLanguage = computed(() => {
@@ -420,6 +481,7 @@ function getErrorMessage(error: any): string {
 
 onMounted(() => {
   scrollToBottom()
+  loadSuggestions()
 })
 </script>
 
@@ -498,6 +560,13 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   font-size: 24px;
+  overflow: hidden;
+}
+
+.avatar-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* Messages */
@@ -528,6 +597,12 @@ onMounted(() => {
 
 .bot-message .message-avatar {
   background: linear-gradient(135deg, #007052, #005e4a);
+}
+
+.message-avatar-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .user-message .message-avatar {

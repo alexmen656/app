@@ -1,0 +1,20 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle with gradient -->
+  <circle cx="24" cy="24" r="24" fill="url(#chatGradient)"/>
+  
+  <!-- Chat bubble -->
+  <path d="M14 18C14 15.7909 15.7909 14 18 14H30C32.2091 14 34 15.7909 34 18V26C34 28.2091 32.2091 30 30 30H22L16 34V30C14.8954 30 14 29.1046 14 28V18Z" fill="white"/>
+  
+  <!-- Dots inside chat bubble -->
+  <circle cx="20" cy="22" r="1.5" fill="#007052"/>
+  <circle cx="24" cy="22" r="1.5" fill="#007052"/>
+  <circle cx="28" cy="22" r="1.5" fill="#007052"/>
+  
+  <!-- Gradient definition -->
+  <defs>
+    <linearGradient id="chatGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#007052;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#005e4a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>
