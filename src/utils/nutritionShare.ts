@@ -86,20 +86,28 @@ export async function createNutritionPreviewImage(nutritionData: NutritionData, 
 }
 
 function drawNutritionPanel(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, nutritionData: NutritionData, amount: number) {
-  // Floating white panel like in the reference image - with margins from all edges
-  const margin = 60; // Distance from edges
+  // Floating white panel with premium design
+  const margin = 60;
   const panelWidth = canvas.width - (margin * 2);
-  const panelHeight = 200; // Smaller, more compact panel
+  const panelHeight = 280; // Increased height for better layout
   const panelX = margin;
-  const panelY = canvas.height - panelHeight - margin; // Float above bottom with margin
-  const cornerRadius = 24;
+  const panelY = canvas.height - panelHeight - margin;
+  const cornerRadius = 32;
   
-  // White background with rounded corners and shadow
-  ctx.shadowColor = 'rgba(0, 0, 0, 0.25)';
-  ctx.shadowBlur = 30;
-  ctx.shadowOffsetY = 15;
+  // Premium white background with shadow
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.15)';
+  ctx.shadowBlur = 40;
+  ctx.shadowOffsetY = 20;
   ctx.fillStyle = 'rgba(255, 255, 255, 0.98)';
   roundRect(ctx, panelX, panelY, panelWidth, panelHeight, cornerRadius);
+  ctx.fill();
+  
+  // Subtle inner shadow for depth
+  const innerGradient = ctx.createLinearGradient(0, panelY, 0, panelY + 20);
+  innerGradient.addColorStop(0, 'rgba(0, 0, 0, 0.02)');
+  innerGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+  ctx.fillStyle = innerGradient;
+  roundRect(ctx, panelX, panelY, panelWidth, 20, cornerRadius);
   ctx.fill();
   
   // Reset shadow
@@ -107,35 +115,112 @@ function drawNutritionPanel(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasEle
   ctx.shadowBlur = 0;
   ctx.shadowOffsetY = 0;
   
-  // Create nutrition data with larger text
+  // Calculate nutrition values
   const totalCalories = Math.round(nutritionData.calories * amount);
   const totalProtein = Math.round(nutritionData.protein * amount);
   const totalCarbs = Math.round(nutritionData.carbs * amount);
   const totalFats = Math.round(nutritionData.fats * amount);
   
-  // Main nutrition text - very large like in reference image
-  ctx.fillStyle = '#1a1a1a';
-  ctx.font = 'bold 48px system-ui, -apple-system, BlinkMacSystemFont, sans-serif';
+  // Nutrition data with beautiful colors
+  const nutritionItems = [
+    { 
+      value: totalCalories, 
+      unit: 'kcal', 
+      label: 'Kalorien',
+      color: '#FF6B35',
+      bgColor: 'rgba(255, 107, 53, 0.1)',
+      icon: '🔥'
+    },
+    { 
+      value: totalProtein, 
+      unit: 'g', 
+      label: 'Protein',
+      color: '#E74C3C',
+      bgColor: 'rgba(231, 76, 60, 0.1)',
+      icon: '💪'
+    },
+    { 
+      value: totalCarbs, 
+      unit: 'g', 
+      label: 'Carbs',
+      color: '#F39C12',
+      bgColor: 'rgba(243, 156, 18, 0.1)',
+      icon: '🍞'
+    },
+    { 
+      value: totalFats, 
+      unit: 'g', 
+      label: 'Fats',
+      color: '#3498DB',
+      bgColor: 'rgba(52, 152, 219, 0.1)',
+      icon: '🥑'
+    }
+  ];
+  
+  // Create 2x2 grid layout
+  const cardWidth = (panelWidth - 100) / 2; // Space for margins and gap
+  const cardHeight = 100;
+  const gap = 20;
+  const startX = panelX + 40; // Left margin
+  const startY = panelY + 40; // Top margin
+  
+  nutritionItems.forEach((item, index) => {
+    const row = Math.floor(index / 2);
+    const col = index % 2;
+    const x = startX + col * (cardWidth + gap);
+    const y = startY + row * (cardHeight + gap);
+    
+    // Card background with gradient
+    const cardGradient = ctx.createLinearGradient(x, y, x, y + cardHeight);
+    cardGradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
+    cardGradient.addColorStop(1, item.bgColor);
+    ctx.fillStyle = cardGradient;
+    roundRect(ctx, x, y, cardWidth, cardHeight, 16);
+    ctx.fill();
+    
+    // Subtle border
+    ctx.strokeStyle = item.color + '30';
+    ctx.lineWidth = 1.5;
+    roundRect(ctx, x, y, cardWidth, cardHeight, 16);
+    ctx.stroke();
+    
+    // Color accent bar at top
+    ctx.fillStyle = item.color;
+    roundRect(ctx, x, y, cardWidth, 5, 3);
+    ctx.fill();
+    
+    // Icon (emoji)
+    ctx.font = '24px system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText(item.icon, x + 16, y + 35);
+    
+    // Main value with color
+    ctx.fillStyle = item.color;
+    ctx.font = 'bold 32px system-ui, -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText(`${item.value}${item.unit}`, x + cardWidth - 16, y + 45);
+    
+    // Label
+    ctx.fillStyle = '#666666';
+    ctx.font = '16px system-ui, -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(item.label, x + 50, y + 70);
+  });
+  
+  // Premium branding at bottom
+  ctx.fillStyle = '#8B5CF6';
+  ctx.font = 'bold 18px system-ui, -apple-system, BlinkMacSystemFont, sans-serif';
   ctx.textAlign = 'center';
+  ctx.fillText('Kalbuddy', canvas.width / 2, panelY + panelHeight - 20);
   
-  // Center all text vertically in the panel
-  const textY = panelY + panelHeight / 2;
-  
-  // Format text exactly like in reference image: "2000kcal 100g Protein 300g Carbs 100g fats"
-  const nutritionText = `${totalCalories}kcal  ${totalProtein}g Protein  ${totalCarbs}g Carbs  ${totalFats}g fats`;
-  
-  // Check if text fits, if not make it smaller
-  let fontSize = 48;
-  ctx.font = `bold ${fontSize}px system-ui, -apple-system, BlinkMacSystemFont, sans-serif`;
-  let textWidth = ctx.measureText(nutritionText).width;
-  
-  while (textWidth > panelWidth - 40 && fontSize > 24) {
-    fontSize -= 2;
-    ctx.font = `bold ${fontSize}px system-ui, -apple-system, BlinkMacSystemFont, sans-serif`;
-    textWidth = ctx.measureText(nutritionText).width;
-  }
-  
-  ctx.fillText(nutritionText, canvas.width / 2, textY + 10);
+  // Subtle sparkle effect
+  ctx.fillStyle = '#FFD700';
+  ctx.beginPath();
+  ctx.arc(panelX + panelWidth - 30, panelY + 25, 3, 0, 2 * Math.PI);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(panelX + 30, panelY + panelHeight - 40, 2, 0, 2 * Math.PI);
+  ctx.fill();
 }
 
 function createFallbackImage(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, nutritionData: NutritionData, amount: number) {
