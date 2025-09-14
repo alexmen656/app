@@ -22,15 +22,30 @@
             <div class="logo-section">
                 <h1 class="app-title"><span style="color: #007052;">KalBuddy</span></h1><!--#005e4a #005f4a -->
             </div>
-            <div class="streak" @click="goToView('streak')">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="#ff6b35">
-                    <path
-                        d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z" />
+            <div class="streak" @click="toggleDateDropdown" ref="dateDropdownContainer">
+                <!-- Current Date Display with Dropdown Arrow -->
+                <span class="streak-content">{{ formatCurrentDate() }}</span>
+                
+                <!-- Dropdown Arrow -->
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" 
+                     :class="{ 'dropdown-arrow': true, 'dropdown-open': showDateDropdown }">
+                    <path d="M7 10l5 5 5-5z"/>
                 </svg>
-                <span class="streak-count">{{ currentStreak }}</span>
+                
+                <!-- Dropdown Menu -->
+                <div v-if="showDateDropdown" class="date-dropdown">
+                    <div v-for="date in availableDates" :key="date.dateString" 
+                         class="date-option" 
+                         :class="{ 'active': date.dateString === selectedDate.toDateString() }"
+                         @click.stop="selectDate(date)">
+                        <span class="date-main">{{ date.display }}</span>
+                        <span v-if="date.subtitle" class="date-sub">{{ date.subtitle }}</span>
+                    </div>
+                </div>
             </div>
         </header>
 
+        <!-- AUSKOMMENTIERT: Alter Date-Toggle
         <div class="date-toggle">
             <button class="date-nav-btn" @click="changeDate(-1)" :disabled="!canGoBack">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -46,6 +61,7 @@
                 </svg>
             </button>
         </div>
+        -->
 
         <div class="main-card" @click="goToView('calories')">
             <div class="calories-section">
@@ -282,7 +298,7 @@ import BottomNavigation from '../components/BottomNavigation.vue'
 import AddFoodModal from '../components/AddFoodModal.vue'
 
 const router = useRouter()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const { startScanning, isProcessingPhoto, isProcessingLabel, checkScanLimit, getScanUsage } = useBarcodeScanner()
 
 const showPremiumBanner = ref(true)
@@ -386,11 +402,15 @@ onMounted(async () => {
     })
 
     window.addEventListener('beforeunload', unsubscribe)
+    
+    // Add click outside listener for date dropdown
+    document.addEventListener('click', handleClickOutside)
 })
 
 onUnmounted(() => {
     window.removeEventListener('scanHistoryUpdated', loadScanHistoryAndStreak)
     window.removeEventListener('focus', loadScanHistoryAndStreak)
+    document.removeEventListener('click', handleClickOutside)
 })
 
 interface ScanData {
@@ -430,6 +450,10 @@ const scanHistory = ref<ScanData[]>([])
 const currentStreak = ref<number>(0)
 const selectedDate = ref(new Date())
 
+// Dropdown state
+const showDateDropdown = ref(false)
+const dateDropdownContainer = ref<HTMLElement>()
+
 // Navigation constraints
 const canGoBack = computed(() => {
     const today = new Date()
@@ -443,6 +467,39 @@ const canGoForward = computed(() => {
     const selected = new Date(selectedDate.value)
     selected.setHours(0, 0, 0, 0)
     return selected < today
+})
+
+// Available dates for dropdown (last 30 days)
+const availableDates = computed(() => {
+    const dates = []
+    const today = new Date()
+    
+    for (let i = 0; i < 30; i++) {
+        const date = new Date(today.getTime() - (i * 24 * 60 * 60 * 1000))
+        const dateString = date.toDateString()
+        
+        let display = ''
+        let subtitle = ''
+        
+        if (i === 0) {
+            display = t('today')
+            subtitle = date.toLocaleDateString(locale.value, { weekday: 'long', day: 'numeric', month: 'long' })
+        } else if (i === 1) {
+            display = t('yesterday')
+            subtitle = date.toLocaleDateString(locale.value, { weekday: 'long', day: 'numeric', month: 'long' })
+        } else {
+            display = date.toLocaleDateString(locale.value, { weekday: 'long', day: 'numeric', month: 'long' })
+        }
+        
+        dates.push({
+            date,
+            dateString,
+            display,
+            subtitle
+        })
+    }
+    
+    return dates
 })
 
 function createMacroCalculations(
@@ -652,6 +709,24 @@ function formatCurrentDate(): string {
     }
 }
 
+// Dropdown functions
+function toggleDateDropdown() {
+    showDateDropdown.value = !showDateDropdown.value
+}
+
+function selectDate(dateObj: any) {
+    selectedDate.value = new Date(dateObj.date)
+    showDateDropdown.value = false
+    loadScanHistory()
+}
+
+// Close dropdown when clicking outside
+function handleClickOutside(event: Event) {
+    if (dateDropdownContainer.value && !dateDropdownContainer.value.contains(event.target as Node)) {
+        showDateDropdown.value = false
+    }
+}
+
 function hidePremiumBanner() {
     showPremiumBanner.value = false
 }
@@ -764,7 +839,7 @@ function handleTouchEnd(event: TouchEvent) {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /*margin-bottom: 16px;*/
+    margin-bottom: 16px;
     height: 44px;
 }
 
@@ -792,6 +867,74 @@ function handleTouchEnd(event: TouchEvent) {
     background: rgba(255, 255, 255, 0.1);
     padding: 8px 12px;
     border-radius: 20px;
+    cursor: pointer;
+    position: relative;
+}
+
+.streak:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.dropdown-arrow {
+    transition: transform 0.2s ease;
+}
+
+.dropdown-arrow.dropdown-open {
+    transform: rotate(180deg);
+}
+
+.streak-content {
+    flex: 1;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.date-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(40, 44, 52, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    margin-top: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.date-option {
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.date-option:last-child {
+    border-bottom: none;
+}
+
+.date-option:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.date-option.active {
+    background: rgba(0, 112, 82, 0.3);
+}
+
+.date-main {
+    display: block;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.date-sub {
+    display: block;
+    font-size: 12px;
+    opacity: 0.7;
+    margin-top: 2px;
 }
 
 .date-toggle {
@@ -888,6 +1031,60 @@ function handleTouchEnd(event: TouchEvent) {
 .history-btn:active {
     transform: scale(0.95);
 }
+
+/* AUSKOMMENTIERT: Altes Date-Toggle CSS
+.date-toggle {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 8px 10px;
+    margin-bottom: 12px;
+    backdrop-filter: blur(10px);
+    height: auto;
+}
+
+.date-nav-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+}
+
+.date-nav-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.date-nav-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.date-nav-btn:disabled:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.current-date-compact {
+    text-align: center;
+    flex: 1;
+    margin: 0 16px;
+}
+
+.date-label {
+    font-size: 18px;
+    font-weight: 600;
+    display: block;
+    line-height: 1.2;
+}
+*/
 
 .main-card {
     background: rgba(255, 255, 255, 0.05);
