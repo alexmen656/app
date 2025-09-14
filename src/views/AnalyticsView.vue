@@ -468,7 +468,6 @@ const showBMIInfoModal = ref(false)
 const showDebugInfo = ref(false)
 const currentTrendIndex = ref(0)
 
-// Trend charts configuration
 const trendCharts = [
   { name: 'Calories', color: '#ff6b35' },
   { name: 'Protein', color: '#ff6b6b' },
@@ -476,17 +475,15 @@ const trendCharts = [
   { name: 'Fats', color: '#42a5f5' }
 ]
 
-// Use composables for better code organization  
 const chartOptions = computed(() => ({ period: selectedPeriod.value }))
-const { 
-  chartData: optimizedChartData, 
-  caloriesTrendData, 
-  proteinTrendData, 
-  carbsTrendData, 
-  fatsTrendData 
+const {
+  chartData: optimizedChartData,
+  caloriesTrendData,
+  proteinTrendData,
+  carbsTrendData,
+  fatsTrendData
 } = useChartDataTransform(analyticsData, chartOptions)
 
-// Custom swipe handlers for trend charts navigation
 const swipeHandlers = {
   onSwipeLeft: () => {
     if (selectedPeriod.value !== 'day' && currentTrendIndex.value < trendCharts.length - 1) {
@@ -502,12 +499,10 @@ const swipeHandlers = {
 
 const { handleTouchStart, handleTouchMove, handleTouchEnd } = useSwipeGestures(swipeHandlers)
 
-// Premium access check
 const shouldShowPremiumOverlay = computed(() => {
   return !isPremiumUser.value && (selectedPeriod.value === 'month' || selectedPeriod.value === 'year')
 })
 
-// Premium functions
 const checkPremiumAccess = async () => {
   if (selectedPeriod.value !== 'week' && selectedPeriod.value !== 'day') {
     const canAccess = await premiumManager.canAccessFeature(premiumFeatures.UNLIMITED_ANALYTICS_HISTORY)
@@ -560,24 +555,21 @@ watch(isDebugMode, (newValue) => {
   showDebugInfo.value = newValue
 }, { immediate: true })
 
-// Optimized trend calculations using a single computed
 const trends = computed(() => {
   if (!analyticsData.value || !previousAnalyticsData.value) {
     return { calorie: '+0%', daysOnTrack: '+0' }
   }
-  
+
   const current = analyticsData.value
   const previous = previousAnalyticsData.value
-  
-  // Calculate calorie trend
-  const calorieChange = previous.avgCalories === 0 ? 0 : 
+
+  const calorieChange = previous.avgCalories === 0 ? 0 :
     ((current.avgCalories - previous.avgCalories) / previous.avgCalories) * 100
   const calorieTrend = `${calorieChange > 0 ? '+' : ''}${Math.round(calorieChange)}%`
-  
-  // Calculate days on track trend
+
   const daysChange = current.daysOnTrack - previous.daysOnTrack
   const daysOnTrackTrend = `${daysChange > 0 ? '+' : ''}${daysChange}`
-  
+
   return { calorie: calorieTrend, daysOnTrack: daysOnTrackTrend }
 })
 
@@ -612,13 +604,9 @@ const selectedPeriodLabel = computed(() => {
   }
 })
 
-
-
 const streakCount = ref(0)
 
-// Optimized chart data function using composable
 function getChartData() {
-  console.log('getChartData called - using optimized composable data')
   return optimizedChartData.value
 }
 
@@ -633,41 +621,32 @@ async function loadStreakData() {
 onMounted(async () => {
   await loadAnalyticsData()
   await loadStreakData()
-
   await initializeDebugMode()
   showDebugInfo.value = isDebugMode.value
-  console.log('Analytics mounted - Debug mode:', isDebugMode.value, 'showDebugInfo:', showDebugInfo.value)
 })
 
-// Optimized BMI calculation using utility function
 const bmiData = computed(() => {
-  const height = analyticsData.value?.bmiData.value ? 175 : null // Fallback height, ideally from user profile
-  const weight = analyticsData.value?.bmiData.value ? 70 : null  // Fallback weight, ideally from user profile
+  const height = analyticsData.value?.bmiData.value ? 175 : null
+  const weight = analyticsData.value?.bmiData.value ? 70 : null
   return calculateBMI(height, weight)
 })
 
-
-
-// Weight logging function
 async function logWeight() {
   if (!newWeight.value) return
 
   try {
     await WeightTracker.addWeightEntry(newWeight.value, weightNote.value || undefined)
 
-    // Reset modal
     showWeightLogModal.value = false
     newWeight.value = null
     weightNote.value = ''
 
-    // Reload analytics data
     await loadAnalyticsData()
   } catch (error) {
     console.error('Error logging weight:', error)
   }
 }
 
-// Navigation functions
 function navigateToBMIDetail() {
   router.push('/bmi-detail')
 }
@@ -675,8 +654,6 @@ function navigateToBMIDetail() {
 function navigateToWeightDetail() {
   router.push('/weight-detail')
 }
-
-
 </script>
 
 <style scoped>
