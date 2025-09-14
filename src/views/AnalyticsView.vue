@@ -522,18 +522,15 @@ async function loadAnalyticsData() {
 //     }
 // }
 
-// Watch for period changes
 watch(selectedPeriod, () => {
   loadAnalyticsData()
 })
 
-// Watch for debug mode changes
 watch(isDebugMode, (newValue) => {
   console.log('Analytics: Debug mode changed to:', newValue)
   showDebugInfo.value = newValue
 }, { immediate: true })
 
-// Computed properties for dynamic values
 const calorieTrend = computed(() => {
   if (!analyticsData.value || !previousAnalyticsData.value) return '+0%'
   const current = analyticsData.value.avgCalories
@@ -551,7 +548,6 @@ const daysOnTrackTrend = computed(() => {
   return `${change > 0 ? '+' : ''}${change}`
 })
 
-// Computed property for chart title
 const chartTitle = computed(() => {
   switch (selectedPeriod.value) {
     case 'day':
@@ -567,7 +563,6 @@ const chartTitle = computed(() => {
   }
 })
 
-// Computed property for selected period label
 const selectedPeriodLabel = computed(() => {
   switch (selectedPeriod.value) {
     case 'week':
@@ -581,7 +576,6 @@ const selectedPeriodLabel = computed(() => {
   }
 })
 
-// Trend chart data for each macro using REAL data from analytics
 const caloriesTrendData = computed(() => {
   if (!analyticsData.value?.weeklyData) return []
   return analyticsData.value.weeklyData.map(item => ({
@@ -614,7 +608,6 @@ const fatsTrendData = computed(() => {
   }))
 })
 
-// Get actual streak value
 const streakCount = ref(0)
 
 function getChartData() {
@@ -651,27 +644,22 @@ onMounted(async () => {
   await loadAnalyticsData()
   await loadStreakData()
 
-  // Initialize debug mode from storage and sync with local state
   await initializeDebugMode()
   showDebugInfo.value = isDebugMode.value
   console.log('Analytics mounted - Debug mode:', isDebugMode.value, 'showDebugInfo:', showDebugInfo.value)
 })
 
-// Helper functions for BMI and weight charts
 function getBMIPosition(bmi: number | null): number {
   if (!bmi) return 0
-  // Scale BMI from 15-35 to 0-100%
   const minBMI = 15
   const maxBMI = 35
   const position = ((bmi - minBMI) / (maxBMI - minBMI)) * 100
   return Math.max(0, Math.min(100, position))
 }
 
-// Get quarterly data for yearly view (group months into quarters)
 function getQuarterlyData(weeklyData: { day: string; calories: number }[]) {
   if (selectedPeriod.value !== 'year' || !weeklyData.length) return []
 
-  // Group months into quarters
   const quarters = [
     { label: 'Q1', calories: 0, months: ['Jan', 'Feb', 'Mar'] },
     { label: 'Q2', calories: 0, months: ['Apr', 'May', 'Jun'] },
@@ -687,7 +675,6 @@ function getQuarterlyData(weeklyData: { day: string; calories: number }[]) {
     })
   })
 
-  // Average calories per quarter (divide by number of months in quarter)
   return quarters.map(quarter => ({
     label: quarter.label,
     calories: Math.round(quarter.calories / 3)
