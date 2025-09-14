@@ -67,6 +67,13 @@
             <div class="calories-section">
                 <h2 class="calories-number">{{ caloriesNumberDisplay }}</h2>
                 <p class="calories-label">{{ caloriesLabelDisplay }}</p>
+                <div class="streak-line" @click.stop="goToView('streak')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#ff6b35">
+                        <path
+                            d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z" />
+                    </svg>
+                    <span class="streak-text">{{ currentStreak }} {{ $t('streak.days') }}</span>
+                </div>
             </div>
             <div class="progress-ring">
                 <svg class="progress-svg" width="100" height="100" viewBox="0 0 100 100">
@@ -1117,6 +1124,25 @@ function handleTouchEnd(event: TouchEvent) {
     font-size: 16px;
     opacity: 0.8;
     margin: 5px 0 0 0;
+}
+
+.streak-line {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.streak-line:hover {
+    opacity: 0.8;
+}
+
+.streak-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: #ff6b35;
 }
 
 .progress-ring {
