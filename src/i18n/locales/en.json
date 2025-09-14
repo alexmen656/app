@@ -30,6 +30,12 @@
     "unknownProduct": "Unknown product",
     "showAllScans": "Show all scans"
   },
+  "history": {
+    "title": "History",
+    "noDataForDate": "No data for this date",
+    "noDataSubtitle": "Track your meals to see them here!",
+    "mealsForDate": "Meals for this date"
+  },
   "yesterday": {
     "title": "Yesterday's meals",
     "emptyMessage": "No data for yesterday",

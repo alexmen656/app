@@ -1,26 +1,14 @@
 <template>
-    <div class="home-view" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
-        <!-- Photo Processing Overlay -->
-        <div v-if="isProcessingPhoto" class="processing-overlay">
-            <div class="processing-content">
-                <div class="processing-spinner"></div>
-                <h3>{{ $t('scanner.analyzingFood') }}</h3>
-                <p>{{ $t('scanner.pleaseWait') }}</p>
-            </div>
-        </div>
-
-        <!-- Label Processing Overlay -->
-        <div v-if="isProcessingLabel" class="processing-overlay">
-            <div class="processing-content">
-                <div class="processing-spinner"></div>
-                <h3>{{ $t('scanner.analyzingLabel') }}</h3>
-                <p>{{ $t('scanner.pleaseWait') }}</p>
-            </div>
-        </div>
-
+    <div class="history-view" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
+        <!-- Header -->
         <header class="header">
+            <button class="back-btn" @click="goBack">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                </svg>
+            </button>
             <div class="logo-section">
-                <h1 class="app-title"><span style="color: #007052;">KalBuddy</span></h1><!--#005e4a #005f4a -->
+                <h1 class="app-title"><span style="color: #007052;">KalBuddy</span></h1>
             </div>
             <div class="streak" @click="goToView('streak')">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="#ff6b35">
@@ -31,14 +19,22 @@
             </div>
         </header>
 
-        <div class="date-toggle">
-            <button class="date-btn active">{{ $t('app.today') }}</button>
-            <router-link to="/yesterday"> <button class="date-btn">{{ $t('app.yesterday') }}</button> </router-link>
-            <router-link to="/history" class="history-btn">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+        <!-- Date Selection -->
+        <div class="date-selection">
+            <button class="date-nav-btn" @click="changeDate(-1)" :disabled="!canGoBack">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
                 </svg>
-            </router-link>
+            </button>
+            <div class="selected-date">
+                <h2 class="date-title">{{ formatSelectedDate() }}</h2>
+                <p class="date-subtitle">{{ getDateSubtitle() }}</p>
+            </div>
+            <button class="date-nav-btn" @click="changeDate(1)" :disabled="!canGoForward">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </button>
         </div>
 
         <div class="main-card" @click="goToView('calories')">
@@ -57,27 +53,6 @@
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
                         <path
                             d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z" />
-                    </svg>
-                </div>
-            </div>
-        </div>
-        <!-- Premium Banner for Free Users -->
-        <div v-if="!isPremiumUser && showPremiumBanner" class="premium-banner" @click="goToView('upgrade')">
-            <div class="banner-content">
-                <div class="banner-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="#FFD700">
-                        <path
-                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                    </svg>
-                </div>
-                <div class="banner-text">
-                    <span class="banner-title">{{ $t('premium.banner.title') }}</span>
-                    <span class="banner-subtitle">{{ $t('premium.banner.subtitle') }}</span>
-                </div>
-                <div class="banner-close" @click.stop="hidePremiumBanner">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path
-                            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
                     </svg>
                 </div>
             </div>
@@ -149,45 +124,24 @@
             </div>
         </div>
 
-        <!-- KalBuddy Chat Link -->
-        <div class="kalbuddy-chat-section">
-            <router-link to="/chat" class="kalbuddy-chat-link">
-                <div class="chat-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path
-                            d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" />
-                    </svg>
-                </div>
-                <div class="chat-content">
-                    <h3 class="chat-title">{{ $t('home.chatWithKalBuddy') }}</h3>
-                    <p class="chat-subtitle">{{ getChatSubtitle() }}</p>
-                </div>
-                <div class="chat-arrow">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
-                    </svg>
-                </div>
-            </router-link>
-        </div>
+        <!-- Historical Foods Section -->
+        <div class="historical-section">
+            <h3 class="section-title">{{ formatHistorySectionTitle() }}</h3>
 
-        <!-- Recently Uploaded Section -->
-        <div class="recent-section">
-            <h3 class="section-title">{{ $t('home.recentlyUploaded') }}</h3>
-
-            <div v-if="recentFoods.length === 0" class="empty-state">
-                <div class="empty-icon">📱</div>
-                <p>{{ $t('home.noScansYet') }}</p>
-                <p class="empty-subtitle">{{ $t('home.noScansSubtitle') }}</p>
+            <div v-if="historicalFoods.length === 0" class="empty-state">
+                <div class="empty-icon">📅</div>
+                <p>{{ $t('history.noDataForDate') }}</p>
+                <p class="empty-subtitle">{{ $t('history.noDataSubtitle') }}</p>
             </div>
 
-            <div v-else class="food-item" @click="goToNutritionDetail(item)" v-for="item in recentFoods" :key="item.id">
+            <div v-else class="food-item" @click="goToNutritionDetail(item)" v-for="item in historicalFoods" :key="item.id">
                 <div class="food-image">
                     <img v-if="item.image && !item.image.includes('placeholder')" :src="item.image" :alt="item.name" />
                     <span v-else-if="item.icon" class="food-db-icon">{{ item.icon }}</span>
                     <span v-else>{{ item.type === 'food' ? '🍽️' : '📦' }}</span>
                 </div>
                 <div class="food-info">
-                    <h4 class="food-name">{{ item.name }}</h4><!--getLocalizedName(-->
+                    <h4 class="food-name">{{ item.name }}</h4>
                     <div class="food-calories">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="#ff6b35">
                             <path
@@ -221,170 +175,55 @@
                 </div>
                 <div class="food-time">{{ item.time }}</div>
             </div>
-
-            <!-- Show All Scans Link -->
-            <div v-if="recentFoods.length > 5" class="show-all-link">
-                <router-link to="/all-scans" class="show-all-btn">
-                    {{ $t('home.showAllScans') }}
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
-                    </svg>
-                </router-link>
-            </div>
         </div>
 
         <BottomNavigation />
-        <div @click="toggleAddFoodModal(true)" class="add-button">
-            <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
-            </svg>
-        </div>
-
-        <!-- Add Food Modal -->
-        <AddFoodModal :show="isAddFoodModalVisible" @close="toggleAddFoodModal(false)"
-            @select-scanner="handleSelectScanner" @select-database="handleSelect('food-database')"
-            @select-manual="handleSelect('manual-entry')" />
-
-        <!-- Scan Limit Blocker -->
-        <PremiumBlocker v-if="showScanLimitBlocker" feature="unlimited_food_scans"
-            :title="$t('premium.scanLimit.title')" :description="$t('premium.scanLimit.description')" :features="[
-                $t('premium.scanLimit.feature1'),
-                $t('premium.scanLimit.feature2'),
-                $t('premium.scanLimit.feature3')
-            ]" :show-usage-info="true" :scans-used="currentScanUsage?.currentCount || 0"
-            :scans-total="currentScanUsage?.limit || 10" @close="closeScanLimitBlocker"
-            @upgrade="handleScanLimitUpgrade" />
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, type ComputedRef } from 'vue'
+import { ref, computed, onMounted, watch, type ComputedRef } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { dailyGoals, isOnboardingCompleted, storeReady } from '../stores/userStore'
+import { dailyGoals, storeReady } from '../stores/userStore'
 import { ScanHistory } from '../utils/storage'
-import { WidgetDataManager, StreakManager } from '../utils/widgetData'
-import { HealthKitService } from '../services/healthkit'
-import { InAppReview } from '@capacitor-community/in-app-review';
-import { shouldShowReviewPrompt, setLastReviewPrompt, getNotificationSettings } from '../stores/preferencesStore'
-import { NotificationService } from '../services/notifications'
-import { useBarcodeScanner } from '../composables/useBarcodeScanner'
-import { isPremiumUser, onPremiumStatusChange } from '../utils/premiumManager' //premiumManager
+import { StreakManager } from '../utils/widgetData'
 import { getLocalizedName } from '../utils/localization'
-import PremiumBlocker from '../components/PremiumBlocker.vue'
 import BottomNavigation from '../components/BottomNavigation.vue'
-import AddFoodModal from '../components/AddFoodModal.vue'
 
 const router = useRouter()
 const { t } = useI18n()
-const { startScanning, isProcessingPhoto, isProcessingLabel, checkScanLimit, getScanUsage } = useBarcodeScanner()
 
-const showPremiumBanner = ref(true)
-const showScanLimitBlocker = ref(false)
-const currentScanUsage = ref<any>(null)
-const isAddFoodModalVisible = ref(false)
+const selectedDate = ref(new Date())
+const currentStreak = ref<number>(0)
+const scanHistory = ref<any[]>([])
+const selectedDateNutrition = ref({ calories: 0, protein: 0, carbs: 0, fats: 0 })
 
-async function openNativeScanner() {
-    try {
-        const usage = await checkScanLimit()
-        currentScanUsage.value = usage
+// Daily goals
+const dailyCalories = computed(() => dailyGoals.calories)
+const dailyProtein = computed(() => dailyGoals.protein)
+const dailyCarbs = computed(() => dailyGoals.carbs)
+const dailyFats = computed(() => dailyGoals.fats)
 
-        if (!usage.canScan && !usage.isPremium) {
-            console.log(`Scan limit reached: ${usage.currentCount}/${usage.limit} scans used today`)
-            showScanLimitBlocker.value = true
-            return
-        }
+// Consumed values for selected date
+const consumedCalories = computed(() => selectedDateNutrition.value.calories)
+const consumedProtein = computed(() => selectedDateNutrition.value.protein)
+const consumedCarbs = computed(() => selectedDateNutrition.value.carbs)
+const consumedFats = computed(() => selectedDateNutrition.value.fats)
 
-        await startScanningWithMode('barcode')
-    } catch (error) {
-        console.error('Failed to check scan limits:', error)
-        await startScanningWithMode('barcode')
-    }
-}
-
-async function startScanningWithMode(mode: 'barcode' | 'photo' | 'label') {
-    try {
-        await startScanning({
-            mode: mode,
-            timeout: 0,
-            showControls: true
-        })
-
-        loadScanHistory()
-        await getScanUsage()
-    } catch (error) {
-        console.error('Failed to open scanner:', error)
-
-        if (error instanceof Error && error.message?.includes('SCAN_LIMIT_REACHED')) {
-            showScanLimitBlocker.value = true
-        }
-    }
-}
-
-function closeScanLimitBlocker() {
-    showScanLimitBlocker.value = false
-}
-
-function handleScanLimitUpgrade() {
-    showScanLimitBlocker.value = false
-    router.push('/upgrade')
-}
-
-function loadScanHistoryAndStreak() {
-    loadScanHistory()
-    loadStreak()
-}
-
-setTimeout(async () => {
-    try {
-        if (recentFoods.value.length > 9) {
-            const canShow = await shouldShowReviewPrompt(5)
-            if (canShow) {
-                const result = await InAppReview.requestReview();
-                await setLastReviewPrompt(Date.now())
-                console.log('InAppReview requested:', result)
-            }
-        }
-    } catch (err) {
-        console.error('Error requesting in-app review:', err)
-    }
-}, 20000);
-
-onMounted(async () => {
-    await storeReady
-
-    if (!isOnboardingCompleted.value) {
-        router.push('/onboarding')
-        return
-    }
-
-    try {
-        const notificationSettings = await getNotificationSettings()
-        if (notificationSettings.enabled && NotificationService.isSupported()) {
-            await NotificationService.scheduleAllMealNotifications(notificationSettings)
-            console.log('📅 Meal notifications scheduled')
-        }
-    } catch (error) {
-        console.error('Error loading notification settings:', error)
-    }
-
-    loadScanHistoryAndStreak()
-    window.addEventListener('scanHistoryUpdated', loadScanHistoryAndStreak)
-    window.addEventListener('focus', loadScanHistoryAndStreak)
-
-    const unsubscribe = onPremiumStatusChange((isPremium) => {
-        console.log('🎉 Premium status changed in HomeView:', isPremium)
-        if (isPremium) {
-            showPremiumBanner.value = false
-        }
-    })
-
-    window.addEventListener('beforeunload', unsubscribe)
+// Navigation constraints
+const canGoBack = computed(() => {
+    const today = new Date()
+    const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000))
+    return selectedDate.value > thirtyDaysAgo
 })
 
-onUnmounted(() => {
-    window.removeEventListener('scanHistoryUpdated', loadScanHistoryAndStreak)
-    window.removeEventListener('focus', loadScanHistoryAndStreak)
+const canGoForward = computed(() => {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const selected = new Date(selectedDate.value)
+    selected.setHours(0, 0, 0, 0)
+    return selected < today
 })
 
 interface ScanData {
@@ -410,18 +249,6 @@ interface FoodItem {
     type: string
     icon?: string
 }
-
-const dailyCalories = computed(() => dailyGoals.calories)
-const dailyProtein = computed(() => dailyGoals.protein)
-const dailyCarbs = computed(() => dailyGoals.carbs)
-const dailyFats = computed(() => dailyGoals.fats)
-const todaysNutrition = ref({ calories: 0, protein: 0, carbs: 0, fats: 0 })
-const consumedCalories = computed(() => todaysNutrition.value.calories)
-const consumedProtein = computed(() => todaysNutrition.value.protein)
-const consumedCarbs = computed(() => todaysNutrition.value.carbs)
-const consumedFats = computed(() => todaysNutrition.value.fats)
-const scanHistory = ref<ScanData[]>([])
-const currentStreak = ref<number>(0)
 
 function createMacroCalculations(
     dailyValue: ComputedRef<number>,
@@ -484,37 +311,36 @@ function transformScanToFoodItem(scan: ScanData): FoodItem | null {
     return null
 }
 
-async function loadScanHistory() {
+async function loadDataForDate() {
     try {
         const history = await ScanHistory.get()
-        scanHistory.value = history.slice(0, 10)
+        const selectedDateString = selectedDate.value.toISOString().split('T')[0]
 
-        calculateTodaysNutritionFromHistory(history)
-        await WidgetDataManager.updateWidgetData()
-        await syncToHealthKit()
-        await NotificationService.resetInactivityTimer()
+        // Filter scans for selected date
+        const dateScans = history.filter(scan => {
+            const scanDate = new Date(scan.timestamp).toISOString().split('T')[0]
+            return scanDate === selectedDateString
+        })
+
+        scanHistory.value = dateScans
+
+        // Calculate nutrition for selected date
+        calculateNutritionFromHistory(dateScans)
     } catch (error) {
         console.error('Error loading scan history:', error)
         scanHistory.value = []
-        todaysNutrition.value = { calories: 0, protein: 0, carbs: 0, fats: 0 }
+        selectedDateNutrition.value = { calories: 0, protein: 0, carbs: 0, fats: 0 }
     }
 }
 
-function calculateTodaysNutritionFromHistory(history: ScanData[]) {
+function calculateNutritionFromHistory(scans: ScanData[]) {
     try {
-        const today = new Date().toISOString().split('T')[0]
-
-        const todaysScans = history.filter(scan => {
-            const scanDate = new Date(scan.timestamp).toISOString().split('T')[0]
-            return scanDate === today
-        })
-
         let totalCalories = 0
         let totalProtein = 0
         let totalCarbs = 0
         let totalFats = 0
 
-        todaysScans.forEach(scan => {
+        scans.forEach(scan => {
             const amount = scan.amount || 1.0;
 
             if (scan.type === 'food' && scan.data.total) {
@@ -530,15 +356,15 @@ function calculateTodaysNutritionFromHistory(history: ScanData[]) {
             }
         })
 
-        todaysNutrition.value = {
+        selectedDateNutrition.value = {
             calories: Math.round(totalCalories),
             protein: Math.round(totalProtein),
             carbs: Math.round(totalCarbs),
             fats: Math.round(totalFats)
         }
     } catch (error) {
-        console.error('Error calculating today\'s nutrition:', error)
-        todaysNutrition.value = { calories: 0, protein: 0, carbs: 0, fats: 0 }
+        console.error('Error calculating nutrition:', error)
+        selectedDateNutrition.value = { calories: 0, protein: 0, carbs: 0, fats: 0 }
     }
 }
 
@@ -551,43 +377,71 @@ async function loadStreak() {
     }
 }
 
-async function syncToHealthKit() {
-    try {
-        if (!isPremiumUser.value) {
-            console.log('🔒 HealthKit sync skipped - Premium feature');
-            return;
-        }
+function changeDate(direction: number) {
+    const newDate = new Date(selectedDate.value)
+    newDate.setDate(newDate.getDate() + direction)
+    
+    if (direction < 0 && !canGoBack.value) return
+    if (direction > 0 && !canGoForward.value) return
+    
+    selectedDate.value = newDate
+}
 
-        await HealthKitService.syncTodaysData()
-    } catch (error) {
-        console.error('Error syncing to HealthKit:', error)
+function formatSelectedDate(): string {
+    const today = new Date()
+    const yesterday = new Date(today.getTime() - (24 * 60 * 60 * 1000))
+    
+    const selectedDateString = selectedDate.value.toDateString()
+    const todayString = today.toDateString()
+    const yesterdayString = yesterday.toDateString()
+    
+    if (selectedDateString === todayString) {
+        return t('app.today')
+    } else if (selectedDateString === yesterdayString) {
+        return t('app.yesterday')
+    } else {
+        return selectedDate.value.toLocaleDateString('en-US', { 
+            weekday: 'long',
+            month: 'short',
+            day: 'numeric'
+        })
     }
+}
+
+function getDateSubtitle(): string {
+    const today = new Date()
+    const selectedDateString = selectedDate.value.toDateString()
+    const todayString = today.toDateString()
+    
+    if (selectedDateString === todayString) {
+        return ''
+    }
+    
+    return selectedDate.value.toLocaleDateString('en-US', { 
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    })
+}
+
+function formatHistorySectionTitle(): string {
+    const today = new Date()
+    const selectedDateString = selectedDate.value.toDateString()
+    const todayString = today.toDateString()
+    
+    if (selectedDateString === todayString) {
+        return t('home.recentlyUploaded')
+    } else {
+        return t('history.mealsForDate')
+    }
+}
+
+function goBack() {
+    router.go(-1)
 }
 
 function goToView(view: string) {
     router.push(`/${view}`)
-}
-
-function toggleAddFoodModal(val: boolean) {
-    isAddFoodModalVisible.value = val
-}
-
-async function handleSelectScanner() {
-    toggleAddFoodModal(false)
-    await openNativeScanner()
-}
-
-function handleSelect(view: string) {
-    toggleAddFoodModal(false)
-    router.push(`/${view}`)
-}
-
-function getChatSubtitle(): string {
-    return t('home.chatSubtitle')
-}
-
-function hidePremiumBanner() {
-    showPremiumBanner.value = false
 }
 
 function goToNutritionDetail(item: FoodItem) {
@@ -599,19 +453,19 @@ function goToNutritionDetail(item: FoodItem) {
     })
 }
 
-const recentFoods = computed((): FoodItem[] => {
+const historicalFoods = computed((): FoodItem[] => {
     return scanHistory.value
         .map(transformScanToFoodItem)
         .filter((item): item is FoodItem => item !== null)
 })
 
-// Verwende die generische Funktion für alle Makronährstoffe
+// Use the macro calculations function for all macronutrients
 const calories = createMacroCalculations(dailyCalories, consumedCalories, '', 'home.caloriesOver', 'home.caloriesLeft')
 const protein = createMacroCalculations(dailyProtein, consumedProtein, 'g', 'home.proteinOver', 'home.proteinLeft')
 const carbs = createMacroCalculations(dailyCarbs, consumedCarbs, 'g', 'home.carbsOver', 'home.carbsLeft')
 const fats = createMacroCalculations(dailyFats, consumedFats, 'g', 'home.fatsOver', 'home.fatsLeft')
 
-// Aliases für Backward-Kompatibilität
+// Aliases for template usage
 const caloriesProgress = calories.progress
 const proteinProgress = protein.progress
 const carbsProgress = carbs.progress
@@ -631,6 +485,7 @@ function calculateMacroOffset(progress: number, circumference: number): number {
     return circumference - (circumference * clampedProgress)
 }
 
+// Touch handling for swipe navigation
 let touchStartX = 0
 let touchStartY = 0
 const swipeThreshold = 50
@@ -659,19 +514,28 @@ function handleTouchEnd(event: TouchEvent) {
     const deltaY = touchEndY - touchStartY
 
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
-        if (deltaX < -swipeThreshold) {
-            router.push('/yesterday')
+        if (deltaX < -swipeThreshold && canGoForward.value) {
+            changeDate(1) // Swipe left = go forward in time
+        } else if (deltaX > swipeThreshold && canGoBack.value) {
+            changeDate(-1) // Swipe right = go back in time
         }
-
-        // if (deltaX > swipeThreshold) {
-        //     // Could navigate to a different view
-        // }
     }
 }
+
+// Watch for date changes and reload data
+watch(selectedDate, () => {
+    loadDataForDate()
+}, { immediate: false })
+
+onMounted(async () => {
+    await storeReady
+    loadStreak()
+    loadDataForDate()
+})
 </script>
 
 <style scoped>
-.home-view {
+.history-view {
     height: 100vh;
     height: calc(100vh - max(44px, env(safe-area-inset-top, 44px)));
     background: linear-gradient(135deg, #1e1e2e 0%, #2a2d37 100%);
@@ -695,19 +559,32 @@ function handleTouchEnd(event: TouchEvent) {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /*margin-bottom: 16px;*/
     height: 44px;
+    margin-bottom: 8px;
+}
+
+.back-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-right: 8px;
+}
+
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .logo-section {
     display: flex;
     align-items: center;
     gap: 10px;
-}
-
-.logo {
-    width: 24px;
-    height: 24px;
+    flex: 1;
+    justify-content: center;
+    margin-right: 40px; /* Compensate for back button space */
 }
 
 .app-title {
@@ -723,57 +600,60 @@ function handleTouchEnd(event: TouchEvent) {
     background: rgba(255, 255, 255, 0.1);
     padding: 8px 12px;
     border-radius: 20px;
+    cursor: pointer;
 }
 
-.date-toggle {
+.date-selection {
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: space-between;
     margin-bottom: 24px;
-    height: 32px;
+    padding: 16px 0;
 }
 
-.date-btn {
-    background: transparent;
+.date-nav-btn {
+    background: rgba(255, 255, 255, 0.1);
     border: none;
     color: white;
-    padding: 8px 0;
-    font-size: 16px;
+    padding: 12px;
+    border-radius: 12px;
     cursor: pointer;
-    position: relative;
-}
-
-.date-btn.active::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: white;
-    border-radius: 1px;
-}
-
-.history-btn {
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    color: white;
-    text-decoration: none;
-    margin-left: auto;
-    transition: all 0.2s ease;
 }
 
-.history-btn:hover {
+.date-nav-btn:hover {
     background: rgba(255, 255, 255, 0.2);
 }
 
-.history-btn:active {
-    transform: scale(0.95);
+.date-nav-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.date-nav-btn:disabled:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.selected-date {
+    text-align: center;
+    flex: 1;
+    margin: 0 16px;
+}
+
+.date-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+    line-height: 1.2;
+}
+
+.date-subtitle {
+    font-size: 14px;
+    opacity: 0.7;
+    margin: 0;
 }
 
 .main-card {
@@ -784,17 +664,9 @@ function handleTouchEnd(event: TouchEvent) {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 12px;
-    /*24px*/
     backdrop-filter: blur(10px);
     height: 140px;
-    /*cursor: pointer;
-    transition: transform 0.2s, background 0.2s;*/
 }
-
-/*.main-card:active {
-    transform: translateY(0px);
-    background: rgba(255, 255, 255, 0.12);
-}*/
 
 .calories-number {
     font-size: 48px;
@@ -831,7 +703,7 @@ function handleTouchEnd(event: TouchEvent) {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
-    margin-bottom: 12px;
+    margin-bottom: 32px;
 }
 
 .macro-card {
@@ -843,14 +715,7 @@ function handleTouchEnd(event: TouchEvent) {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    /* cursor: pointer;
-    transition: transform 0.2s, background 0.2s;*/
 }
-
-/*.macro-card:active {
-    transform: translateY(0px);
-    background: rgba(255, 255, 255, 0.12);
-}*/
 
 .macro-amount {
     font-size: 20px;
@@ -873,7 +738,7 @@ function handleTouchEnd(event: TouchEvent) {
     margin: 0 auto;
 }
 
-.macro-progress>svg {
+.macro-progress > svg {
     width: 60px;
     height: 60px;
 }
@@ -887,13 +752,12 @@ function handleTouchEnd(event: TouchEvent) {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    /*font-size: 12px;*/
     pointer-events: none;
     z-index: 1;
     padding-top: 2px;
 }
 
-.macro-icon>svg {
+.macro-icon > svg {
     width: 30px;
     height: 30px;
 }
@@ -902,14 +766,14 @@ function handleTouchEnd(event: TouchEvent) {
     padding-top: 4px;
 }
 
-.macro-icon-carbs>svg {
+.macro-icon-carbs > svg {
     width: 26px;
     height: 26px;
 }
 
-/*.recent-section {
+.historical-section {
     margin-bottom: 30px;
-}*/
+}
 
 .section-title {
     font-size: 20px;
@@ -952,6 +816,12 @@ function handleTouchEnd(event: TouchEvent) {
     padding: 12px;
     margin-bottom: 12px;
     backdrop-filter: blur(10px);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.food-item:hover {
+    background: rgba(255, 255, 255, 0.08);
 }
 
 .food-image {
@@ -1021,305 +891,5 @@ function handleTouchEnd(event: TouchEvent) {
 .food-time {
     font-size: 14px;
     opacity: 0.6;
-}
-
-.show-all-link {
-    text-align: center;
-    /*margin-top: 20px;*/
-}
-
-.show-all-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /*gap: 8px;*/
-    background: rgba(255, 255, 255, 0.05);
-    color: white;
-    text-decoration: none;
-    padding: 12px 20px;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: 500;
-    backdrop-filter: blur(10px);
-    transition: all 0.2s;
-}
-
-.show-all-btn:active {
-    transform: translateY(0px);
-    background: rgba(255, 255, 255, 0.2);
-}
-
-.add-button {
-    position: fixed;
-    bottom: 90px;
-    right: 16px;
-    width: 56px;
-    height: 56px;
-    background: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #1e1e2e;
-    text-decoration: none;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    transition: transform 0.2s;
-}
-
-a {
-    text-decoration: none;
-}
-
-/* Processing Overlay */
-.processing-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(10px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-}
-
-.processing-content {
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 20px;
-    padding: 40px 30px;
-    text-align: center;
-    max-width: 300px;
-    width: 90%;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-}
-
-.processing-spinner {
-    width: 48px;
-    height: 48px;
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #007052;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 20px;
-}
-
-.processing-content h3 {
-    color: #333;
-    font-size: 18px;
-    font-weight: 600;
-    margin: 0 0 10px 0;
-}
-
-.processing-content p {
-    color: #666;
-    font-size: 14px;
-    margin: 0;
-}
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-/* Mode Selector */
-.mode-selector-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    padding: 20px;
-}
-
-.mode-selector-content {
-    background: #fff;
-    border-radius: 20px;
-    padding: 24px;
-    max-width: 400px;
-    width: 100%;
-    text-align: center;
-}
-
-.mode-selector-content h3 {
-    margin: 0 0 24px 0;
-    color: #1a1a1a;
-    font-size: 20px;
-    font-weight: 600;
-}
-
-.mode-options {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 24px;
-}
-
-.mode-option {
-    display: flex;
-    align-items: center;
-    padding: 16px;
-    border: 2px solid #f0f0f0;
-    border-radius: 12px;
-    background: #fff;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-align: left;
-}
-
-.mode-icon {
-    font-size: 32px;
-    margin-right: 16px;
-    min-width: 48px;
-}
-
-.mode-option h4 {
-    margin: 0 0 4px 0;
-    font-size: 16px;
-    font-weight: 600;
-    color: #1a1a1a;
-}
-
-.mode-option p {
-    margin: 0;
-    font-size: 14px;
-    color: #666;
-    line-height: 1.4;
-}
-
-.mode-cancel {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background: #fff;
-    color: #666;
-    font-size: 16px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-/* Premium Banner */
-.premium-banner {
-    /*margin: 16px 20px 0;*/
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.9), rgba(255, 165, 0, 0.9));
-    border-radius: 16px;
-    padding: 16px;
-    margin-bottom: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.banner-content {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    color: #1e1e2e;
-}
-
-.banner-icon {
-    flex-shrink: 0;
-    width: 36px;
-    height: 36px;
-    background: rgba(30, 30, 46, 0.1);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.banner-text {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.banner-title {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 2px;
-}
-
-.banner-subtitle {
-    font-size: 13px;
-    opacity: 0.8;
-}
-
-.banner-close {
-    width: 24px;
-    height: 24px;
-    border-radius: 12px;
-    background: rgba(30, 30, 46, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    flex-shrink: 0;
-}
-
-.kalbuddy-chat-link {
-    display: flex;
-    align-items: center;
-    padding: 12px;
-    background: linear-gradient(135deg, #007052, #005e4a);
-    border-radius: 16px;
-    text-decoration: none;
-    color: white;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 16px rgba(0, 112, 82, 0.2);
-}
-
-.chat-icon {
-    flex-shrink: 0;
-    width: 48px;
-    height: 48px;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 16px;
-}
-
-.chat-content {
-    flex: 1;
-}
-
-.chat-title {
-    font-size: 18px;
-    font-weight: 600;
-    margin: 0 0 4px 0;
-    color: white;
-}
-
-.chat-subtitle {
-    font-size: 14px;
-    margin: 0;
-    opacity: 0.9;
-    color: white;
-}
-
-.chat-arrow {
-    flex-shrink: 0;
-    opacity: 0.8;
-    transition: transform 0.3s ease;
-}
-
-.kalbuddy-chat-section {
-    margin-bottom: 32px;
 }
 </style>

@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import YesterdayView from "../views/YesterdayView.vue";
+import HistoryView from "../views/HistoryView.vue";
 import OnboardingView from "../views/OnboardingView.vue";
 import PaywallView from "../views/PaywallView.vue";
 import UpgradeView from "../views/UpgradeView.vue";
@@ -37,6 +38,11 @@ const routes = [
     path: "/yesterday",
     name: "Yesterday",
     component: YesterdayView,
+  },
+  {
+    path: "/history",
+    name: "History",
+    component: HistoryView,
   },
   {
     path: "/onboarding",

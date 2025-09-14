@@ -30,6 +30,12 @@
     "unknownProduct": "Unbekanntes Produkt",
     "showAllScans": "Alle Scans anzeigen"
   },
+  "history": {
+    "title": "Verlauf",
+    "noDataForDate": "Keine Daten für dieses Datum",
+    "noDataSubtitle": "Verfolgen Sie Ihre Mahlzeiten, um sie hier zu sehen!",
+    "mealsForDate": "Mahlzeiten für dieses Datum"
+  },
   "yesterday": {
     "title": "Gestern gegessen",
     "emptyMessage": "Keine Daten für gestern vorhanden",
