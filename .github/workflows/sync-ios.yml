@@ -1,0 +1,29 @@
+name: Sync iOS folder to separate repo
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Copy iOS folder
+        run: |
+          rm -rf .git
+          mkdir temp
+          cp -R /ios/app/* temp/
+          cd temp
+          git init
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add .
+          git commit -m "Sync iOS folder"
+          git branch -M main
+          git remote add origin https://x-access-token:${{ secrets.IOS_REPO_TOKEN }}@github.com/alexmen656/kalbuddy-ios.git
+          git push -f origin main
