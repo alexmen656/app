@@ -13,17 +13,20 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Copy iOS folder
+      - name: Sync iOS folder to separate repo
         run: |
-          rm -rf .git
-          mkdir temp
-          cp -R ios/App/* temp/
+          # Git setup
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+
+          # Klonen des iOS-Repos in temp
+          git clone https://x-access-token:${{ secrets.IOS_REPO_TOKEN }}@github.com/alexmen656/kalbuddy-ios.git temp
           cd temp
-          git init
-          git config user.name "GitHub Action"
-          git config user.email "action@github.com"
+
+          # Kopieren der neuen iOS-Dateien
+          rsync -a --delete ../ios/App/ ./
+
+          # Commit und Push
           git add .
-          git commit -m "Sync iOS folder"
-          git branch -M main
-          git remote add origin https://x-access-token:${{ secrets.IOS_REPO_TOKEN }}@github.com/alexmen656/kalbuddy-ios.git
-          git push -f origin main
+          git commit -m "Sync iOS folder from main repo" || echo "No changes to commit"
+          git push origin main
