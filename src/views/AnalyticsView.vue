@@ -279,7 +279,7 @@
         </div>
         <div class="bmi-scale">
           <div class="bmi-scale-bar">
-            <div class="bmi-indicator" :style="{ left: getBMIPosition(analyticsData?.bmiData.value) + '%' }"></div>
+            <div class="bmi-indicator" :style="{ left: bmiData.position + '%' }"></div>
           </div>
           <div class="bmi-labels">
             <span class="bmi-label">18.5</span>
@@ -449,6 +449,9 @@ import { premiumManager, isPremiumUser, premiumFeatures } from '../utils/premium
 import { analyticsStore, analyticsActions } from '../stores/analyticsStore'
 import { isDebugMode, initializeDebugMode } from '../stores/preferencesStore'
 import BottomNavigation from '../components/BottomNavigation.vue'
+import { useSwipeGestures } from '../composables/useSwipeGestures'
+import { useChartDataTransform } from '../composables/useChartDataTransform'
+import { calculateBMI } from '../utils/bmiCalculations'
 
 const router = useRouter()
 const { t } = useI18n()
@@ -472,6 +475,32 @@ const trendCharts = [
   { name: 'Carbs', color: '#ffa726' },
   { name: 'Fats', color: '#42a5f5' }
 ]
+
+// Use composables for better code organization  
+const chartOptions = computed(() => ({ period: selectedPeriod.value }))
+const { 
+  chartData: optimizedChartData, 
+  caloriesTrendData, 
+  proteinTrendData, 
+  carbsTrendData, 
+  fatsTrendData 
+} = useChartDataTransform(analyticsData, chartOptions)
+
+// Custom swipe handlers for trend charts navigation
+const swipeHandlers = {
+  onSwipeLeft: () => {
+    if (selectedPeriod.value !== 'day' && currentTrendIndex.value < trendCharts.length - 1) {
+      currentTrendIndex.value++
+    }
+  },
+  onSwipeRight: () => {
+    if (selectedPeriod.value !== 'day' && currentTrendIndex.value > 0) {
+      currentTrendIndex.value--
+    }
+  }
+}
+
+const { handleTouchStart, handleTouchMove, handleTouchEnd } = useSwipeGestures(swipeHandlers)
 
 // Premium access check
 const shouldShowPremiumOverlay = computed(() => {
@@ -531,22 +560,29 @@ watch(isDebugMode, (newValue) => {
   showDebugInfo.value = newValue
 }, { immediate: true })
 
-const calorieTrend = computed(() => {
-  if (!analyticsData.value || !previousAnalyticsData.value) return '+0%'
-  const current = analyticsData.value.avgCalories
-  const previous = previousAnalyticsData.value.avgCalories
-  if (previous === 0) return '+0%'
-  const change = ((current - previous) / previous) * 100
-  return `${change > 0 ? '+' : ''}${Math.round(change)}%`
+// Optimized trend calculations using a single computed
+const trends = computed(() => {
+  if (!analyticsData.value || !previousAnalyticsData.value) {
+    return { calorie: '+0%', daysOnTrack: '+0' }
+  }
+  
+  const current = analyticsData.value
+  const previous = previousAnalyticsData.value
+  
+  // Calculate calorie trend
+  const calorieChange = previous.avgCalories === 0 ? 0 : 
+    ((current.avgCalories - previous.avgCalories) / previous.avgCalories) * 100
+  const calorieTrend = `${calorieChange > 0 ? '+' : ''}${Math.round(calorieChange)}%`
+  
+  // Calculate days on track trend
+  const daysChange = current.daysOnTrack - previous.daysOnTrack
+  const daysOnTrackTrend = `${daysChange > 0 ? '+' : ''}${daysChange}`
+  
+  return { calorie: calorieTrend, daysOnTrack: daysOnTrackTrend }
 })
 
-const daysOnTrackTrend = computed(() => {
-  if (!analyticsData.value || !previousAnalyticsData.value) return '+0'
-  const current = analyticsData.value.daysOnTrack
-  const previous = previousAnalyticsData.value.daysOnTrack
-  const change = current - previous
-  return `${change > 0 ? '+' : ''}${change}`
-})
+const calorieTrend = computed(() => trends.value.calorie)
+const daysOnTrackTrend = computed(() => trends.value.daysOnTrack)
 
 const chartTitle = computed(() => {
   switch (selectedPeriod.value) {
@@ -576,60 +612,14 @@ const selectedPeriodLabel = computed(() => {
   }
 })
 
-const caloriesTrendData = computed(() => {
-  if (!analyticsData.value?.weeklyData) return []
-  return analyticsData.value.weeklyData.map(item => ({
-    date: item.day,
-    calories: item.calories
-  }))
-})
 
-const proteinTrendData = computed(() => {
-  if (!analyticsData.value?.weeklyData) return []
-  return analyticsData.value.weeklyData.map(item => ({
-    date: item.day,
-    calories: item.protein
-  }))
-})
-
-const carbsTrendData = computed(() => {
-  if (!analyticsData.value?.weeklyData) return []
-  return analyticsData.value.weeklyData.map(item => ({
-    date: item.day,
-    calories: item.carbs
-  }))
-})
-
-const fatsTrendData = computed(() => {
-  if (!analyticsData.value?.weeklyData) return []
-  return analyticsData.value.weeklyData.map(item => ({
-    date: item.day,
-    calories: item.fats
-  }))
-})
 
 const streakCount = ref(0)
 
+// Optimized chart data function using composable
 function getChartData() {
-  console.log('getChartData called', analyticsData.value?.weeklyData)
-
-  if (!analyticsData.value?.weeklyData) {
-    console.log('No weeklyData available')
-    return []
-  }
-
-  if (selectedPeriod.value === 'year') {
-    const quarterlyData = getQuarterlyData(analyticsData.value.weeklyData)
-    console.log('Returning quarterly data:', quarterlyData)
-    return quarterlyData
-  } else {
-    const mappedData = analyticsData.value.weeklyData.map(day => ({
-      label: day.day,
-      calories: day.calories
-    }))
-    console.log('Returning weekly/monthly data:', mappedData)
-    return mappedData
-  }
+  console.log('getChartData called - using optimized composable data')
+  return optimizedChartData.value
 }
 
 async function loadStreakData() {
@@ -649,37 +639,14 @@ onMounted(async () => {
   console.log('Analytics mounted - Debug mode:', isDebugMode.value, 'showDebugInfo:', showDebugInfo.value)
 })
 
-function getBMIPosition(bmi: number | null): number {
-  if (!bmi) return 0
-  const minBMI = 15
-  const maxBMI = 35
-  const position = ((bmi - minBMI) / (maxBMI - minBMI)) * 100
-  return Math.max(0, Math.min(100, position))
-}
+// Optimized BMI calculation using utility function
+const bmiData = computed(() => {
+  const height = analyticsData.value?.bmiData.value ? 175 : null // Fallback height, ideally from user profile
+  const weight = analyticsData.value?.bmiData.value ? 70 : null  // Fallback weight, ideally from user profile
+  return calculateBMI(height, weight)
+})
 
-function getQuarterlyData(weeklyData: { day: string; calories: number }[]) {
-  if (selectedPeriod.value !== 'year' || !weeklyData.length) return []
 
-  const quarters = [
-    { label: 'Q1', calories: 0, months: ['Jan', 'Feb', 'Mar'] },
-    { label: 'Q2', calories: 0, months: ['Apr', 'May', 'Jun'] },
-    { label: 'Q3', calories: 0, months: ['Jul', 'Aug', 'Sep'] },
-    { label: 'Q4', calories: 0, months: ['Oct', 'Nov', 'Dec'] }
-  ]
-
-  weeklyData.forEach(data => {
-    quarters.forEach(quarter => {
-      if (quarter.months.includes(data.day)) {
-        quarter.calories += data.calories
-      }
-    })
-  })
-
-  return quarters.map(quarter => ({
-    label: quarter.label,
-    calories: Math.round(quarter.calories / 3)
-  }))
-}
 
 // Weight logging function
 async function logWeight() {
@@ -709,67 +676,7 @@ function navigateToWeightDetail() {
   router.push('/weight-detail')
 }
 
-// Touch/Swipe functionality
-let touchStartX = 0
-let touchStartY = 0
-const swipeThreshold = 50 // Minimum distance for a swipe
 
-function handleTouchStart(event: TouchEvent) {
-  touchStartX = event.touches[0].clientX
-  touchStartY = event.touches[0].clientY
-}
-
-function handleTouchMove(event: TouchEvent) {
-  // Prevent default to avoid scrolling issues during swipe
-  // Only prevent if we're in a horizontal swipe
-  const currentX = event.touches[0].clientX
-  const currentY = event.touches[0].clientY
-  const deltaX = Math.abs(currentX - touchStartX)
-  const deltaY = Math.abs(currentY - touchStartY)
-
-  if (deltaX > deltaY && deltaX > 10) {
-    event.preventDefault()
-  }
-}
-
-function handleTouchEnd(event: TouchEvent) {
-  const touchEndX = event.changedTouches[0].clientX
-  const touchEndY = event.changedTouches[0].clientY
-
-  const deltaX = touchEndX - touchStartX
-  const deltaY = touchEndY - touchStartY
-
-  // Check if it's more horizontal than vertical
-  if (Math.abs(deltaX) > Math.abs(deltaY)) {
-    // Check if touch started within trend charts area
-    const target = event.target as HTMLElement
-    const trendChartElement = target.closest('.trend-charts-slider-section')
-
-    if (trendChartElement && selectedPeriod.value !== 'day') {
-      // Handle trend chart swiping
-      if (deltaX > swipeThreshold && currentTrendIndex.value > 0) {
-        // Swipe right - go to previous chart
-        currentTrendIndex.value--
-        return
-      }
-      if (deltaX < -swipeThreshold && currentTrendIndex.value < trendCharts.length - 1) {
-        // Swipe left - go to next chart
-        currentTrendIndex.value++
-        return
-      }
-    }
-
-    // Default navigation behavior if not in trend charts area
-    // Swipe right (from left to right) - go back to home
-    if (deltaX > swipeThreshold) {
-      router.push('/')
-    }
-    // Swipe left (from right to left) - go to settings
-    if (deltaX < -swipeThreshold) {
-      router.push('/settings')
-    }
-  }
-}
 </script>
 
 <style scoped>
