@@ -1,4 +1,4 @@
-name: Sync iOS folder to separate repo
+name: Sync iOS folder
 
 on:
   push:
@@ -15,18 +15,23 @@ jobs:
 
       - name: Sync iOS folder to separate repo
         run: |
-          # Git setup
-          git config --global user.name "GitHub Action"
-          git config --global user.email "action@github.com"
-
-          # Klonen des iOS-Repos in temp
-          git clone https://x-access-token:${{ secrets.IOS_REPO_TOKEN }}@github.com/alexmen656/kalbuddy-ios.git temp
-          cd temp
-
-          # Kopieren der neuen iOS-Dateien
-          rsync -a --delete ../ios/App/ ./
-
-          # Commit und Push
-          git add .
-          git commit -m "Sync iOS folder from main repo" || echo "No changes to commit"
-          git push origin main
+          # Clone the target repository
+          git clone https://x-access-token:${{ secrets.IOS_REPO_TOKEN }}@github.com/alexmen656/kalbuddy-ios.git ios-repo
+          cd ios-repo
+          
+          # Configure git
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          
+          # Remove existing content and copy new content
+          rm -rf *
+          cp -R ../ios/App/* .
+          
+          # Check if there are any changes
+          if [ -n "$(git status --porcelain)" ]; then
+            git add .
+            git commit -m "Sync iOS folder from main repo - $(date '+%Y-%m-%d %H:%M:%S')"
+            git push origin main
+          else
+            echo "No changes detected, skipping commit"
+          fi
