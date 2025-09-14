@@ -229,15 +229,16 @@
         </div>
 
         <BottomNavigation />
-        <div @click="showAddFoodModal" class="add-button">
+        <div @click="toggleAddFoodModal(true)" class="add-button">
             <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
                 <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
             </svg>
         </div>
 
         <!-- Add Food Modal -->
-        <AddFoodModal :show="isAddFoodModalVisible" @close="closeAddFoodModal" @select-scanner="handleSelectScanner"
-            @select-database="handleSelect('food-database')" @select-manual="handleSelect('manual-entry')" />
+        <AddFoodModal :show="isAddFoodModalVisible" @close="toggleAddFoodModal(false)"
+            @select-scanner="handleSelectScanner" @select-database="handleSelect('food-database')"
+            @select-manual="handleSelect('manual-entry')" />
 
         <!-- Scan Limit Blocker -->
         <PremiumBlocker v-if="showScanLimitBlocker" feature="unlimited_food_scans"
@@ -417,12 +418,11 @@ const consumedFats = computed(() => todaysNutrition.value.fats)
 const scanHistory = ref<ScanData[]>([])
 const currentStreak = ref<number>(0)
 
-// Generische Funktion für Makronährstoff-Berechnungen
 function createMacroCalculations(
-    dailyValue: ComputedRef<number>, 
-    consumedValue: ComputedRef<number>, 
-    unit: string, 
-    overKey: string, 
+    dailyValue: ComputedRef<number>,
+    consumedValue: ComputedRef<number>,
+    unit: string,
+    overKey: string,
     leftKey: string
 ) {
     const diff = computed(() => Math.round(dailyValue.value - consumedValue.value))
@@ -431,11 +431,10 @@ function createMacroCalculations(
     const numberDisplay = computed(() => isOver.value ? `${abs.value}${unit}` : `${diff.value}${unit}`)
     const labelDisplay = computed(() => isOver.value ? t(overKey) : t(leftKey))
     const progress = computed(() => Math.min(consumedValue.value / dailyValue.value, 1))
-    
+
     return { diff, isOver, abs, numberDisplay, labelDisplay, progress }
 }
 
-// Transformationsfunktionen für bessere Performance
 function transformFoodScan(scan: ScanData): FoodItem {
     const total = scan.data.total
     const firstFood = scan.data.foods?.[0]
@@ -471,7 +470,7 @@ function transformBarcodeScan(scan: ScanData, amount: number): FoodItem {
 
 function transformScanToFoodItem(scan: ScanData): FoodItem | null {
     const amount = scan.amount || 1.0
-    
+
     if (scan.type === 'food') {
         return transformFoodScan(scan)
     } else if (scan.type === 'barcode') {
@@ -485,7 +484,6 @@ async function loadScanHistory() {
         const history = await ScanHistory.get()
         scanHistory.value = history.slice(0, 10)
 
-        // Verwende die bereits geladenen Daten anstatt erneut zu laden
         calculateTodaysNutritionFromHistory(history)
         await WidgetDataManager.updateWidgetData()
         await syncToHealthKit()
@@ -565,21 +563,17 @@ function goToView(view: string) {
     router.push(`/${view}`)
 }
 
-function showAddFoodModal() {
-    isAddFoodModalVisible.value = true
-}
-
-function closeAddFoodModal() {
-    isAddFoodModalVisible.value = false
+function toggleAddFoodModal(val: boolean) {
+    isAddFoodModalVisible.value = val
 }
 
 async function handleSelectScanner() {
-    closeAddFoodModal()
+    toggleAddFoodModal(false)
     await openNativeScanner()
 }
 
 function handleSelect(view: string) {
-    closeAddFoodModal()
+    toggleAddFoodModal(false)
     router.push(`/${view}`)
 }
 
@@ -677,7 +671,7 @@ function handleTouchEnd(event: TouchEvent) {
     height: calc(100vh - max(44px, env(safe-area-inset-top, 44px)));
     background: linear-gradient(135deg, #1e1e2e 0%, #2a2d37 100%);
     background-size: 100% 100vh;
-    background-position: bottom; 
+    background-position: bottom;
     color: white;
     padding: 0 16px 16px 16px;
     margin-top: max(44px, env(safe-area-inset-top, 44px));
