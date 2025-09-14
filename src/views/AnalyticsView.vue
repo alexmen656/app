@@ -525,7 +525,15 @@ const handleAnalyticsUpgrade = (feature: string) => {
 
 async function loadAnalyticsData() {
   try {
-    await analyticsActions.loadAnalyticsData(selectedPeriod.value as 'day' | 'week' | 'month' | 'year')
+    const start = performance.now()
+    console.log('Started loading data')
+
+    await analyticsActions.loadAnalyticsData(
+      selectedPeriod.value as 'day' | 'week' | 'month' | 'year'
+    )
+
+    const end = performance.now()
+    console.log(`Finished loading data in ${(end - start).toFixed(2)} ms`)
   } catch (error) {
     console.error('Error loading analytics data:', error)
   }

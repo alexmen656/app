@@ -1,4 +1,4 @@
-import { Storage, ScanHistory } from './storage';
+import { ScanHistory } from './storage';//Storage, 
 import { dailyGoals, userProfile } from '../stores/userStore';
 import { WeightTracker } from './weightTracking';
 
@@ -17,7 +17,7 @@ export interface DayData {
     time: string;
     type: string;
     image?: string;
-    icon?: string; // Add icon field for database foods
+    icon?: string;
   }>;
 }
 
@@ -40,8 +40,8 @@ export interface AnalyticsData {
   };
   goalProgress: {
     calories: { current: number; target: number; percentage: number };
-    exercise: { current: number; target: number; percentage: number };
-    water: { current: number; target: number; percentage: number };
+    /*exercise: { current: number; target: number; percentage: number };
+    water: { current: number; target: number; percentage: number };*/
     weight: { current: number | null; target: number | null; percentage: number; change: number | null };
   };
   bmiData: {
@@ -340,19 +340,13 @@ export class AnalyticsManager {
   // Calculate analytics data
   static async getAnalyticsData(period: 'day' | 'week' | 'month' | 'year' = 'day'): Promise<AnalyticsData> {
     const weeklyData = await this.getPeriodData(period);
-    
-    // Calculate average calories
     const totalCalories = weeklyData.reduce((sum, day) => sum + day.calories, 0);
     const avgCalories = Math.round(totalCalories / weeklyData.length);
-
-    // Calculate days on track (days with at least some calories logged)
     const daysOnTrack = weeklyData.filter(day => day.calories > 0).length;
 
-    // Calculate macro breakdown based on selected period
     let macroBreakdown = { protein: 0, carbs: 0, fats: 0 };
     
     if (period === 'day') {
-      // For day view, use today's data
       const todayData = await this.getDayData(new Date());
       const totalMacroCalories = (todayData.protein * 4) + (todayData.carbs * 4) + (todayData.fats * 9);
       
@@ -362,7 +356,6 @@ export class AnalyticsManager {
         fats: totalMacroCalories > 0 ? Math.round((todayData.fats * 9 / totalMacroCalories) * 100) : 0
       };
     } else {
-      // For week/month/year views, calculate average macro breakdown
       let totalProtein = 0;
       let totalCarbs = 0;
       let totalFats = 0;
@@ -398,8 +391,8 @@ export class AnalyticsManager {
     }
 
     // Mock exercise and water data (can be expanded later)
-    const exerciseData = await Storage.get('exerciseData') || { current: 4, target: 5 };
-    const waterData = await Storage.get('waterData') || { current: 1.8, target: 2.5 };
+    //const exerciseData = await Storage.get('exerciseData') || { current: 4, target: 5 };
+    //const waterData = await Storage.get('waterData') || { current: 1.8, target: 2.5 };
 
     // Get weight and BMI data
     const weightStats = await WeightTracker.getWeightStats();
@@ -442,7 +435,7 @@ export class AnalyticsManager {
           target: dailyGoals.calories,
           percentage: Math.round((currentCalories / dailyGoals.calories) * 100)
         },
-        exercise: {
+        /*exercise: {
           current: exerciseData.current,
           target: exerciseData.target,
           percentage: Math.round((exerciseData.current / exerciseData.target) * 100)
@@ -451,7 +444,7 @@ export class AnalyticsManager {
           current: waterData.current,
           target: waterData.target,
           percentage: Math.round((waterData.current / waterData.target) * 100)
-        },
+        },*/
         weight: {
           current: weightStats.currentWeight,
           target: weightGoal?.targetWeight || null,
