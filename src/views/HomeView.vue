@@ -253,11 +253,11 @@
                     @click="goToNutritionDetail(item)"
                     @touchstart="handleTouchStart($event, item.id)"
                     @touchmove="handleTouchMove($event, item.id)"
-                    @touchend="handleTouchEnd(item.id)"
+                    @touchend="handleTouchEnd(item.id, $event)"
                     @mousedown="handleMouseDown($event, item.id)"
                     @mousemove="handleMouseMove($event, item.id)"
-                    @mouseup="handleMouseEnd(item.id)"
-                    @mouseleave="handleMouseEnd(item.id)"
+                    @mouseup="handleMouseEnd(item.id, $event)"
+                    @mouseleave="handleMouseEnd(item.id, $event)"
                 >
                     <div class="food-image">
                         <img v-if="item.image && !item.image.includes('placeholder')" :src="item.image" :alt="item.name" />
@@ -782,6 +782,9 @@ function handleClickOutside(event: Event) {
     if (dateDropdownContainer.value && !dateDropdownContainer.value.contains(event.target as Node)) {
         showDateDropdown.value = false
     }
+    
+    // Also close all swiped items when clicking outside
+    closeAllSwipedItems()
 }
 
 function hidePremiumBanner() {
@@ -789,6 +792,9 @@ function hidePremiumBanner() {
 }
 
 function goToNutritionDetail(item: FoodItem) {
+    // Close all swiped items before navigating
+    closeAllSwipedItems()
+    
     router.push({
         path: '/scan-detail',
         query: {
@@ -835,16 +841,25 @@ function calculateMacroOffset(progress: number, circumference: number): number {
 }
 
 // Swipe functionality
-const swipeStates = ref<Map<string, { startX: number, currentX: number, isDragging: boolean, isOpen: boolean }>>(new Map())
+const swipeStates = ref<Map<string, { startX: number, startY: number, currentX: number, isDragging: boolean, isOpen: boolean }>>(new Map())
+
+function closeAllSwipedItems(exceptId?: string) {
+    swipeStates.value.forEach((state, id) => {
+        if (id !== exceptId && state.isOpen) {
+            state.isOpen = false
+        }
+    })
+}
 
 function handleTouchStart(event: TouchEvent, itemId: number) {
     const touch = event.touches[0]
     const id = itemId.toString()
-    const existingState = swipeStates.value.get(id) || { startX: 0, currentX: 0, isDragging: false, isOpen: false }
+    const existingState = swipeStates.value.get(id) || { startX: 0, startY: 0, currentX: 0, isDragging: false, isOpen: false }
     
     swipeStates.value.set(id, {
         ...existingState,
         startX: touch.clientX,
+        startY: touch.clientY,
         isDragging: true
     })
 }
@@ -856,33 +871,55 @@ function handleTouchMove(event: TouchEvent, itemId: number) {
     
     const touch = event.touches[0]
     const deltaX = touch.clientX - state.startX
+    const deltaY = touch.clientY - state.startY
     
-    // Prevent scrolling when swiping horizontally
-    if (Math.abs(deltaX) > 10) {
+    // Check if this is more of a horizontal swipe than vertical
+    const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY)
+    const isSignificantSwipe = Math.abs(deltaX) > 20
+    
+    // Only prevent scrolling if it's clearly a horizontal swipe
+    if (isHorizontalSwipe && isSignificantSwipe) {
         event.preventDefault()
     }
 }
 
-function handleTouchEnd(itemId: number) {
+function handleTouchEnd(itemId: number, event: TouchEvent) {
     const id = itemId.toString()
     const state = swipeStates.value.get(id)
     if (!state?.isDragging) return
     
+    const touch = event.changedTouches[0]
+    const deltaX = touch.clientX - state.startX
+    const deltaY = touch.clientY - state.startY
+    
     state.isDragging = false
     
-    // For simplicity, just toggle the state when touch ends
-    // In a real implementation, you would check the swipe distance
-    state.isOpen = !state.isOpen
+    // Check if this was a horizontal swipe (not vertical scroll)
+    const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY)
+    const isSignificantSwipe = Math.abs(deltaX) > 40
+    
+    if (isHorizontalSwipe && isSignificantSwipe) {
+        // Close all other items first
+        closeAllSwipedItems(id)
+        
+        // Toggle this item
+        if (deltaX < -40) {
+            state.isOpen = true
+        } else if (deltaX > 40) {
+            state.isOpen = false
+        }
+    }
 }
 
 // Mouse support for testing on desktop
 function handleMouseDown(event: MouseEvent, itemId: number) {
     const id = itemId.toString()
-    const existingState = swipeStates.value.get(id) || { startX: 0, currentX: 0, isDragging: false, isOpen: false }
+    const existingState = swipeStates.value.get(id) || { startX: 0, startY: 0, currentX: 0, isDragging: false, isOpen: false }
     
     swipeStates.value.set(id, {
         ...existingState,
         startX: event.clientX,
+        startY: event.clientY,
         isDragging: true
     })
 }
@@ -891,15 +928,31 @@ function handleMouseMove(_event: MouseEvent, _itemId: number) {
     // No need to do anything during mouse move for this implementation
 }
 
-function handleMouseEnd(itemId: number) {
+function handleMouseEnd(itemId: number, event: MouseEvent) {
     const id = itemId.toString()
     const state = swipeStates.value.get(id)
     if (!state?.isDragging) return
     
+    const deltaX = event.clientX - state.startX
+    const deltaY = event.clientY - state.startY
+    
     state.isDragging = false
     
-    // For simplicity, just toggle the state when mouse ends
-    state.isOpen = !state.isOpen
+    // Check if this was a horizontal swipe
+    const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY)
+    const isSignificantSwipe = Math.abs(deltaX) > 40
+    
+    if (isHorizontalSwipe && isSignificantSwipe) {
+        // Close all other items first
+        closeAllSwipedItems(id)
+        
+        // Toggle this item
+        if (deltaX < -40) {
+            state.isOpen = true
+        } else if (deltaX > 40) {
+            state.isOpen = false
+        }
+    }
 }
 
 function isItemSwiped(itemId: number): boolean {
