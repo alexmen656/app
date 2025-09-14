@@ -109,3 +109,5 @@ Die App benötigt folgende Berechtigungen:
 ## Lizenz
 
 MIT License
+
+Action
