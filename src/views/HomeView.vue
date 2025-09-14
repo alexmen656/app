@@ -83,6 +83,44 @@
             </router-link>
         </div>-->
 
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <div class="action-chip" @click="goToView('chat')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" />
+                </svg>
+                <span>Chat</span>
+            </div>
+            
+            <div class="action-chip" @click="goToView('weight')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7zm1-11h-2v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                </svg>
+                <span>Weight</span>
+            </div>
+            
+            <div class="action-chip" @click="goToView('water')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12,2C13.73,7.21 16.69,9.88 16.69,13.58C16.69,17.65 14.54,19.12 12,19.12C9.46,19.12 7.31,17.65 7.31,13.58C7.31,9.88 10.27,7.21 12,2Z"/>
+                </svg>
+                <span>Water</span>
+            </div>
+            
+            <div class="action-chip" @click="openFeedback">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"/>
+                </svg>
+                <span>Feedback</span>
+            </div>
+            
+            <div class="action-chip" @click="goToView('goals')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,17L7,12L8.41,10.59L12,14.17L15.59,10.59L17,12L12,17Z"/>
+                </svg>
+                <span>Goals</span>
+            </div>
+        </div>
+
         <div class="main-card" @click="goToView('calories')">
             <div class="calories-section">
                 <h2 class="calories-number">{{ caloriesNumberDisplay }}</h2>
@@ -666,6 +704,21 @@ function goToView(view: string) {
     router.push(`/${view}`)
 }
 
+function openFeedback() {
+    // Open app store for feedback or feedback form
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+    const isAndroid = /Android/.test(navigator.userAgent)
+    
+    if (isIOS) {
+        window.open('https://apps.apple.com/app/kalbuddy/id123456789', '_blank')
+    } else if (isAndroid) {
+        window.open('https://play.google.com/store/apps/details?id=com.kalbuddy.app', '_blank')
+    } else {
+        // Fallback - could open a feedback form
+        router.push('/feedback')
+    }
+}
+
 function toggleAddFoodModal(val: boolean) {
     isAddFoodModalVisible.value = val
 }
@@ -1036,6 +1089,50 @@ function handleTouchEnd(event: TouchEvent) {
 
 .history-btn:active {
     transform: scale(0.95);
+}
+
+.quick-actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    overflow-x: auto;
+    padding: 0 2px;
+}
+
+.quick-actions::-webkit-scrollbar {
+    display: none;
+}
+
+.action-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 8px 12px;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.action-chip:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+.action-chip:active {
+    transform: translateY(0);
+}
+
+.action-chip span {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.action-chip svg {
+    opacity: 0.9;
 }
 
 /* AUSKOMMENTIERT: Altes Date-Toggle CSS
