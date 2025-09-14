@@ -1053,7 +1053,7 @@ function calculateMacroOffset(progress: number, circumference: number): number {
     transition: all 0.2s ease;
     white-space: nowrap;
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    /*border: 1px solid rgba(255, 255, 255, 0.1);*/
 }
 
 .action-chip:hover {
@@ -1139,6 +1139,7 @@ function calculateMacroOffset(progress: number, circumference: number): number {
     /*24px*/
     backdrop-filter: blur(10px);
     height: 140px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     /*cursor: pointer;
     transition: transform 0.2s, background 0.2s;*/
 }
@@ -1207,6 +1208,7 @@ function calculateMacroOffset(progress: number, circumference: number): number {
 
 .macro-card {
     background: rgba(255, 255, 255, 0.05);
+    /*border: 1px solid rgba(255, 255, 255, 0.1);*/
     border-radius: 15px;
     padding: 16px;
     text-align: center;
