@@ -62,7 +62,7 @@
             </button>
         </div>
         -->
-        <!-- KalBuddy Chat Link -->
+        <!-- KalBuddy Chat Link 
         <div class="kalbuddy-chat-section">
             <router-link to="/chat" class="kalbuddy-chat-link">
                 <div class="chat-icon">
@@ -81,7 +81,7 @@
                     </svg>
                 </div>
             </router-link>
-        </div>
+        </div>-->
 
         <div class="main-card" @click="goToView('calories')">
             <div class="calories-section">
@@ -680,9 +680,9 @@ function handleSelect(view: string) {
     router.push(`/${view}`)
 }
 
-function getChatSubtitle(): string {
+/*function getChatSubtitle(): string {
     return t('home.chatSubtitle')
-}
+}*/
 
 function changeDate(direction: number) {
     const newDate = new Date(selectedDate.value)
@@ -828,7 +828,7 @@ function handleTouchEnd(event: TouchEvent) {
     background-size: 100% 100vh;
     background-position: bottom;
     color: white;
-    padding: 0 16px 16px 16px;
+    padding: 0 14px 16px;
     margin-top: max(44px, env(safe-area-inset-top, 44px));
     padding-bottom: max(80px, calc(80px + env(safe-area-inset-bottom, 0px)));
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
@@ -1099,7 +1099,7 @@ function handleTouchEnd(event: TouchEvent) {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     /*24px*/
     backdrop-filter: blur(10px);
     height: 140px;
@@ -1165,7 +1165,7 @@ function handleTouchEnd(event: TouchEvent) {
 .macros-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+    gap: 10px;
     margin-bottom: 32px;
 }
 
