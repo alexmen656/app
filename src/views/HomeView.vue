@@ -62,6 +62,26 @@
             </button>
         </div>
         -->
+        <!-- KalBuddy Chat Link -->
+        <div class="kalbuddy-chat-section">
+            <router-link to="/chat" class="kalbuddy-chat-link">
+                <div class="chat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" />
+                    </svg>
+                </div>
+                <div class="chat-content">
+                    <h3 class="chat-title">{{ $t('home.chatWithKalBuddy') }}</h3>
+                    <p class="chat-subtitle">{{ getChatSubtitle() }}</p>
+                </div>
+                <div class="chat-arrow">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
+                    </svg>
+                </div>
+            </router-link>
+        </div>
 
         <div class="main-card" @click="goToView('calories')">
             <div class="calories-section">
@@ -176,27 +196,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- KalBuddy Chat Link -->
-        <div class="kalbuddy-chat-section">
-            <router-link to="/chat" class="kalbuddy-chat-link">
-                <div class="chat-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path
-                            d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" />
-                    </svg>
-                </div>
-                <div class="chat-content">
-                    <h3 class="chat-title">{{ $t('home.chatWithKalBuddy') }}</h3>
-                    <p class="chat-subtitle">{{ getChatSubtitle() }}</p>
-                </div>
-                <div class="chat-arrow">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
-                    </svg>
-                </div>
-            </router-link>
         </div>
 
         <!-- Recently Uploaded Section -->
@@ -1167,7 +1166,7 @@ function handleTouchEnd(event: TouchEvent) {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
-    margin-bottom: 12px;
+    margin-bottom: 32px;
 }
 
 .macro-card {
@@ -1656,6 +1655,6 @@ a {
 }
 
 .kalbuddy-chat-section {
-    margin-bottom: 32px;
+    margin-bottom: 12px;
 }
 </style>
