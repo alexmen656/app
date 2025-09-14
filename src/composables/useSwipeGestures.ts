@@ -42,10 +42,18 @@ export function useSwipeGestures(handlers: SwipeHandlers = {}) {
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
       if (deltaX > swipeThreshold) {
         // Swipe right
-        handlers.onSwipeRight?.() || router.push('/')
+        if (handlers.onSwipeRight) {
+          handlers.onSwipeRight()
+        } else {
+          router.push('/')
+        }
       } else if (deltaX < -swipeThreshold) {
         // Swipe left  
-        handlers.onSwipeLeft?.() || router.push('/settings')
+        if (handlers.onSwipeLeft) {
+          handlers.onSwipeLeft()
+        } else {
+          router.push('/settings')
+        }
       }
     } else {
       if (deltaY > swipeThreshold) {

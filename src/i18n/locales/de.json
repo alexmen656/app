@@ -293,6 +293,7 @@
     "proteinTrend": "Protein-Trend",
     "carbsTrend": "Kohlenhydrat-Trend",
     "fatsTrend": "Fett-Trend",
+    "weightTrend": "Gewichts-Trend",
     "bmiExplanation": {
       "title": "Über den BMI",
       "whatIs": "Was ist der BMI?",

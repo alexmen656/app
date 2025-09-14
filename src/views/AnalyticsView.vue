@@ -247,6 +247,33 @@
       </div>
     </div>
 
+    <!-- Weight Trend Chart Section (only visible for week, month, year periods) -->
+    <div v-if="selectedPeriod !== 'day' && analyticsData?.weightChartData?.length" class="weight-trend-section">
+      <div class="weight-trend-header">
+        <h3 class="section-title">{{ $t('analytics.weightTrend') }}</h3>
+        <span class="beta-badge">BETA</span>
+      </div>
+
+      <div class="weight-trend-container">
+        <div class="trend-chart-item">
+          <div class="trend-chart-header">
+            <div class="trend-icon weight">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 3c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 9c0-.6-.4-1-1-1h-3c-.6 0-1 .4-1 1s.4 1 1 1h3c.6 0 1-.4 1-1zm-4.5-3.5c0-.8-.7-1.5-1.5-1.5s-1.5.7-1.5 1.5.7 1.5 1.5 1.5 1.5-.7 1.5-1.5zm-9 0c0-.8-.7-1.5-1.5-1.5s-1.5.7-1.5 1.5.7 1.5 1.5 1.5 1.5-.7 1.5-1.5zm-4.5 3.5c0-.6-.4-1-1-1h-3c-.6 0-1 .4-1 1s.4 1 1 1h3c.6 0 1-.4 1-1zm16 0h-2c-.6 0-1 .4-1 1v8c0 .6.4 1 1 1h2c.6 0 1-.4 1-1v-8c0-.6-.4-1-1-1z"/>
+              </svg>
+            </div>
+            <div class="trend-chart-title">
+              <h4>{{ $t('analytics.weightTrend') }}</h4>
+              <span class="trend-period">{{ selectedPeriodLabel }}</span>
+            </div>
+          </div>
+          <div class="trend-chart-wrapper">
+            <AppleHealthTrendChart :chart-data="weightTrendData" :selected-period="selectedPeriod" color="#9c27b0" />
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Debug Charts Section (only visible in debug mode) -->
     <div v-if="showDebugInfo" class="debug-charts-section">
       <h3 class="section-title">
@@ -481,7 +508,8 @@ const {
   caloriesTrendData,
   proteinTrendData,
   carbsTrendData,
-  fatsTrendData
+  fatsTrendData,
+  weightTrendData
 } = useChartDataTransform(analyticsData, chartOptions)
 
 const swipeHandlers = {
@@ -1978,5 +2006,39 @@ function navigateToWeightDetail() {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* Weight Trend Chart Styles */
+.weight-trend-section {
+  margin-bottom: 32px;
+}
+
+.weight-trend-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 0 4px;
+}
+
+.weight-trend-header .section-title {
+  margin: 0;
+}
+
+.weight-trend-container {
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.weight-trend-container .trend-chart-item {
+  background: transparent;
+  border: none;
+}
+
+.trend-icon.weight {
+  background: linear-gradient(135deg, #9c27b0, #e91e63);
 }
 </style>

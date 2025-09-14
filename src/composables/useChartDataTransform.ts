@@ -16,7 +16,7 @@ export function useChartDataTransform(
       return {
         daily: [],
         quarterly: [],
-        trends: { calories: [], protein: [], carbs: [], fats: [] }
+        trends: { calories: [], protein: [], carbs: [], fats: [], weight: [] }
       }
     }
 
@@ -38,7 +38,8 @@ export function useChartDataTransform(
       calories: weeklyData.map(item => ({ date: item.day, calories: item.calories })),
       protein: weeklyData.map(item => ({ date: item.day, calories: item.protein })),
       carbs: weeklyData.map(item => ({ date: item.day, calories: item.carbs })),
-      fats: weeklyData.map(item => ({ date: item.day, calories: item.fats }))
+      fats: weeklyData.map(item => ({ date: item.day, calories: item.fats })),
+      weight: analyticsData.value?.weightChartData?.map(item => ({ date: item.date, calories: item.weight })) || []
     }
 
     return { daily: dailyData, quarterly: quarterlyData, trends }
@@ -58,7 +59,8 @@ export function useChartDataTransform(
     caloriesTrendData: computed(() => trendData.value.calories),
     proteinTrendData: computed(() => trendData.value.protein),
     carbsTrendData: computed(() => trendData.value.carbs),
-    fatsTrendData: computed(() => trendData.value.fats)
+    fatsTrendData: computed(() => trendData.value.fats),
+    weightTrendData: computed(() => trendData.value.weight)
   }
 }
 
