@@ -453,27 +453,16 @@ import BottomNavigation from '../components/BottomNavigation.vue'
 const router = useRouter()
 const { t } = useI18n()
 
+// Initialize
 const selectedPeriod = ref<'day' | 'week' | 'month' | 'year'>('day')
-// Use store data instead of local state
 const analyticsData = computed(() => analyticsStore.data)
-console.log("AnalyticsData:", analyticsData.value)
 const previousAnalyticsData = ref<AnalyticsData | null>(null)
-
-// Premium-related state
 const showPremiumBlocker = ref(false)
-
-// Weight logging modal
 const showWeightLogModal = ref(false)
 const newWeight = ref<number | null>(null)
 const weightNote = ref('')
-
-// BMI info modal
 const showBMIInfoModal = ref(false)
-
-// Debug mode (synchronized with global debug mode)
 const showDebugInfo = ref(false)
-
-// Trend charts slider state
 const currentTrendIndex = ref(0)
 
 // Trend charts configuration
@@ -495,7 +484,7 @@ const checkPremiumAccess = async () => {
     const canAccess = await premiumManager.canAccessFeature(premiumFeatures.UNLIMITED_ANALYTICS_HISTORY)
     if (!canAccess) {
       showPremiumBlocker.value = true
-      selectedPeriod.value = 'day' // Reset to free tier
+      selectedPeriod.value = 'day'
       return
     }
   }
@@ -503,14 +492,13 @@ const checkPremiumAccess = async () => {
 
 const closePremiumBlocker = () => {
   showPremiumBlocker.value = false
-  selectedPeriod.value = 'day' // Reset to free tier
+  selectedPeriod.value = 'day'
 }
 
 const handleAnalyticsUpgrade = (feature: string) => {
   console.log('Upgrading for analytics feature:', feature)
 }
 
-// Load analytics data
 async function loadAnalyticsData() {
   try {
     await analyticsActions.loadAnalyticsData(selectedPeriod.value as 'day' | 'week' | 'month' | 'year')
