@@ -1,5 +1,5 @@
 <template>
-    <div class="home-view" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
+    <div class="home-view">
         <!-- Photo Processing Overlay -->
         <div v-if="isProcessingPhoto" class="processing-overlay">
             <div class="processing-content">
@@ -498,21 +498,6 @@ const selectedDate = ref(new Date())
 const showDateDropdown = ref(false)
 const dateDropdownContainer = ref<HTMLElement>()
 
-// Navigation constraints
-const canGoBack = computed(() => {
-    const today = new Date()
-    const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000))
-    return selectedDate.value > thirtyDaysAgo
-})
-
-const canGoForward = computed(() => {
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    const selected = new Date(selectedDate.value)
-    selected.setHours(0, 0, 0, 0)
-    return selected < today
-})
-
 // Available dates for dropdown (last 30 days)
 const availableDates = computed(() => {
     const dates = []
@@ -737,16 +722,6 @@ function handleSelect(view: string) {
     return t('home.chatSubtitle')
 }*/
 
-function changeDate(direction: number) {
-    const newDate = new Date(selectedDate.value)
-    newDate.setDate(newDate.getDate() + direction)
-    
-    if (direction < 0 && !canGoBack.value) return
-    if (direction > 0 && !canGoForward.value) return
-    
-    selectedDate.value = newDate
-}
-
 function formatCurrentDate(): string {
     const today = new Date()
     const yesterday = new Date(today.getTime() - (24 * 60 * 60 * 1000))
@@ -835,42 +810,6 @@ function calculateMacroOffset(progress: number, circumference: number): number {
     const clampedProgress = Math.max(0, Math.min(1, progress))
     return circumference - (circumference * clampedProgress)
 }
-
-let touchStartX = 0
-let touchStartY = 0
-const swipeThreshold = 50
-
-function handleTouchStart(event: TouchEvent) {
-    touchStartX = event.touches[0].clientX
-    touchStartY = event.touches[0].clientY
-}
-
-function handleTouchMove(event: TouchEvent) {
-    const currentX = event.touches[0].clientX
-    const currentY = event.touches[0].clientY
-    const deltaX = Math.abs(currentX - touchStartX)
-    const deltaY = Math.abs(currentY - touchStartY)
-
-    if (deltaX > deltaY && deltaX > 10) {
-        event.preventDefault()
-    }
-}
-
-function handleTouchEnd(event: TouchEvent) {
-    const touchEndX = event.changedTouches[0].clientX
-    const touchEndY = event.changedTouches[0].clientY
-
-    const deltaX = touchEndX - touchStartX
-    const deltaY = touchEndY - touchStartY
-
-    if (Math.abs(deltaX) > Math.abs(deltaY)) {
-        if (deltaX < -swipeThreshold && canGoForward.value) {
-            changeDate(1) // Swipe left = go forward in time
-        } else if (deltaX > swipeThreshold && canGoBack.value) {
-            changeDate(-1) // Swipe right = go back in time
-        }
-    }
-}
 </script>
 
 <style scoped>
@@ -898,7 +837,7 @@ function handleTouchEnd(event: TouchEvent) {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
     height: 44px;
 }
 
@@ -1094,7 +1033,7 @@ function handleTouchEnd(event: TouchEvent) {
 .quick-actions {
     display: flex;
     gap: 8px;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
     overflow-x: auto;
     padding: 0 2px;
 }
