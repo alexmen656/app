@@ -252,7 +252,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, type ComputedRef } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { dailyGoals, isOnboardingCompleted, storeReady } from '../stores/userStore'
@@ -417,12 +417,76 @@ const consumedFats = computed(() => todaysNutrition.value.fats)
 const scanHistory = ref<ScanData[]>([])
 const currentStreak = ref<number>(0)
 
+// Generische Funktion für Makronährstoff-Berechnungen
+function createMacroCalculations(
+    dailyValue: ComputedRef<number>, 
+    consumedValue: ComputedRef<number>, 
+    unit: string, 
+    overKey: string, 
+    leftKey: string
+) {
+    const diff = computed(() => Math.round(dailyValue.value - consumedValue.value))
+    const isOver = computed(() => diff.value < 0)
+    const abs = computed(() => Math.abs(diff.value))
+    const numberDisplay = computed(() => isOver.value ? `${abs.value}${unit}` : `${diff.value}${unit}`)
+    const labelDisplay = computed(() => isOver.value ? t(overKey) : t(leftKey))
+    const progress = computed(() => Math.min(consumedValue.value / dailyValue.value, 1))
+    
+    return { diff, isOver, abs, numberDisplay, labelDisplay, progress }
+}
+
+// Transformationsfunktionen für bessere Performance
+function transformFoodScan(scan: ScanData): FoodItem {
+    const total = scan.data.total
+    const firstFood = scan.data.foods?.[0]
+    return {
+        id: scan.id,
+        name: getLocalizedName(firstFood) || t('home.scannedFood'),
+        calories: total.calories || 0,
+        protein: total.protein || 0,
+        carbs: total.carbs || 0,
+        fats: total.fat || 0,
+        time: scan.time,
+        image: scan.image || '/api/placeholder/60/60',
+        type: 'food',
+        icon: scan.icon
+    }
+}
+
+function transformBarcodeScan(scan: ScanData, amount: number): FoodItem {
+    const nutriments = scan.data.nutriments || {}
+    return {
+        id: scan.id,
+        name: scan.data.product_name || t('home.unknownProduct'),
+        calories: Math.round((nutriments.energy_kcal_100g || 0) * amount),
+        protein: Math.round((nutriments.proteins_100g || 0) * amount),
+        carbs: Math.round((nutriments.carbohydrates_100g || 0) * amount),
+        fats: Math.round((nutriments.fat_100g || 0) * amount),
+        time: scan.time,
+        image: scan.image || '/api/placeholder/60/60',
+        type: 'barcode',
+        icon: undefined
+    }
+}
+
+function transformScanToFoodItem(scan: ScanData): FoodItem | null {
+    const amount = scan.amount || 1.0
+    
+    if (scan.type === 'food') {
+        return transformFoodScan(scan)
+    } else if (scan.type === 'barcode') {
+        return transformBarcodeScan(scan, amount)
+    }
+    return null
+}
+
 async function loadScanHistory() {
     try {
         const history = await ScanHistory.get()
         scanHistory.value = history.slice(0, 10)
 
-        await calculateTodaysNutrition()
+        // Verwende die bereits geladenen Daten anstatt erneut zu laden
+        calculateTodaysNutritionFromHistory(history)
         await WidgetDataManager.updateWidgetData()
         await syncToHealthKit()
         await NotificationService.resetInactivityTimer()
@@ -433,9 +497,8 @@ async function loadScanHistory() {
     }
 }
 
-async function calculateTodaysNutrition() {
+function calculateTodaysNutritionFromHistory(history: ScanData[]) {
     try {
-        const history = await ScanHistory.get()
         const today = new Date().toISOString().split('T')[0]
 
         const todaysScans = history.filter(scan => {
@@ -475,6 +538,17 @@ async function calculateTodaysNutrition() {
         todaysNutrition.value = { calories: 0, protein: 0, carbs: 0, fats: 0 }
     }
 }
+
+// Backward-kompatible Wrapper-Funktion falls sie woanders aufgerufen wird
+/*async function calculateTodaysNutrition() {
+    try {
+        const history = await ScanHistory.get()
+        calculateTodaysNutritionFromHistory(history)
+    } catch (error) {
+        console.error('Error loading scan history for nutrition calculation:', error)
+        todaysNutrition.value = { calories: 0, protein: 0, carbs: 0, fats: 0 }
+    }
+}*/
 
 async function loadStreak() {
     try {
@@ -543,71 +617,31 @@ function goToNutritionDetail(item: FoodItem) {
 }
 
 const recentFoods = computed((): FoodItem[] => {
-    return scanHistory.value.map((scan: ScanData): FoodItem | null => {
-        const amount = scan.amount || 1.0;
-
-        if (scan.type === 'food') {
-            const total = scan.data.total
-            const firstFood = scan.data.foods?.[0]
-            return {
-                id: scan.id,
-                name: getLocalizedName(firstFood) || t('home.scannedFood'),
-                calories: total.calories || 0,
-                protein: total.protein || 0,
-                carbs: total.carbs || 0,
-                fats: total.fat || 0,
-                time: scan.time,
-                image: scan.image || '/api/placeholder/60/60',
-                type: 'food',
-                icon: scan.icon
-            }
-        } else if (scan.type === 'barcode') {
-            const nutriments = scan.data.nutriments || {}
-            return {
-                id: scan.id,
-                name: scan.data.product_name || t('home.unknownProduct'),
-                calories: Math.round((nutriments.energy_kcal_100g || 0) * amount),
-                protein: Math.round((nutriments.proteins_100g || 0) * amount),
-                carbs: Math.round((nutriments.carbohydrates_100g || 0) * amount),
-                fats: Math.round((nutriments.fat_100g || 0) * amount),
-                time: scan.time,
-                image: scan.image || '/api/placeholder/60/60',
-                type: 'barcode',
-                icon: undefined
-            }
-        }
-        return null
-    }).filter((item): item is FoodItem => item !== null)
+    return scanHistory.value
+        .map(transformScanToFoodItem)
+        .filter((item): item is FoodItem => item !== null)
 })
 
-const caloriesDiff = computed(() => Math.round(dailyCalories.value - consumedCalories.value))
-const caloriesIsOver = computed(() => caloriesDiff.value < 0)
-const caloriesAbs = computed(() => Math.abs(caloriesDiff.value))
-const caloriesNumberDisplay = computed(() => caloriesIsOver.value ? `${caloriesAbs.value}` : `${caloriesDiff.value}`)
-const caloriesLabelDisplay = computed(() => caloriesIsOver.value ? t('home.caloriesOver') : t('home.caloriesLeft'))
+// Verwende die generische Funktion für alle Makronährstoffe
+const calories = createMacroCalculations(dailyCalories, consumedCalories, '', 'home.caloriesOver', 'home.caloriesLeft')
+const protein = createMacroCalculations(dailyProtein, consumedProtein, 'g', 'home.proteinOver', 'home.proteinLeft')
+const carbs = createMacroCalculations(dailyCarbs, consumedCarbs, 'g', 'home.carbsOver', 'home.carbsLeft')
+const fats = createMacroCalculations(dailyFats, consumedFats, 'g', 'home.fatsOver', 'home.fatsLeft')
 
-const proteinDiff = computed(() => Math.round(dailyProtein.value - consumedProtein.value))
-const proteinIsOver = computed(() => proteinDiff.value < 0)
-const proteinAbs = computed(() => Math.abs(proteinDiff.value))
-const proteinNumberDisplay = computed(() => proteinIsOver.value ? `${proteinAbs.value}g` : `${proteinDiff.value}g`)
-const proteinLabelDisplay = computed(() => proteinIsOver.value ? t('home.proteinOver') : t('home.proteinLeft'))
+// Aliases für Backward-Kompatibilität
+const caloriesProgress = calories.progress
+const proteinProgress = protein.progress
+const carbsProgress = carbs.progress
+const fatsProgress = fats.progress
 
-const carbsDiff = computed(() => Math.round(dailyCarbs.value - consumedCarbs.value))
-const carbsIsOver = computed(() => carbsDiff.value < 0)
-const carbsAbs = computed(() => Math.abs(carbsDiff.value))
-const carbsNumberDisplay = computed(() => carbsIsOver.value ? `${carbsAbs.value}g` : `${carbsDiff.value}g`)
-const carbsLabelDisplay = computed(() => carbsIsOver.value ? t('home.carbsOver') : t('home.carbsLeft'))
-
-const fatsDiff = computed(() => Math.round(dailyFats.value - consumedFats.value))
-const fatsIsOver = computed(() => fatsDiff.value < 0)
-const fatsAbs = computed(() => Math.abs(fatsDiff.value))
-const fatsNumberDisplay = computed(() => fatsIsOver.value ? `${fatsAbs.value}g` : `${fatsDiff.value}g`)
-const fatsLabelDisplay = computed(() => fatsIsOver.value ? t('home.fatsOver') : t('home.fatsLeft'))
-
-const caloriesProgress = computed(() => Math.min(consumedCalories.value / dailyCalories.value, 1))
-const proteinProgress = computed(() => Math.min(consumedProtein.value / dailyProtein.value, 1))
-const carbsProgress = computed(() => Math.min(consumedCarbs.value / dailyCarbs.value, 1))
-const fatsProgress = computed(() => Math.min(consumedFats.value / dailyFats.value, 1))
+const caloriesNumberDisplay = calories.numberDisplay
+const caloriesLabelDisplay = calories.labelDisplay
+const proteinNumberDisplay = protein.numberDisplay
+const proteinLabelDisplay = protein.labelDisplay
+const carbsNumberDisplay = carbs.numberDisplay
+const carbsLabelDisplay = carbs.labelDisplay
+const fatsNumberDisplay = fats.numberDisplay
+const fatsLabelDisplay = fats.labelDisplay
 
 function calculateMacroOffset(progress: number, circumference: number): number {
     const clampedProgress = Math.max(0, Math.min(1, progress))
