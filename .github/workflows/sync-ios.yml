@@ -9,21 +9,27 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
+      # Checkout Original-Repo
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - name: Copy iOS folder
+      - name: Sync iOS folder to separate repo
         run: |
-          rm -rf .git
-          mkdir temp
-          cp -R ios/App/* temp/
+          # Ziel-Repo klonen
+          git clone https://x-access-token:${{ secrets.IOS_REPO_TOKEN }}@github.com/alexmen656/kalbuddy-ios.git temp
           cd temp
-          git init
+
+          # iOS-Ordner vom Original-Repo kopieren
+          rsync -av --delete ../ios/App/ .
+
+          # Git konfigurieren
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
+
+          # Nur committen, wenn es Änderungen gibt
           git add .
-          git commit -m "Sync iOS folder"
-          git branch -M main
-          git remote add origin https://x-access-token:${{ secrets.IOS_REPO_TOKEN }}@github.com/alexmen656/kalbuddy-ios.git
-          git push -f origin main
+          git diff-index --quiet HEAD || git commit -m "Sync iOS folder"
+
+          # Pushen
+          git push origin main
