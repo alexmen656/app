@@ -1016,7 +1016,7 @@ async function deleteFoodItem(itemId: number) {
 }
 
 .app-title {
-    font-size: 30px;
+    font-size: 32px;
     font-weight: 600;
     margin: 0;
 }
@@ -1448,9 +1448,9 @@ async function deleteFoodItem(itemId: number) {
 }*/
 
 .section-title {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 600;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
 .empty-state {
