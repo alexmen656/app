@@ -237,7 +237,7 @@
 
         <!-- Add Food Modal -->
         <AddFoodModal :show="isAddFoodModalVisible" @close="closeAddFoodModal" @select-scanner="handleSelectScanner"
-            @select-database="handleSelectDatabase" @select-manual="handleSelectManual" />
+            @select-database="handleSelect('food-database')" @select-manual="handleSelect('manual-entry')" />
 
         <!-- Scan Limit Blocker -->
         <PremiumBlocker v-if="showScanLimitBlocker" feature="unlimited_food_scans"
@@ -539,17 +539,6 @@ function calculateTodaysNutritionFromHistory(history: ScanData[]) {
     }
 }
 
-// Backward-kompatible Wrapper-Funktion falls sie woanders aufgerufen wird
-/*async function calculateTodaysNutrition() {
-    try {
-        const history = await ScanHistory.get()
-        calculateTodaysNutritionFromHistory(history)
-    } catch (error) {
-        console.error('Error loading scan history for nutrition calculation:', error)
-        todaysNutrition.value = { calories: 0, protein: 0, carbs: 0, fats: 0 }
-    }
-}*/
-
 async function loadStreak() {
     try {
         currentStreak.value = await StreakManager.getCurrentStreak()
@@ -589,14 +578,9 @@ async function handleSelectScanner() {
     await openNativeScanner()
 }
 
-function handleSelectDatabase() {
+function handleSelect(view: string) {
     closeAddFoodModal()
-    router.push('/food-database')
-}
-
-function handleSelectManual() {
-    closeAddFoodModal()
-    router.push('/manual-entry')
+    router.push(`/${view}`)
 }
 
 function getChatSubtitle(): string {
