@@ -375,9 +375,6 @@ export class AnalyticsManager {
       }
     }
     
-    const macroTime = performance.now();
-    console.log(`✅ Macro calculations completed in ${(macroTime - periodDataTime).toFixed(2)}ms`);
-
     // Mock exercise and water data (can be expanded later)
     //const exerciseData = await Storage.get('exerciseData') || { current: 4, target: 5 };
     //const waterData = await Storage.get('waterData') || { current: 1.8, target: 2.5 };
@@ -412,12 +409,6 @@ export class AnalyticsManager {
     const todayData = this.getDayDataFromHistory(new Date(), history);
     const currentCalories = period === 'day' ? todayData.calories : avgCalories;
     
-    const weightTime = performance.now();
-    console.log(`✅ Weight calculations completed in ${(weightTime - macroTime).toFixed(2)}ms`);
-
-    const totalTime = performance.now();
-    console.log(`🎯 Total getAnalyticsData execution time: ${(totalTime - startTime).toFixed(2)}ms`);
-
     return {
       weeklyData,
       avgCalories,
