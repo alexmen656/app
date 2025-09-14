@@ -17,7 +17,7 @@ jobs:
         run: |
           rm -rf .git
           mkdir temp
-          cp -R /ios/app/* temp/
+          cp -R ios/app/* temp/
           cd temp
           git init
           git config user.name "GitHub Action"
