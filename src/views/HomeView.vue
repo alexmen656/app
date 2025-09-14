@@ -32,13 +32,19 @@
         </header>
 
         <div class="date-toggle">
-            <button class="date-btn active">{{ $t('app.today') }}</button>
-            <router-link to="/yesterday"> <button class="date-btn">{{ $t('app.yesterday') }}</button> </router-link>
-            <router-link to="/history" class="history-btn">
+            <button class="date-nav-btn" @click="changeDate(-1)" :disabled="!canGoBack">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
                 </svg>
-            </router-link>
+            </button>
+            <div class="current-date-compact">
+                <span class="date-label">{{ formatCurrentDate() }}</span>
+            </div>
+            <button class="date-nav-btn" @click="changeDate(1)" :disabled="!canGoForward">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </button>
         </div>
 
         <div class="main-card" @click="goToView('calories')">
@@ -258,7 +264,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, type ComputedRef } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch, type ComputedRef } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { dailyGoals, isOnboardingCompleted, storeReady } from '../stores/userStore'
@@ -422,6 +428,22 @@ const consumedCarbs = computed(() => todaysNutrition.value.carbs)
 const consumedFats = computed(() => todaysNutrition.value.fats)
 const scanHistory = ref<ScanData[]>([])
 const currentStreak = ref<number>(0)
+const selectedDate = ref(new Date())
+
+// Navigation constraints
+const canGoBack = computed(() => {
+    const today = new Date()
+    const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000))
+    return selectedDate.value > thirtyDaysAgo
+})
+
+const canGoForward = computed(() => {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const selected = new Date(selectedDate.value)
+    selected.setHours(0, 0, 0, 0)
+    return selected < today
+})
 
 function createMacroCalculations(
     dailyValue: ComputedRef<number>,
@@ -487,12 +509,25 @@ function transformScanToFoodItem(scan: ScanData): FoodItem | null {
 async function loadScanHistory() {
     try {
         const history = await ScanHistory.get()
-        scanHistory.value = history.slice(0, 10)
+        const selectedDateString = selectedDate.value.toISOString().split('T')[0]
 
-        calculateTodaysNutritionFromHistory(history)
-        await WidgetDataManager.updateWidgetData()
-        await syncToHealthKit()
-        await NotificationService.resetInactivityTimer()
+        // Filter scans for selected date
+        const dateScans = history.filter(scan => {
+            const scanDate = new Date(scan.timestamp).toISOString().split('T')[0]
+            return scanDate === selectedDateString
+        })
+
+        scanHistory.value = dateScans.slice(0, 10)
+
+        calculateNutritionFromHistory(history)
+        
+        // Only update widget data and sync if it's today
+        const today = new Date().toISOString().split('T')[0]
+        if (selectedDateString === today) {
+            await WidgetDataManager.updateWidgetData()
+            await syncToHealthKit()
+            await NotificationService.resetInactivityTimer()
+        }
     } catch (error) {
         console.error('Error loading scan history:', error)
         scanHistory.value = []
@@ -500,13 +535,13 @@ async function loadScanHistory() {
     }
 }
 
-function calculateTodaysNutritionFromHistory(history: ScanData[]) {
+function calculateNutritionFromHistory(history: ScanData[]) {
     try {
-        const today = new Date().toISOString().split('T')[0]
+        const selectedDateString = selectedDate.value.toISOString().split('T')[0]
 
-        const todaysScans = history.filter(scan => {
+        const dateScans = history.filter(scan => {
             const scanDate = new Date(scan.timestamp).toISOString().split('T')[0]
-            return scanDate === today
+            return scanDate === selectedDateString
         })
 
         let totalCalories = 0
@@ -514,7 +549,7 @@ function calculateTodaysNutritionFromHistory(history: ScanData[]) {
         let totalCarbs = 0
         let totalFats = 0
 
-        todaysScans.forEach(scan => {
+        dateScans.forEach(scan => {
             const amount = scan.amount || 1.0;
 
             if (scan.type === 'food' && scan.data.total) {
@@ -537,7 +572,7 @@ function calculateTodaysNutritionFromHistory(history: ScanData[]) {
             fats: Math.round(totalFats)
         }
     } catch (error) {
-        console.error('Error calculating today\'s nutrition:', error)
+        console.error('Error calculating nutrition:', error)
         todaysNutrition.value = { calories: 0, protein: 0, carbs: 0, fats: 0 }
     }
 }
@@ -586,6 +621,37 @@ function getChatSubtitle(): string {
     return t('home.chatSubtitle')
 }
 
+function changeDate(direction: number) {
+    const newDate = new Date(selectedDate.value)
+    newDate.setDate(newDate.getDate() + direction)
+    
+    if (direction < 0 && !canGoBack.value) return
+    if (direction > 0 && !canGoForward.value) return
+    
+    selectedDate.value = newDate
+}
+
+function formatCurrentDate(): string {
+    const today = new Date()
+    const yesterday = new Date(today.getTime() - (24 * 60 * 60 * 1000))
+    
+    const selectedDateString = selectedDate.value.toDateString()
+    const todayString = today.toDateString()
+    const yesterdayString = yesterday.toDateString()
+    
+    if (selectedDateString === todayString) {
+        return t('app.today')
+    } else if (selectedDateString === yesterdayString) {
+        return t('app.yesterday')
+    } else {
+        return selectedDate.value.toLocaleDateString('de-DE', { 
+            weekday: 'short',
+            day: 'numeric',
+            month: 'short'
+        })
+    }
+}
+
 function hidePremiumBanner() {
     showPremiumBanner.value = false
 }
@@ -626,6 +692,11 @@ const carbsLabelDisplay = carbs.labelDisplay
 const fatsNumberDisplay = fats.numberDisplay
 const fatsLabelDisplay = fats.labelDisplay
 
+// Watch for date changes and reload data
+watch(selectedDate, () => {
+    loadScanHistoryAndStreak()
+}, { immediate: false })
+
 function calculateMacroOffset(progress: number, circumference: number): number {
     const clampedProgress = Math.max(0, Math.min(1, progress))
     return circumference - (circumference * clampedProgress)
@@ -659,13 +730,11 @@ function handleTouchEnd(event: TouchEvent) {
     const deltaY = touchEndY - touchStartY
 
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
-        if (deltaX < -swipeThreshold) {
-            router.push('/yesterday')
+        if (deltaX < -swipeThreshold && canGoForward.value) {
+            changeDate(1) // Swipe left = go forward in time
+        } else if (deltaX > swipeThreshold && canGoBack.value) {
+            changeDate(-1) // Swipe right = go back in time
         }
-
-        // if (deltaX > swipeThreshold) {
-        //     // Could navigate to a different view
-        // }
     }
 }
 </script>
@@ -728,9 +797,53 @@ function handleTouchEnd(event: TouchEvent) {
 .date-toggle {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 24px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 8px 10px;
+    margin-bottom: 12px;
+    backdrop-filter: blur(10px);
+    height: auto;
+}
+
+.date-nav-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
     height: 32px;
+}
+
+.date-nav-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.date-nav-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.date-nav-btn:disabled:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.current-date-compact {
+    text-align: center;
+    flex: 1;
+    margin: 0 16px;
+}
+
+.date-label {
+    font-size: 18px;
+    font-weight: 600;
+    display: block;
+    line-height: 1.2;
 }
 
 .date-btn {
