@@ -58,13 +58,12 @@ export class AnalyticsManager {
     return date.toISOString().split('T')[0];
   }
 
-  // Get data for a specific date
-  static async getDayData(date: Date): Promise<DayData> {
+  // Get data for a specific date using pre-loaded history
+  static getDayDataFromHistory(date: Date, history: any[]): DayData {
     const dateStr = this.getDateString(date);
-    const history = await ScanHistory.get();
     
     console.log('📅 Getting day data for:', dateStr);
-    console.log('📚 Total scan history:', history.length, 'items');
+    console.log('📚 Using pre-loaded history:', history.length, 'items');
     
     // Filter scans for the specific date
     const dayScans = history.filter(scan => {
@@ -165,13 +164,19 @@ export class AnalyticsManager {
     };
   }
 
+  // Legacy method for backward compatibility - now loads history and calls the optimized version
+  static async getDayData(date: Date): Promise<DayData> {
+    const history = await ScanHistory.get();
+    return this.getDayDataFromHistory(date, history);
+  }
+
   // Get data for the last N days
   static async getWeeklyData(): Promise<WeeklyData[]> {
     return this.getPeriodData('week');
   }
 
-  // Get data for different periods
-  static async getPeriodData(period: 'day' | 'week' | 'month' | 'year'): Promise<WeeklyData[]> {
+  // Optimized version that reuses pre-loaded history
+  static getPeriodDataFromHistory(period: 'day' | 'week' | 'month' | 'year', history: any[]): WeeklyData[] {
     const periodData: WeeklyData[] = [];
     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -180,7 +185,7 @@ export class AnalyticsManager {
       case 'day':
         // Show hourly data for today
         const today = new Date();
-        const todayData = await this.getDayData(today);
+        const todayData = this.getDayDataFromHistory(today, history);
         
         // Group foods by hour for hourly breakdown
         const hourlyData: { [hour: string]: { calories: number; count: number } } = {};
@@ -192,7 +197,7 @@ export class AnalyticsManager {
         }
         
         // Aggregate data by hour
-        todayData.foods.forEach(food => {
+        todayData.foods.forEach((food: any) => {
           if (food.time) {
             // Parse hour from time string (format: "HH:MM")
             const hour = food.time.split(':')[0];
@@ -239,7 +244,7 @@ export class AnalyticsManager {
         for (let i = 6; i >= 0; i--) {
           const date = new Date();
           date.setDate(date.getDate() - i);
-          const dayData = await this.getDayData(date);
+          const dayData = this.getDayDataFromHistory(date, history);
           periodData.push({
             day: dayNames[date.getDay()],
             calories: dayData.calories,
@@ -267,7 +272,7 @@ export class AnalyticsManager {
           for (let j = 0; j < 7; j++) {
             const date = new Date(startDate);
             date.setDate(startDate.getDate() + j);
-            const dayData = await this.getDayData(date);
+            const dayData = this.getDayDataFromHistory(date, history);
             totalCalories += dayData.calories;
             totalProtein += dayData.protein;
             totalCarbs += dayData.carbs;
@@ -309,7 +314,7 @@ export class AnalyticsManager {
           for (let day = 1; day <= daysInMonth; day++) {
             const dayDate = new Date(date.getFullYear(), date.getMonth(), day);
             if (dayDate <= new Date()) { // Only include past days
-              const dayData = await this.getDayData(dayDate);
+              const dayData = this.getDayDataFromHistory(dayDate, history);
               totalCalories += dayData.calories;
               totalProtein += dayData.protein;
               totalCarbs += dayData.carbs;
@@ -337,9 +342,28 @@ export class AnalyticsManager {
     return periodData;
   }
 
-  // Calculate analytics data
+  // Legacy method for backward compatibility - now loads history and calls the optimized version
+  static async getPeriodData(period: 'day' | 'week' | 'month' | 'year'): Promise<WeeklyData[]> {
+    const history = await ScanHistory.get();
+    return this.getPeriodDataFromHistory(period, history);
+  }
+
+  // Calculate analytics data - OPTIMIZED VERSION
   static async getAnalyticsData(period: 'day' | 'week' | 'month' | 'year' = 'day'): Promise<AnalyticsData> {
-    const weeklyData = await this.getPeriodData(period);
+    console.log('🚀 Starting getAnalyticsData with period:', period);
+    const startTime = performance.now();
+    
+    // Load history only ONCE at the beginning
+    console.log('� Loading scan history...');
+    const history = await ScanHistory.get();
+    const historyLoadTime = performance.now();
+    console.log(`✅ History loaded in ${(historyLoadTime - startTime).toFixed(2)}ms - ${history.length} items`);
+    
+    // Use the optimized method that reuses the loaded history
+    const weeklyData = this.getPeriodDataFromHistory(period, history);
+    const periodDataTime = performance.now();
+    console.log(`✅ Period data calculated in ${(periodDataTime - historyLoadTime).toFixed(2)}ms`);
+    
     const totalCalories = weeklyData.reduce((sum, day) => sum + day.calories, 0);
     const avgCalories = Math.round(totalCalories / weeklyData.length);
     const daysOnTrack = weeklyData.filter(day => day.calories > 0).length;
@@ -347,7 +371,7 @@ export class AnalyticsManager {
     let macroBreakdown = { protein: 0, carbs: 0, fats: 0 };
     
     if (period === 'day') {
-      const todayData = await this.getDayData(new Date());
+      const todayData = this.getDayDataFromHistory(new Date(), history);
       const totalMacroCalories = (todayData.protein * 4) + (todayData.carbs * 4) + (todayData.fats * 9);
       
       macroBreakdown = {
@@ -366,7 +390,7 @@ export class AnalyticsManager {
       for (let i = 0; i < daysToAnalyze; i++) {
         const date = new Date();
         date.setDate(date.getDate() - i);
-        const dayData = await this.getDayData(date);
+        const dayData = this.getDayDataFromHistory(date, history);
         
         if (dayData.calories > 0) {
           totalProtein += dayData.protein;
@@ -389,6 +413,9 @@ export class AnalyticsManager {
         };
       }
     }
+    
+    const macroTime = performance.now();
+    console.log(`✅ Macro calculations completed in ${(macroTime - periodDataTime).toFixed(2)}ms`);
 
     // Mock exercise and water data (can be expanded later)
     //const exerciseData = await Storage.get('exerciseData') || { current: 4, target: 5 };
@@ -421,8 +448,14 @@ export class AnalyticsManager {
     }
 
     // For calories goal progress, use appropriate data based on period
-    const todayData = await this.getDayData(new Date());
+    const todayData = this.getDayDataFromHistory(new Date(), history);
     const currentCalories = period === 'day' ? todayData.calories : avgCalories;
+    
+    const weightTime = performance.now();
+    console.log(`✅ Weight calculations completed in ${(weightTime - macroTime).toFixed(2)}ms`);
+
+    const totalTime = performance.now();
+    console.log(`🎯 Total getAnalyticsData execution time: ${(totalTime - startTime).toFixed(2)}ms`);
 
     return {
       weeklyData,
@@ -457,7 +490,6 @@ export class AnalyticsManager {
     };
   }
 
-  // Get yesterday's data
   static async getYesterdayData(): Promise<DayData> {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
