@@ -136,6 +136,7 @@ interface APIResponse {
 }
 
 interface AnalysisResult {
+    names: LocalizedText
     foods: FoodItem[]
     total: {
         calories: number
@@ -160,7 +161,7 @@ async function analyzeFood() {
     errorMessage.value = ''
     
     try {
-        const response = await fetch('https://v2-2.api.kalbuddy.com/api/text/analyze', {
+        const response = await fetch('https://api.kalbuddy.com/api/text/analyze', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -191,6 +192,7 @@ async function analyzeFood() {
         }
 
         analysisResult.value = {
+            names: apiResponse.data.names,
             foods: apiResponse.data.foods,
             total: apiResponse.data.total,
             confidence,
@@ -217,6 +219,7 @@ async function simulateAnalysis() {
     await new Promise(resolve => setTimeout(resolve, 1000))
     
     const mockResult: AnalysisResult = {
+        names: { de: 'Gemischtes Essen', en: 'Mixed Meal', es: 'Comida Mixta' },
         foods: [{
             name: { de: 'Gemischtes Essen', en: 'Mixed Meal', es: 'Comida Mixta' },
             amount: { de: '1 Portion', en: '1 portion', es: '1 porción' },
@@ -244,11 +247,7 @@ async function addToDiary() {
         // Create manual data object similar to foodData/labelData
         const manualData = {
             name: foodDescription.value.trim(),
-            names: {
-                de: foodDescription.value.trim(),
-                en: foodDescription.value.trim(),
-                es: foodDescription.value.trim()
-            },
+            names: analysisResult.value.names,
             total: analysisResult.value.total,
             foods: analysisResult.value.foods,
             confidence: analysisResult.value.confidence,

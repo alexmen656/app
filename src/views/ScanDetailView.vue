@@ -503,7 +503,7 @@ const confidenceClass = computed(() => {
 const backgroundStyle = computed(() => {
     const baseStyle = {
         width: '100%',
-        height: '340px',
+        height: '360px',
         position: 'relative',
         zIndex: 1,
     };
@@ -923,9 +923,9 @@ onMounted(() => {
 
 .nutrition-content {
     background: #fff;
-    border-radius: 32px 32px 0 0;
+    border-radius: 35px 35px 0 0;
     margin-top: -32px;
-    padding: 24px 20px 0 20px;
+    padding: 14px 14px 0 14px;
     box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.06);
     flex: 1;
     position: relative;
@@ -938,6 +938,7 @@ onMounted(() => {
     margin-bottom: 8px;
     margin-top: 8px;
     font-weight: 500;
+    padding-left: 4px;
 }
 
 .product-header {
@@ -961,7 +962,7 @@ onMounted(() => {
     margin: 0;
     word-break: break-word;
     color: #1a1a1a;
-    line-height: 1.2;
+    line-height: 1.1;
 }
 
 .nutrition-brand {
@@ -1312,6 +1313,10 @@ onMounted(() => {
 }
 
 .nutrition-actions {
+    position: sticky;
+    bottom: 0;
+    right: 0;
+    left: 0;
     display: flex;
     gap: 16px;
     margin-bottom: 32px;

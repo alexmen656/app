@@ -2,7 +2,8 @@
     <div>
         <div v-if="product" class="nutrition-container">
             <div class="nutrition-header">
-                <div class="nutrition-image-wrap" :style="backgroundStyle" @touchstart="handleTouchStart" @touchend="handleTouchEnd" @dblclick="showImagePreview">
+                <div class="nutrition-image-wrap" :style="backgroundStyle" @touchstart="handleTouchStart"
+                    @touchend="handleTouchEnd" @dblclick="showImagePreview">
                     <div class="statusbar-spacer"></div>
                     <div class="header-controls">
                         <button class="nutrition-back" @click="$router.go(-1)">
@@ -13,12 +14,20 @@
                         </button>
                         <div class="header-actions">
                             <button class="nutrition-share" @click="shareNutrition" :disabled="isSharing">
-                               <!-- <svg v-if="!isSharing" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <!-- <svg v-if="!isSharing" width="24" height="24" viewBox="0 0 24 24" fill="none">
                                     <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" stroke="currentColor" stroke-width="2"/>
                                 </svg>
                                 <svg v-if="!isSharing" width="24" height="24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M448 256C501 256 544 213 544 160C544 107 501 64 448 64C395 64 352 107 352 160C352 165.4 352.5 170.8 353.3 176L223.6 248.1C206.7 233.1 184.4 224 160 224C107 224 64 267 64 320C64 373 107 416 160 416C184.4 416 206.6 406.9 223.6 391.9L353.3 464C352.4 469.2 352 474.5 352 480C352 533 395 576 448 576C501 576 544 533 544 480C544 427 501 384 448 384C423.6 384 401.4 393.1 384.4 408.1L254.7 336C255.6 330.8 256 325.5 256 320C256 314.5 255.5 309.2 254.7 304L384.4 231.9C401.3 246.9 423.6 256 448 256z"/></svg>
                                 -->
-                                <svg v-if="!isSharing" width="24" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-share-2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                                <svg v-if="!isSharing" width="24" height="24" xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" class="feather feather-share-2">
+                                    <circle cx="18" cy="5" r="3"></circle>
+                                    <circle cx="6" cy="12" r="3"></circle>
+                                    <circle cx="18" cy="19" r="3"></circle>
+                                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                                </svg>
                                 <div v-else class="share-spinner"></div>
                             </button>
                             <button class="nutrition-menu" @click="showDetailsModal = true">
@@ -93,7 +102,7 @@
                     </div>
                     <div class="macro carbs">
                         <div class="macro-icon">
-                           <svg width="28" height="28" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                            <svg width="28" height="28" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
                                 <path fill="#ffa726"
                                     d="M79.7 234.6c6.2-4.1 14.7-3.4 20.1 2.1l46.1 46.1 6.1 6.7c19.7 23.8 26.3 55 19.2 83.9 31.7-7.7 66.2 1 90.6 25.3l46.1 46.1c6.2 6.2 6.2 16.4 0 22.6l-7.4 7.4c-37.5 37.5-98.3 37.5-135.8 0L134.1 444.3 49.4 529c-9.4 9.4-24.5 9.4-33.9 0-9.4-9.4-9.4-24.6 0-33.9l84.7-84.7-30.5-30.5c-37.5-37.5-37.5-98.3 0-135.7l7.4-7.4 2.5-2.1zm104-104c6.2-4.1 14.7-3.4 20.1 2.1l46.1 46.1 6.1 6.7c19.7 23.8 26.3 55 19.2 83.9 31.7-7.7 66.2 1 90.6 25.3l46.1 46.1c6.2 6.2 6.2 16.4 0 22.6l-7.4 7.4c-37.5 37.5-98.3 37.5-135.8 0l-94.9-94.9c-37.5-37.5-37.5-98.3 0-135.7l7.4-7.4 2.5-2.1zM495.2 15c9.4-9.4 24.6-9.4 34 0 8.8 8.8 9.3 22.7 1.6 32.2L529.2 49 414.7 163.4c7.7 1 15.2 3 22.5 5.9L495.5 111c9.4-9.4 24.6-9.4 34 0 8.8 8.8 9.3 22.7 1.6 32.1l-1.7 1.8-52.7 52.7 39 39c6.2 6.2 6.2 16.4 0 22.6l-7.4 7.4c-37.5 37.5-98.3 37.5-135.8 0l-94.9-94.9c-37.5-37.5-37.5-98.3 0-135.7l7.4-7.4 2.5-2.1c6.2-4.1 14.7-3.4 20.1 2.1l39 39 52.7-52.7c9.4-9.4 24.6-9.4 34 0 8.8 8.8 9.3 22.7 1.6 32.1l-1.7 1.8-58.3 58.3c2.8 7.1 4.7 14.5 5.7 22.1L495.2 15z" />
                             </svg>
@@ -113,7 +122,7 @@
                     </div>
                     <div class="macro fats">
                         <div class="macro-icon">
-                             <svg width="28" height="28" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+                            <svg width="28" height="28" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
                                 <path fill="#42a5f5"
                                     d="M240 64C240 46.3 254.3 32 272 32L368 32C385.7 32 400 46.3 400 64C400 81.7 385.7 96 368 96L368 199.3C432.9 219.7 480 280.3 480 352L480 544C480 579.3 451.3 608 416 608L224 608C188.7 608 160 579.3 160 544L160 352C160 280.4 207.1 219.7 272 199.3L272 96C254.3 96 240 81.7 240 64zM320 480C355.3 480 384 447.6 384 416C384 394.8 355.1 351.5 336.1 325.4C328 314.3 311.9 314.3 303.8 325.4C284.8 351.5 255.9 394.8 255.9 416C255.9 447.6 284.6 480 319.9 480z" />
                             </svg>
@@ -179,7 +188,8 @@
                         <div class="health-bar-inner" :style="{ width: (product.healthScore * 10) + '%' }"></div>
                     </div>
                 </div>
-                <div class="nutrition-ingredients" v-if="(product.type === 'barcode' || product.type === 'label') && product.ingredients && product.ingredients.length > 0">
+                <div class="nutrition-ingredients"
+                    v-if="(product.type === 'barcode' || product.type === 'label') && product.ingredients && product.ingredients.length > 0">
                     <h3>{{ $t('nutrition.ingredients') }}</h3>
                     <div class="ingredient-text">{{ product.ingredients.join(', ') }}</div>
                 </div>
@@ -202,7 +212,8 @@
                 </div>
 
                 <!-- Analysis confidence and notes for food and manual entries -->
-                <div class="nutrition-analysis" v-if="(product.type === 'food' || product.type === 'manual') && (product.confidence || product.notes)">
+                <div class="nutrition-analysis"
+                    v-if="(product.type === 'food' || product.type === 'manual') && (product.confidence || product.notes)">
                     <div class="analysis-confidence" v-if="product.confidence">
                         <div class="confidence-label">{{ $t('nutrition.analysisConfidence') }}</div>
                         <div class="confidence-badge" :class="product.confidence">
@@ -401,12 +412,13 @@
                 <div class="image-preview-header">
                     <button class="image-preview-close" @click="showImageModal = false">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" />
                         </svg>
                     </button>
                 </div>
                 <div class="image-preview-content">
-                    <img v-if="productImage" :src="productImage" alt="Food image" class="preview-image"/>
+                    <img v-if="productImage" :src="productImage" alt="Food image" class="preview-image" />
                     <div v-else class="no-image-placeholder">
                         <div class="no-image-icon">📷</div>
                         <p>{{ $t('nutrition.noImageAvailable') || 'No image available' }}</p>
@@ -724,7 +736,7 @@ onMounted(async () => {
             editedProduct.value = { ...product.value };
         }
     }
-    
+
     // Prevent hover effects for a short time after loading
     setTimeout(() => {
         isLoading.value = false;
@@ -737,7 +749,7 @@ const backgroundStyle = computed(() => {
 
     const baseStyle = {
         width: '100%',
-        height: '340px',
+        height: '360px',
         position: 'relative',
         zIndex: 1,
     };
@@ -791,7 +803,7 @@ function validateAmount() {
 // Share nutrition function with preview image
 async function shareNutrition() {
     if (!product.value || isSharing.value) return;
-    
+
     // Create nutrition data object for the shared utility
     const nutritionData = {
         calories: product.value.calories,
@@ -803,7 +815,7 @@ async function shareNutrition() {
         name_en: product.value.name_en,
         names: product.value.names
     };
-    
+
     await shareNutritionUtil(nutritionData, amount.value, (sharing) => {
         isSharing.value = sharing;
     });
@@ -819,7 +831,7 @@ function handleTouchStart(event) {
     // Prevent default to avoid interfering with other touch events
     const now = Date.now();
     const timeSinceLastTap = now - lastTap.value;
-    
+
     if (timeSinceLastTap < 300 && timeSinceLastTap > 0) {
         // Double tap detected
         event.preventDefault();
@@ -839,7 +851,7 @@ function handleTouchEnd(event) {
     if (tapTimeout.value) {
         clearTimeout(tapTimeout.value);
     }
-    
+
     tapTimeout.value = setTimeout(() => {
         lastTap.value = 0;
         tapTimeout.value = null;
@@ -1088,15 +1100,20 @@ async function saveAndReturn() {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .nutrition-content {
     background: #fff;
-    border-radius: 32px 32px 0 0;
+    border-radius: 35px 35px 0 0;
     margin-top: -32px;
-    padding: 24px 20px 0 20px;
+    padding: 14px 14px 0 14px;
     box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.06);
     flex: 1;
     position: relative;
@@ -1110,6 +1127,7 @@ async function saveAndReturn() {
     margin-bottom: 8px;
     margin-top: 8px;
     font-weight: 500;
+    padding-left: 4px;
 }
 
 .product-header {
@@ -1133,7 +1151,7 @@ async function saveAndReturn() {
     margin: 0;
     word-break: break-word;
     color: #1a1a1a;
-    line-height: 1.2;
+    line-height: 1.1;
 }
 
 .nutrition-brand {
@@ -1778,6 +1796,10 @@ async function saveAndReturn() {
     gap: 16px;
     margin-bottom: 32px;
     padding-bottom: env(safe-area-inset-bottom, 20px);
+    position: sticky;
+    bottom: 0;
+    right: 0;
+    left: 0;
 }
 
 .fix-btn {
