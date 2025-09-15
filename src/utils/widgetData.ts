@@ -95,7 +95,7 @@ export class WidgetDataManager {
         value: widgetDataJson
       });
       
-      console.log('✅ Widget data stored in App Group UserDefaults:', widgetData);
+     //console.log('✅ Widget data stored in App Group UserDefaults:', widgetData);
       
       // Reset preferences back to default (app container)
       /*await Preferences.configure({
@@ -115,7 +115,7 @@ export class WidgetDataManager {
       const canUseWidgets = await premiumManager.canAccessFeature(premiumFeatures.IOS_WIDGETS);
       
       if (!canUseWidgets) {
-        console.log('🔒 Widget update skipped - Premium feature');
+       //console.log('🔒 Widget update skipped - Premium feature');
         return;
       }*/
 
@@ -194,7 +194,7 @@ export class WidgetDataManager {
       // 🔥 Store data both in app storage AND App Group UserDefaults
       await this.storeDataForWidgets(widgetData);
       
-      console.log('✅ Widget data updated successfully:', widgetData);
+     //console.log('✅ Widget data updated successfully:', widgetData);
     } catch (error) {
       console.error('❌ Error updating widget data:', error);
     }

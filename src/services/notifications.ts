@@ -23,7 +23,7 @@ export class NotificationService {
 
   static async initialize(): Promise<boolean> {
     if (!Capacitor.isNativePlatform()) {
-      console.log('Notifications are only available on native platforms')
+     //console.log('Notifications are only available on native platforms')
       return false
     }
 
@@ -32,10 +32,10 @@ export class NotificationService {
       const permission = await LocalNotifications.requestPermissions()
       
       if (permission.display === 'granted') {
-        console.log('✅ Notification permissions granted')
+       //console.log('✅ Notification permissions granted')
         return true
       } else {
-        console.log('❌ Notification permissions denied')
+       //console.log('❌ Notification permissions denied')
         return false
       }
     } catch (error) {
@@ -115,16 +115,16 @@ export class NotificationService {
         await LocalNotifications.schedule({
           notifications: notifications
         })
-        console.log(`✅ ${notifications.length} meal notifications scheduled`)
+       //console.log(`✅ ${notifications.length} meal notifications scheduled`)
       }
 
       // Handle inactivity reminders
       if (settings.inactivityReminders) {
         await this.scheduleInactivityReminder()
-        console.log('✅ Inactivity reminders enabled')
+       //console.log('✅ Inactivity reminders enabled')
       } else {
         await this.cancelInactivityReminder()
-        console.log('❌ Inactivity reminders disabled')
+       //console.log('❌ Inactivity reminders disabled')
       }
 
     } catch (error) {
@@ -183,7 +183,7 @@ export class NotificationService {
         await LocalNotifications.cancel({ 
           notifications: pending.notifications.map(n => ({ id: n.id }))
         })
-        console.log(`✅ Cancelled ${pending.notifications.length} notifications`)
+       //console.log(`✅ Cancelled ${pending.notifications.length} notifications`)
       }
     } catch (error) {
       console.error('Error cancelling notifications:', error)
@@ -225,7 +225,7 @@ export class NotificationService {
       
       // Don't schedule during quiet hours (22:00-7:00)
       if (currentHour >= 22 || currentHour < 7) {
-        console.log('⏰ Currently in quiet hours (22:00-7:00), no inactivity reminder scheduled')
+       //console.log('⏰ Currently in quiet hours (22:00-7:00), no inactivity reminder scheduled')
         return
       }
 
@@ -269,7 +269,7 @@ export class NotificationService {
         notifications: [notification]
       })
 
-      console.log(`⏰ Inactivity reminder scheduled for ${reminderTime.toLocaleString()}`)
+     //console.log(`⏰ Inactivity reminder scheduled for ${reminderTime.toLocaleString()}`)
     } catch (error) {
       console.error('Error scheduling inactivity reminder:', error)
     }
@@ -313,7 +313,7 @@ export class NotificationService {
       
       // Don't start timer during quiet hours
       if (currentHour >= 22 || currentHour < 7) {
-        console.log('⏰ In quiet hours, inactivity timer not started')
+       //console.log('⏰ In quiet hours, inactivity timer not started')
         await this.cancelInactivityReminder()
         return
       }
@@ -324,10 +324,10 @@ export class NotificationService {
       
       if (settings.enabled && settings.inactivityReminders) {
         await this.scheduleInactivityReminder()
-        console.log('⏰ Inactivity timer reset and restarted')
+       //console.log('⏰ Inactivity timer reset and restarted')
       } else {
         await this.cancelInactivityReminder()
-        console.log('⏰ Inactivity reminders disabled, timer cancelled')
+       //console.log('⏰ Inactivity reminders disabled, timer cancelled')
       }
     } catch (error) {
       console.error('Error resetting inactivity timer:', error)
