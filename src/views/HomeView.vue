@@ -25,19 +25,18 @@
             <div class="streak" @click="toggleDateDropdown" ref="dateDropdownContainer">
                 <!-- Current Date Display with Dropdown Arrow -->
                 <span class="streak-content">{{ formatCurrentDate() }}</span>
-                
+
                 <!-- Dropdown Arrow -->
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" 
-                     :class="{ 'dropdown-arrow': true, 'dropdown-open': showDateDropdown }">
-                    <path d="M7 10l5 5 5-5z"/>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"
+                    :class="{ 'dropdown-arrow': true, 'dropdown-open': showDateDropdown }">
+                    <path d="M7 10l5 5 5-5z" />
                 </svg>
-                
+
                 <!-- Dropdown Menu -->
                 <div v-if="showDateDropdown" class="date-dropdown">
-                    <div v-for="date in availableDates" :key="date.dateString" 
-                         class="date-option" 
-                         :class="{ 'active': date.dateString === selectedDate.toDateString() }"
-                         @click.stop="selectDate(date)">
+                    <div v-for="date in availableDates" :key="date.dateString" class="date-option"
+                        :class="{ 'active': date.dateString === selectedDate.toDateString() }"
+                        @click.stop="selectDate(date)">
                         <span class="date-main">{{ date.display }}</span>
                         <span v-if="date.subtitle" class="date-sub">{{ date.subtitle }}</span>
                     </div>
@@ -87,45 +86,54 @@
         <div class="quick-actions">
             <div class="action-chip" @click="goToView('chat')">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" />
+                    <path
+                        d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" />
                 </svg>
                 <span>Chat</span>
             </div>
-            
+
             <div class="action-chip" @click="openWeightModal">
-               <!-- <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <!-- <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12,2C6.48,2 2,6.48 2,12C2,17.52 6.48,22 12,22C17.52,22 22,17.52 22,12C22,6.48 17.52,2 12,2M13,7H11V11H7V13H11V17H13V13H17V11H13V7Z"/>
                 </svg>
                 <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M212.6 256C209.6 245.9 208 235.1 208 224C208 162.1 258.1 112 320 112C381.9 112 432 162.1 432 224C432 235.1 430.4 245.9 427.4 256L356.4 256L381 211.7C387.4 200.1 383.3 185.5 371.7 179.1C360.1 172.7 345.5 176.8 339.1 188.4L301.5 256.1L212.7 256.1zM224 96L160 96C124.7 96 96 124.7 96 160L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 160C544 124.7 515.3 96 480 96L416 96C389.3 75.9 356 64 320 64C284 64 250.7 75.9 224 96z"/></svg>-->
 
-                <svg width="16" height="16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M288 160C288 142.3 302.3 128 320 128C337.7 128 352 142.3 352 160C352 177.7 337.7 192 320 192C302.3 192 288 177.7 288 160zM410.5 192C414 182 416 171.2 416 160C416 107 373 64 320 64C267 64 224 107 224 160C224 171.2 225.9 182 229.5 192L207.7 192C179.4 192 154.5 210.5 146.4 237.6L66.4 504.2C64.8 509.4 64 514.8 64 520.2C64 551 89 576 119.8 576L520.2 576C551 576 576 551 576 520.2C576 514.8 575.2 509.4 573.6 504.2L493.6 237.7C485.5 210.6 460.6 192.1 432.3 192.1L410.5 192.1z"/></svg>
+                <svg width="16" height="16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 640 640">
+                    <path
+                        d="M288 160C288 142.3 302.3 128 320 128C337.7 128 352 142.3 352 160C352 177.7 337.7 192 320 192C302.3 192 288 177.7 288 160zM410.5 192C414 182 416 171.2 416 160C416 107 373 64 320 64C267 64 224 107 224 160C224 171.2 225.9 182 229.5 192L207.7 192C179.4 192 154.5 210.5 146.4 237.6L66.4 504.2C64.8 509.4 64 514.8 64 520.2C64 551 89 576 119.8 576L520.2 576C551 576 576 551 576 520.2C576 514.8 575.2 509.4 573.6 504.2L493.6 237.7C485.5 210.6 460.6 192.1 432.3 192.1L410.5 192.1z" />
+                </svg>
                 <span>Log weight</span>
             </div>
-            
+
             <div class="action-chip" @click="goToView('feedback')">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"/>
+                    <path
+                        d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z" />
                 </svg>
                 <span>Give Feedback</span>
             </div>
-            
-             <div class="action-chip" @click="goToView('water')">
+
+            <div class="action-chip" @click="goToView('water')">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12,2C13.73,7.21 16.69,9.88 16.69,13.58C16.69,17.65 14.54,19.12 12,19.12C9.46,19.12 7.31,17.65 7.31,13.58C7.31,9.88 10.27,7.21 12,2Z"/>
+                    <path
+                        d="M12,2C13.73,7.21 16.69,9.88 16.69,13.58C16.69,17.65 14.54,19.12 12,19.12C9.46,19.12 7.31,17.65 7.31,13.58C7.31,9.88 10.27,7.21 12,2Z" />
                 </svg>
                 <span>Water</span>
             </div>
 
             <div class="action-chip" @click="goToView('goals')">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,17L7,12L8.41,10.59L12,14.17L15.59,10.59L17,12L12,17Z"/>
+                    <path
+                        d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,17L7,12L8.41,10.59L12,14.17L15.59,10.59L17,12L12,17Z" />
                 </svg>
                 <span>Goals</span>
             </div>
-            
+
             <div class="action-chip" @click="goToFavorites">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                    <path
+                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                 </svg>
                 <span>{{ $t('home.favorites') }}</span>
             </div>
@@ -256,21 +264,17 @@
                 <p class="empty-subtitle">{{ $t('home.noScansSubtitle') }}</p>
             </div>
 
-            <div v-else class="food-item-wrapper" v-for="item in recentFoods" :key="item.id" :class="{ 'swiped': isItemSwiped(item.id), 'deleting': deletingItems.has(item.id) }">
+            <div v-else class="food-item-wrapper" v-for="item in recentFoods" :key="item.id"
+                :class="{ 'swiped': isItemSwiped(item.id), 'deleting': deletingItems.has(item.id) }">
                 <!-- Food Item (swipeable) -->
-                <div 
-                    class="food-item"
-                    @click="goToNutritionDetail(item)"
-                    @touchstart="handleTouchStart($event, item.id)"
-                    @touchmove="handleTouchMove($event, item.id)"
-                    @touchend="handleTouchEnd(item.id, $event)"
-                    @mousedown="handleMouseDown($event, item.id)"
-                    @mousemove="handleMouseMove($event, item.id)"
-                    @mouseup="handleMouseEnd(item.id, $event)"
-                    @mouseleave="handleMouseEnd(item.id, $event)"
-                >
+                <div class="food-item" @click="goToNutritionDetail(item)"
+                    @touchstart="handleTouchStart($event, item.id)" @touchmove="handleTouchMove($event, item.id)"
+                    @touchend="handleTouchEnd(item.id, $event)" @mousedown="handleMouseDown($event, item.id)"
+                    @mousemove="handleMouseMove($event, item.id)" @mouseup="handleMouseEnd(item.id, $event)"
+                    @mouseleave="handleMouseEnd(item.id, $event)">
                     <div class="food-image">
-                        <img v-if="item.image && !item.image.includes('placeholder')" :src="item.image" :alt="item.name" />
+                        <img v-if="item.image && !item.image.includes('placeholder')" :src="item.image"
+                            :alt="item.name" />
                         <span v-else-if="item.icon" class="food-db-icon">{{ item.icon }}</span>
                         <span v-else>{{ item.type === 'food' ? '🍽️' : '📦' }}</span>
                     </div>
@@ -309,12 +313,12 @@
                     </div>
                     <div class="food-time">{{ item.time }}</div>
                 </div>
-                
+
                 <!-- Delete Action - appears on the right -->
                 <div class="delete-action">
                     <button @click="deleteFoodItem(item.id)" class="delete-button">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
                         </svg>
                         {{ $t('delete') }}
                     </button>
@@ -415,7 +419,7 @@ async function startScanningWithMode(mode: 'barcode' | 'photo' | 'label') {
             showControls: true
         })
 
-        loadScanHistory()
+        loadScanHistory("startScanningWithMode")
         await getScanUsage()
     } catch (error) {
         console.error('Failed to open scanner:', error)
@@ -436,7 +440,7 @@ function handleScanLimitUpgrade() {
 }
 
 function loadScanHistoryAndStreak() {
-    loadScanHistory()
+    loadScanHistory("loadScanHistoryAndStreak")
     loadStreak()
 }
 
@@ -463,6 +467,8 @@ onMounted(async () => {
         return
     }
 
+    loadScanHistoryAndStreak()
+
     try {
         const notificationSettings = await getNotificationSettings()
         if (notificationSettings.enabled && NotificationService.isSupported()) {
@@ -473,7 +479,6 @@ onMounted(async () => {
         console.error('Error loading notification settings:', error)
     }
 
-    loadScanHistoryAndStreak()
     window.addEventListener('scanHistoryUpdated', loadScanHistoryAndStreak)
     window.addEventListener('focus', loadScanHistoryAndStreak)
 
@@ -485,7 +490,7 @@ onMounted(async () => {
     })
 
     window.addEventListener('beforeunload', unsubscribe)
-    
+
     // Add click outside listener for date dropdown
     document.addEventListener('click', handleClickOutside)
 })
@@ -541,14 +546,14 @@ const dateDropdownContainer = ref<HTMLElement>()
 const availableDates = computed(() => {
     const dates = []
     const today = new Date()
-    
+
     for (let i = 0; i < 30; i++) {
         const date = new Date(today.getTime() - (i * 24 * 60 * 60 * 1000))
         const dateString = date.toDateString()
-        
+
         let display = ''
         let subtitle = ''
-        
+
         if (i === 0) {
             display = t('today')
             subtitle = date.toLocaleDateString(locale.value, { weekday: 'long', day: 'numeric', month: 'long' })
@@ -558,7 +563,7 @@ const availableDates = computed(() => {
         } else {
             display = date.toLocaleDateString(locale.value, { weekday: 'long', day: 'numeric', month: 'long' })
         }
-        
+
         dates.push({
             date,
             dateString,
@@ -566,7 +571,7 @@ const availableDates = computed(() => {
             subtitle
         })
     }
-    
+
     return dates
 })
 
@@ -631,17 +636,16 @@ function transformScanToFoodItem(scan: ScanData): FoodItem | null {
     return null
 }
 
-async function loadScanHistory() {
+async function loadScanHistory(context: string) {
+    console.log(`Loading scan history called from: ${context}`)
     try {
         const history = await ScanHistory.get()
         const selectedDateString = selectedDate.value.toISOString().split('T')[0]
         const today = new Date().toISOString().split('T')[0]
 
-        // If today is selected, show last 10 scans regardless of date
         if (selectedDateString === today) {
             scanHistory.value = history.slice(0, 10)
         } else {
-            // Filter scans for selected date
             const dateScans = history.filter(scan => {
                 const scanDate = new Date(scan.timestamp).toISOString().split('T')[0]
                 return scanDate === selectedDateString
@@ -650,19 +654,16 @@ async function loadScanHistory() {
         }
 
         calculateNutritionFromHistory(history)
-        
-        // Only update widget data and sync if it's today
-        // Run these expensive operations in background to not block UI
+
         if (selectedDateString === today) {
-            // Run expensive operations asynchronously in background
             Promise.allSettled([
-                WidgetDataManager.updateWidgetData().catch(err => 
+                WidgetDataManager.updateWidgetData().catch(err =>
                     console.error('Widget update failed:', err)
                 ),
-                syncToHealthKit().catch(err => 
+                syncToHealthKit().catch(err =>
                     console.error('HealthKit sync failed:', err)
                 ),
-                NotificationService.resetInactivityTimer().catch(err => 
+                NotificationService.resetInactivityTimer().catch(err =>
                     console.error('Notification reset failed:', err)
                 )
             ]).then(() => {
@@ -679,6 +680,7 @@ async function loadScanHistory() {
 }
 
 function calculateNutritionFromHistory(history: ScanData[]) {
+    console.log('`Calculating nutrition called`')
     try {
         const selectedDateString = selectedDate.value.toISOString().split('T')[0]
 
@@ -761,23 +763,23 @@ function closeWeightModal() {
 async function handleWeightLogged(weight: number, notes: string) {
     try {
         console.log('Weight logged:', weight, 'kg', notes ? `Notes: ${notes}` : '')
-        
+
         // Save weight entry using the same system as AnalyticsView
         await WeightTracker.addWeightEntry(weight, notes || undefined)
-        
+
         // Close the modal
         closeWeightModal()
-        
+
         // Optionally sync to HealthKit if available
         try {
             await HealthKitService.syncTodaysData()
         } catch (healthKitError) {
             console.log('HealthKit sync not available or failed:', healthKitError)
         }
-        
+
         // Show success feedback (you could add a toast notification here)
         console.log('Weight successfully saved!')
-        
+
     } catch (error) {
         console.error('Error saving weight:', error)
         // You could show an error toast here
@@ -811,17 +813,17 @@ function handleSelect(view: string) {
 function formatCurrentDate(): string {
     const today = new Date()
     const yesterday = new Date(today.getTime() - (24 * 60 * 60 * 1000))
-    
+
     const selectedDateString = selectedDate.value.toDateString()
     const todayString = today.toDateString()
     const yesterdayString = yesterday.toDateString()
-    
+
     if (selectedDateString === todayString) {
         return t('app.today')
     } else if (selectedDateString === yesterdayString) {
         return t('app.yesterday')
     } else {
-        return selectedDate.value.toLocaleDateString('de-DE', { 
+        return selectedDate.value.toLocaleDateString('de-DE', {
             weekday: 'short',
             day: 'numeric',
             month: 'short'
@@ -837,7 +839,7 @@ function toggleDateDropdown() {
 function selectDate(dateObj: any) {
     selectedDate.value = new Date(dateObj.date)
     showDateDropdown.value = false
-    loadScanHistory()
+    loadScanHistory("selectDate")
 }
 
 // Close dropdown when clicking outside
@@ -845,7 +847,7 @@ function handleClickOutside(event: Event) {
     if (dateDropdownContainer.value && !dateDropdownContainer.value.contains(event.target as Node)) {
         showDateDropdown.value = false
     }
-    
+
     // Also close all swiped items when clicking outside
     closeAllSwipedItems()
 }
@@ -857,7 +859,7 @@ function hidePremiumBanner() {
 function goToNutritionDetail(item: FoodItem) {
     // Close all swiped items before navigating
     closeAllSwipedItems()
-    
+
     router.push({
         path: '/scan-detail',
         query: {
@@ -919,7 +921,7 @@ function handleTouchStart(event: TouchEvent, itemId: number) {
     const touch = event.touches[0]
     const id = itemId.toString()
     const existingState = swipeStates.value.get(id) || { startX: 0, startY: 0, currentX: 0, isDragging: false, isOpen: false }
-    
+
     swipeStates.value.set(id, {
         ...existingState,
         startX: touch.clientX,
@@ -932,15 +934,15 @@ function handleTouchMove(event: TouchEvent, itemId: number) {
     const id = itemId.toString()
     const state = swipeStates.value.get(id)
     if (!state?.isDragging) return
-    
+
     const touch = event.touches[0]
     const deltaX = touch.clientX - state.startX
     const deltaY = touch.clientY - state.startY
-    
+
     // Check if this is more of a horizontal swipe than vertical
     const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY)
     const isSignificantSwipe = Math.abs(deltaX) > 20
-    
+
     // Only prevent scrolling if it's clearly a horizontal swipe
     if (isHorizontalSwipe && isSignificantSwipe) {
         event.preventDefault()
@@ -951,21 +953,21 @@ function handleTouchEnd(itemId: number, event: TouchEvent) {
     const id = itemId.toString()
     const state = swipeStates.value.get(id)
     if (!state?.isDragging) return
-    
+
     const touch = event.changedTouches[0]
     const deltaX = touch.clientX - state.startX
     const deltaY = touch.clientY - state.startY
-    
+
     state.isDragging = false
-    
+
     // Check if this was a horizontal swipe (not vertical scroll)
     const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY)
     const isSignificantSwipe = Math.abs(deltaX) > 40
-    
+
     if (isHorizontalSwipe && isSignificantSwipe) {
         // Close all other items first
         closeAllSwipedItems(id)
-        
+
         // Toggle this item
         if (deltaX < -40) {
             state.isOpen = true
@@ -979,7 +981,7 @@ function handleTouchEnd(itemId: number, event: TouchEvent) {
 function handleMouseDown(event: MouseEvent, itemId: number) {
     const id = itemId.toString()
     const existingState = swipeStates.value.get(id) || { startX: 0, startY: 0, currentX: 0, isDragging: false, isOpen: false }
-    
+
     swipeStates.value.set(id, {
         ...existingState,
         startX: event.clientX,
@@ -996,20 +998,20 @@ function handleMouseEnd(itemId: number, event: MouseEvent) {
     const id = itemId.toString()
     const state = swipeStates.value.get(id)
     if (!state?.isDragging) return
-    
+
     const deltaX = event.clientX - state.startX
     const deltaY = event.clientY - state.startY
-    
+
     state.isDragging = false
-    
+
     // Check if this was a horizontal swipe
     const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY)
     const isSignificantSwipe = Math.abs(deltaX) > 40
-    
+
     if (isHorizontalSwipe && isSignificantSwipe) {
         // Close all other items first
         closeAllSwipedItems(id)
-        
+
         // Toggle this item
         if (deltaX < -40) {
             state.isOpen = true
@@ -1029,11 +1031,11 @@ async function deleteFoodItem(itemId: number) {
     try {
         // Add deleting animation immediately
         deletingItems.value.add(itemId)
-        
+
         // Reset swipe state immediately
         const id = itemId.toString()
         swipeStates.value.delete(id)
-        
+
         // Wait for animation to complete before removing from data
         setTimeout(() => {
             // Optimistic update: Remove item from local state
@@ -1041,7 +1043,7 @@ async function deleteFoodItem(itemId: number) {
             if (itemToDelete) {
                 // Remove from local scanHistory for instant UI feedback
                 scanHistory.value = scanHistory.value.filter(item => item.id !== itemId)
-                
+
                 // Recalculate nutrition immediately (subtract deleted item's nutrition)
                 const itemNutrition = extractNutritionFromScan(itemToDelete)
                 todaysNutrition.value = {
@@ -1051,27 +1053,27 @@ async function deleteFoodItem(itemId: number) {
                     fats: Math.max(0, todaysNutrition.value.fats - itemNutrition.fats)
                 }
             }
-            
+
             // Remove from deleting items
             deletingItems.value.delete(itemId)
-            
+
             // Perform backend operations asynchronously in background
             performBackgroundDelete(itemId)
         }, 300) // Match CSS transition duration
-        
+
     } catch (error) {
         console.error('Error deleting food item:', error)
         // Clean up animation state on error
         deletingItems.value.delete(itemId)
         // If there's an immediate error, reload to restore correct state
-        await loadScanHistory()
+        await loadScanHistory("Error deleting food item")
     }
 }
 
 // Helper function to extract nutrition from a scan item
 function extractNutritionFromScan(scan: any) {
     const amount = scan.amount || 1.0
-    
+
     if (scan.type === 'food' && scan.data.total) {
         return {
             calories: scan.data.total.calories || 0,
@@ -1087,7 +1089,7 @@ function extractNutritionFromScan(scan: any) {
             fats: (scan.data.nutriments.fat_100g || 0) * amount
         }
     }
-    
+
     return { calories: 0, protein: 0, carbs: 0, fats: 0 }
 }
 
@@ -1096,39 +1098,39 @@ async function performBackgroundDelete(itemId: number) {
     try {
         // 1. Remove from storage (this is the most important operation)
         await ScanHistory.remove(itemId)
-        
+
         // 2. Perform expensive operations in background without blocking UI
         // Run these in parallel and don't wait for them
         const backgroundOperations = [
             // Widget update (can be slow)
-            WidgetDataManager.updateWidgetData().catch(err => 
+            WidgetDataManager.updateWidgetData().catch(err =>
                 console.error('Widget update failed:', err)
             ),
             // HealthKit sync (can be very slow)
-            syncToHealthKit().catch(err => 
+            syncToHealthKit().catch(err =>
                 console.error('HealthKit sync failed:', err)
             ),
             // Notification reset
-            NotificationService.resetInactivityTimer().catch(err => 
+            NotificationService.resetInactivityTimer().catch(err =>
                 console.error('Notification reset failed:', err)
             )
         ]
-        
+
         // Don't await these - let them run in background
         Promise.allSettled(backgroundOperations).then(() => {
             console.log('✅ All background operations completed')
         }).catch(err => {
             console.error('Background operations failed:', err)
         })
-        
+
         console.log('✅ Item deleted from storage successfully')
-        
+
     } catch (error) {
         console.error('❌ Failed to delete item from storage:', error)
-        
+
         // If storage deletion failed, rollback UI state
         console.log('🔄 Rolling back UI state due to storage error')
-        await loadScanHistory() // This will restore the correct state
+        await loadScanHistory("loadScanHistoryAndStreak Failed") // This will restore the correct state
     }
 }
 </script>
