@@ -342,7 +342,7 @@
         <!-- Add Food Modal -->
         <AddFoodModal :show="isAddFoodModalVisible" @close="toggleAddFoodModal(false)"
             @select-scanner="handleSelectScanner" @select-database="handleSelect('food-database')"
-            @select-manual="handleSelect('manual-entry')" />
+            @select-favorites="handleSelectFavorites" @select-manual="handleSelect('manual-entry')" />
 
         <!-- Scan Limit Blocker -->
         <PremiumBlocker v-if="showScanLimitBlocker" feature="unlimited_food_scans"
@@ -778,6 +778,11 @@ function toggleAddFoodModal(val: boolean) {
 async function handleSelectScanner() {
     toggleAddFoodModal(false)
     await openNativeScanner()
+}
+
+function handleSelectFavorites() {
+    toggleAddFoodModal(false)
+    router.push('/food-database?category=favorites')
 }
 
 function handleSelect(view: string) {

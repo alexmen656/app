@@ -33,6 +33,17 @@
                     </svg>
                 </button>
                 
+                <button class="option-btn" @click="selectFavorites">
+                    <div class="option-icon">❤️</div>
+                    <div class="option-content">
+                        <h4>{{ $t('addFood.favorites.title') }}</h4>
+                        <p>{{ $t('addFood.favorites.description') }}</p>
+                    </div>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
+                    </svg>
+                </button>
+                
                 <button class="option-btn" @click="selectManualEntry">
                     <div class="option-icon">✍️</div>
                     <div class="option-content">
@@ -57,6 +68,7 @@ interface Emits {
     (e: 'close'): void
     (e: 'select-scanner'): void
     (e: 'select-database'): void
+    (e: 'select-favorites'): void
     (e: 'select-manual'): void
 }
 
@@ -73,6 +85,10 @@ function selectScanner() {
 
 function selectFoodDatabase() {
     emit('select-database')
+}
+
+function selectFavorites() {
+    emit('select-favorites')
 }
 
 function selectManualEntry() {

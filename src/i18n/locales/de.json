@@ -179,6 +179,10 @@
       "title": "Lebensmittel-Datenbank",
       "description": "Durchsuche unsere umfassende Lebensmittel-Datenbank"
     },
+    "favorites": {
+      "title": "Favoriten",
+      "description": "Wähle aus deinen gespeicherten Lieblings-Lebensmitteln"
+    },
     "manual": {
       "title": "Essen beschreiben",
       "description": "Beschreibe manuell in Textform was du gegessen hast"

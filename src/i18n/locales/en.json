@@ -179,6 +179,10 @@
       "title": "Food Database",
       "description": "Browse and search our comprehensive food database"
     },
+    "favorites": {
+      "title": "Favorites",
+      "description": "Choose from your saved favorite foods"
+    },
     "manual": {
       "title": "Describe Food",
       "description": "Manually describe what you ate in text form"
