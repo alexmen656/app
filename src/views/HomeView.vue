@@ -256,7 +256,7 @@
                 <p class="empty-subtitle">{{ $t('home.noScansSubtitle') }}</p>
             </div>
 
-            <div v-else class="food-item-wrapper" v-for="item in recentFoods" :key="item.id" :class="{ 'swiped': isItemSwiped(item.id) }">
+            <div v-else class="food-item-wrapper" v-for="item in recentFoods" :key="item.id" :class="{ 'swiped': isItemSwiped(item.id), 'deleting': deletingItems.has(item.id) }">
                 <!-- Food Item (swipeable) -->
                 <div 
                     class="food-item"
@@ -652,10 +652,24 @@ async function loadScanHistory() {
         calculateNutritionFromHistory(history)
         
         // Only update widget data and sync if it's today
+        // Run these expensive operations in background to not block UI
         if (selectedDateString === today) {
-            await WidgetDataManager.updateWidgetData()
-            await syncToHealthKit()
-            await NotificationService.resetInactivityTimer()
+            // Run expensive operations asynchronously in background
+            Promise.allSettled([
+                WidgetDataManager.updateWidgetData().catch(err => 
+                    console.error('Widget update failed:', err)
+                ),
+                syncToHealthKit().catch(err => 
+                    console.error('HealthKit sync failed:', err)
+                ),
+                NotificationService.resetInactivityTimer().catch(err => 
+                    console.error('Notification reset failed:', err)
+                )
+            ]).then(() => {
+                console.log('✅ Background sync operations completed')
+            }).catch(err => {
+                console.error('Background sync operations failed:', err)
+            })
         }
     } catch (error) {
         console.error('Error loading scan history:', error)
@@ -891,6 +905,7 @@ function calculateMacroOffset(progress: number, circumference: number): number {
 
 // Swipe functionality
 const swipeStates = ref<Map<string, { startX: number, startY: number, currentX: number, isDragging: boolean, isOpen: boolean }>>(new Map())
+const deletingItems = ref<Set<number>>(new Set())
 
 function closeAllSwipedItems(exceptId?: string) {
     swipeStates.value.forEach((state, id) => {
@@ -1012,14 +1027,108 @@ function isItemSwiped(itemId: number): boolean {
 
 async function deleteFoodItem(itemId: number) {
     try {
-        await ScanHistory.remove(itemId)
-        await loadScanHistory()
+        // Add deleting animation immediately
+        deletingItems.value.add(itemId)
         
-        // Reset swipe state for this item
+        // Reset swipe state immediately
         const id = itemId.toString()
         swipeStates.value.delete(id)
+        
+        // Wait for animation to complete before removing from data
+        setTimeout(() => {
+            // Optimistic update: Remove item from local state
+            const itemToDelete = scanHistory.value.find(item => item.id === itemId)
+            if (itemToDelete) {
+                // Remove from local scanHistory for instant UI feedback
+                scanHistory.value = scanHistory.value.filter(item => item.id !== itemId)
+                
+                // Recalculate nutrition immediately (subtract deleted item's nutrition)
+                const itemNutrition = extractNutritionFromScan(itemToDelete)
+                todaysNutrition.value = {
+                    calories: Math.max(0, todaysNutrition.value.calories - itemNutrition.calories),
+                    protein: Math.max(0, todaysNutrition.value.protein - itemNutrition.protein),
+                    carbs: Math.max(0, todaysNutrition.value.carbs - itemNutrition.carbs),
+                    fats: Math.max(0, todaysNutrition.value.fats - itemNutrition.fats)
+                }
+            }
+            
+            // Remove from deleting items
+            deletingItems.value.delete(itemId)
+            
+            // Perform backend operations asynchronously in background
+            performBackgroundDelete(itemId)
+        }, 300) // Match CSS transition duration
+        
     } catch (error) {
         console.error('Error deleting food item:', error)
+        // Clean up animation state on error
+        deletingItems.value.delete(itemId)
+        // If there's an immediate error, reload to restore correct state
+        await loadScanHistory()
+    }
+}
+
+// Helper function to extract nutrition from a scan item
+function extractNutritionFromScan(scan: any) {
+    const amount = scan.amount || 1.0
+    
+    if (scan.type === 'food' && scan.data.total) {
+        return {
+            calories: scan.data.total.calories || 0,
+            protein: scan.data.total.protein || 0,
+            carbs: scan.data.total.carbs || 0,
+            fats: scan.data.total.fat || 0
+        }
+    } else if (scan.type === 'barcode' && scan.data.nutriments) {
+        return {
+            calories: (scan.data.nutriments.energy_kcal_100g || 0) * amount,
+            protein: (scan.data.nutriments.proteins_100g || 0) * amount,
+            carbs: (scan.data.nutriments.carbohydrates_100g || 0) * amount,
+            fats: (scan.data.nutriments.fat_100g || 0) * amount
+        }
+    }
+    
+    return { calories: 0, protein: 0, carbs: 0, fats: 0 }
+}
+
+// Background operations that don't block UI
+async function performBackgroundDelete(itemId: number) {
+    try {
+        // 1. Remove from storage (this is the most important operation)
+        await ScanHistory.remove(itemId)
+        
+        // 2. Perform expensive operations in background without blocking UI
+        // Run these in parallel and don't wait for them
+        const backgroundOperations = [
+            // Widget update (can be slow)
+            WidgetDataManager.updateWidgetData().catch(err => 
+                console.error('Widget update failed:', err)
+            ),
+            // HealthKit sync (can be very slow)
+            syncToHealthKit().catch(err => 
+                console.error('HealthKit sync failed:', err)
+            ),
+            // Notification reset
+            NotificationService.resetInactivityTimer().catch(err => 
+                console.error('Notification reset failed:', err)
+            )
+        ]
+        
+        // Don't await these - let them run in background
+        Promise.allSettled(backgroundOperations).then(() => {
+            console.log('✅ All background operations completed')
+        }).catch(err => {
+            console.error('Background operations failed:', err)
+        })
+        
+        console.log('✅ Item deleted from storage successfully')
+        
+    } catch (error) {
+        console.error('❌ Failed to delete item from storage:', error)
+        
+        // If storage deletion failed, rollback UI state
+        console.log('🔄 Rolling back UI state due to storage error')
+        await loadScanHistory() // This will restore the correct state
     }
 }
 </script>
@@ -1547,6 +1656,17 @@ async function deleteFoodItem(itemId: number) {
     margin-bottom: 12px;
     display: flex;
     align-items: center;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Add deleting animation */
+.food-item-wrapper.deleting {
+    opacity: 0;
+    transform: translateX(-100%);
+    height: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
 }
 
 .delete-action {
