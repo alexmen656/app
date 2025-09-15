@@ -67,7 +67,8 @@
 
             <div v-else class="scan-item" v-for="scan in paginatedScans" :key="scan.id" @click="viewScanDetails(scan)">
                 <div class="scan-image">
-                    <img v-if="scan.image && !scan.image.includes('placeholder')" :src="scan.image" :alt="scan.name" />
+                    <img v-if="scan.image && !scan.image.includes('placeholder') && !scan.image.startsWith('image_')" :src="scan.image" :alt="scan.name" />
+                    <img v-else-if="scan.image && scan.image.startsWith('image_')" :src="getItemImageSrc(scan)" :alt="scan.name" />
                     <span v-else-if="scan.icon" class="food-db-icon">{{ scan.icon }}</span>
                     <span v-else class="scan-type-icon">{{ scan.type === 'food' ? '🍽️' : '📦' }}</span>
                 </div>
@@ -140,7 +141,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { ScanHistory } from '../utils/storage'
+import { ScanHistory, ImageFile } from '../utils/storage'
 import { getLocalizedName } from '../utils/localization'
 
 const router = useRouter()
@@ -168,6 +169,46 @@ const selectedFilter = ref<'all' | 'food' | 'barcode' | 'manual' | 'foodDB'>('al
 const sortBy = ref<'newest' | 'oldest' | 'name' | 'calories'>('newest')
 const currentPage = ref(1)
 const itemsPerPage = 20
+
+// Image handling
+const imageUris = ref(new Map())
+
+function getItemImageSrc(item: any) {
+    if (!item.image) return '';
+    
+    if (item.image.includes('placeholder')) return item.image;
+    
+    if (item.image.startsWith('image_')) {
+        // Return cached URI or empty string if not yet loaded
+        return imageUris.value.get(item.image) || '';
+    }
+    
+    return item.image;
+}
+
+// Load image URIs for items with image_ prefixed paths
+async function loadImageUris(items: any[]) {
+    const imagesToLoad = items
+        .map(item => item.image)
+        .filter(image => image && typeof image === 'string' && image.startsWith('image_'))
+        .filter(image => !imageUris.value.has(image)) // Only load images we don't have cached
+    
+    if (imagesToLoad.length === 0) return;
+    
+    // Load images in parallel
+    await Promise.allSettled(
+        imagesToLoad.map(async (imagePath) => {
+            try {
+                const uri = await ImageFile.get(imagePath);
+                if (uri) {
+                    imageUris.value.set(imagePath, uri);
+                }
+            } catch (error) {
+                console.error(`Failed to load image ${imagePath}:`, error);
+            }
+        })
+    );
+}
 
 // Filter options
 const filterOptions = [
@@ -351,6 +392,9 @@ async function loadAllScans() {
             }
         }).filter(scan => scan !== null)
 
+        // Load image URIs for items with image_ prefixed images
+        await loadImageUris(allScans.value)
+
         console.log('Processed scans:', allScans.value)
     } catch (error) {
         console.error('Error loading all scans:', error)
@@ -358,8 +402,8 @@ async function loadAllScans() {
     }
 }
 
-onMounted(() => {
-    loadAllScans()
+onMounted(async () => {
+    await loadAllScans()
 })
 </script>
 
