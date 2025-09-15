@@ -431,6 +431,50 @@ function getItemImageSrc(item: any) {
     return item.image;
 }
 
+// Temporary migration function to convert base64 images to files
+async function migrateBase64ImagesToFiles() {
+    try {
+        console.log('🔄 Starting base64 image migration...');
+        const history = await ScanHistory.get();
+        let migrationCount = 0;
+        let updatedHistory = [...history];
+        
+        for (let i = 0; i < updatedHistory.length; i++) {
+            const scan = updatedHistory[i];
+            if (scan.image && typeof scan.image === 'string' && scan.image.startsWith('data:image/')) {
+                try {
+                    // Save base64 image as file
+                    const fileName = await ImageFile.save(scan.image);
+                    if (fileName) {
+                        // Update scan with filename instead of base64
+                        updatedHistory[i] = {
+                            ...scan,
+                            image: fileName
+                        };
+                        migrationCount++;
+                        console.log(`✅ Migrated image for scan ${scan.id}: ${fileName}`);
+                    }
+                } catch (error) {
+                    console.error(`❌ Failed to migrate image for scan ${scan.id}:`, error);
+                }
+            }
+        }
+        
+        if (migrationCount > 0) {
+            // Save updated history
+            await ScanHistory.clear();
+            for (const scan of updatedHistory) {
+                await ScanHistory.add(scan);
+            }
+            console.log(`🎉 Migration completed! Converted ${migrationCount} base64 images to files.`);
+        } else {
+            console.log('ℹ️ No base64 images found to migrate.');
+        }
+    } catch (error) {
+        console.error('❌ Error during base64 image migration:', error);
+    }
+}
+
 // Load image URIs for items with image_ prefixed paths
 async function loadImageUris(items: any[]) {
     const imagesToLoad = items
@@ -512,6 +556,13 @@ onMounted(async () => {
     }
 
     loadScanHistoryAndStreak()
+
+    // Run one-time migration for base64 images
+    try {
+        await migrateBase64ImagesToFiles()
+    } catch (error) {
+        console.error('Error during image migration:', error)
+    }
 
     try {
         const notificationSettings = await getNotificationSettings()

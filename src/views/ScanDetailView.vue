@@ -400,7 +400,7 @@
                     </button>
                 </div>
                 <div class="image-preview-content">
-                    <img v-if="scanData?.image" :src="scanData.image" alt="Food image" class="preview-image"/>
+                    <img v-if="getImageSrc()" :src="getImageSrc()" alt="Food image" class="preview-image"/>
                     <div v-else class="no-image-placeholder">
                         <div class="no-image-icon">📷</div>
                         <p>{{ $t('nutrition.noImageAvailable') }}</p>
@@ -417,7 +417,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { Share } from '@capacitor/share';
 import { Filesystem, Directory } from '@capacitor/filesystem';
-import { ScanHistory, FavoriteFood } from '../utils/storage';
+import { ScanHistory, FavoriteFood, ImageFile } from '../utils/storage';
 import { WidgetDataManager, StreakManager } from '../utils/widgetData';
 import { getLocalizedName, getLocalizedNotes, capitalizeIfLetter } from '../utils/localization';
 import { analyticsActions } from '../stores/analyticsStore';
@@ -443,6 +443,50 @@ const showMenuModal = ref(false);
 // Touch handling for double-tap
 const lastTap = ref(0);
 const tapTimeout = ref(null);
+
+// Image handling
+const imageUris = ref(new Map())
+
+function getImageSrc() {
+    if (!scanData.value) return '';
+    
+    // Check multiple possible image sources
+    const imageUrl = scanData.value?.data?.image || 
+                     scanData.value?.image || 
+                     route.query.photo;
+    
+    if (!imageUrl) return '';
+    
+    if (imageUrl.includes('placeholder')) return imageUrl;
+    
+    if (imageUrl.startsWith('image_')) {
+        // Return cached URI or empty string if not yet loaded
+        return imageUris.value.get(imageUrl) || '';
+    }
+    
+    return imageUrl;
+}
+
+async function loadImageUri() {
+    if (!scanData.value) return;
+    
+    const imageUrl = scanData.value?.data?.image || 
+                     scanData.value?.image || 
+                     route.query.photo;
+    
+    if (!imageUrl || !imageUrl.startsWith('image_') || imageUris.value.has(imageUrl)) {
+        return;
+    }
+    
+    try {
+        const uri = await ImageFile.get(imageUrl);
+        if (uri) {
+            imageUris.value.set(imageUrl, uri);
+        }
+    } catch (error) {
+        console.error(`Failed to load image ${imageUrl}:`, error);
+    }
+}
 
 const time = computed(() => {
     if (!scanData.value) return '';
@@ -546,10 +590,8 @@ const backgroundStyle = computed(() => {
         zIndex: 1,
     };
 
-    // Check multiple possible image sources
-    const imageUrl = scanData.value?.data?.image || 
-                     scanData.value?.image || 
-                     route.query.photo;
+    // Use the new getImageSrc function
+    const imageUrl = getImageSrc();
 
     if (!imageUrl) {
         return {
@@ -889,10 +931,12 @@ function handleTouchEnd(event) {
     }, 300);
 }
 
-onMounted(() => {
+onMounted(async () => {
     const scanId = route.query.scanId;
     if (scanId) {
-        loadScanData(scanId);
+        await loadScanData(scanId);
+        // Load image URI after scan data is loaded
+        await loadImageUri();
     } else {
         console.error('No scan ID provided');
         router.push({ path: '/' });
