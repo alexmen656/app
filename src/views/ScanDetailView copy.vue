@@ -386,7 +386,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { Share } from '@capacitor/share';
@@ -519,7 +519,7 @@ const confidenceClass = computed(() => {
 const backgroundStyle = computed(() => {
     const baseStyle = {
         width: '100%',
-        height: `${360 + pullDistance.value * 0.8}px`, // Stretch height instead of translate
+        height: `${360 + pullDistance.value * 1.5}px`, // Increased base height and multiplier for better coverage
         position: 'relative',
         zIndex: 1,
         transition: isPulling.value ? 'none' : 'height 0.3s ease-out',
@@ -533,7 +533,7 @@ const backgroundStyle = computed(() => {
     if (!imageUrl) {
         return {
             ...baseStyle,
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
         };
     }
 
@@ -804,7 +804,7 @@ function showImagePreview() {
 }
 
 function handleTouchStart(event) {
-    // Prevent default to avoid interfering with other touch events
+    // Handle double tap for image preview
     const now = Date.now();
     const timeSinceLastTap = now - lastTap.value;
     
@@ -817,14 +817,16 @@ function handleTouchStart(event) {
         }
         showImagePreview();
         lastTap.value = 0; // Reset to prevent triple tap
+        return;
     } else {
         lastTap.value = now;
     }
     
-    // Start tracking for pull effect only if at the top
-    touchStartY.value = event.touches[0].clientY;
-    const isAtTop = window.scrollY === 0;
-    isPulling.value = isAtTop;
+    // Only start tracking for pull effect if we're at the top
+    if (window.scrollY === 0) {
+        touchStartY.value = event.touches[0].clientY;
+        isPulling.value = true;
+    }
 }
 
 function handleTouchMove(event) {
@@ -833,15 +835,12 @@ function handleTouchMove(event) {
     const currentY = event.touches[0].clientY;
     const deltaY = currentY - touchStartY.value;
     
-    // Only allow pulling down when at the very top and user is pulling down
-    const isAtTop = window.scrollY === 0;
-    const isPullingDown = deltaY > 0;
-    
-    if (isAtTop && isPullingDown) {
-        pullDistance.value = Math.min(deltaY * 0.7, 120); // Max 120px pull
+    // Check if we're still at the top and moving down
+    if (deltaY > 0 && window.scrollY === 0) {
+        pullDistance.value = Math.min(deltaY * 0.8, 150);
         event.preventDefault();
     } else {
-        // If user scrolled away from top or is pulling up, stop the pull effect
+        // If we're not at the top anymore or moving up, stop pulling
         isPulling.value = false;
         pullDistance.value = 0;
     }
@@ -872,10 +871,36 @@ onMounted(() => {
         router.push({ path: '/' });
     }
     
+    // Add scroll listener to stop pull effect when scrolling
+    const handleScroll = () => {
+        if (window.scrollY > 0 && isPulling.value) {
+            isPulling.value = false;
+            pullDistance.value = 0;
+        }
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    
+    // Cleanup on unmount
+    const cleanup = () => {
+        window.removeEventListener('scroll', handleScroll);
+    };
+    
+    // Store cleanup function for potential unmount
+    window.__scrollCleanup = cleanup;
+    
     // Prevent hover effects for a short time after loading
     setTimeout(() => {
         isLoading.value = false;
     }, 300);
+});
+
+onUnmounted(() => {
+    // Clean up scroll listener
+    if (window.__scrollCleanup) {
+        window.__scrollCleanup();
+        delete window.__scrollCleanup;
+    }
 });
 </script>
 
@@ -911,11 +936,11 @@ onMounted(() => {
     justify-content: space-between;
     align-items: flex-start;
     padding: 0 16px;
-    position: absolute;
+    position: fixed;
     top: env(safe-area-inset-top, 44px);
     left: 0;
     right: 0;
-    z-index: 3;
+    z-index: 1000;
 }
 
 .header-actions {
