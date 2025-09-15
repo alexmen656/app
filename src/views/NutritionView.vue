@@ -1132,7 +1132,7 @@ async function saveAndReturn() {
     justify-content: space-between;
     align-items: flex-start;
     padding: 0 16px;
-    position: absolute;
+    position: fixed;
     top: env(safe-area-inset-top, 44px);
     left: 0;
     right: 0;
