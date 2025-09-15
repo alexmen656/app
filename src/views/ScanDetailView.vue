@@ -1,8 +1,11 @@
 <template>
     <div>
-        <div v-if="scanData" class="nutrition-container">
+        <div v-if="scanData" class="nutrition-container" :class="{ loading: isLoading }" 
+             @touchstart="handleTouchStart" 
+             @touchmove="handleTouchMove" 
+             @touchend="handleTouchEnd">
             <div class="nutrition-header">
-                <div class="nutrition-image-wrap" :style="backgroundStyle" @touchstart="handleTouchStart" @touchend="handleTouchEnd" @dblclick="showImagePreview">
+                <div class="nutrition-image-wrap" :style="backgroundStyle" @dblclick="showImagePreview">
                     <div class="statusbar-spacer"></div>
                     <div class="header-controls">
                         <button class="nutrition-back" @click="$router.go(-1)">
@@ -32,7 +35,14 @@
                     </div>
                 </div>
             </div>
-            <div class="nutrition-content">
+            <div class="nutrition-content" :style="{ 
+                transform: `translateY(${pullDistance * 0.2}px)`, 
+                transition: isPulling ? 'none' : 'transform 0.3s ease-out',
+                borderRadius: '35px 35px 0 0',
+                marginTop: '-32px',
+                position: 'relative',
+                zIndex: 2
+            }">
                 <div class="nutrition-time">{{ time }}</div>
                 <div class="product-header">
                     <div class="product-info">
@@ -406,6 +416,12 @@ const isSharing = ref(false);
 const lastTap = ref(0);
 const tapTimeout = ref(null);
 
+// Pull-to-refresh / parallax effect
+const pullDistance = ref(0);
+const isPulling = ref(false);
+const touchStartY = ref(0);
+const scrollContainer = ref(null);
+
 const time = computed(() => {
     if (!scanData.value) return '';
     return scanData.value.time || new Date(scanData.value.timestamp).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', hour12: false });
@@ -503,9 +519,10 @@ const confidenceClass = computed(() => {
 const backgroundStyle = computed(() => {
     const baseStyle = {
         width: '100%',
-        height: '360px',
+        height: `${360 + pullDistance.value * 0.8}px`, // Stretch height instead of translate
         position: 'relative',
         zIndex: 1,
+        transition: isPulling.value ? 'none' : 'height 0.3s ease-out',
     };
 
     // Check multiple possible image sources
@@ -803,6 +820,23 @@ function handleTouchStart(event) {
     } else {
         lastTap.value = now;
     }
+    
+    // Start tracking for pull effect
+    touchStartY.value = event.touches[0].clientY;
+    isPulling.value = true;
+}
+
+function handleTouchMove(event) {
+    if (!isPulling.value) return;
+    
+    const currentY = event.touches[0].clientY;
+    const deltaY = currentY - touchStartY.value;
+    
+    // Only allow pulling down and when at the top of the page
+    if (deltaY > 0 && window.scrollY === 0) {
+        pullDistance.value = Math.min(deltaY * 0.7, 120); // Max 120px pull
+        event.preventDefault();
+    }
 }
 
 function handleTouchEnd(event) {
@@ -815,6 +849,10 @@ function handleTouchEnd(event) {
         lastTap.value = 0;
         tapTimeout.value = null;
     }, 300);
+    
+    // Reset pull effect
+    isPulling.value = false;
+    pullDistance.value = 0;
 }
 
 onMounted(() => {
