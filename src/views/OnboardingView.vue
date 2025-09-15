@@ -605,25 +605,30 @@ function previousStep() {
 }
 
 async function finishOnboarding() {
-    // Update user store with data
-    await updateUserProfile(userInfo)
+    // Create a copy of userInfo without weight (weight is now managed by WeightTracker)
+    const { weight, targetWeight, ...profileWithoutWeight } = userInfo
+    
+    // Update user store with data (excluding weight)
+    await updateUserProfile(profileWithoutWeight)
     await updateDailyGoals(goals)
 
-    // Set up weight tracking if target weight is provided
-    if (userInfo.weight && userInfo.targetWeight) {
+    // Set up weight tracking if weight is provided
+    if (weight) {
         // Add initial weight entry
-        await WeightTracker.addWeightEntry(userInfo.weight, 'Initial weight from onboarding')
+        await WeightTracker.addWeightEntry(weight, 'Initial weight from onboarding')
 
-        // Set weight goal
-        const goalType = userInfo.targetWeight > userInfo.weight ? 'gain' :
-            userInfo.targetWeight < userInfo.weight ? 'lose' : 'maintain'
+        // Set weight goal if target weight is provided
+        if (targetWeight) {
+            const goalType = targetWeight > weight ? 'gain' :
+                targetWeight < weight ? 'lose' : 'maintain'
 
-        await WeightTracker.setWeightGoal({
-            startWeight: userInfo.weight,
-            targetWeight: userInfo.targetWeight,
-            goalType,
-            startDate: new Date().toISOString().split('T')[0]
-        })
+            await WeightTracker.setWeightGoal({
+                startWeight: weight,
+                targetWeight: targetWeight,
+                goalType,
+                startDate: new Date().toISOString().split('T')[0]
+            })
+        }
     }
 
     await completeOnboarding()

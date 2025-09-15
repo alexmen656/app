@@ -356,7 +356,15 @@ async function buildUserProfile() {
   // Basic user information
   if (userProfile.age) profile.age = userProfile.age
   if (userProfile.gender) profile.gender = userProfile.gender
-  if (userProfile.weight) profile.weight = userProfile.weight
+  
+  // Get current weight from WeightTracker instead of userProfile
+  try {
+    const currentWeight = await WeightTracker.getLatestWeight()
+    if (currentWeight) profile.weight = currentWeight
+  } catch (error) {
+    console.error('Error getting current weight:', error)
+  }
+  
   if (userProfile.height) profile.height = userProfile.height
   if (userProfile.activityLevel) profile.activityLevel = userProfile.activityLevel
   if (userProfile.goal) profile.goals = [userProfile.goal]

@@ -116,22 +116,6 @@
               <span class="unit">cm</span>
             </div>
           </div>
-
-          <div class="form-group">
-            <label class="form-label">{{ $t('profile.weight') }}</label>
-            <div class="input-with-unit">
-              <input 
-                type="number" 
-                v-model.number="form.weight" 
-                class="form-input"
-                :placeholder="$t('profile.weightPlaceholder')"
-                min="30"
-                max="300"
-                step="0.1"
-              />
-              <span class="unit">kg</span>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -177,26 +161,13 @@
         </div>
       </div>
 
-      <!-- Calculated Goals Preview -->
-      <div v-if="calculatedGoals" class="form-section">
-        <h3 class="section-title">{{ $t('profile.calculatedGoals') }}</h3>
-        <div class="goals-preview">
-          <div class="goal-item">
-            <span class="goal-label">{{ $t('nutrition.calories') }}</span>
-            <span class="goal-value">{{ calculatedGoals.calories }} kcal</span>
-          </div>
-          <div class="goal-item">
-            <span class="goal-label">{{ $t('nutrition.protein') }}</span>
-            <span class="goal-value">{{ calculatedGoals.protein }}g</span>
-          </div>
-          <div class="goal-item">
-            <span class="goal-label">{{ $t('nutrition.carbs') }}</span>
-            <span class="goal-value">{{ calculatedGoals.carbs }}g</span>
-          </div>
-          <div class="goal-item">
-            <span class="goal-label">{{ $t('nutrition.fats') }}</span>
-            <span class="goal-value">{{ calculatedGoals.fats }}g</span>
-          </div>
+      <!-- Note: Goal calculations now require weight from Weight Log -->
+      <div class="form-section">
+        <div class="info-note">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+          </svg>
+          <p>{{ $t('profile.macroCalculationNote', 'Daily macro goals will be calculated based on your current weight from the Weight Log.') }}</p>
         </div>
       </div>
     </div>
@@ -217,9 +188,7 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { 
   userProfile, 
-  updateUserProfile, 
-  updateDailyGoals,
-  calculateRecommendedMacros
+  updateUserProfile
 } from '../stores/userStore'
 import { ImageService } from '../services/imageService'
 
@@ -233,7 +202,6 @@ const form = ref({
   age: 25,
   gender: 'male' as 'male' | 'female',
   height: 170,
-  weight: 70,
   activityLevel: 'moderate' as string,
   goal: 'maintain' as string,
   profilePicture: undefined as string | undefined
@@ -249,7 +217,6 @@ onMounted(() => {
     age: userProfile.age || 25,
     gender: (userProfile.gender as 'male' | 'female') || 'male',
     height: userProfile.height || 170,
-    weight: userProfile.weight || 70,
     activityLevel: userProfile.activityLevel || 'moderate',
     goal: userProfile.goal || 'maintain',
     profilePicture: userProfile.profilePicture
@@ -317,27 +284,9 @@ const isValid = computed(() => {
   return form.value.name.trim().length > 0 && form.value.name.trim().length < 120 &&
          form.value.age >= 10 && form.value.age <= 120 &&
          form.value.height >= 100 && form.value.height <= 250 &&
-         form.value.weight >= 30 && form.value.weight <= 300 &&
          form.value.gender &&
          form.value.activityLevel &&
          form.value.goal
-})
-
-// Calculate recommended goals
-const calculatedGoals = computed(() => {
-  if (!isValid.value) return null
-  
-  return calculateRecommendedMacros({
-    name: form.value.name,
-    email: form.value.email,
-    age: form.value.age,
-    gender: form.value.gender,
-    height: form.value.height,
-    weight: form.value.weight,
-    activityLevel: form.value.activityLevel,
-    goal: form.value.goal,
-    targetWeight: userProfile.targetWeight
-  })
 })
 
 function goBack() {
@@ -358,13 +307,10 @@ async function selectProfilePicture() {
 
 async function saveProfile() {
   try {
-    // Update user profile
+    // Update user profile (weight is no longer managed here)
     await updateUserProfile(form.value)
     
-    // Update daily goals with calculated values
-    if (calculatedGoals.value) {
-      await updateDailyGoals(calculatedGoals.value)
-    }
+    // Note: Daily goals update will be handled elsewhere when weight changes in WeightTracker
     
     // Show success toast
     showSuccessToast.value = true
@@ -695,5 +641,29 @@ async function saveProfile() {
     transform: translateX(-50%) translateY(0);
     opacity: 1;
   }
+}
+
+.info-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background: rgba(52, 152, 219, 0.1);
+  border: 1px solid rgba(52, 152, 219, 0.3);
+  border-radius: 12px;
+  margin-top: 16px;
+}
+
+.info-note svg {
+  color: #3498db;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.info-note p {
+  margin: 0;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.4;
 }
 </style>

@@ -64,6 +64,30 @@
       </div>
     </div>
 
+    <!-- Current Weight Section -->
+    <div class="settings-section">
+      <h3 class="section-title">{{ $t('profile.weight', 'Current Weight') }}</h3>
+      <div class="settings-card">
+        <div class="setting-item setting-row" @click="goToWeightLog">
+          <div class="setting-info">
+            <label class="setting-label">{{ $t('profile.weight', 'Weight') }}</label>
+            <p class="setting-description">
+              <span v-if="currentWeight">{{ currentWeight }} kg</span>
+              <span v-else>{{ $t('settings.noWeightData', 'No weight data - log your weight to get started') }}</span>
+            </p>
+          </div>
+          <div class="setting-controls">
+            <button class="detail-button">
+              <span>{{ $t('common.manage', 'Manage') }}</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="m9 18 6-6-6-6" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="settings-section">
       <!--<div class="section-header">-->
       <h3 class="section-title">{{ $t('settings.dailyGoals') }}</h3>
@@ -426,6 +450,7 @@ import { NotificationService, type NotificationSettings } from '../services/noti
 import { HealthKitService } from '../services/healthkit'
 import { Capacitor } from '@capacitor/core'
 import { isPremiumUser, onPremiumStatusChange } from '../utils/premiumManager'
+import { WeightTracker } from '../utils/weightTracking'
 import BottomNavigation from '../components/BottomNavigation.vue'
 
 //, premiumManager, premiumFeatures
@@ -434,6 +459,9 @@ const currentLanguage = ref(getCurrentLanguage())
 const mockDataEnabled = ref(false)
 const notificationSettings = ref<NotificationSettings>(NotificationService.getDefaultSettings())
 const isNotificationSupported = computed(() => NotificationService.isSupported())
+
+// Weight tracking
+const currentWeight = ref<number | null>(null)
 
 // HealthKit reactive variables
 const healthKitStatus = ref({
@@ -472,6 +500,20 @@ function goToHealthKitSettings() {
 
 function goToNotificationSettings() {
   router.push('/settings/notifications')
+}
+
+// Weight tracking functions
+async function loadCurrentWeight() {
+  try {
+    currentWeight.value = await WeightTracker.getLatestWeight()
+  } catch (error) {
+    console.error('Error loading current weight:', error)
+    currentWeight.value = null
+  }
+}
+
+function goToWeightLog() {
+  router.push('/weight-detail')
 }
 
 async function toggleHealthKit() {
@@ -581,6 +623,9 @@ onMounted(async () => {
   //if (isPremiumUser.value) {
   await loadHealthKitStatus()
   //}
+
+  // Load current weight from WeightTracker
+  await loadCurrentWeight()
 
   // Also ensure we're watching for changes correctly
   console.log('Settings view mounted - Premium status:', isPremiumUser.value, 'HealthKit status:', healthKitStatus.value)

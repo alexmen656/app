@@ -8,7 +8,6 @@ interface UserProfile {
   age: number | null
   gender: 'male' | 'female' | ''
   height: number | null
-  weight: number | null
   targetWeight: number | null
   activityLevel: string
   goal?: string
@@ -35,7 +34,6 @@ const defaultUserProfile: UserProfile = {
   age: null,
   gender: '',
   height: null,
-  weight: null,
   targetWeight: null,
   activityLevel: '',
   goal: '',
@@ -113,7 +111,7 @@ export const isOnboardingCompleted = computed(() => {
 
 export const hasValidProfile = computed(() => {
   return userProfile.name && userProfile.age && userProfile.gender && 
-         userProfile.height && userProfile.weight
+         userProfile.height
 })
 
 export const isSubscriptionActive = computed(() => {
@@ -174,20 +172,20 @@ export async function resetOnboarding() {
   onboardingCompleted.value = false
 }
 
-export function calculateBMR(profile: UserProfile): number {
-  if (!profile.age || !profile.weight || !profile.height || !profile.gender) {
+export function calculateBMR(profile: UserProfile, weight: number): number {
+  if (!profile.age || !weight || !profile.height || !profile.gender) {
     return 0
   }
 
   if (profile.gender === 'male') {
-    return 88.362 + (13.397 * profile.weight) + (4.799 * profile.height) - (5.677 * profile.age)
+    return 88.362 + (13.397 * weight) + (4.799 * profile.height) - (5.677 * profile.age)
   } else {
-    return 447.593 + (9.247 * profile.weight) + (3.098 * profile.height) - (4.330 * profile.age)
+    return 447.593 + (9.247 * weight) + (3.098 * profile.height) - (4.330 * profile.age)
   }
 }
 
-export function calculateTDEE(profile: UserProfile): number {
-  const bmr = calculateBMR(profile)
+export function calculateTDEE(profile: UserProfile, weight: number): number {
+  const bmr = calculateBMR(profile, weight)
   
   const activityMultipliers = {
     sedentary: 1.2,
@@ -201,12 +199,12 @@ export function calculateTDEE(profile: UserProfile): number {
   return Math.round(bmr * multiplier)
 }
 
-export function calculateRecommendedMacros(profile: UserProfile) {
-  const tdee = calculateTDEE(profile)
+export function calculateRecommendedMacros(profile: UserProfile, weight: number) {
+  const tdee = calculateTDEE(profile, weight)
   
   return {
     calories: tdee,
-    protein: Math.round((profile.weight || 70) * 1.6), // 1.6g per kg body weight
+    protein: Math.round(weight * 1.6), // 1.6g per kg body weight
     carbs: Math.round((tdee * 0.5) / 4), // 50% of calories from carbs (4 cal/g)
     fats: Math.round((tdee * 0.25) / 9) // 25% of calories from fats (9 cal/g)
   }
