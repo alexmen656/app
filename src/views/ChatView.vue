@@ -28,7 +28,7 @@
         </div>
         <div class="message-content">
           <div class="message-bubble">
-            <p>{{ $t('chat.greeting') }}</p>
+            <div v-html="renderMarkdown($t('chat.greeting'))" class="markdown-content"></div>
           </div>
           <div class="message-time">{{ getCurrentTime() }}</div>
         </div>
@@ -61,12 +61,17 @@
         </div>
         <div class="message-content">
           <div class="message-bubble">
-            <p>{{ message.text }}</p>
+            <div v-html="renderMarkdown(message.text)" class="markdown-content"></div>
           </div>
           <div class="message-time">{{ message.time }}</div>
         </div>
         <div class="message-avatar" v-if="message.isUser">
-          <span>👤</span>
+          <img v-if="userProfile.profilePicture" :src="userProfile.profilePicture" alt="Profile"
+            class="user-profile-image" />
+          <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+          </svg>
         </div>
       </div>
 
@@ -121,12 +126,40 @@ import { useI18n } from 'vue-i18n'
 import { userProfile, dailyGoals } from '../stores/userStore'
 import { ScanHistory } from '../utils/storage'
 import { WeightTracker } from '../utils/weightTracking'
+import { marked } from 'marked'
 
 const router = useRouter()
 const { t, locale } = useI18n()
 
+// Configure marked for safe rendering
+marked.setOptions({
+  breaks: true, // Convert line breaks to <br>
+  gfm: true, // GitHub Flavored Markdown
+})
+
+// Markdown rendering function
+function renderMarkdown(text: string): string {
+  try {
+    // Parse markdown to HTML
+    const html = marked.parse(text) as string
+    
+    // Basic sanitization - remove potentially dangerous tags
+    const sanitized = html
+      .replace(/<script[^>]*>.*?<\/script>/gi, '')
+      .replace(/<iframe[^>]*>.*?<\/iframe>/gi, '')
+      .replace(/javascript:/gi, '')
+      .replace(/on\w+="[^"]*"/gi, '')
+    
+    return sanitized
+  } catch (error) {
+    console.warn('Markdown parsing error:', error)
+    // Fallback to plain text
+    return text.replace(/\n/g, '<br>')
+  }
+}
+
 // API Configuration
-const API_BASE_URL = 'https://v2-2.api.kalbuddy.com/api/ai'
+const API_BASE_URL = 'https://api.kalbuddy.com/api/ai'
 
 // Reactive data
 const currentMessage = ref('')
@@ -491,7 +524,7 @@ onMounted(() => {
   background: #1e1e2e;
   display: flex;
   flex-direction: column;
-  padding-bottom: 120px; /* Account for bottom navigation */
+  padding-bottom: env(safe-area-inset-bottom, 0px); /* Only safe area, no extra padding */
 }
 
 /* Header */
@@ -573,6 +606,7 @@ onMounted(() => {
 .chat-messages {
   flex: 1;
   padding: 20px;
+  padding-bottom: 100px; /* Space for fixed input area */
   overflow-y: auto;
   max-height: calc(100vh - 200px);
 }
@@ -609,12 +643,25 @@ onMounted(() => {
   background: #3b82f6;
 }
 
+.user-profile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
 .message-content {
   max-width: 70%;
 }
 
 .user-message {
-  flex-direction: row-reverse;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.bot-message {
+  flex-direction: row;
+  justify-content: flex-start;
 }
 
 .user-message .message-content {
@@ -644,6 +691,127 @@ onMounted(() => {
   color: white;
   line-height: 1.4;
   word-wrap: break-word;
+}
+
+/* Markdown Content Styles */
+.markdown-content {
+  color: white;
+  line-height: 1.5;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.markdown-content p {
+  margin: 0 0 8px 0;
+}
+
+.markdown-content p:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-content strong {
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+.markdown-content em {
+  font-style: italic;
+  color: #e2e8f0;
+}
+
+.markdown-content code {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.9em;
+  color: #10b981;
+}
+
+.markdown-content pre {
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  padding: 12px;
+  margin: 8px 0;
+  overflow-x: auto;
+  border-left: 3px solid #007052;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.markdown-content pre code {
+  background: none;
+  padding: 0;
+  color: #e2e8f0;
+}
+
+.markdown-content blockquote {
+  border-left: 3px solid #007052;
+  margin: 8px 0;
+  padding-left: 12px;
+  color: #cbd5e1;
+  font-style: italic;
+}
+
+.markdown-content ul, .markdown-content ol {
+  margin: 8px 0;
+  padding-left: 20px;
+}
+
+.markdown-content li {
+  margin: 4px 0;
+}
+
+.markdown-content h1, .markdown-content h2, .markdown-content h3, 
+.markdown-content h4, .markdown-content h5, .markdown-content h6 {
+  margin: 12px 0 8px 0;
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+.markdown-content h1 { font-size: 1.4em; }
+.markdown-content h2 { font-size: 1.3em; }
+.markdown-content h3 { font-size: 1.2em; }
+.markdown-content h4 { font-size: 1.1em; }
+.markdown-content h5 { font-size: 1.05em; }
+.markdown-content h6 { font-size: 1em; }
+
+.markdown-content a {
+  color: #60a5fa;
+  text-decoration: underline;
+}
+
+.markdown-content a:hover {
+  color: #93c5fd;
+}
+
+.markdown-content hr {
+  border: none;
+  border-top: 1px solid #374151;
+  margin: 16px 0;
+}
+
+.markdown-content table {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 100%;
+  margin: 8px 0;
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.markdown-content th, .markdown-content td {
+  border: 1px solid #374151;
+  padding: 8px;
+  text-align: left;
+}
+
+.markdown-content th {
+  background: rgba(0, 0, 0, 0.3);
+  font-weight: 600;
 }
 
 .message-time {
@@ -743,8 +911,11 @@ onMounted(() => {
   padding: 16px 20px;
   padding-bottom: calc(16px + env(safe-area-inset-bottom));
   border-top: 1px solid #374151;
-  position: sticky;
+  position: fixed;
   bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
 }
 
 .input-container {

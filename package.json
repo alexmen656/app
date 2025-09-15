@@ -28,6 +28,7 @@
     "apexcharts": "^5.3.4",
     "kaloriq-barcode-scanner": "file:kaloriq-barcode-scanner",
     "kaloriq-health-kit": "file:kaloriq-health-kit",
+    "marked": "^16.3.0",
     "vue": "^3.5.18",
     "vue-i18n": "^9.14.5",
     "vue-router": "^4.5.1",
