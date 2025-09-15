@@ -1085,7 +1085,8 @@ async function saveAndReturn() {
                 console.warn('Failed to save image:', imageError);
             }
         }
-        
+
+        scanEntry.image = savedPath;
         await ScanHistory.add(scanEntry);
         await StreakManager.updateStreak();
         await WidgetDataManager.updateWidgetData();

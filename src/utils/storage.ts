@@ -428,8 +428,8 @@ export class FavoriteFood {
 export class ImageFile {
   static async save(imageContent: string): Promise<string> {
     try {
-      if (!imageContent || typeof imageContent !== 'string') {
-        console.warn('Invalid image content provided to ImageFile.save');
+      if (!imageContent || typeof imageContent !== "string") {
+        console.warn("Invalid image content provided to ImageFile.save");
         return "";
       }
 
@@ -442,7 +442,7 @@ export class ImageFile {
         : imageContent;
 
       if (!base64Data || base64Data.length === 0) {
-        console.warn('Empty base64 data after processing');
+        console.warn("Empty base64 data after processing");
         return "";
       }
 
@@ -452,12 +452,29 @@ export class ImageFile {
         directory: Directory.Data,
         recursive: true,
       });
-      
+
       console.log(`Image file saved successfully: ${fileName}`);
       return fileName;
     } catch (error) {
       console.error("Image file save error:", error);
       return "";
+    }
+  }
+
+  static async get(fileName: string): Promise<string | null> {
+    try {
+      // Read the file as base64 data
+      const result = await Filesystem.readFile({
+        path: `images/${fileName}`,
+        directory: Directory.Data,
+      });
+
+      // Return as data URI for HTML display
+      const base64Data = result.data;
+      return `data:image/jpeg;base64,${base64Data}`;
+    } catch (error) {
+      console.error("Image file get error:", error);
+      return null;
     }
   }
 }

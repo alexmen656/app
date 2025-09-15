@@ -273,8 +273,10 @@
                     @mousemove="handleMouseMove($event, item.id)" @mouseup="handleMouseEnd(item.id, $event)"
                     @mouseleave="handleMouseEnd(item.id, $event)">
                     <div class="food-image">
-                        <img v-if="item.image && !item.image.includes('placeholder')" :src="item.image"
-                            :alt="item.name" />
+                        <img v-if="item.image && !item.image.includes('placeholder') && !item.image.includes('image_')"
+                            :src="item.image" :alt="item.name" />
+                        <img v-else-if="item.image && item.image.includes('image_')" 
+                            :src="getItemImageSrc(item)" :alt="item.name" />
                         <span v-else-if="item.icon" class="food-db-icon">{{ item.icon }}</span>
                         <span v-else>{{ item.type === 'food' ? '🍽️' : '📦' }}</span>
                     </div>
@@ -368,7 +370,7 @@ import { ref, computed, onMounted, onUnmounted, watch, type ComputedRef } from '
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { dailyGoals, isOnboardingCompleted, storeReady } from '../stores/userStore'
-import { ScanHistory } from '../utils/storage'
+import { ScanHistory, ImageFile } from '../utils/storage'
 import { WidgetDataManager, StreakManager } from '../utils/widgetData'
 import { HealthKitService } from '../services/healthkit'
 import { InAppReview } from '@capacitor-community/in-app-review';
@@ -409,6 +411,48 @@ async function openNativeScanner() {
         console.error('Failed to check scan limits:', error)
         await startScanningWithMode('barcode')
     }
+}
+
+// Reactive function to get image URI
+const imageUris = ref(new Map<string, string>())
+
+// Reactive computed property for each item's image
+function getItemImageSrc(item: any) {
+    if (!item.image) return '';
+    
+    if (item.image.includes('placeholder')) return item.image;
+    
+    if (item.image.startsWith('image_')) {
+        // Return cached URI or empty string if not yet loaded
+        console.log('Getting image URI for', item.image, imageUris.value.get(item.image))
+        return imageUris.value.get(item.image) || '';
+    }
+    
+    return item.image;
+}
+
+// Load image URIs for items with image_ prefixed paths
+async function loadImageUris(items: any[]) {
+    const imagesToLoad = items
+        .map(item => item.image)
+        .filter(image => image && typeof image === 'string' && image.startsWith('image_'))
+        .filter(image => !imageUris.value.has(image)) // Only load images we don't have cached
+    
+    if (imagesToLoad.length === 0) return;
+    
+    // Load images in parallel
+    await Promise.allSettled(
+        imagesToLoad.map(async (imagePath) => {
+            try {
+                const uri = await ImageFile.get(imagePath);
+                if (uri) {
+                    imageUris.value.set(imagePath, uri);
+                }
+            } catch (error) {
+                console.error(`Failed to load image ${imagePath}:`, error);
+            }
+        })
+    );
 }
 
 async function startScanningWithMode(mode: 'barcode' | 'photo' | 'label') {
@@ -654,6 +698,9 @@ async function loadScanHistory(context: string) {
         }
 
         calculateNutritionFromHistory(history)
+
+        // Load image URIs for items with image_ prefixed images
+        await loadImageUris(scanHistory.value)
 
         if (selectedDateString === today) {
             Promise.allSettled([
