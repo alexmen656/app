@@ -26,6 +26,7 @@ import ScanDetailView from "../views/ScanDetailView.vue";
 import FoodDatabaseView from "../views/FoodDatabaseView.vue";
 import ManualFoodEntryView from "../views/ManualFoodEntryView.vue";
 import ChatView from "../views/ChatView.vue";
+import FeedbackView from "../views/FeedbackView.vue";
 import { isOnboardingCompleted } from "../stores/userStore";
 
 const routes = [
@@ -163,6 +164,11 @@ const routes = [
     path: "/chat",
     name: "Chat",
     component: ChatView,
+  },
+  {
+    path: "/feedback",
+    name: "Feedback",
+    component: FeedbackView,
   },
 ];
 

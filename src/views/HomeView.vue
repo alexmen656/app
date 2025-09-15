@@ -92,11 +92,11 @@
                 <span>Chat</span>
             </div>
             
-            <div class="action-chip" @click="goToView('weight')">
+            <div class="action-chip" @click="openWeightModal">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7zm1-11h-2v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                    <path d="M12,2C6.48,2 2,6.48 2,12C2,17.52 6.48,22 12,22C17.52,22 22,17.52 22,12C22,6.48 17.52,2 12,2M13,7H11V11H7V13H11V17H13V13H17V11H13V7Z"/>
                 </svg>
-                <span>Weight</span>
+                <span>Log weight</span>
             </div>
             
             <div class="action-chip" @click="goToView('water')">
@@ -106,7 +106,7 @@
                 <span>Water</span>
             </div>
             
-            <div class="action-chip" @click="openFeedback">
+            <div class="action-chip" @click="goToView('feedback')">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"/>
                 </svg>
@@ -343,6 +343,9 @@
             ]" :show-usage-info="true" :scans-used="currentScanUsage?.currentCount || 0"
             :scans-total="currentScanUsage?.limit || 10" @close="closeScanLimitBlocker"
             @upgrade="handleScanLimitUpgrade" />
+
+        <!-- Weight Log Modal -->
+        <WeightLogModal :show="showWeightModal" @close="closeWeightModal" @logged="handleWeightLogged" />
     </div>
 </template>
 
@@ -363,6 +366,7 @@ import { getLocalizedName } from '../utils/localization'
 import PremiumBlocker from '../components/PremiumBlocker.vue'
 import BottomNavigation from '../components/BottomNavigation.vue'
 import AddFoodModal from '../components/AddFoodModal.vue'
+import WeightLogModal from '../components/WeightLogModal.vue'
 
 const router = useRouter()
 const { t, locale } = useI18n()
@@ -372,6 +376,7 @@ const showPremiumBanner = ref(true)
 const showScanLimitBlocker = ref(false)
 const currentScanUsage = ref<any>(null)
 const isAddFoodModalVisible = ref(false)
+const showWeightModal = ref(false)
 
 async function openNativeScanner() {
     try {
@@ -716,19 +721,22 @@ function goToView(view: string) {
     router.push(`/${view}`)
 }
 
-function openFeedback() {
-    // Open app store for feedback or feedback form
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
-    const isAndroid = /Android/.test(navigator.userAgent)
+function openWeightModal() {
+    showWeightModal.value = true
+}
+
+function closeWeightModal() {
+    showWeightModal.value = false
+}
+
+function handleWeightLogged(weight: number, notes: string) {
+    console.log('Weight logged:', weight, 'kg', notes ? `Notes: ${notes}` : '')
+    // Here you would typically save to your backend or local storage
+    // For now, just close the modal
+    closeWeightModal()
     
-    if (isIOS) {
-        window.open('https://apps.apple.com/app/kalbuddy/id123456789', '_blank')
-    } else if (isAndroid) {
-        window.open('https://play.google.com/store/apps/details?id=com.kalbuddy.app', '_blank')
-    } else {
-        // Fallback - could open a feedback form
-        router.push('/feedback')
-    }
+    // Optionally show a success message or update the UI
+    // You could also trigger a refresh of weight data
 }
 
 function toggleAddFoodModal(val: boolean) {

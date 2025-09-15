@@ -891,5 +891,32 @@
       "water": { "name": "Wasser" },
       "coffee": { "name": "Kaffee" }
     }
-  }
+  },
+  "feedback": {
+    "title": "Feedback",
+    "typeLabel": "Was möchten Sie melden?",
+    "bugReport": "Bug melden",
+    "bugDescription": "Ein Fehler oder Problem in der App",
+    "featureRequest": "Feature vorschlagen",
+    "featureDescription": "Eine neue Funktion oder Verbesserung",
+    "descriptionLabel": "Beschreibung",
+    "bugPlaceholder": "Bitte beschreiben Sie den Fehler so detailliert wie möglich. Was ist passiert? Wann tritt das Problem auf? Welche Schritte haben zu dem Fehler geführt?",
+    "featurePlaceholder": "Beschreiben Sie Ihre Idee für eine neue Funktion oder Verbesserung. Wie würde das Ihre Erfahrung mit der App verbessern?",
+    "defaultPlaceholder": "Bitte wählen Sie zuerst einen Feedback-Typ aus...",
+    "submit": "Feedback senden",
+    "submitting": "Wird gesendet...",
+    "successTitle": "Vielen Dank!",
+    "successMessage": "Ihr Feedback wurde erfolgreich gesendet. Wir werden es schnellstmöglich bearbeiten.",
+    "backToHome": "Zurück zur Startseite"
+  },
+  "weight": {
+    "logWeight": "Gewicht eintragen",
+    "weightLabel": "Gewicht",
+    "weightPlaceholder": "75.0",
+    "notesLabel": "Notizen",
+    "optional": "optional",
+    "notesPlaceholder": "z.B. nach dem Training, morgens...",
+    "logging": "Wird gespeichert..."
+  },
+  "cancel": "Abbrechen"
 }
