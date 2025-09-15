@@ -5,7 +5,7 @@ console.log('🧪 Testing Kaloriq API...');
 const testBarcodeAPI = async (barcode = '8901030895486') => {
     try {
         console.log(`\n📊 Testing Barcode API with: ${barcode}`);
-        const response = await fetch(`https://v2-1.api.kalbuddy.com/api/product/${barcode}`);
+        const response = await fetch(`https://api.kalbuddy.com/api/product/${barcode}`);
         
         if (!response.ok) {
             throw new Error(`API error: ${response.status}`);
@@ -54,7 +54,7 @@ const testFoodAnalysisAPI = async () => {
             const formData = new FormData();
             formData.append('image', blob, 'test.jpg');
             
-            const response = await fetch('https://v2-1.api.kalbuddy.com/api/food/analyze', {
+            const response = await fetch('https://api.kalbuddy.com/api/food/analyze', {
                 method: 'POST',
                 body: formData
             });
