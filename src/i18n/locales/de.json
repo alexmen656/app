@@ -148,6 +148,11 @@
     "aiSourceDescription": "Diese Analyse wurde mit künstlicher Intelligenz durchgeführt, um Lebensmittel zu identifizieren und Nährwerte zu schätzen. KI-Schätzungen sind möglicherweise nicht 100% genau.",
     "databaseSourceDescription": "Diese Daten stammen aus unserer umfassenden Produktdatenbank mit verifizierten Nährwertinformationen.",
     "aboutSource": "Über die Quelle",
+    "options": "Optionen",
+    "addToFavorites": "Zu Favoriten hinzufügen",
+    "removeFromFavorites": "Aus Favoriten entfernen",
+    "viewDetails": "Details anzeigen",
+    "share": "Teilen",
     "sourceExplanation": {
       "database": "Diese Daten stammen aus unserer umfassenden Produktdatenbank mit verifizierten Nährwertinformationen.",
       "openFoodFacts": "Diese Nährwertdaten stammen von Open Food Facts, einer kollaborativen, kostenlosen und offenen Datenbank für Lebensmittelprodukte aus aller Welt. Die Informationen werden von Nutzern beigetragen und von der Community verifiziert.",

@@ -148,6 +148,11 @@
     "aiSourceDescription": "This analysis was performed using artificial intelligence to identify foods and estimate nutritional values. AI estimates may not be 100% accurate.",
     "databaseSourceDescription": "This data comes from our comprehensive product database with verified nutrition information.",
     "aboutSource": "About Source",
+    "options": "Options",
+    "addToFavorites": "Add to Favorites",
+    "removeFromFavorites": "Remove from Favorites",
+    "viewDetails": "View Details",
+    "share": "Share",
     "sourceExplanation": {
       "database": "This data comes from our comprehensive product database with verified nutrition information.",
       "openFoodFacts": "This nutritional data comes from Open Food Facts, a collaborative, free and open database of food products from around the world. The information is contributed by users and verified by the community.",

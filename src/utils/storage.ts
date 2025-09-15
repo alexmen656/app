@@ -271,3 +271,190 @@ export class ScanHistory {
     }
   }
 }
+
+// Favorite food utilities
+export class FavoriteFood {
+  private static readonly FAVORITES_KEY = 'favoriteFood';
+
+  // Get all favorite foods
+  static async get(): Promise<any[]> {
+    try {
+      const favorites = await Storage.get(this.FAVORITES_KEY);
+      return Array.isArray(favorites) ? favorites : [];
+    } catch (error) {
+      console.error('Favorite food get error:', error);
+      return [];
+    }
+  }
+
+  // Add food to favorites
+  static async add(foodItem: any): Promise<void> {
+    try {
+      const favorites = await this.get();
+      
+      // Create a unique ID for the favorite item if it doesn't exist
+      const favoriteItem = {
+        id: foodItem.id || Date.now(),
+        favoriteId: Date.now(), // Unique ID for the favorite entry
+        name: foodItem.name || foodItem.product_name || 'Unknown Food',
+        type: foodItem.type || 'unknown', // 'food', 'barcode', etc.
+        data: foodItem.data || foodItem,
+        image: foodItem.image || foodItem.data?.image || null,
+        dateAdded: new Date().toISOString(),
+        // Store nutrition info for quick access
+        nutrition: {
+          calories: this.extractCalories(foodItem),
+          protein: this.extractProtein(foodItem),
+          carbs: this.extractCarbs(foodItem),
+          fats: this.extractFats(foodItem)
+        }
+      };
+
+      // Check if already in favorites (by name and type)
+      const exists = favorites.some(fav => 
+        fav.name.toLowerCase() === favoriteItem.name.toLowerCase() && 
+        fav.type === favoriteItem.type
+      );
+
+      if (!exists) {
+        favorites.unshift(favoriteItem);
+        await Storage.set(this.FAVORITES_KEY, favorites);
+        
+        // Dispatch event for UI updates
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('favoritesUpdated'));
+        }
+      }
+      
+    } catch (error) {
+      console.error('Favorite food add error:', error);
+    }
+  }
+
+  // Remove food from favorites
+  static async remove(favoriteId: number): Promise<void> {
+    try {
+      const favorites = await this.get();
+      const filteredFavorites = favorites.filter(fav => fav.favoriteId !== favoriteId);
+      
+      await Storage.set(this.FAVORITES_KEY, filteredFavorites);
+      
+      // Dispatch event for UI updates
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('favoritesUpdated'));
+      }
+      
+    } catch (error) {
+      console.error('Favorite food remove error:', error);
+    }
+  }
+
+  // Check if food is in favorites
+  static async isFavorite(foodItem: any): Promise<boolean> {
+    try {
+      const favorites = await this.get();
+      const name = foodItem.name || foodItem.product_name || 'Unknown Food';
+      const type = foodItem.type || 'unknown';
+      
+      return favorites.some(fav => 
+        fav.name.toLowerCase() === name.toLowerCase() && 
+        fav.type === type
+      );
+      
+    } catch (error) {
+      console.error('Favorite food check error:', error);
+      return false;
+    }
+  }
+
+  // Toggle favorite status
+  static async toggle(foodItem: any): Promise<boolean> {
+    try {
+      const isFav = await this.isFavorite(foodItem);
+      
+      if (isFav) {
+        // Find and remove
+        const favorites = await this.get();
+        const name = foodItem.name || foodItem.product_name || 'Unknown Food';
+        const type = foodItem.type || 'unknown';
+        
+        const item = favorites.find(fav => 
+          fav.name.toLowerCase() === name.toLowerCase() && 
+          fav.type === type
+        );
+        
+        if (item) {
+          await this.remove(item.favoriteId);
+        }
+        return false;
+      } else {
+        await this.add(foodItem);
+        return true;
+      }
+      
+    } catch (error) {
+      console.error('Favorite food toggle error:', error);
+      return false;
+    }
+  }
+
+  // Clear all favorites
+  static async clear(): Promise<void> {
+    try {
+      await Storage.remove(this.FAVORITES_KEY);
+      
+      // Dispatch event for UI updates
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('favoritesUpdated'));
+      }
+      
+    } catch (error) {
+      console.error('Favorite food clear error:', error);
+    }
+  }
+
+  // Get favorites by type
+  static async getByType(type: string): Promise<any[]> {
+    try {
+      const favorites = await this.get();
+      return favorites.filter(fav => fav.type === type);
+    } catch (error) {
+      console.error('Favorite food getByType error:', error);
+      return [];
+    }
+  }
+
+  // Helper methods to extract nutrition from different food item formats
+  private static extractCalories(foodItem: any): number {
+    if (foodItem.nutrition?.calories) return foodItem.nutrition.calories;
+    if (foodItem.data?.total?.calories) return foodItem.data.total.calories;
+    if (foodItem.data?.nutriments?.energy_kcal_100g) return foodItem.data.nutriments.energy_kcal_100g;
+    if (foodItem.calories) return foodItem.calories;
+    return 0;
+  }
+
+  private static extractProtein(foodItem: any): number {
+    if (foodItem.nutrition?.protein) return foodItem.nutrition.protein;
+    if (foodItem.data?.total?.protein) return foodItem.data.total.protein;
+    if (foodItem.data?.nutriments?.proteins_100g) return foodItem.data.nutriments.proteins_100g;
+    if (foodItem.protein) return foodItem.protein;
+    return 0;
+  }
+
+  private static extractCarbs(foodItem: any): number {
+    if (foodItem.nutrition?.carbs) return foodItem.nutrition.carbs;
+    if (foodItem.data?.total?.carbs) return foodItem.data.total.carbs;
+    if (foodItem.data?.nutriments?.carbohydrates_100g) return foodItem.data.nutriments.carbohydrates_100g;
+    if (foodItem.carbs) return foodItem.carbs;
+    return 0;
+  }
+
+  private static extractFats(foodItem: any): number {
+    if (foodItem.nutrition?.fats) return foodItem.nutrition.fats;
+    if (foodItem.data?.total?.fat) return foodItem.data.total.fat;
+    if (foodItem.data?.total?.fats) return foodItem.data.total.fats;
+    if (foodItem.data?.nutriments?.fat_100g) return foodItem.data.nutriments.fat_100g;
+    if (foodItem.fats || foodItem.fat) return foodItem.fats || foodItem.fat;
+    return 0;
+  }
+}
