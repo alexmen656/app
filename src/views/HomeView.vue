@@ -275,8 +275,8 @@
                     <div class="food-image">
                         <img v-if="item.image && !item.image.includes('placeholder') && !item.image.includes('image_')"
                             :src="item.image" :alt="item.name" />
-                        <img v-else-if="item.image && item.image.includes('image_')" 
-                            :src="getItemImageSrc(item)" :alt="item.name" />
+                        <img v-else-if="item.image && item.image.includes('image_')" :src="getItemImageSrc(item)"
+                            :alt="item.name" />
                         <span v-else-if="item.icon" class="food-db-icon">{{ item.icon }}</span>
                         <span v-else>{{ item.type === 'food' ? '🍽️' : '📦' }}</span>
                     </div>
@@ -419,15 +419,15 @@ const imageUris = ref(new Map<string, string>())
 // Reactive computed property for each item's image
 function getItemImageSrc(item: any) {
     if (!item.image) return '';
-    
+
     if (item.image.includes('placeholder')) return item.image;
-    
+
     if (item.image.startsWith('image_')) {
         // Return cached URI or empty string if not yet loaded
         console.log('Getting image URI for', item.image, imageUris.value.get(item.image))
         return imageUris.value.get(item.image) || '';
     }
-    
+
     return item.image;
 }
 
@@ -438,7 +438,7 @@ async function migrateBase64ImagesToFiles() {
         const history = await ScanHistory.get();
         let migrationCount = 0;
         let updatedHistory = [...history];
-        
+
         for (let i = 0; i < updatedHistory.length; i++) {
             const scan = updatedHistory[i];
             if (scan.image && typeof scan.image === 'string' && scan.image.startsWith('data:image/')) {
@@ -459,13 +459,14 @@ async function migrateBase64ImagesToFiles() {
                 }
             }
         }
-        
+
         if (migrationCount > 0) {
             // Save updated history
             await ScanHistory.clear();
-            for (const scan of updatedHistory) {
-                await ScanHistory.add(scan);
+            for (let i = updatedHistory.length - 1; i >= 0; i--) {
+                await ScanHistory.add(updatedHistory[i]);
             }
+
             console.log(`🎉 Migration completed! Converted ${migrationCount} base64 images to files.`);
         } else {
             console.log('ℹ️ No base64 images found to migrate.');
@@ -481,9 +482,9 @@ async function loadImageUris(items: any[]) {
         .map(item => item.image)
         .filter(image => image && typeof image === 'string' && image.startsWith('image_'))
         .filter(image => !imageUris.value.has(image)) // Only load images we don't have cached
-    
+
     if (imagesToLoad.length === 0) return;
-    
+
     // Load images in parallel
     await Promise.allSettled(
         imagesToLoad.map(async (imagePath) => {
