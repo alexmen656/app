@@ -56,7 +56,10 @@
                     class="food-card"
                     @click="selectFood(food)"
                 >
-                    <div class="food-icon">{{ food.icon }}</div>
+                    <div class="food-icon">
+                        <img v-if="food.image && !food.image.includes('placeholder')" :src="food.image" :alt="food.name" />
+                        <span v-else class="food-db-icon">{{ food.icon }}</span>
+                    </div>
                     <div class="food-info">
                         <h4 class="food-name">{{ food.name || $t(`foodDatabase.foods.${food.id}.name`) }}</h4>
                         <div class="food-calories">
@@ -89,7 +92,10 @@
 
                 <div class="modal-body">
                     <div class="food-preview">
-                        <div class="food-large-icon">{{ selectedFood?.icon }}</div>
+                        <div class="food-large-icon">
+                            <img v-if="selectedFood?.image && !selectedFood.image.includes('placeholder')" :src="selectedFood.image" :alt="selectedFood.name" />
+                            <span v-else class="food-db-icon">{{ selectedFood?.icon }}</span>
+                        </div>
                         <div class="food-nutrition">
                             <div class="nutrition-item">
                                 <span class="nutrition-label">{{ $t('foodDatabase.calories') }}</span>
@@ -181,6 +187,7 @@ interface Food {
   dbId: number
   category: string
   icon: string
+  image?: string
   name?: string
   calories: number
   protein: number
@@ -286,6 +293,7 @@ async function loadFavorites() {
             dbId: fav.favoriteId,
             category: 'favorites',
             icon: '❤️',
+            image: fav.image || '',
             name: fav.name,
             calories: fav.nutrition.calories,
             protein: fav.nutrition.protein,
@@ -661,6 +669,17 @@ onMounted(async () => {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     flex-shrink: 0;
+    overflow: hidden;
+}
+
+.food-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.food-db-icon {
+    font-size: 40px;
 }
 
 .food-info {
@@ -775,6 +794,17 @@ onMounted(async () => {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 16px;
     flex-shrink: 0;
+    overflow: hidden;
+}
+
+.food-large-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.food-large-icon .food-db-icon {
+    font-size: 60px;
 }
 
 .food-nutrition {
