@@ -619,19 +619,23 @@ async function loadScanHistory() {
     try {
         const history = await ScanHistory.get()
         const selectedDateString = selectedDate.value.toISOString().split('T')[0]
+        const today = new Date().toISOString().split('T')[0]
 
-        // Filter scans for selected date
-        const dateScans = history.filter(scan => {
-            const scanDate = new Date(scan.timestamp).toISOString().split('T')[0]
-            return scanDate === selectedDateString
-        })
-
-        scanHistory.value = dateScans.slice(0, 10)
+        // If today is selected, show last 10 scans regardless of date
+        if (selectedDateString === today) {
+            scanHistory.value = history.slice(0, 10)
+        } else {
+            // Filter scans for selected date
+            const dateScans = history.filter(scan => {
+                const scanDate = new Date(scan.timestamp).toISOString().split('T')[0]
+                return scanDate === selectedDateString
+            })
+            scanHistory.value = dateScans.slice(0, 10)
+        }
 
         calculateNutritionFromHistory(history)
         
         // Only update widget data and sync if it's today
-        const today = new Date().toISOString().split('T')[0]
         if (selectedDateString === today) {
             await WidgetDataManager.updateWidgetData()
             await syncToHealthKit()
@@ -1485,7 +1489,8 @@ async function deleteFoodItem(itemId: number) {
     gap: 15px;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 15px;
-    padding: 12px;
+    padding: 8px;
+    padding-right: 12px;
     backdrop-filter: blur(10px);
     flex: 1;
     margin-bottom: 0;
@@ -1549,8 +1554,8 @@ async function deleteFoodItem(itemId: number) {
 }
 
 .food-image {
-    width: 69px;
-    height: 69px;
+    width: 72px;
+    height: 72px;
     border-radius: 10px;
     overflow: hidden;
     background: #333;
@@ -1646,7 +1651,7 @@ async function deleteFoodItem(itemId: number) {
 .add-button {
     position: fixed;
     bottom: 90px;
-    right: 16px;
+    right: 10px;
     width: 56px;
     height: 56px;
     background: white;
