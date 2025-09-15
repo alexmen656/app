@@ -1,5 +1,5 @@
 import { Preferences } from "@capacitor/preferences";
-//import { Filesystem, Directory, Encoding } from "@capacitor/filesystem";
+import { Filesystem, Directory } from "@capacitor/filesystem"; //Encoding
 
 // Storage utility using Capacitor Preferences instead of localStorage
 export class Storage {
@@ -422,5 +422,42 @@ export class FavoriteFood {
       return foodItem.data.nutriments.fat_100g;
     if (foodItem.fats || foodItem.fat) return foodItem.fats || foodItem.fat;
     return 0;
+  }
+}
+
+export class ImageFile {
+  static async save(imageContent: string): Promise<string> {
+    try {
+      if (!imageContent || typeof imageContent !== 'string') {
+        console.warn('Invalid image content provided to ImageFile.save');
+        return "";
+      }
+
+      const fileName = `image_${Date.now()}_${Math.random()
+        .toString(36)
+        .slice(2, 8)}.jpg`;
+
+      const base64Data = imageContent.includes(",")
+        ? imageContent.split(",")[1]
+        : imageContent;
+
+      if (!base64Data || base64Data.length === 0) {
+        console.warn('Empty base64 data after processing');
+        return "";
+      }
+
+      await Filesystem.writeFile({
+        path: `images/${fileName}`,
+        data: base64Data,
+        directory: Directory.Data,
+        recursive: true,
+      });
+      
+      console.log(`Image file saved successfully: ${fileName}`);
+      return fileName;
+    } catch (error) {
+      console.error("Image file save error:", error);
+      return "";
+    }
   }
 }
