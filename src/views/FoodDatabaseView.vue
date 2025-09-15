@@ -164,9 +164,9 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { ScanHistory } from '../utils/storage'
+import { ScanHistory, FavoriteFood } from '../utils/storage'
 
 // TypeScript interfaces
 interface Category {
@@ -191,6 +191,7 @@ interface Food {
 }
 
 const router = useRouter()
+const route = useRoute()
 const { t, locale } = useI18n()
 
 // API Configuration
@@ -207,6 +208,7 @@ const isLoading = ref(false)
 const categories = ref<Category[]>([])
 const foods = ref<Food[]>([])
 const allFoods = ref<Food[]>([])
+const favoriteFoods = ref<Food[]>([])
 
 // Load categories from API
 async function loadCategories() {
@@ -216,9 +218,10 @@ async function loadCategories() {
         const data = await response.json()
         
         if (data.success) {
-            // Add 'all' category at the beginning
+            // Add 'all' and 'favorites' categories at the beginning
             const allCategories = [
                 { id: 'all', icon: '🍽️', name: t('foodDatabase.categoryNames.all'), dbId: 0 },
+                { id: 'favorites', icon: '❤️', name: t('foodDatabase.categoryNames.favorites'), dbId: -1 },
                 ...data.data.map((cat: any) => ({
                     id: cat.code,
                     icon: cat.icon,
@@ -274,12 +277,42 @@ function getCategoryCodeById(categoryId: number): string {
     return category ? category.id : 'all'
 }
 
-const filteredFoods = computed(() => {
-    let result = allFoods.value
+// Load favorites from storage
+async function loadFavorites() {
+    try {
+        const favorites = await FavoriteFood.get()
+        favoriteFoods.value = favorites.map((fav: any) => ({
+            id: `fav_${fav.favoriteId}`,
+            dbId: fav.favoriteId,
+            category: 'favorites',
+            icon: '❤️',
+            name: fav.name,
+            calories: fav.nutrition.calories,
+            protein: fav.nutrition.protein,
+            carbs: fav.nutrition.carbs,
+            fats: fav.nutrition.fats,
+            unit: 'piece',
+            unit_name: t('foodDatabase.units.piece')
+        }))
+    } catch (error) {
+        console.error('Error loading favorites:', error)
+        favoriteFoods.value = []
+    }
+}
 
-    // Filter by category
-    if (selectedCategory.value !== 'all') {
-        result = result.filter(food => food.category === selectedCategory.value)
+const filteredFoods = computed(() => {
+    let result: Food[] = []
+    
+    if (selectedCategory.value === 'favorites') {
+        // Use favorites
+        result = favoriteFoods.value
+    } else {
+        result = allFoods.value
+        
+        // Filter by category
+        if (selectedCategory.value !== 'all') {
+            result = result.filter(food => food.category === selectedCategory.value)
+        }
     }
 
     // Filter by search query
@@ -297,6 +330,11 @@ const filteredFoods = computed(() => {
 
 function selectCategory(categoryId: string) {
     selectedCategory.value = categoryId
+    
+    // Load favorites when favorites category is selected
+    if (categoryId === 'favorites') {
+        loadFavorites()
+    }
 }
 
 function selectFood(food: Food) {
@@ -374,7 +412,7 @@ async function addFoodToHistory() {
         // Create scan entry compatible with existing system
         const scanEntry = {
             id: Date.now(),
-            type: 'food' as const,
+            type: selectedCategory.value === 'favorites' ? 'favorite' : 'food' as const,
             timestamp: new Date().toISOString(),
             time: new Date().toLocaleTimeString('de-DE', { 
                 hour: '2-digit', 
@@ -427,6 +465,22 @@ onMounted(async () => {
     
     // Set initial filtered foods
     foods.value = allFoods.value
+    
+    // Check for category parameter from URL
+    const categoryParam = route.query.category as string
+    if (categoryParam) {
+        selectedCategory.value = categoryParam
+        if (categoryParam === 'favorites') {
+            await loadFavorites()
+        }
+    }
+    
+    // Listen for favorites updates
+    window.addEventListener('favoritesUpdated', () => {
+        if (selectedCategory.value === 'favorites') {
+            loadFavorites()
+        }
+    })
 })
 </script>
 

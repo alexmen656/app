@@ -30,7 +30,7 @@
                                 </svg>
                                 <div v-else class="share-spinner"></div>
                             </button>
-                            <button class="nutrition-menu" @click="showDetailsModal = true">
+                            <button class="nutrition-menu" @click="showMenuModal = true">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                                     <circle cx="12" cy="12" r="2" />
                                     <circle cx="12" cy="5" r="2" />
@@ -268,6 +268,42 @@
         <NutritionDetailsModal :show="showDetailsModal" :product="product" :amount="amount"
             @close="showDetailsModal = false" />
 
+        <!-- Menu Modal -->
+        <div v-if="showMenuModal" class="modal-overlay" @click="showMenuModal = false">
+            <div class="modal menu-modal" @click.stop>
+                <h3>{{ $t('nutrition.options') }}</h3>
+                <div class="menu-options">
+                    <button class="menu-option" @click="toggleFavorite">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path v-if="!isFavorite" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path v-else d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span>{{ isFavorite ? $t('nutrition.removeFromFavorites') : $t('nutrition.addToFavorites') }}</span>
+                    </button>
+                    <button class="menu-option" @click="openDetailsModal">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                            <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        <span>{{ $t('nutrition.viewDetails') }}</span>
+                    </button>
+                    <button class="menu-option" @click="shareNutrition">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <circle cx="18" cy="5" r="3" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="6" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="18" cy="19" r="3" stroke="currentColor" stroke-width="2"/>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" stroke="currentColor" stroke-width="2"/>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        <span>{{ $t('nutrition.share') }}</span>
+                    </button>
+                </div>
+                <div class="modal-actions">
+                    <button class="cancel-btn" @click="showMenuModal = false">{{ $t('common.close') }}</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Fix Modal -->
         <div v-if="showFixModal" class="modal-overlay" @click="showFixModal = false">
             <div class="modal fix-modal" @click.stop>
@@ -435,7 +471,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { Share } from '@capacitor/share';
 import { Filesystem, Directory } from '@capacitor/filesystem';
-import { BarcodeCache, ScanHistory } from '../utils/storage';
+import { BarcodeCache, ScanHistory, FavoriteFood } from '../utils/storage';
 import { WidgetDataManager, StreakManager } from '../utils/widgetData';
 import { getLocalizedName, getLocalizedNotes, getLocalizedAmount, capitalizeIfLetter } from '../utils/localization';
 import { getCurrentLanguage } from '../i18n';
@@ -455,6 +491,8 @@ const showImageModal = ref(false);
 const editedProduct = ref({});
 const isLoading = ref(true);
 const isSharing = ref(false);
+const isFavorite = ref(false);
+const showMenuModal = ref(false);
 
 // Touch handling for double-tap
 const lastTap = ref(0);
@@ -741,6 +779,9 @@ onMounted(async () => {
     setTimeout(() => {
         isLoading.value = false;
     }, 300);
+    
+    // Check favorite status after product is loaded
+    await checkFavoriteStatus();
 });
 
 const backgroundStyle = computed(() => {
@@ -825,6 +866,49 @@ function showImagePreview() {
     if (productImage.value) {
         showImageModal.value = true;
     }
+}
+
+// Favorite functionality
+async function checkFavoriteStatus() {
+    if (product.value) {
+        const favoriteData = {
+            type: 'barcode',
+            product_name: product.value.product_name,
+            data: product.value
+        };
+        isFavorite.value = await FavoriteFood.isFavorite(favoriteData);
+    }
+}
+
+async function toggleFavorite() {
+    if (!product.value) return;
+    
+    try {
+        const favoriteData = {
+            type: 'barcode',
+            product_name: product.value.product_name,
+            data: product.value,
+            image: productImage.value
+        };
+        
+        const newStatus = await FavoriteFood.toggle(favoriteData);
+        isFavorite.value = newStatus;
+        showMenuModal.value = false;
+        
+        // Show toast notification (optional)
+        if (newStatus) {
+            console.log('Added to favorites');
+        } else {
+            console.log('Removed from favorites');
+        }
+    } catch (error) {
+        console.error('Error toggling favorite:', error);
+    }
+}
+
+function openDetailsModal() {
+    showMenuModal.value = false;
+    showDetailsModal.value = true;
 }
 
 function handleTouchStart(event) {
@@ -1941,6 +2025,52 @@ async function saveAndReturn() {
     background: #333;
 }
 
+/* Menu Modal Styles */
+.menu-modal {
+    max-width: 320px;
+}
+
+.menu-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.menu-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #f8f9fa;
+    border: none;
+    border-radius: 16px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    text-align: left;
+}
+
+.menu-option:hover {
+    background: #e9ecef;
+    transform: translateY(-1px);
+}
+
+.menu-option:active {
+    transform: translateY(0);
+}
+
+.menu-option svg {
+    flex-shrink: 0;
+    color: #666;
+}
+
+.menu-option span {
+    flex: 1;
+}
+
 /* Loading State */
 .nutrition-loading {
     display: flex;
@@ -2298,6 +2428,20 @@ async function saveAndReturn() {
 
     .save-btn:hover {
         background: #e5e5e7;
+    }
+
+    /* Menu Modal Dark Mode */
+    .menu-option {
+        background: #1c1c1e;
+        color: #fff;
+    }
+
+    .menu-option:hover {
+        background: #2c2c2e;
+    }
+
+    .menu-option svg {
+        color: #8e8e93;
     }
 
     .source-explanation {

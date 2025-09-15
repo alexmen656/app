@@ -28,7 +28,8 @@
     "noScansSubtitle": "Nutzen Sie den Scan-Button um Ihr erstes Essen zu scannen!",
     "scannedFood": "Gescanntes Essen",
     "unknownProduct": "Unbekanntes Produkt",
-    "showAllScans": "Alle Scans anzeigen"
+    "showAllScans": "Alle Scans anzeigen",
+    "favorites": "Favoriten"
   },
   "history": {
     "title": "Verlauf",
@@ -854,6 +855,7 @@
     "adding": "Wird hinzugefügt...",
     "categoryNames": {
       "all": "Alle",
+      "favorites": "Favoriten",
       "fruits": "Obst",
       "vegetables": "Gemüse",
       "proteins": "Proteine",
