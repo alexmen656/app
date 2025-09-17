@@ -328,7 +328,7 @@
             </div>
 
             <!-- Show All Scans Link -->
-            <div v-if="recentFoods.length > 5" class="show-all-link">
+            <div class="show-all-link">
                 <router-link to="/all-scans" class="show-all-btn">
                     {{ $t('home.showAllScans') }}
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">

@@ -57,7 +57,8 @@
                     @click="selectFood(food)"
                 >
                     <div class="food-icon">
-                        <img v-if="food.image && !food.image.includes('placeholder')" :src="food.image" :alt="food.name" />
+                        <img v-if="food.image && !food.image.includes('placeholder') && !food.image.startsWith('image_')" :src="food.image" :alt="food.name" />
+                        <img v-else-if="food.image && food.image.startsWith('image_')" :src="getItemImageSrc(food)" :alt="food.name" />
                         <span v-else class="food-db-icon">{{ food.icon }}</span>
                     </div>
                     <div class="food-info">
@@ -93,7 +94,8 @@
                 <div class="modal-body">
                     <div class="food-preview">
                         <div class="food-large-icon">
-                            <img v-if="selectedFood?.image && !selectedFood.image.includes('placeholder')" :src="selectedFood.image" :alt="selectedFood.name" />
+                            <img v-if="selectedFood?.image && !selectedFood.image.includes('placeholder') && !selectedFood.image.startsWith('image_')" :src="selectedFood.image" :alt="selectedFood.name" />
+                            <img v-else-if="selectedFood?.image && selectedFood.image.startsWith('image_')" :src="getItemImageSrc(selectedFood)" :alt="selectedFood.name" />
                             <span v-else class="food-db-icon">{{ selectedFood?.icon }}</span>
                         </div>
                         <div class="food-nutrition">
@@ -172,7 +174,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { ScanHistory, FavoriteFood } from '../utils/storage'
+import { ScanHistory, FavoriteFood, ImageFile } from '../utils/storage'
 
 // TypeScript interfaces
 interface Category {
@@ -210,6 +212,46 @@ const selectedFood = ref<Food | null>(null)
 const selectedAmount = ref(1)
 const isAdding = ref(false)
 const isLoading = ref(false)
+
+// Image handling
+const imageUris = ref(new Map())
+
+function getItemImageSrc(item: any) {
+    if (!item.image) return '';
+    
+    if (item.image.includes('placeholder')) return item.image;
+    
+    if (item.image.startsWith('image_')) {
+        // Return cached URI or empty string if not yet loaded
+        return imageUris.value.get(item.image) || '';
+    }
+    
+    return item.image;
+}
+
+// Load image URIs for items with image_ prefixed paths
+async function loadImageUris(items: any[]) {
+    const imagesToLoad = items
+        .map(item => item.image)
+        .filter(image => image && typeof image === 'string' && image.startsWith('image_'))
+        .filter(image => !imageUris.value.has(image)) // Only load images we don't have cached
+    
+    if (imagesToLoad.length === 0) return;
+    
+    // Load images in parallel
+    await Promise.allSettled(
+        imagesToLoad.map(async (imagePath) => {
+            try {
+                const uri = await ImageFile.get(imagePath);
+                if (uri) {
+                    imageUris.value.set(imagePath, uri);
+                }
+            } catch (error) {
+                console.error(`Failed to load image ${imagePath}:`, error);
+            }
+        })
+    );
+}
 
 // Dynamic data from API
 const categories = ref<Category[]>([])
@@ -302,6 +344,9 @@ async function loadFavorites() {
             unit: 'piece',
             unit_name: t('foodDatabase.units.piece')
         }))
+        
+        // Load images for favorites
+        await loadImageUris(favoriteFoods.value)
     } catch (error) {
         console.error('Error loading favorites:', error)
         favoriteFoods.value = []

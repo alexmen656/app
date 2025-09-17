@@ -866,15 +866,40 @@ function removeFood(index) {
 // Favorite functionality
 async function checkFavoriteStatus() {
     if (scanData.value) {
-        isFavorite.value = await FavoriteFood.isFavorite(scanData.value);
+        // Create proper favorite data structure
+        const favoriteData = createFavoriteData(scanData.value);
+        isFavorite.value = await FavoriteFood.isFavorite(favoriteData);
     }
+}
+
+function createFavoriteData(scan) {
+    // Determine type based on scan data
+    let type = scan.type || 'unknown';
+    let name = 'Unknown Item';
+    
+    if (scan.type === 'food' && scan.data?.foods?.[0]) {
+        const firstFood = scan.data.foods[0];
+        name = getLocalizedName(firstFood) || 'Scanned Food';
+    } else if (scan.type === 'barcode' && scan.data?.product_name) {
+        name = scan.data.product_name;
+    } else if (scan.data?.name) {
+        name = scan.data.name;
+    }
+    
+    return {
+        type: type,
+        name: name,
+        data: scan,
+        image: getImageSrc()
+    };
 }
 
 async function toggleFavorite() {
     if (!scanData.value) return;
     
     try {
-        const newStatus = await FavoriteFood.toggle(scanData.value);
+        const favoriteData = createFavoriteData(scanData.value);
+        const newStatus = await FavoriteFood.toggle(favoriteData);
         isFavorite.value = newStatus;
         showMenuModal.value = false;
         

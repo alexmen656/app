@@ -877,9 +877,21 @@ function showImagePreview() {
 // Favorite functionality
 async function checkFavoriteStatus() {
     if (product.value) {
+        // Determine the correct type based on product data
+        let type = 'unknown';
+        if (product.value.type === 'food') {
+            type = 'food';
+        } else if (product.value.barcode) {
+            type = 'barcode';
+        } else if (product.value.type === 'label') {
+            type = 'label';
+        } else if (product.value.type === 'manual') {
+            type = 'manual';
+        }
+
         const favoriteData = {
-            type: 'barcode',
-            product_name: product.value.product_name,
+            type: type,
+            name: getLocalizedName(product.value) || product.value.product_name || 'Unknown Food',
             data: product.value
         };
         isFavorite.value = await FavoriteFood.isFavorite(favoriteData);
@@ -890,9 +902,21 @@ async function toggleFavorite() {
     if (!product.value) return;
 
     try {
+        // Determine the correct type based on product data
+        let type = 'unknown';
+        if (product.value.type === 'food') {
+            type = 'food';
+        } else if (product.value.barcode) {
+            type = 'barcode';
+        } else if (product.value.type === 'label') {
+            type = 'label';
+        } else if (product.value.type === 'manual') {
+            type = 'manual';
+        }
+
         const favoriteData = {
-            type: 'barcode',
-            product_name: product.value.product_name,
+            type: type,
+            name: getLocalizedName(product.value) || product.value.product_name || 'Unknown Food',
             data: product.value,
             image: productImage.value
         };
