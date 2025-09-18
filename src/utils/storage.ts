@@ -1,5 +1,6 @@
 import { Preferences } from "@capacitor/preferences";
 import { Filesystem, Directory } from "@capacitor/filesystem"; //Encoding
+import { getLocalizedName } from './localization';
 
 // Storage utility using Capacitor Preferences instead of localStorage
 export class Storage {
@@ -260,7 +261,7 @@ export class FavoriteFood {
       const favoriteItem = {
         id: foodItem.id || Date.now(),
         favoriteId: Date.now(), // Unique ID for the favorite entry
-        name: foodItem.name || foodItem.product_name || "Unknown Food",
+        name: getLocalizedName(foodItem) || "Unknown Food",
         type: foodItem.type || "unknown", // 'food', 'barcode', etc.
         data: foodItem.data || foodItem,
         image: foodItem.image || foodItem.data?.image || null,
@@ -318,7 +319,7 @@ export class FavoriteFood {
   static async isFavorite(foodItem: any): Promise<boolean> {
     try {
       const favorites = await this.get();
-      const name = foodItem.name || foodItem.product_name || "Unknown Food";
+      const name = getLocalizedName(foodItem) || "Unknown Food";
       const type = foodItem.type || "unknown";
 
       return favorites.some(
@@ -339,7 +340,7 @@ export class FavoriteFood {
       if (isFav) {
         // Find and remove
         const favorites = await this.get();
-        const name = foodItem.name || foodItem.product_name || "Unknown Food";
+        const name = getLocalizedName(foodItem) || "Unknown Food";
         const type = foodItem.type || "unknown";
 
         const item = favorites.find(

@@ -370,7 +370,7 @@ import { ref, computed, onMounted, onUnmounted, watch, type ComputedRef } from '
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { dailyGoals, isOnboardingCompleted, storeReady } from '../stores/userStore'
-import { ScanHistory, ImageFile } from '../utils/storage'
+import { ScanHistory, ImageFile, FavoriteFood, Storage } from '../utils/storage' //BarcodeCache,
 import { WidgetDataManager, StreakManager } from '../utils/widgetData'
 import { HealthKitService } from '../services/healthkit'
 import { InAppReview } from '@capacitor-community/in-app-review';
@@ -378,7 +378,7 @@ import { shouldShowReviewPrompt, setLastReviewPrompt, getNotificationSettings } 
 import { NotificationService } from '../services/notifications'
 import { useBarcodeScanner } from '../composables/useBarcodeScanner'
 import { isPremiumUser, onPremiumStatusChange } from '../utils/premiumManager' //premiumManager
-import { getLocalizedName } from '../utils/localization'
+import { getLocalizedName, migrateToNamesFormat, migrateFoodsArray } from '../utils/localization'
 import { WeightTracker } from '../utils/weightTracking'
 import PremiumBlocker from '../components/PremiumBlocker.vue'
 import BottomNavigation from '../components/BottomNavigation.vue'
@@ -476,6 +476,119 @@ async function migrateBase64ImagesToFiles() {
     }
 }
 
+// Migration function to convert old naming formats to names object
+async function migrateNamesToStandardFormat() {
+    try {
+        console.log('🔄 Starting names format migration...');
+        
+        // Migrate Scan History
+        const history = await ScanHistory.get();
+        let historyMigrationCount = 0;
+        let updatedHistory = [...history];
+
+        for (let i = 0; i < updatedHistory.length; i++) {
+            const scan = updatedHistory[i];
+            
+            // Check if migration is needed
+            const needsMigration = (
+                scan.data?.name || 
+                scan.data?.name_en || 
+                scan.data?.product_name || 
+                (scan.data?.foods && scan.data.foods.some((f: any) => f.name || f.name_en || f.product_name))
+            );
+
+            if (needsMigration) {
+                try {
+                    // Migrate scan data
+                    const migratedScan = { ...scan };
+                    if (migratedScan.data) {
+                        migratedScan.data = migrateFoodsArray(migratedScan.data);
+                    }
+                    
+                    updatedHistory[i] = migratedScan;
+                    historyMigrationCount++;
+                    console.log(`✅ Migrated names for scan ${scan.id}`);
+                } catch (error) {
+                    console.error(`❌ Failed to migrate names for scan ${scan.id}:`, error);
+                }
+            }
+        }
+
+        if (historyMigrationCount > 0) {
+            // Save updated history
+            await ScanHistory.clear();
+            for (let i = updatedHistory.length - 1; i >= 0; i--) {
+                await ScanHistory.add(updatedHistory[i]);
+            }
+            console.log(`🎉 Scan history migration completed! Migrated ${historyMigrationCount} items.`);
+        }
+
+        // Migrate Barcode Cache
+        const cacheKeys = await Storage.keys();
+        const barcodeKeys = cacheKeys.filter(key => key.startsWith('barcode_cache_'));
+        let cacheMigrationCount = 0;
+
+        for (const key of barcodeKeys) {
+            try {
+                const cached = await Storage.get(key);
+                if (cached?.data && (cached.data.name || cached.data.name_en || cached.data.product_name)) {
+                    const migratedData = {
+                        ...cached,
+                        data: migrateToNamesFormat(cached.data)
+                    };
+                    await Storage.set(key, migratedData);
+                    cacheMigrationCount++;
+                    console.log(`✅ Migrated cache for barcode: ${key}`);
+                }
+            } catch (error) {
+                console.error(`❌ Failed to migrate cache ${key}:`, error);
+            }
+        }
+
+        if (cacheMigrationCount > 0) {
+            console.log(`🎉 Barcode cache migration completed! Migrated ${cacheMigrationCount} items.`);
+        }
+
+        // Migrate Favorites
+        const favorites = await FavoriteFood.get();
+        let favoritesMigrationCount = 0;
+        let updatedFavorites = [...favorites];
+
+        for (let i = 0; i < updatedFavorites.length; i++) {
+            const fav = updatedFavorites[i];
+            
+            if (fav.name || fav.name_en || fav.product_name || (fav.data?.name || fav.data?.name_en || fav.data?.product_name)) {
+                try {
+                    const migratedFav = migrateToNamesFormat(fav);
+                    if (migratedFav.data) {
+                        migratedFav.data = migrateFoodsArray(migratedFav.data);
+                    }
+                    
+                    updatedFavorites[i] = migratedFav;
+                    favoritesMigrationCount++;
+                    console.log(`✅ Migrated favorite: ${fav.favoriteId}`);
+                } catch (error) {
+                    console.error(`❌ Failed to migrate favorite ${fav.favoriteId}:`, error);
+                }
+            }
+        }
+
+        if (favoritesMigrationCount > 0) {
+            await Storage.set('favoriteFood', updatedFavorites);
+            console.log(`🎉 Favorites migration completed! Migrated ${favoritesMigrationCount} items.`);
+        }
+
+        if (historyMigrationCount + cacheMigrationCount + favoritesMigrationCount === 0) {
+            console.log('ℹ️ No items found that need names format migration.');
+        } else {
+            console.log(`🎉 Names migration completed! Total migrated: ${historyMigrationCount + cacheMigrationCount + favoritesMigrationCount} items.`);
+        }
+        
+    } catch (error) {
+        console.error('❌ Error during names format migration:', error);
+    }
+}
+
 // Load image URIs for items with image_ prefixed paths
 async function loadImageUris(items: any[]) {
     const imagesToLoad = items
@@ -563,6 +676,13 @@ onMounted(async () => {
         await migrateBase64ImagesToFiles()
     } catch (error) {
         console.error('Error during image migration:', error)
+    }
+
+    // Run one-time migration for names format
+    try {
+        await migrateNamesToStandardFormat()
+    } catch (error) {
+        console.error('Error during names migration:', error)
     }
 
     try {
@@ -709,7 +829,7 @@ function transformBarcodeScan(scan: ScanData, amount: number): FoodItem {
     const nutriments = scan.data.nutriments || {}
     return {
         id: scan.id,
-        name: scan.data.product_name || t('home.unknownProduct'),
+        name: getLocalizedName(scan.data) || t('home.unknownProduct'),
         calories: Math.round((nutriments.energy_kcal_100g || 0) * amount),
         protein: Math.round((nutriments.proteins_100g || 0) * amount),
         carbs: Math.round((nutriments.carbohydrates_100g || 0) * amount),

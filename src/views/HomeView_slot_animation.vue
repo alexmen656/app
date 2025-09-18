@@ -204,6 +204,7 @@ import { useI18n } from 'vue-i18n'
 import { dailyGoals, isOnboardingCompleted, storeReady } from '../stores/userStore'
 import { ScanHistory } from '../utils/storage'
 import { WidgetDataManager, StreakManager } from '../utils/widgetData'
+import { getLocalizedName } from '../utils/localization'
 import { SlotCounterAnimation } from '../utils/slotAnimation'
 
 const router = useRouter()
@@ -409,7 +410,7 @@ const recentFoods = computed((): FoodItem[] => {
             const nutriments = scan.data.nutriments || {}
             return {
                 id: scan.id,
-                name: scan.data.product_name || t('home.unknownProduct'),
+                name: getLocalizedName(scan.data) || t('home.unknownProduct'),
                 calories: Math.round(nutriments.energy_kcal_100g || 0),
                 protein: Math.round(nutriments.proteins_100g || 0),
                 carbs: Math.round(nutriments.carbohydrates_100g || 0),

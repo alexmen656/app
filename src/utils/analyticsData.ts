@@ -1,6 +1,7 @@
 import { ScanHistory } from './storage';//Storage, 
 import { dailyGoals, userProfile } from '../stores/userStore';
 import { WeightTracker } from './weightTracking';
+import { getLocalizedName } from './localization';
 
 export interface DayData {
   date: string;
@@ -93,27 +94,6 @@ export class AnalyticsManager {
       let fats = 0;
       let name = '';
 
-      const getLocalizedName = (item: any) => {
-        const currentLanguage = localStorage.getItem('kaloriq-language') || 'en';
-        
-        if (item?.names && typeof item.names === 'object') {
-          if (item.names[currentLanguage]) {
-            return item.names[currentLanguage];
-          }
-          
-          const availableLanguages = Object.keys(item.names);
-          if (availableLanguages.length > 0) {
-            return item.names[availableLanguages[0]];
-          }
-        }
-        
-        if (currentLanguage === 'en' && item?.name_en) {
-          return item.name_en;
-        }
-        
-        return item?.name || item?.name_en || 'Unknown';
-      };
-
       if (scan.type === 'food' && scan.data.total) {
         calories = scan.data.total.calories || 0;
         protein = scan.data.total.protein || 0;
@@ -125,7 +105,7 @@ export class AnalyticsManager {
         protein = scan.data.nutriments.proteins_100g || 0;
         carbs = scan.data.nutriments.carbohydrates_100g || 0;
         fats = scan.data.nutriments.fat_100g || 0;
-        name = scan.data.product_name || 'Unbekanntes Produkt';
+        name = getLocalizedName(scan.data) || 'Unbekanntes Produkt';
       }
 
       totalCalories += calories;

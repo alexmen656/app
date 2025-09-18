@@ -476,10 +476,11 @@ async function addFoodToHistory() {
             icon: food.icon, // Add the food icon from database
             data: {
                 foods: [{
-                    name: food.name || t(`foodDatabase.foods.${food.id}.name`),
-                    name_de: food.name || t(`foodDatabase.foods.${food.id}.name`),
-                    name_en: food.name || t(`foodDatabase.foods.${food.id}.name`),
-                    name_es: food.name || t(`foodDatabase.foods.${food.id}.name`)
+                    names: {
+                        de: food.name || t(`foodDatabase.foods.${food.id}.name`),
+                        en: food.name || t(`foodDatabase.foods.${food.id}.name`),
+                        es: food.name || t(`foodDatabase.foods.${food.id}.name`)
+                    }
                 }],
                 total: {
                     calories: totalCalories,

@@ -288,7 +288,7 @@ function transformBarcodeScan(scan: ScanData, amount: number): FoodItem {
     const nutriments = scan.data.nutriments || {}
     return {
         id: scan.id,
-        name: scan.data.product_name || t('home.unknownProduct'),
+        name: getLocalizedName(scan.data) || t('home.unknownProduct'),
         calories: Math.round((nutriments.energy_kcal_100g || 0) * amount),
         protein: Math.round((nutriments.proteins_100g || 0) * amount),
         carbs: Math.round((nutriments.carbohydrates_100g || 0) * amount),

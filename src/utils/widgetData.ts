@@ -1,6 +1,7 @@
 import { Storage, ScanHistory } from './storage';
 import { dailyGoals } from '../stores/userStore';
 import { Preferences } from '@capacitor/preferences';
+import { getLocalizedName } from './localization';
 
 // Widget data structure for iOS widgets
 export interface WidgetData {
@@ -125,36 +126,10 @@ export class WidgetDataManager {
 
       // Prepare recent foods for widget
       const todayFoods = todaysScans.slice(0, 3).map(scan => {
-        // Import localization helper
-        const getLocalizedName = (item: any) => {
-          const currentLanguage = localStorage.getItem('kaloriq-language') || 'en';
-          
-          // Handle new multilingual structure
-          if (item?.names && typeof item.names === 'object') {
-            // Try current language first
-            if (item.names[currentLanguage]) {
-              return item.names[currentLanguage];
-            }
-            
-            // Fallback to any available language
-            const availableLanguages = Object.keys(item.names);
-            if (availableLanguages.length > 0) {
-              return item.names[availableLanguages[0]];
-            }
-          }
-          
-          // Handle legacy structure (backward compatibility)
-          if (currentLanguage === 'en' && item?.name_en) {
-            return item.name_en;
-          }
-          
-          return item?.name || item?.name_en || 'Unknown';
-        };
-
         return {
           name: scan.type === 'food' 
             ? (getLocalizedName(scan.data.foods?.[0]) || 'Gescanntes Essen')
-            : (scan.data.product_name || 'Unbekanntes Produkt'),
+            : (getLocalizedName(scan.data) || 'Unbekanntes Produkt'),
           calories: scan.type === 'food'
             ? (scan.data.total?.calories || 0)
             : (scan.data.nutriments?.energy_kcal_100g || 0),

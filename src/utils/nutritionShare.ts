@@ -8,8 +8,6 @@ interface NutritionData {
   carbs: number;
   fats: number;
   image?: string;
-  name?: string;
-  name_en?: string;
   names?: { [key: string]: string };
   [key: string]: any;
 }
@@ -298,7 +296,7 @@ export async function shareNutrition(
     
     // Track analytics (optional - could be added later)
     console.log('Nutrition shared:', {
-      product_name: getLocalizedName(nutritionData),
+      name: getLocalizedName(nutritionData),
       amount: amount
     });
     

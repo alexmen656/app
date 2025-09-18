@@ -454,7 +454,7 @@ import { shareNutrition as shareNutritionUtil } from '../utils/nutritionShare';
 
 const route = useRoute();
 const router = useRouter();
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const product = ref(null);
 const amount = ref(1.0);
 const showFixModal = ref(false);
@@ -611,7 +611,10 @@ onMounted(async () => {
                 const firstFood = foodData.foods[0] || {};
 
                 product.value = {
-                    names: foodData.names || { de: foodData.name || 'Unbekanntes Essen', en: foodData.name_en || 'Unknown Food' },
+                    names: foodData.names || { 
+                        de: getLocalizedName(foodData) || 'Unbekanntes Essen', 
+                        en: getLocalizedName(foodData) || 'Unknown Food'
+                    },
                     image: route.query.photo,
                     calories: total.calories || 0,
                     protein: total.protein || 0,
@@ -709,7 +712,10 @@ onMounted(async () => {
             const nutrition = labelData.nutrition || {};
 
             product.value = {
-                names: labelData.names || { de: labelData.name || 'Gescanntes Label', en: labelData.name_en || 'Scanned Label' },
+                names: labelData.names || { 
+                    de: getLocalizedName(labelData) || 'Gescanntes Label', 
+                    en: getLocalizedName(labelData) || 'Scanned Label'
+                },
                 image: route.query.photo,
                 calories: nutrition.calories || 0,
                 protein: nutrition.protein || 0,
@@ -827,9 +833,7 @@ async function shareNutrition() {
         carbs: product.value.carbs,
         fats: product.value.fats,
         image: route.query.photo || product.value?.image,
-        name: product.value.name,
-        name_en: product.value.name_en,
-        names: product.value.names
+        names: product.value.names || { [locale.value]: getLocalizedName(product.value) }
     };
 
     await shareNutritionUtil(nutritionData, amount.value, (sharing) => {
@@ -1012,7 +1016,7 @@ async function saveAndReturn() {
                     fat: Math.round(product.value.fats * amount.value)
                 },
                 foods: [{
-                    names: product.value.names || { de: product.value.name || 'Unbekannt', en: product.value.name_en || 'Unknown' },
+                    names: product.value.names || { [locale.value]: getLocalizedName(product.value) || 'Unbekannt' },
                     amount: { de: '1 Portion', en: '1 serving' },
                     calories: Math.round(product.value.calories * amount.value),
                     protein: Math.round(product.value.protein * amount.value),
@@ -1021,7 +1025,7 @@ async function saveAndReturn() {
                 }]
             } : {
                 // Barcode scan format  
-                product_name: getLocalizedName(product.value),
+                names: product.value.names || { [locale.value]: getLocalizedName(product.value) },
                 nutriments: {
                     energy_kcal_100g: Math.round(product.value.calories * amount.value),
                     proteins_100g: Math.round(product.value.protein * amount.value),

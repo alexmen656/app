@@ -444,7 +444,7 @@ import { shareNutrition as shareNutritionUtil } from '../utils/nutritionShare';
 
 const route = useRoute();
 const router = useRouter();
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 const scanData = ref(null);
 const amount = ref(1.0);
@@ -518,7 +518,7 @@ const displayName = computed(() => {
         const firstFood = scanData.value.data.foods?.[0];
         return getLocalizedName(firstFood) || t('home.scannedFood');
     } else {
-        return scanData.value.data.product_name || t('home.unknownProduct');
+        return getLocalizedName(scanData.value.data) || t('home.unknownProduct');
     }
 });
 
@@ -631,7 +631,9 @@ const productForModal = computed(() => {
 
     // Convert scan data to the format expected by NutritionDetailsModal
     return {
-        product_name: displayName.value,
+        names: scanData.value.type === 'food' 
+            ? scanData.value.data.foods?.[0]?.names 
+            : scanData.value.data.names || { [locale.value]: displayName.value },
         nutriments: scanData.value.type === 'barcode'
             ? scanData.value.data.nutriments
             : {
@@ -680,9 +682,9 @@ async function shareNutrition() {
         carbs: baseNutr.carbs,
         fats: baseNutr.fats,
         image: scanData.value?.data?.image || scanData.value?.image || route.query.photo,
-        name: displayName.value,
-        name_en: displayName.value,
-        names: scanData.value.type === 'food' ? scanData.value.data.foods?.[0]?.names : undefined
+        names: scanData.value.type === 'food' 
+            ? scanData.value.data.foods?.[0]?.names 
+            : scanData.value.data.names || { [locale.value]: displayName.value }
     };
 
     await shareNutritionUtil(nutritionData, amount.value, (sharing) => {
@@ -754,8 +756,11 @@ function applyFix() {
                 scanData.value.data.foods[0].food = editedNutrition.value.name;
             }
         } else {
-            // For barcode products, update the product name
-            scanData.value.data.product_name = editedNutrition.value.name;
+            // For barcode products, update the names
+            if (!scanData.value.data.names) {
+                scanData.value.data.names = {};
+            }
+            scanData.value.data.names[locale.value] = editedNutrition.value.name;
         }
     }
 
@@ -898,12 +903,10 @@ function createFavoriteData(scan) {
     if (scan.type === 'food' && scan.data?.foods?.[0]) {
         const firstFood = scan.data.foods[0];
         name = getLocalizedName(firstFood) || 'Scanned Food';
-    } else if (scan.type === 'barcode' && scan.data?.product_name) {
-        name = scan.data.product_name;
-    } else if (scan.data?.name) {
-        name = scan.data.name;
+    } else if (scan.type === 'barcode' && scan.data) {
+        name = getLocalizedName(scan.data) || 'Unknown Product';
     }
-    
+
     return {
         type: type,
         name: name,

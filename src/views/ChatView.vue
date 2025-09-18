@@ -126,6 +126,7 @@ import { useI18n } from 'vue-i18n'
 import { userProfile, dailyGoals } from '../stores/userStore'
 import { ScanHistory } from '../utils/storage'
 import { WeightTracker } from '../utils/weightTracking'
+import { getLocalizedName } from '../utils/localization'
 import { marked } from 'marked'
 
 const router = useRouter()
@@ -449,9 +450,9 @@ function calculateTotalNutrition(scans: any[]) {
 
 function extractFoodName(scan: any): string {
   if (scan.type === 'food') {
-    return scan.data.foods?.[0]?.name || 'Unknown food'
+    return getLocalizedName(scan.data.foods?.[0]) || 'Unknown food'
   } else if (scan.type === 'barcode') {
-    return scan.data.product?.product_name || 'Unknown product'
+    return getLocalizedName(scan.data.product || scan.data) || 'Unknown product'
   }
   return 'Unknown'
 }
