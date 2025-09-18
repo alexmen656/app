@@ -70,14 +70,14 @@
                     <img v-if="scan.image && !scan.image.includes('placeholder') && !scan.image.startsWith('image_')" :src="scan.image" :alt="scan.name" />
                     <img v-else-if="scan.image && scan.image.startsWith('image_')" :src="getItemImageSrc(scan)" :alt="scan.name" />
                     <span v-else-if="scan.icon" class="food-db-icon">{{ scan.icon }}</span>
-                    <span v-else class="scan-type-icon">{{ scan.type === 'food' ? '🍽️' : '📦' }}</span>
+                    <span v-else class="scan-type-icon">{{ scan.type === 'food' || scan.type === 'favorite' ? '🍽️' : '📦' }}</span>
                 </div>
 
                 <div class="scan-info">
                     <div class="scan-header">
                         <h4 class="scan-name">{{ getLocalizedName(scan) }}</h4>
                         <span class="scan-type-badge" :class="scan.type">
-                            {{ scan.type === 'food' ? $t('allScans.foodScan') : $t('allScans.barcodeScan') }}
+                            {{ scan.type === 'food' || scan.type === 'favorite' ? $t('allScans.foodScan') : $t('allScans.barcodeScan') }}
                         </span>
                     </div>
 
@@ -149,7 +149,7 @@ const { t } = useI18n()
 
 interface ScanData {
     id: number
-    type: 'food' | 'barcode' | 'manual'
+    type: 'food' | 'barcode' | 'manual' | 'favorite'
     timestamp: string
     time: string
     image?: string
@@ -327,7 +327,7 @@ async function loadAllScans() {
 
         allScans.value = history.map((scan): ScanData => {
             try {
-                if (scan.type === 'food') {
+                if (scan.type === 'food' || scan.type === 'favorite') {
                     const total = scan.data?.total || {}
                     const firstFood = scan.data?.foods?.[0]
                     return {

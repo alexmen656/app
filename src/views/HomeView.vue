@@ -719,7 +719,7 @@ onUnmounted(() => {
 
 interface ScanData {
     id: number
-    type: 'food' | 'barcode'
+    type: 'food' | 'barcode' | 'favorite' | 'manual'
     timestamp: string
     time: string
     image?: string
@@ -844,7 +844,7 @@ function transformBarcodeScan(scan: ScanData, amount: number): FoodItem {
 function transformScanToFoodItem(scan: ScanData): FoodItem | null {
     const amount = scan.amount || 1.0
 
-    if (scan.type === 'food') {
+    if (scan.type === 'food' || scan.type === 'favorite') {
         return transformFoodScan(scan)
     } else if (scan.type === 'barcode') {
         return transformBarcodeScan(scan, amount)
@@ -916,7 +916,7 @@ function calculateNutritionFromHistory(history: ScanData[]) {
         dateScans.forEach(scan => {
             const amount = scan.amount || 1.0;
 
-            if (scan.type === 'food' && scan.data.total) {
+            if ((scan.type === 'food' || scan.type === 'favorite') && scan.data.total) {
                 totalCalories += scan.data.total.calories || 0
                 totalProtein += scan.data.total.protein || 0
                 totalCarbs += scan.data.total.carbs || 0
@@ -1293,7 +1293,7 @@ async function deleteFoodItem(itemId: number) {
 function extractNutritionFromScan(scan: any) {
     const amount = scan.amount || 1.0
 
-    if (scan.type === 'food' && scan.data.total) {
+    if ((scan.type === 'food' || scan.type === 'favorite') && scan.data.total) {
         return {
             calories: scan.data.total.calories || 0,
             protein: scan.data.total.protein || 0,

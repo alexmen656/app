@@ -452,6 +452,8 @@ async function addFoodToHistory() {
         const totalCarbs = Math.round(food.carbs * amount * 10) / 10
         const totalFats = Math.round(food.fats * amount * 10) / 10
 
+        console.log('Adding food to history:', { food, amount, selectedCategory: selectedCategory.value })
+
         const scanEntry = {
             id: Date.now(),
             type: selectedCategory.value === 'favorites' ? 'favorite' : 'food' as const,
@@ -465,10 +467,10 @@ async function addFoodToHistory() {
             icon: food.icon,
             data: {
                 foods: [{
-                    names: food.names ||{
-                        de: food.names || t(`foodDatabase.foods.${food.id}.name`),
-                        en: food.names || t(`foodDatabase.foods.${food.id}.name`),
-                        es: food.names || t(`foodDatabase.foods.${food.id}.name`)
+                    names: food.names || {
+                        de: getLocalizedName({ names: food.names }) || 'Unbekanntes Essen',
+                        en: getLocalizedName({ names: food.names }) || 'Unknown Food',
+                        es: getLocalizedName({ names: food.names }) || 'Comida Desconocida'
                     }
                 }],
                 total: {
@@ -480,8 +482,12 @@ async function addFoodToHistory() {
             }
         }
 
+        console.log('Scan entry to add:', scanEntry)
+
         // Add to scan history
         await ScanHistory.add(scanEntry)
+
+        console.log('Successfully added to scan history')
 
         // Dispatch event to update UI
         window.dispatchEvent(new CustomEvent('scanHistoryUpdated'))
