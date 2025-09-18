@@ -631,8 +631,8 @@ const productForModal = computed(() => {
 
     // Convert scan data to the format expected by NutritionDetailsModal
     return {
-        names: scanData.value.type === 'food' 
-            ? scanData.value.data.foods?.[0]?.names 
+        names: scanData.value.type === 'food'
+            ? scanData.value.data.foods?.[0]?.names
             : scanData.value.data.names || { [locale.value]: displayName.value },
         nutriments: scanData.value.type === 'barcode'
             ? scanData.value.data.nutriments
@@ -682,8 +682,8 @@ async function shareNutrition() {
         carbs: baseNutr.carbs,
         fats: baseNutr.fats,
         image: scanData.value?.data?.image || scanData.value?.image || route.query.photo,
-        names: scanData.value.type === 'food' 
-            ? scanData.value.data.foods?.[0]?.names 
+        names: scanData.value.type === 'food'
+            ? scanData.value.data.foods?.[0]?.names
             : scanData.value.data.names || { [locale.value]: displayName.value }
     };
 
@@ -906,8 +906,10 @@ function createFavoriteData(scan) {
     return {
         type: scan.type || 'unknown',
         names: name.names,
-        data: scan,
-        image: getImageSrc()
+        data: scan.data,
+        image: scanData.value?.data?.image ||
+            scanData.value?.image ||
+            route.query.photo
     };
 }
 
@@ -919,12 +921,6 @@ async function toggleFavorite() {
         const newStatus = await FavoriteFood.toggle(favoriteData);
         isFavorite.value = newStatus;
         showMenuModal.value = false;
-
-        if (newStatus) {
-            console.log('Added to favorites');
-        } else {
-            console.log('Removed from favorites');
-        }
     } catch (error) {
         console.error('Error toggling favorite:', error);
     }

@@ -254,13 +254,11 @@ async function loadImageUris(items: any[]) {
     );
 }
 
-// Dynamic data from API
 const categories = ref<Category[]>([])
 const foods = ref<Food[]>([])
 const allFoods = ref<Food[]>([])
 const favoriteFoods = ref<Food[]>([])
 
-// Load categories from API
 async function loadCategories() {
     try {
         isLoading.value = true
@@ -268,7 +266,6 @@ async function loadCategories() {
         const data = await response.json()
         
         if (data.success) {
-            // Add 'all' and 'favorites' categories at the beginning
             const allCategories = [
                 { id: 'all', icon: '🍽️', name: t('foodDatabase.categoryNames.all'), dbId: 0 },
                 { id: 'favorites', icon: '❤️', name: t('foodDatabase.categoryNames.favorites'), dbId: -1 },
@@ -290,7 +287,6 @@ async function loadCategories() {
     }
 }
 
-// Load foods from API
 async function loadFoods() {
     try {
         isLoading.value = true
@@ -321,13 +317,11 @@ async function loadFoods() {
     }
 }
 
-// Helper function to get category code by ID
 function getCategoryCodeById(categoryId: number): string {
     const category = categories.value.find(cat => cat.dbId === categoryId)
     return category ? category.id : 'all'
 }
 
-// Load favorites from storage
 async function loadFavorites() {
     try {
         const favorites = await FavoriteFood.get()
@@ -345,8 +339,6 @@ async function loadFavorites() {
             unit: 'piece',
             unit_name: t('foodDatabase.units.piece')
         }))
-
-        console.log(favoriteFoods.value)
         
         await loadImageUris(favoriteFoods.value)
     } catch (error) {

@@ -252,21 +252,18 @@ export class FavoriteFood {
     }
   }
 
-  // Add food to favorites
   static async add(foodItem: any): Promise<void> {
     try {
       const favorites = await this.get();
 
-      // Create a unique ID for the favorite item if it doesn't exist
       const favoriteItem = {
         id: foodItem.id || Date.now(),
-        favoriteId: Date.now(), // Unique ID for the favorite entry
+        favoriteId: Date.now(),
         names: foodItem.names || "Unknown Food",
-        type: foodItem.type || "unknown", // 'food', 'barcode', etc.
+        type: foodItem.type || "unknown",
         data: foodItem.data || foodItem,
         image: foodItem.image || foodItem.data?.image || null,
         dateAdded: new Date().toISOString(),
-        // Store nutrition info for quick access
         nutrition: {
           calories: this.extractCalories(foodItem),
           protein: this.extractProtein(foodItem),
