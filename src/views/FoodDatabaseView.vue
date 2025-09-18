@@ -57,12 +57,12 @@
                     @click="selectFood(food)"
                 >
                     <div class="food-icon">
-                        <img v-if="food.image && !food.image.includes('placeholder') && !food.image.startsWith('image_')" :src="food.image" :alt="food.name" />
-                        <img v-else-if="food.image && food.image.startsWith('image_')" :src="getItemImageSrc(food)" :alt="food.name" />
+                        <img v-if="food.image && !food.image.includes('placeholder') && !food.image.startsWith('image_')" :src="food.image" :alt="food.names?.[0]" />
+                        <img v-else-if="food.image && food.image.startsWith('image_')" :src="getItemImageSrc(food)" :alt="food.names?.[0]" />
                         <span v-else class="food-db-icon">{{ food.icon }}</span>
                     </div>
                     <div class="food-info">
-                        <h4 class="food-name">{{ food.name || $t(`foodDatabase.foods.${food.id}.name`) }}</h4>
+                        <h4 class="food-name">{{ getLocalizedName({names: food.names}) || $t(`foodDatabase.foods.${food.id}.name`) }}</h4>
                         <div class="food-calories">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="#ff6b35">
                                 <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z"/>
@@ -83,7 +83,7 @@
         <div v-if="selectedFood" class="modal-overlay" @click="closeFoodModal">
             <div class="modal-content" @click.stop>
                 <div class="modal-header">
-                    <h3>{{ selectedFood?.name || $t(`foodDatabase.foods.${selectedFood?.id}.name`) }}</h3>
+                    <h3>{{ getLocalizedName({names: selectedFood?.names}) || $t(`foodDatabase.foods.${selectedFood?.id}.name`) }}</h3>
                     <button class="close-button" @click="closeFoodModal">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
@@ -94,8 +94,8 @@
                 <div class="modal-body">
                     <div class="food-preview">
                         <div class="food-large-icon">
-                            <img v-if="selectedFood?.image && !selectedFood.image.includes('placeholder') && !selectedFood.image.startsWith('image_')" :src="selectedFood.image" :alt="selectedFood.name" />
-                            <img v-else-if="selectedFood?.image && selectedFood.image.startsWith('image_')" :src="getItemImageSrc(selectedFood)" :alt="selectedFood.name" />
+                            <img v-if="selectedFood?.image && !selectedFood.image.includes('placeholder') && !selectedFood.image.startsWith('image_')" :src="selectedFood.image" :alt="selectedFood.names?.[0]" />
+                            <img v-else-if="selectedFood?.image && selectedFood.image.startsWith('image_')" :src="getItemImageSrc(selectedFood)" :alt="selectedFood.names?.[0]" />
                             <span v-else class="food-db-icon">{{ selectedFood?.icon }}</span>
                         </div>
                         <div class="food-nutrition">
@@ -191,7 +191,7 @@ interface Food {
   category: string
   icon: string
   image?: string
-  name?: string
+  names?: { [key: string]: string }
   calories: number
   protein: number
   carbs: number
@@ -299,7 +299,7 @@ async function loadFoods() {
                 dbId: food.id,
                 category: getCategoryCodeById(food.category_id),
                 icon: food.icon,
-                name: getLocalizedName(food),
+                names: food.names,
                 calories: food.calories,
                 protein: food.protein,
                 carbs: food.carbs,
@@ -331,7 +331,7 @@ async function loadFavorites() {
             category: 'favorites',
             icon: '❤️',
             image: fav.image || '',
-            name: getLocalizedName(fav),
+            names: fav.names,
             calories: fav.nutrition.calories,
             protein: fav.nutrition.protein,
             carbs: fav.nutrition.carbs,
@@ -365,8 +365,7 @@ const filteredFoods = computed(() => {
     if (searchQuery.value.trim()) {
         const query = searchQuery.value.toLowerCase()
         result = result.filter(food => {
-            // Use the food name from API if available, otherwise fallback to translation
-            const name = food.name || t(`foodDatabase.foods.${food.id}.name`)
+            const name = getLocalizedName({ names: food.names }) || t(`foodDatabase.foods.${food.id}.name`)
             return name.toLowerCase().includes(query)
         })
     }
@@ -448,14 +447,11 @@ async function addFoodToHistory() {
     try {
         const food = selectedFood.value
         const amount = selectedAmount.value
-
-        // Calculate total nutrition for the selected amount
         const totalCalories = Math.round(food.calories * amount)
         const totalProtein = Math.round(food.protein * amount * 10) / 10
         const totalCarbs = Math.round(food.carbs * amount * 10) / 10
         const totalFats = Math.round(food.fats * amount * 10) / 10
 
-        // Create scan entry compatible with existing system
         const scanEntry = {
             id: Date.now(),
             type: selectedCategory.value === 'favorites' ? 'favorite' : 'food' as const,
@@ -465,14 +461,14 @@ async function addFoodToHistory() {
                 minute: '2-digit' 
             }),
             amount: amount,
-            image: '', // No image for database foods
-            icon: food.icon, // Add the food icon from database
+            image: food.image || '',
+            icon: food.icon,
             data: {
                 foods: [{
-                    names: {
-                        de: food.name || t(`foodDatabase.foods.${food.id}.name`),
-                        en: food.name || t(`foodDatabase.foods.${food.id}.name`),
-                        es: food.name || t(`foodDatabase.foods.${food.id}.name`)
+                    names: food.names ||{
+                        de: food.names || t(`foodDatabase.foods.${food.id}.name`),
+                        en: food.names || t(`foodDatabase.foods.${food.id}.name`),
+                        es: food.names || t(`foodDatabase.foods.${food.id}.name`)
                     }
                 }],
                 total: {
