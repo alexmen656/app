@@ -1,4 +1,3 @@
-// Utils for handling multilingual food names and text
 import { getCurrentLanguage } from '../i18n'
 
 /**
@@ -9,29 +8,15 @@ import { getCurrentLanguage } from '../i18n'
 export function getLocalizedName(item: { name?: string; name_en?: string } | { names?: { [key: string]: string } }): string {
   const currentLanguage = getCurrentLanguage()
   
-  // Handle new multilingual structure
   if ('names' in item && item.names) {
-    // Try current language first
     if (item.names[currentLanguage]) {
       return item.names[currentLanguage]
     }
     
-    // Fallback to any available language
     const availableLanguages = Object.keys(item.names)
     if (availableLanguages.length > 0) {
       return item.names[availableLanguages[0]]
     }
-  }
-  
-  // Handle legacy structure (backward compatibility)
-  if ('name' in item || 'name_en' in item) {
-    console.log('🌐 getLocalizedName (legacy):', { currentLanguage, item, name: item?.name, name_en: item?.name_en })
-    
-    if (currentLanguage === 'en' && item?.name_en) {
-      return item.name_en
-    }
-    
-    return item?.name || item?.name_en || 'Unknown'
   }
   
   return 'Unknown'
@@ -45,9 +30,7 @@ export function getLocalizedName(item: { name?: string; name_en?: string } | { n
 export function getLocalizedNotes(item: { notes?: string; notes_en?: string } | { notes?: { [key: string]: string } }): string {
   const currentLanguage = getCurrentLanguage()
   
-  // Handle new multilingual structure
   if ('notes' in item && typeof item.notes === 'object' && item.notes) {
-    // Try current language first
     if (item.notes[currentLanguage]) {
       return item.notes[currentLanguage]
     }
