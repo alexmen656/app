@@ -2,7 +2,8 @@
     <div>
         <div v-if="scanData" class="nutrition-container">
             <div class="nutrition-header">
-                <div class="nutrition-image-wrap" :style="backgroundStyle" @touchstart="handleTouchStart" @touchend="handleTouchEnd" @dblclick="showImagePreview">
+                <div class="nutrition-image-wrap" :style="backgroundStyle" @touchstart="handleTouchStart"
+                    @touchend="handleTouchEnd" @dblclick="showImagePreview">
                     <div class="statusbar-spacer"></div>
                     <div class="header-controls">
                         <button class="nutrition-back" @click="$router.go(-1)">
@@ -13,12 +14,20 @@
                         </button>
                         <div class="header-actions">
                             <button class="nutrition-share" @click="shareNutrition" :disabled="isSharing">
-                               <!-- <svg v-if="!isSharing" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <!-- <svg v-if="!isSharing" width="24" height="24" viewBox="0 0 24 24" fill="none">
                                     <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" stroke="currentColor" stroke-width="2"/>
                                 </svg>
                                 <svg v-if="!isSharing" width="24" height="24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M448 256C501 256 544 213 544 160C544 107 501 64 448 64C395 64 352 107 352 160C352 165.4 352.5 170.8 353.3 176L223.6 248.1C206.7 233.1 184.4 224 160 224C107 224 64 267 64 320C64 373 107 416 160 416C184.4 416 206.6 406.9 223.6 391.9L353.3 464C352.4 469.2 352 474.5 352 480C352 533 395 576 448 576C501 576 544 533 544 480C544 427 501 384 448 384C423.6 384 401.4 393.1 384.4 408.1L254.7 336C255.6 330.8 256 325.5 256 320C256 314.5 255.5 309.2 254.7 304L384.4 231.9C401.3 246.9 423.6 256 448 256z"/></svg>
                                 -->
-                                <svg v-if="!isSharing" width="24" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-share-2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                                <svg v-if="!isSharing" width="24" height="24" xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" class="feather feather-share-2">
+                                    <circle cx="18" cy="5" r="3"></circle>
+                                    <circle cx="6" cy="12" r="3"></circle>
+                                    <circle cx="18" cy="19" r="3"></circle>
+                                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                                </svg>
                                 <div v-else class="share-spinner"></div>
                             </button>
                             <button class="nutrition-menu" @click="showMenuModal = true">
@@ -43,14 +52,8 @@
                     </div>
                     <div class="nutrition-amount">
                         <button class="amount-btn minus" @click="decreaseAmount">−</button>
-                        <input 
-                            v-model.number="amount" 
-                            class="amount-input" 
-                            type="number" 
-                            step="0.1" 
-                            min="0.1"
-                            @blur="validateAmount"
-                        />
+                        <input v-model.number="amount" class="amount-input" type="number" step="0.1" min="0.1"
+                            @blur="validateAmount" />
                         <button class="amount-btn plus" @click="increaseAmount">+</button>
                     </div>
                 </div>
@@ -97,7 +100,7 @@
                     </div>
                     <div class="macro carbs">
                         <div class="macro-icon">
-                          <svg width="28" height="28" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                            <svg width="28" height="28" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
                                 <path fill="#ffa726"
                                     d="M79.7 234.6c6.2-4.1 14.7-3.4 20.1 2.1l46.1 46.1 6.1 6.7c19.7 23.8 26.3 55 19.2 83.9 31.7-7.7 66.2 1 90.6 25.3l46.1 46.1c6.2 6.2 6.2 16.4 0 22.6l-7.4 7.4c-37.5 37.5-98.3 37.5-135.8 0L134.1 444.3 49.4 529c-9.4 9.4-24.5 9.4-33.9 0-9.4-9.4-9.4-24.6 0-33.9l84.7-84.7-30.5-30.5c-37.5-37.5-37.5-98.3 0-135.7l7.4-7.4 2.5-2.1zm104-104c6.2-4.1 14.7-3.4 20.1 2.1l46.1 46.1 6.1 6.7c19.7 23.8 26.3 55 19.2 83.9 31.7-7.7 66.2 1 90.6 25.3l46.1 46.1c6.2 6.2 6.2 16.4 0 22.6l-7.4 7.4c-37.5 37.5-98.3 37.5-135.8 0l-94.9-94.9c-37.5-37.5-37.5-98.3 0-135.7l7.4-7.4 2.5-2.1zM495.2 15c9.4-9.4 24.6-9.4 34 0 8.8 8.8 9.3 22.7 1.6 32.2L529.2 49 414.7 163.4c7.7 1 15.2 3 22.5 5.9L495.5 111c9.4-9.4 24.6-9.4 34 0 8.8 8.8 9.3 22.7 1.6 32.1l-1.7 1.8-52.7 52.7 39 39c6.2 6.2 6.2 16.4 0 22.6l-7.4 7.4c-37.5 37.5-98.3 37.5-135.8 0l-94.9-94.9c-37.5-37.5-37.5-98.3 0-135.7l7.4-7.4 2.5-2.1c6.2-4.1 14.7-3.4 20.1 2.1l39 39 52.7-52.7c9.4-9.4 24.6-9.4 34 0 8.8 8.8 9.3 22.7 1.6 32.1l-1.7 1.8-58.3 58.3c2.8 7.1 4.7 14.5 5.7 22.1L495.2 15z" />
                             </svg>
@@ -150,7 +153,8 @@
                             </div>
                             <div class="additional-info">
                                 <div class="additional-label">{{ $t('nutrition.fiber') }}</div>
-                                <div class="additional-value">{{ Math.round(additionalNutrition.fiber * amount) }}g</div>
+                                <div class="additional-value">{{ Math.round(additionalNutrition.fiber * amount) }}g
+                                </div>
                             </div>
                         </div>
                         <div v-if="additionalNutrition.sugar > 0" class="additional-item">
@@ -162,7 +166,8 @@
                             </div>
                             <div class="additional-info">
                                 <div class="additional-label">{{ $t('nutrition.sugar') }}</div>
-                                <div class="additional-value">{{ Math.round(additionalNutrition.sugar * amount) }}g</div>
+                                <div class="additional-value">{{ Math.round(additionalNutrition.sugar * amount) }}g
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -192,7 +197,8 @@
                 </div>
 
                 <!-- Food breakdown für Food-Scans -->
-                <div class="nutrition-foods" v-if="scanData.type === 'food' && scanData.data.foods && scanData.data.foods.length > 1">
+                <div class="nutrition-foods"
+                    v-if="scanData.type === 'food' && scanData.data.foods && scanData.data.foods.length > 1">
                     <h3>{{ $t('nutrition.detectedIngredients') }}</h3>
                     <div class="foods-list">
                         <div v-for="food in scanData.data.foods" :key="food.name" class="food-item">
@@ -202,14 +208,16 @@
                                 <span class="food-macro">{{ Math.round((food.calories || 0) * amount) }} kcal</span>
                                 <span class="food-macro">P: {{ Math.round((food.protein || 0) * amount) }}g</span>
                                 <span class="food-macro">K: {{ Math.round((food.carbs || 0) * amount) }}g</span>
-                                <span class="food-macro">F: {{ Math.round((food.fat || food.fats || 0) * amount) }}g</span>
+                                <span class="food-macro">F: {{ Math.round((food.fat || food.fats || 0) * amount)
+                                }}g</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Analysis confidence and notes -->
-                <div class="nutrition-analysis" v-if="scanData.type === 'food' && (scanData.data.confidence || scanData.data.notes)">
+                <div class="nutrition-analysis"
+                    v-if="scanData.type === 'food' && (scanData.data.confidence || scanData.data.notes)">
                     <div class="analysis-confidence" v-if="scanData.data.confidence">
                         <div class="confidence-label">{{ $t('nutrition.analysisConfidence') }}</div>
                         <div class="confidence-badge" :class="confidenceClass">
@@ -265,25 +273,31 @@
                 <div class="menu-options">
                     <button class="menu-option" @click="toggleFavorite">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                            <path v-if="!isFavorite" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path v-else d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path v-if="!isFavorite"
+                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            <path v-else
+                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                                fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
                         </svg>
-                        <span>{{ isFavorite ? $t('nutrition.removeFromFavorites') : $t('nutrition.addToFavorites') }}</span>
+                        <span>{{ isFavorite ? $t('nutrition.removeFromFavorites') : $t('nutrition.addToFavorites')
+                        }}</span>
                     </button>
                     <button class="menu-option" @click="openDetailsModal">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
-                            <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" />
+                            <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1" stroke="currentColor" stroke-width="2" />
                         </svg>
                         <span>{{ $t('nutrition.viewDetails') }}</span>
                     </button>
                     <button class="menu-option" @click="shareNutrition">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                            <circle cx="18" cy="5" r="3" stroke="currentColor" stroke-width="2"/>
-                            <circle cx="6" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
-                            <circle cx="18" cy="19" r="3" stroke="currentColor" stroke-width="2"/>
-                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" stroke="currentColor" stroke-width="2"/>
-                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="18" cy="5" r="3" stroke="currentColor" stroke-width="2" />
+                            <circle cx="6" cy="12" r="3" stroke="currentColor" stroke-width="2" />
+                            <circle cx="18" cy="19" r="3" stroke="currentColor" stroke-width="2" />
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" stroke="currentColor" stroke-width="2" />
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" stroke="currentColor" stroke-width="2" />
                         </svg>
                         <span>{{ $t('nutrition.share') }}</span>
                     </button>
@@ -298,7 +312,7 @@
         <div v-if="showFixModal" class="modal-overlay" @click="showFixModal = false">
             <div class="modal fix-modal" @click.stop>
                 <h3>{{ $t('nutrition.fixResults') }}</h3>
-                
+
                 <!-- Basic nutrition editing -->
                 <div class="fix-form">
                     <div class="form-group">
@@ -341,19 +355,22 @@
                     <div class="foods-list-edit">
                         <div v-for="(food, index) in editedNutrition.foods" :key="index" class="food-edit-item">
                             <div class="food-edit-content">
-                                <input v-model="food.name" class="food-name-input" :placeholder="$t('nutrition.foodName')">
-                                <input v-model="food.amount" class="food-amount-input" :placeholder="$t('nutrition.amount')">
+                                <input v-model="food.name" class="food-name-input"
+                                    :placeholder="$t('nutrition.foodName')">
+                                <input v-model="food.amount" class="food-amount-input"
+                                    :placeholder="$t('nutrition.amount')">
                             </div>
                             <button class="remove-food-btn" @click="removeFood(index)">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                                    <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" />
                                 </svg>
                             </button>
                         </div>
                     </div>
                     <button class="add-food-btn" @click="addFood">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
                         </svg>
                         {{ $t('nutrition.addFood') }}
                     </button>
@@ -395,12 +412,13 @@
                 <div class="image-preview-header">
                     <button class="image-preview-close" @click="showImageModal = false">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" />
                         </svg>
                     </button>
                 </div>
                 <div class="image-preview-content">
-                    <img v-if="getImageSrc()" :src="getImageSrc()" alt="Food image" class="preview-image"/>
+                    <img v-if="getImageSrc()" :src="getImageSrc()" alt="Food image" class="preview-image" />
                     <div v-else class="no-image-placeholder">
                         <div class="no-image-icon">📷</div>
                         <p>{{ $t('nutrition.noImageAvailable') }}</p>
@@ -449,35 +467,35 @@ const imageUris = ref(new Map())
 
 function getImageSrc() {
     if (!scanData.value) return '';
-    
+
     // Check multiple possible image sources
-    const imageUrl = scanData.value?.data?.image || 
-                     scanData.value?.image || 
-                     route.query.photo;
-    
+    const imageUrl = scanData.value?.data?.image ||
+        scanData.value?.image ||
+        route.query.photo;
+
     if (!imageUrl) return '';
-    
+
     if (imageUrl.includes('placeholder')) return imageUrl;
-    
+
     if (imageUrl.startsWith('image_')) {
         // Return cached URI or empty string if not yet loaded
         return imageUris.value.get(imageUrl) || '';
     }
-    
+
     return imageUrl;
 }
 
 async function loadImageUri() {
     if (!scanData.value) return;
-    
-    const imageUrl = scanData.value?.data?.image || 
-                     scanData.value?.image || 
-                     route.query.photo;
-    
+
+    const imageUrl = scanData.value?.data?.image ||
+        scanData.value?.image ||
+        route.query.photo;
+
     if (!imageUrl || !imageUrl.startsWith('image_') || imageUris.value.has(imageUrl)) {
         return;
     }
-    
+
     try {
         const uri = await ImageFile.get(imageUrl);
         if (uri) {
@@ -495,7 +513,7 @@ const time = computed(() => {
 
 const displayName = computed(() => {
     if (!scanData.value) return '';
-    
+
     if (scanData.value.type === 'food') {
         const firstFood = scanData.value.data.foods?.[0];
         return getLocalizedName(firstFood) || t('home.scannedFood');
@@ -506,7 +524,7 @@ const displayName = computed(() => {
 
 const servingInfo = computed(() => {
     if (!scanData.value || scanData.value.type !== 'barcode') return null;
-    
+
     const data = scanData.value.data;
     if (data.serving_size) {
         return `Portion: ${data.serving_size}`;
@@ -516,7 +534,7 @@ const servingInfo = computed(() => {
 
 const packageInfo = computed(() => {
     if (!scanData.value || scanData.value.type !== 'barcode') return null;
-    
+
     const data = scanData.value.data;
     if (data.quantity) {
         return data.quantity;
@@ -526,7 +544,7 @@ const packageInfo = computed(() => {
 
 const baseNutrition = computed(() => {
     if (!scanData.value) return { calories: 0, protein: 0, carbs: 0, fats: 0 };
-    
+
     if (scanData.value.type === 'food') {
         // For AI scans, use the stored base nutrition values if available
         // This ensures we calculate from the original per-unit values, not the total consumed
@@ -539,7 +557,7 @@ const baseNutrition = computed(() => {
                 fats: baseNutr.fats || 0
             };
         }
-        
+
         // Fallback: if no base nutrition stored, try to derive from total/amount
         const total = scanData.value.data.total || {};
         const storedAmount = scanData.value.amount || 1.0;
@@ -610,12 +628,12 @@ const backgroundStyle = computed(() => {
 
 const productForModal = computed(() => {
     if (!scanData.value) return null;
-    
+
     // Convert scan data to the format expected by NutritionDetailsModal
     return {
         product_name: displayName.value,
-        nutriments: scanData.value.type === 'barcode' 
-            ? scanData.value.data.nutriments 
+        nutriments: scanData.value.type === 'barcode'
+            ? scanData.value.data.nutriments
             : {
                 energy_kcal_100g: baseNutrition.value.calories,
                 proteins_100g: baseNutrition.value.protein,
@@ -648,12 +666,12 @@ function validateAmount() {
 // Share nutrition function with preview image
 async function shareNutrition() {
     console.log('Share function called with scanData:', scanData.value);
-    
+
     if (!scanData.value || isSharing.value) {
         console.log('Share aborted - no data or already sharing');
         return;
     }
-    
+
     // Create nutrition data object for the shared utility
     const baseNutr = baseNutrition.value;
     const nutritionData = {
@@ -666,7 +684,7 @@ async function shareNutrition() {
         name_en: displayName.value,
         names: scanData.value.type === 'food' ? scanData.value.data.foods?.[0]?.names : undefined
     };
-    
+
     await shareNutritionUtil(nutritionData, amount.value, (sharing) => {
         isSharing.value = sharing;
     });
@@ -700,10 +718,10 @@ function getSourceDisplay(source) {
 function editMacro(type) {
     // Initialize with base nutrition values
     editedNutrition.value = { ...baseNutrition.value };
-    
+
     // Add the product name
     editedNutrition.value.name = displayName.value;
-    
+
     // Add product information for the modal
     if (scanData.value.type === 'food') {
         // For AI scans, include detected foods if available
@@ -717,12 +735,12 @@ function editMacro(type) {
             fats: food.fats || food.fat || 0
         }));
     }
-    
+
     // Add additional nutrition fields
     editedNutrition.value.fiber = 0;
     editedNutrition.value.sugar = 0;
     editedNutrition.value.salt = 0;
-    
+
     showFixModal.value = true;
 }
 
@@ -740,7 +758,7 @@ function applyFix() {
             scanData.value.data.product_name = editedNutrition.value.name;
         }
     }
-    
+
     // Update base nutrition values
     if (scanData.value.type === 'food') {
         if (!scanData.value.data.total) {
@@ -759,7 +777,7 @@ function applyFix() {
         scanData.value.data.nutriments.carbohydrates_100g = editedNutrition.value.carbs || 0;
         scanData.value.data.nutriments.fat_100g = editedNutrition.value.fats || 0;
     }
-    
+
     showFixModal.value = false;
 }
 
@@ -822,7 +840,7 @@ async function loadScanData(scanId) {
     try {
         const history = await ScanHistory.get();
         const scan = history.find(s => s.id === parseInt(scanId));
-        
+
         if (!scan) {
             console.error('Scan not found:', scanId);
             router.push({ path: '/' });
@@ -834,7 +852,7 @@ async function loadScanData(scanId) {
         amount.value = scan.amount || 1.0;
         baseNutrition.value.name = displayName.value;
         editedNutrition.value = { ...baseNutrition.value };
-        
+
         // Check if this food is in favorites
         await checkFavoriteStatus();
     } catch (error) {
@@ -876,7 +894,7 @@ function createFavoriteData(scan) {
     // Determine type based on scan data
     let type = scan.type || 'unknown';
     let name = 'Unknown Item';
-    
+
     if (scan.type === 'food' && scan.data?.foods?.[0]) {
         const firstFood = scan.data.foods[0];
         name = getLocalizedName(firstFood) || 'Scanned Food';
@@ -896,13 +914,13 @@ function createFavoriteData(scan) {
 
 async function toggleFavorite() {
     if (!scanData.value) return;
-    
+
     try {
         const favoriteData = createFavoriteData(scanData.value);
         const newStatus = await FavoriteFood.toggle(favoriteData);
         isFavorite.value = newStatus;
         showMenuModal.value = false;
-        
+
         // Show toast notification (optional)
         if (newStatus) {
             console.log('Added to favorites');
@@ -929,7 +947,7 @@ function handleTouchStart(event) {
     // Prevent default to avoid interfering with other touch events
     const now = Date.now();
     const timeSinceLastTap = now - lastTap.value;
-    
+
     if (timeSinceLastTap < 300 && timeSinceLastTap > 0) {
         // Double tap detected
         event.preventDefault();
@@ -949,7 +967,7 @@ function handleTouchEnd(event) {
     if (tapTimeout.value) {
         clearTimeout(tapTimeout.value);
     }
-    
+
     tapTimeout.value = setTimeout(() => {
         lastTap.value = 0;
         tapTimeout.value = null;
@@ -966,7 +984,7 @@ onMounted(async () => {
         console.error('No scan ID provided');
         router.push({ path: '/' });
     }
-    
+
     // Prevent hover effects for a short time after loading
     setTimeout(() => {
         isLoading.value = false;
@@ -1058,8 +1076,13 @@ onMounted(async () => {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .nutrition-content {
@@ -1667,8 +1690,13 @@ onMounted(async () => {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* Dark Mode */
