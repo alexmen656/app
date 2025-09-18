@@ -261,7 +261,7 @@ export class FavoriteFood {
       const favoriteItem = {
         id: foodItem.id || Date.now(),
         favoriteId: Date.now(), // Unique ID for the favorite entry
-        name: getLocalizedName(foodItem) || "Unknown Food",
+        names: foodItem.names || "Unknown Food",
         type: foodItem.type || "unknown", // 'food', 'barcode', etc.
         data: foodItem.data || foodItem,
         image: foodItem.image || foodItem.data?.image || null,
@@ -276,13 +276,13 @@ export class FavoriteFood {
       };
 
       // Check if already in favorites (by name and type)
-      const exists = favorites.some(
+   /*   const exists = favorites.some(
         (fav) =>
           fav.name.toLowerCase() === favoriteItem.name.toLowerCase() &&
           fav.type === favoriteItem.type
       );
 
-      if (!exists) {
+      if (!exists) {*/
         favorites.unshift(favoriteItem);
         await Storage.set(this.FAVORITES_KEY, favorites);
 
@@ -290,7 +290,7 @@ export class FavoriteFood {
         if (typeof window !== "undefined") {
           window.dispatchEvent(new CustomEvent("favoritesUpdated"));
         }
-      }
+     // }
     } catch (error) {
       console.error("Favorite food add error:", error);
     }

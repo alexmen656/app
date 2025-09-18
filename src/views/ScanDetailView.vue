@@ -886,30 +886,26 @@ function removeFood(index) {
     }
 }
 
-// Favorite functionality
 async function checkFavoriteStatus() {
     if (scanData.value) {
-        // Create proper favorite data structure
         const favoriteData = createFavoriteData(scanData.value);
         isFavorite.value = await FavoriteFood.isFavorite(favoriteData);
     }
 }
 
 function createFavoriteData(scan) {
-    // Determine type based on scan data
-    let type = scan.type || 'unknown';
     let name = 'Unknown Item';
 
     if (scan.type === 'food' && scan.data?.foods?.[0]) {
         const firstFood = scan.data.foods[0];
-        name = getLocalizedName(firstFood) || 'Scanned Food';
+        name = firstFood || 'Scanned Food';
     } else if (scan.type === 'barcode' && scan.data) {
-        name = getLocalizedName(scan.data) || 'Unknown Product';
+        name = scan.data || 'Unknown Product';
     }
 
     return {
-        type: type,
-        name: name,
+        type: scan.type || 'unknown',
+        names: name.names,
         data: scan,
         image: getImageSrc()
     };
@@ -924,7 +920,6 @@ async function toggleFavorite() {
         isFavorite.value = newStatus;
         showMenuModal.value = false;
 
-        // Show toast notification (optional)
         if (newStatus) {
             console.log('Added to favorites');
         } else {

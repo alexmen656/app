@@ -202,7 +202,7 @@ interface Food {
 
 const router = useRouter()
 const route = useRoute()
-const { t, locale } = useI18n()
+const { t } = useI18n()
 
 // API Configuration
 const API_BASE = 'https://alex.polan.sk/kalbuddy'
@@ -337,7 +337,7 @@ async function loadFavorites() {
             category: 'favorites',
             icon: '❤️',
             image: fav.image || '',
-            name: fav.name,
+            name: getLocalizedName(fav),
             calories: fav.nutrition.calories,
             protein: fav.nutrition.protein,
             carbs: fav.nutrition.carbs,
@@ -345,8 +345,9 @@ async function loadFavorites() {
             unit: 'piece',
             unit_name: t('foodDatabase.units.piece')
         }))
+
+        console.log(favoriteFoods.value)
         
-        // Load images for favorites
         await loadImageUris(favoriteFoods.value)
     } catch (error) {
         console.error('Error loading favorites:', error)
@@ -358,7 +359,6 @@ const filteredFoods = computed(() => {
     let result: Food[] = []
     
     if (selectedCategory.value === 'favorites') {
-        // Use favorites
         result = favoriteFoods.value
     } else {
         result = allFoods.value
