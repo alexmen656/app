@@ -5,8 +5,6 @@
 require_once 'db.php';
 
 try {
-    $lang = $_GET['lang'] ?? 'en';
-    
     $stmt = $pdo->query("SELECT * FROM kalbuddy_units ORDER BY id");
     $units = $stmt->fetchAll();
     
@@ -15,7 +13,11 @@ try {
         $result[] = [
             'id' => (int)$unit['id'],
             'code' => $unit['code'],
-            'name' => $unit["name_$lang"] ?? $unit['name_en']
+            'names' => [
+                'de' => $unit['name_de'],
+                'en' => $unit['name_en'],
+                'es' => $unit['name_es']
+            ]
         ];
     }
     

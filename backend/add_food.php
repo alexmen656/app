@@ -13,12 +13,18 @@ try {
     $input = json_decode(file_get_contents('php://input'), true);
     
     // Validation
-    $required = ['code', 'category_id', 'unit_id', 'icon', 'name_de', 'name_en', 'name_es', 'calories'];
+    $required = ['code', 'category_id', 'unit_id', 'icon', 'names', 'calories'];
     foreach ($required as $field) {
         if (!isset($input[$field]) || $input[$field] === '') {
             echo json_encode(['success' => false, 'error' => "Missing required field: $field"]);
             exit;
         }
+    }
+    
+    // Validate names object
+    if (!isset($input['names']['de']) || !isset($input['names']['en']) || !isset($input['names']['es'])) {
+        echo json_encode(['success' => false, 'error' => 'Names object must contain de, en, and es translations']);
+        exit;
     }
     
     // Check if code already exists
@@ -48,9 +54,9 @@ try {
         'category_id' => (int)$input['category_id'],
         'unit_id' => (int)$input['unit_id'],
         'icon' => $input['icon'],
-        'name_de' => $input['name_de'],
-        'name_en' => $input['name_en'],
-        'name_es' => $input['name_es'],
+        'name_de' => $input['names']['de'],
+        'name_en' => $input['names']['en'],
+        'name_es' => $input['names']['es'],
         'calories' => (float)$input['calories'],
         'protein' => (float)($input['protein'] ?? 0),
         'carbs' => (float)($input['carbs'] ?? 0),

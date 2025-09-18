@@ -175,6 +175,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ScanHistory, FavoriteFood, ImageFile } from '../utils/storage'
+import { getLocalizedName } from '../utils/localization'
 
 // TypeScript interfaces
 interface Category {
@@ -263,7 +264,7 @@ const favoriteFoods = ref<Food[]>([])
 async function loadCategories() {
     try {
         isLoading.value = true
-        const response = await fetch(`${API_BASE}/get_categories.php?lang=${locale.value}`)
+        const response = await fetch(`${API_BASE}/get_categories.php`)
         const data = await response.json()
         
         if (data.success) {
@@ -274,7 +275,7 @@ async function loadCategories() {
                 ...data.data.map((cat: any) => ({
                     id: cat.code,
                     icon: cat.icon,
-                    name: cat.name,
+                    name: getLocalizedName(cat),
                     dbId: cat.id
                 }))
             ]
@@ -293,7 +294,7 @@ async function loadCategories() {
 async function loadFoods() {
     try {
         isLoading.value = true
-        const response = await fetch(`${API_BASE}/get_foods.php?lang=${locale.value}`)
+        const response = await fetch(`${API_BASE}/get_foods.php`)
         const data = await response.json()
         
         if (data.success) {
@@ -302,13 +303,13 @@ async function loadFoods() {
                 dbId: food.id,
                 category: getCategoryCodeById(food.category_id),
                 icon: food.icon,
-                name: food.name,
+                name: getLocalizedName(food),
                 calories: food.calories,
                 protein: food.protein,
                 carbs: food.carbs,
                 fats: food.fats,
                 unit: food.unit,
-                unit_name: food.unit_name
+                unit_name: food.unit_names ? getLocalizedName({ names: food.unit_names }) : food.unit
             }))
         } else {
             console.error('Failed to load foods:', data.error)

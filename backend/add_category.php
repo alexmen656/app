@@ -13,8 +13,14 @@ try {
     $input = json_decode(file_get_contents('php://input'), true);
     
     // Validation
-    if (!$input['name'] || !$input['icon'] || !$input['name_de'] || !$input['name_en'] || !$input['name_es']) {
-        echo json_encode(['success' => false, 'error' => 'Missing required fields']);
+    if (!$input['name'] || !$input['icon'] || !isset($input['names'])) {
+        echo json_encode(['success' => false, 'error' => 'Missing required fields: name, icon, names']);
+        exit;
+    }
+    
+    // Validate names object
+    if (!isset($input['names']['de']) || !isset($input['names']['en']) || !isset($input['names']['es'])) {
+        echo json_encode(['success' => false, 'error' => 'Names object must contain de, en, and es translations']);
         exit;
     }
     
@@ -26,9 +32,9 @@ try {
     $stmt->execute([
         'name' => $input['name'],
         'icon' => $input['icon'],
-        'name_de' => $input['name_de'],
-        'name_en' => $input['name_en'],
-        'name_es' => $input['name_es']
+        'name_de' => $input['names']['de'],
+        'name_en' => $input['names']['en'],
+        'name_es' => $input['names']['es']
     ]);
     
     $category_id = $pdo->lastInsertId();

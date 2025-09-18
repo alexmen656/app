@@ -472,9 +472,11 @@
             const formData = {
                 name: document.getElementById('category-code').value,
                 icon: document.getElementById('category-icon').value,
-                name_de: document.getElementById('category-name-de').value,
-                name_en: document.getElementById('category-name-en').value,
-                name_es: document.getElementById('category-name-es').value
+                names: {
+                    de: document.getElementById('category-name-de').value,
+                    en: document.getElementById('category-name-en').value,
+                    es: document.getElementById('category-name-es').value
+                }
             };
             
             try {
@@ -506,9 +508,11 @@
                 category_id: document.getElementById('food-category').value,
                 unit_id: document.getElementById('food-unit').value,
                 icon: document.getElementById('food-icon').value,
-                name_de: document.getElementById('food-name-de').value,
-                name_en: document.getElementById('food-name-en').value,
-                name_es: document.getElementById('food-name-es').value,
+                names: {
+                    de: document.getElementById('food-name-de').value,
+                    en: document.getElementById('food-name-en').value,
+                    es: document.getElementById('food-name-es').value
+                },
                 calories: parseFloat(document.getElementById('food-calories').value),
                 protein: parseFloat(document.getElementById('food-protein').value) || 0,
                 carbs: parseFloat(document.getElementById('food-carbs').value) || 0,
