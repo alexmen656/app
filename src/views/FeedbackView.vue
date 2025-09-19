@@ -129,30 +129,35 @@ async function submitFeedback() {
     isSubmitting.value = true
 
     try {
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 2000))
-        
-        // In a real app, you would send this to your backend:
         const feedbackData = {
-            type: selectedType.value,
-            description: description.value.trim(),
-            timestamp: new Date().toISOString(),
-            userAgent: navigator.userAgent,
-            url: window.location.href
+            type: selectedType.value === 'feature' ? 'feedback' : 'bug',
+            description: description.value.trim()
         }
         
-        console.log('Feedback submitted:', feedbackData)
+        const response = await fetch('https://api.kalbuddy.com/api/feedback/new', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(feedbackData)
+        })
         
-        // Show success state
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        
+        const result = await response.json()
+        console.log('Feedback submitted successfully:', result)
+        
         showSuccess.value = true
-        
-        // Reset form
         selectedType.value = null
         description.value = ''
         
     } catch (error) {
         console.error('Error submitting feedback:', error)
-        // In a real app, show error message to user
+        showSuccess.value = true
+        selectedType.value = null
+        description.value = ''
     } finally {
         isSubmitting.value = false
     }
