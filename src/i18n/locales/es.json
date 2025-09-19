@@ -161,15 +161,21 @@
     "title": "Agregar Comida",
     "scanner": {
       "title": "Escanear Comida",
-      "description": "Usa la cámara para escanear códigos de barras o analizar fotos de comida"
+      "description": "Usa la cámara para escanear códigos de barras o analizar fotos de comida",
+      "barcode": "Código de Barras",
+      "photo": "Foto",
+      "label": "Etiqueta"
     },
     "database": {
       "title": "Base de Datos de Alimentos",
-      "description": "Navega y busca en nuestra completa base de datos de alimentos"
+      "description": "Navega y busca en nuestra completa base de datos de alimentos",
+      "allFoods": "Todos los Alimentos",
+      "favorites": "Favoritos"
     },
     "manual": {
       "title": "Describir Comida",
-      "description": "Describe manualmente en texto lo que comiste"
+      "description": "Describe manualmente en texto lo que comiste",
+      "start": "Comenzar"
     }
   },
   "manualEntry": {

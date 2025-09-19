@@ -173,11 +173,16 @@
     "title": "Add Food",
     "scanner": {
       "title": "Scan Food",
-      "description": "Use camera to scan barcodes or analyze food photos"
+      "description": "Use camera to scan barcodes or analyze food photos",
+      "barcode": "Barcode",
+      "photo": "Photo",
+      "label": "Label"
     },
     "database": {
       "title": "Food Database",
-      "description": "Browse and search our comprehensive food database"
+      "description": "Browse and search our comprehensive food database",
+      "allFoods": "All Foods",
+      "favorites": "Favorites"
     },
     "favorites": {
       "title": "Favorites",
@@ -185,7 +190,8 @@
     },
     "manual": {
       "title": "Describe Food",
-      "description": "Manually describe what you ate in text form"
+      "description": "Manually describe what you ate in text form",
+      "start": "Start"
     }
   },
   "manualEntry": {

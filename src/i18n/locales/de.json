@@ -173,11 +173,16 @@
     "title": "Essen hinzufügen",
     "scanner": {
       "title": "Essen scannen",
-      "description": "Kamera verwenden um Barcodes zu scannen oder Essen zu analysieren"
+      "description": "Kamera verwenden um Barcodes zu scannen oder Essen zu analysieren",
+      "barcode": "Barcode",
+      "photo": "Foto",
+      "label": "Etikett"
     },
     "database": {
       "title": "Lebensmittel-Datenbank",
-      "description": "Durchsuche unsere umfassende Lebensmittel-Datenbank"
+      "description": "Durchsuche unsere umfassende Lebensmittel-Datenbank",
+      "allFoods": "Alle Lebensmittel",
+      "favorites": "Favoriten"
     },
     "favorites": {
       "title": "Favoriten",
@@ -185,7 +190,8 @@
     },
     "manual": {
       "title": "Essen beschreiben",
-      "description": "Beschreibe manuell in Textform was du gegessen hast"
+      "description": "Beschreibe manuell in Textform was du gegessen hast",
+      "start": "Starten"
     }
   },
   "manualEntry": {

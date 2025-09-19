@@ -347,8 +347,8 @@
 
         <!-- Add Food Modal -->
         <AddFoodModal :show="isAddFoodModalVisible" @close="toggleAddFoodModal(false)"
-            @select-scanner="handleSelectScanner" @select-database="handleSelect('food-database')"
-            @select-favorites="handleSelectFavorites" @select-manual="handleSelect('manual-entry')" />
+            @select-scanner="handleSelectScanner" @select-database="handleSelectDatabase"
+            @select-manual="handleSelect('manual-entry')" />
 
         <!-- Scan Limit Blocker -->
         <PremiumBlocker v-if="showScanLimitBlocker" feature="unlimited_food_scans"
@@ -394,24 +394,6 @@ const showScanLimitBlocker = ref(false)
 const currentScanUsage = ref<any>(null)
 const isAddFoodModalVisible = ref(false)
 const showWeightModal = ref(false)
-
-async function openNativeScanner() {
-    try {
-        const usage = await checkScanLimit()
-        currentScanUsage.value = usage
-
-        if (!usage.canScan && !usage.isPremium) {
-            console.log(`Scan limit reached: ${usage.currentCount}/${usage.limit} scans used today`)
-            showScanLimitBlocker.value = true
-            return
-        }
-
-        await startScanningWithMode('barcode')
-    } catch (error) {
-        console.error('Failed to check scan limits:', error)
-        await startScanningWithMode('barcode')
-    }
-}
 
 // Reactive function to get image URI
 const imageUris = ref(new Map<string, string>())
@@ -1010,14 +992,33 @@ function toggleAddFoodModal(val: boolean) {
     isAddFoodModalVisible.value = val
 }
 
-async function handleSelectScanner() {
+async function handleSelectScanner(mode: 'barcode' | 'photo' | 'label') {
     toggleAddFoodModal(false)
-    await openNativeScanner()
+    
+    try {
+        const usage = await checkScanLimit()
+        currentScanUsage.value = usage
+
+        if (!usage.canScan && !usage.isPremium) {
+            console.log(`Scan limit reached: ${usage.currentCount}/${usage.limit} scans used today`)
+            showScanLimitBlocker.value = true
+            return
+        }
+
+        await startScanningWithMode(mode)
+    } catch (error) {
+        console.error('Failed to check scan limits:', error)
+        await startScanningWithMode(mode)
+    }
 }
 
-function handleSelectFavorites() {
+function handleSelectDatabase(category: 'all' | 'favorites' = 'all') {
     toggleAddFoodModal(false)
-    router.push('/food-database?category=favorites')
+    if (category === 'favorites') {
+        router.push('/food-database?category=favorites')
+    } else {
+        router.push('/food-database')
+    }
 }
 
 function handleSelect(view: string) {

@@ -11,49 +11,59 @@
             </div>
             
             <div class="modal-options">
-                <button class="option-btn" @click="selectScanner">
-                    <div class="option-icon">📱</div>
-                    <div class="option-content">
-                        <h4>{{ $t('addFood.scanner.title') }}</h4>
-                        <p>{{ $t('addFood.scanner.description') }}</p>
+                <div class="option-group">
+                    <div class="option-header">
+                        <div class="option-icon">📱</div>
+                        <div class="option-content">
+                            <h4>{{ $t('addFood.scanner.title') }}</h4>
+                            <p>{{ $t('addFood.scanner.description') }}</p>
+                        </div>
                     </div>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
-                    </svg>
-                </button>
+                    <div class="sub-buttons">
+                        <button class="sub-btn" @click="selectScanner('barcode')">
+                            {{ $t('addFood.scanner.barcode') }}
+                        </button>
+                        <button class="sub-btn" @click="selectScanner('photo')">
+                            {{ $t('addFood.scanner.photo') }}
+                        </button>
+                        <button class="sub-btn" @click="selectScanner('label')">
+                            {{ $t('addFood.scanner.label') }}
+                        </button>
+                    </div>
+                </div>
                 
-                <button class="option-btn" @click="selectFoodDatabase">
-                    <div class="option-icon">🍎</div>
-                    <div class="option-content">
-                        <h4>{{ $t('addFood.database.title') }}</h4>
-                        <p>{{ $t('addFood.database.description') }}</p>
+                <div class="option-group">
+                    <div class="option-header">
+                        <div class="option-icon">🍎</div>
+                        <div class="option-content">
+                            <h4>{{ $t('addFood.database.title') }}</h4>
+                            <p>{{ $t('addFood.database.description') }}</p>
+                        </div>
                     </div>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
-                    </svg>
-                </button>
+                    <div class="sub-buttons">
+                        <button class="sub-btn" @click="selectFoodDatabase('all')">
+                            {{ $t('addFood.database.allFoods') }}
+                        </button>
+                        <button class="sub-btn" @click="selectFoodDatabase('favorites')">
+                            {{ $t('addFood.database.favorites') }}
+                        </button>
+                    </div>
+                </div>
                 
-                <button class="option-btn" @click="selectFavorites">
-                    <div class="option-icon">❤️</div>
-                    <div class="option-content">
-                        <h4>{{ $t('addFood.favorites.title') }}</h4>
-                        <p>{{ $t('addFood.favorites.description') }}</p>
+                <div class="option-group">
+                    <div class="option-header">
+                        <div class="option-icon">✍️</div>
+                        <div class="option-content">
+                            <h4>{{ $t('addFood.manual.title') }}</h4>
+                            <p>{{ $t('addFood.manual.description') }}</p>
+                        </div>
                     </div>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
-                    </svg>
-                </button>
-                
-                <button class="option-btn" @click="selectManualEntry">
-                    <div class="option-icon">✍️</div>
-                    <div class="option-content">
-                        <h4>{{ $t('addFood.manual.title') }}</h4>
-                        <p>{{ $t('addFood.manual.description') }}</p>
+                    <div class="sub-buttons">
+                        <button class="sub-btn primary" @click="selectManualEntry()">
+                            {{ $t('addFood.manual.start') }}
+                        </button>
                     </div>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
-                    </svg>
-                </button>
+                </div>
             </div>
         </div>
     </div>
@@ -66,9 +76,8 @@ interface Props {
 
 interface Emits {
     (e: 'close'): void
-    (e: 'select-scanner'): void
-    (e: 'select-database'): void
-    (e: 'select-favorites'): void
+    (e: 'select-scanner', mode: 'barcode' | 'photo' | 'label'): void
+    (e: 'select-database', category?: 'all' | 'favorites'): void
     (e: 'select-manual'): void
 }
 
@@ -79,16 +88,12 @@ function closeModal() {
     emit('close')
 }
 
-function selectScanner() {
-    emit('select-scanner')
+function selectScanner(mode: 'barcode' | 'photo' | 'label') {
+    emit('select-scanner', mode)
 }
 
-function selectFoodDatabase() {
-    emit('select-database')
-}
-
-function selectFavorites() {
-    emit('select-favorites')
+function selectFoodDatabase(category: 'all' | 'favorites' = 'all') {
+    emit('select-database', category)
 }
 
 function selectManualEntry() {
@@ -155,31 +160,26 @@ function selectManualEntry() {
     padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 20px;
 }
 
-.option-btn {
+.option-group {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 15px;
     padding: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.option-header {
     display: flex;
     align-items: center;
     gap: 15px;
-    color: white;
-    cursor: pointer;
-    transition: all 0.2s;
-    width: 100%;
-    text-align: left;
-}
-
-.option-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateY(-2px);
+    margin-bottom: 15px;
 }
 
 .option-icon {
-    font-size: 32px;
+    font-size: 28px;
     min-width: 40px;
     display: flex;
     align-items: center;
@@ -204,12 +204,43 @@ function selectManualEntry() {
     line-height: 1.4;
 }
 
-.option-btn svg {
-    color: rgba(255, 255, 255, 0.5);
-    transition: color 0.2s;
+.sub-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
-.option-btn:hover svg {
+.sub-btn {
+    flex: 1;
+    min-width: 0;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 12px 16px;
     color: white;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
+}
+
+.sub-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.sub-btn:active {
+    transform: translateY(0);
+}
+
+.sub-btn.primary {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.sub-btn.primary:hover {
+    background: rgba(255, 255, 255, 0.25);
 }
 </style>
