@@ -24,13 +24,13 @@ A modern Vue.js + Capacitor app for calorie tracking with AI-powered food recogn
 - Responsive design for all screen sizes
 - Smooth animations and transitions
 
-### 🔧 Backend Integration
+### Backend Integration
 - PHP backend with MySQL database
 - Food categories and units management
 - Consumption logging
 - Admin panel for data management
 
-### 📱 Native Features
+### Native Features
 - Custom barcode scanner plugin
 - HealthKit integration for iOS
 - Cross-platform mobile support
