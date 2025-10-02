@@ -241,6 +241,10 @@
           <router-link to="/upgrade">here</router-link>
         </div>
         <div v-if="showDebugInfo" class="setting-item">
+          <label class="setting-label">Onboarding</label>
+          <router-link to="/onboarding">here</router-link>
+        </div>
+        <div v-if="showDebugInfo" class="setting-item">
           <label class="setting-label">Old ScanView</label>
           <router-link to="/scan">here</router-link>
         </div>

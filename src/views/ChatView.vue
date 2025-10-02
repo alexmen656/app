@@ -4,7 +4,7 @@
     <header class="chat-header">
       <button class="back-btn" @click="goBack">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+          <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
         </svg>
       </button>
       <div class="header-content">
@@ -15,7 +15,7 @@
         </div>
       </div>
       <div class="kalbuddy-avatar">
-        <img src="../assets/kalbuddy-chat-icon.svg" alt="KalBuddy" class="avatar-icon" />
+        <img src="../assets/kalbuddy.png" alt="KalBuddy" class="avatar-icon" />
       </div>
     </header>
 
@@ -24,7 +24,7 @@
       <!-- Welcome Message -->
       <div class="message bot-message" v-if="messages.length === 0">
         <div class="message-avatar">
-          <img src="../assets/kalbuddy-chat-icon.svg" alt="KalBuddy" class="message-avatar-icon" />
+          <img src="../assets/kalbuddy.png" alt="KalBuddy" class="message-avatar-icon" />
         </div>
         <div class="message-content">
           <div class="message-bubble">
@@ -38,26 +38,26 @@
       <div class="examples-section" v-if="messages.length === 0">
         <div class="examples-title">{{ $t('chat.examples.title') }}</div>
         <div class="example-questions">
-          <button 
-            class="example-btn" 
-            v-for="(example, index) in exampleQuestions" 
-            :key="index"
-            @click="sendExample(example)"
-          >
-            {{ example }}
+          <button class="example-btn" @click="sendExample($t('chat.examples.example1'))">
+            {{ $t('chat.examples.example1') }}
+          </button>
+          <button class="example-btn" @click="sendExample($t('chat.examples.example2'))">
+            {{ $t('chat.examples.example2') }}
+          </button>
+          <button class="example-btn" @click="sendExample($t('chat.examples.example3'))">
+            {{ $t('chat.examples.example3') }}
+          </button>
+          <button class="example-btn" @click="sendExample($t('chat.examples.example4'))">
+            {{ $t('chat.examples.example4') }}
           </button>
         </div>
       </div>
 
       <!-- Actual Messages -->
-      <div 
-        v-for="(message, index) in messages" 
-        :key="index" 
-        class="message"
-        :class="{ 'user-message': message.isUser, 'bot-message': !message.isUser }"
-      >
+      <div v-for="(message, index) in messages" :key="index" class="message"
+        :class="{ 'user-message': message.isUser, 'bot-message': !message.isUser }">
         <div class="message-avatar" v-if="!message.isUser">
-          <img src="../assets/kalbuddy-chat-icon.svg" alt="KalBuddy" class="message-avatar-icon" />
+          <img src="../assets/kalbuddy.png" alt="KalBuddy" class="message-avatar-icon" />
         </div>
         <div class="message-content">
           <div class="message-bubble">
@@ -78,7 +78,7 @@
       <!-- Typing Indicator -->
       <div class="message bot-message" v-if="isTyping">
         <div class="message-avatar">
-          <img src="../assets/kalbuddy-chat-icon.svg" alt="KalBuddy" class="message-avatar-icon" />
+          <img src="../assets/kalbuddy.png" alt="KalBuddy" class="message-avatar-icon" />
         </div>
         <div class="message-content">
           <div class="message-bubble typing-bubble">
@@ -96,22 +96,11 @@
     <!-- Input Area -->
     <div class="chat-input-area">
       <div class="input-container">
-        <input 
-          v-model="currentMessage"
-          type="text" 
-          :placeholder="$t('chat.placeholder')"
-          @keypress.enter="sendMessage"
-          @focus="scrollToBottom"
-          class="message-input"
-          :disabled="isTyping"
-        />
-        <button 
-          class="send-btn" 
-          @click="sendMessage"
-          :disabled="!currentMessage.trim() || isTyping"
-        >
+        <input v-model="currentMessage" type="text" :placeholder="$t('chat.placeholder')" @keypress.enter="sendMessage"
+          @focus="scrollToBottom" class="message-input" :disabled="isTyping" />
+        <button class="send-btn" @click="sendMessage" :disabled="!currentMessage.trim() || isTyping">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
           </svg>
         </button>
       </div>
@@ -143,14 +132,14 @@ function renderMarkdown(text: string): string {
   try {
     // Parse markdown to HTML
     const html = marked.parse(text) as string
-    
+
     // Basic sanitization - remove potentially dangerous tags
     const sanitized = html
       .replace(/<script[^>]*>.*?<\/script>/gi, '')
       .replace(/<iframe[^>]*>.*?<\/iframe>/gi, '')
       .replace(/javascript:/gi, '')
       .replace(/on\w+="[^"]*"/gi, '')
-    
+
     return sanitized
   } catch (error) {
     console.warn('Markdown parsing error:', error)
@@ -166,7 +155,7 @@ const API_BASE_URL = 'https://api.kalbuddy.com/api/ai'
 const currentMessage = ref('')
 const isTyping = ref(false)
 const messagesContainer = ref<HTMLElement>()
-const conversationHistory = ref<Array<{role: string, content: string}>>([])
+const conversationHistory = ref<Array<{ role: string, content: string }>>([])
 const error = ref<string | null>(null)
 
 interface Message {
@@ -177,74 +166,74 @@ interface Message {
 
 const messages = ref<Message[]>([])
 
-// Dynamic example questions from API
-const exampleQuestions = ref<string[]>([
-  t('chat.examples.example1'),
-  t('chat.examples.example2'),
-  t('chat.examples.example3'),
-  t('chat.examples.example4')
-])
+// Dynamic example questions from API - COMMENTED OUT - Using predefined translations instead
+// const exampleQuestions = ref<string[]>([
+//   t('chat.examples.example1'),
+//   t('chat.examples.example2'),
+//   t('chat.examples.example3'),
+//   t('chat.examples.example4')
+// ])
 
-// Generate smart fallback suggestions based on context
-const generateFallbackSuggestions = () => {
-  const suggestions = []
-  const hour = new Date().getHours()
-  
-  // Time-based suggestions
-  if (hour >= 6 && hour < 10) {
-    suggestions.push("Was ist ein gesundes Frühstück für meine Ziele?")
-    suggestions.push("Wie wichtig ist ein proteinreiches Frühstück?")
-  } else if (hour >= 11 && hour < 14) {
-    suggestions.push("Welche gesunden Mittagsoptionen empfiehlst du?")
-    suggestions.push("Wie vermeide ich das Nachmittagstief nach dem Essen?")
-  } else if (hour >= 17 && hour < 21) {
-    suggestions.push("Hast du Ideen für ein ausgewogenes Abendessen?")
-    suggestions.push("Was sollte ich abends vermeiden zu essen?")
-  } else if (hour >= 21 || hour < 6) {
-    suggestions.push("Welche gesunden Snacks kann ich abends essen?")
-    suggestions.push("Wie wichtig ist das Timing der letzten Mahlzeit?")
-  }
-  
-  // Always relevant nutrition questions
-  suggestions.push("Wie erkenne ich versteckte Zucker in Lebensmitteln?")
-  suggestions.push("Welche Nährstoffe sollte ich täglich zu mir nehmen?")
-  suggestions.push("Was sind die häufigsten Ernährungsfehler?")
-  
-  // Return 4 suggestions, mixing time-specific and general
-  const timeSpecific = suggestions.slice(0, 2)
-  const general = suggestions.slice(-3)
-  return [...timeSpecific, ...general].slice(0, 4)
-}
+// // Generate smart fallback suggestions based on context - COMMENTED OUT
+// const generateFallbackSuggestions = () => {
+//   const suggestions = []
+//   const hour = new Date().getHours()
+//   
+//   // Time-based suggestions
+//   if (hour >= 6 && hour < 10) {
+//     suggestions.push("Was ist ein gesundes Frühstück für meine Ziele?")
+//     suggestions.push("Wie wichtig ist ein proteinreiches Frühstück?")
+//   } else if (hour >= 11 && hour < 14) {
+//     suggestions.push("Welche gesunden Mittagsoptionen empfiehlst du?")
+//     suggestions.push("Wie vermeide ich das Nachmittagstief nach dem Essen?")
+//   } else if (hour >= 17 && hour < 21) {
+//     suggestions.push("Hast du Ideen für ein ausgewogenes Abendessen?")
+//     suggestions.push("Was sollte ich abends vermeiden zu essen?")
+//   } else if (hour >= 21 || hour < 6) {
+//     suggestions.push("Welche gesunden Snacks kann ich abends essen?")
+//     suggestions.push("Wie wichtig ist das Timing der letzten Mahlzeit?")
+//   }
+//   
+//   // Always relevant nutrition questions
+//   suggestions.push("Wie erkenne ich versteckte Zucker in Lebensmitteln?")
+//   suggestions.push("Welche Nährstoffe sollte ich täglich zu mir nehmen?")
+//   suggestions.push("Was sind die häufigsten Ernährungsfehler?")
+//   
+//   // Return 4 suggestions, mixing time-specific and general
+//   const timeSpecific = suggestions.slice(0, 2)
+//   const general = suggestions.slice(-3)
+//   return [...timeSpecific, ...general].slice(0, 4)
+// }
 
-// Load suggestions from API
-const loadSuggestions = async () => {
-  try {
-    const userProfileData = await buildUserProfile()
-    const response = await fetch(`${API_BASE_URL}/suggestions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        userProfile: userProfileData,
-        currentContext: messages.value.length > 0 ? 'ongoing_conversation' : 'new_conversation'
-      })
-    })
+// // Load suggestions from API - COMMENTED OUT
+// const loadSuggestions = async () => {
+//   try {
+//     const userProfileData = await buildUserProfile()
+//     const response = await fetch(`${API_BASE_URL}/suggestions`, {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify({
+//         userProfile: userProfileData,
+//         currentContext: messages.value.length > 0 ? 'ongoing_conversation' : 'new_conversation'
+//       })
+//     })
 
-    if (response.ok) {
-      const data = await response.json()
-      if (data.success && data.suggestions && data.suggestions.length > 0) {
-        exampleQuestions.value = data.suggestions
-        return
-      }
-    }
-  } catch (error) {
-    console.log('Could not load personalized suggestions:', error)
-  }
-  
-  // Fallback to smart contextual suggestions
-  exampleQuestions.value = generateFallbackSuggestions()
-}
+//     if (response.ok) {
+//       const data = await response.json()
+//       if (data.success && data.suggestions && data.suggestions.length > 0) {
+//         exampleQuestions.value = data.suggestions
+//         return
+//       }
+//     }
+//   } catch (error) {
+//     console.log('Could not load personalized suggestions:', error)
+//   }
+//   
+//   // Fallback to smart contextual suggestions
+//   exampleQuestions.value = generateFallbackSuggestions()
+// }
 
 // Get current language for API
 const currentLanguage = computed(() => {
@@ -287,7 +276,7 @@ async function sendMessage() {
   const messageText = currentMessage.value
   currentMessage.value = ''
   error.value = null
-  
+
   scrollToBottom()
 
   // Show typing indicator
@@ -296,7 +285,7 @@ async function sendMessage() {
 
   try {
     const response = await callChatAPI(messageText)
-    
+
     const botResponse: Message = {
       text: response.response,
       isUser: false,
@@ -305,20 +294,20 @@ async function sendMessage() {
 
     isTyping.value = false
     messages.value.push(botResponse)
-    
+
     // Update conversation history
     conversationHistory.value = response.conversationHistory || []
-    
+
     scrollToBottom()
   } catch (err) {
     isTyping.value = false
-    
+
     const errorMessage: Message = {
       text: getErrorMessage(err),
       isUser: false,
       time: getCurrentTime()
     }
-    
+
     messages.value.push(errorMessage)
     scrollToBottom()
   }
@@ -353,11 +342,11 @@ async function callChatAPI(message: string) {
 async function buildUserProfile() {
   // Build comprehensive user profile from your actual userStore and scan data
   const profile: any = {}
-  
+
   // Basic user information
   if (userProfile.age) profile.age = userProfile.age
   if (userProfile.gender) profile.gender = userProfile.gender
-  
+
   // Get current weight from WeightTracker instead of userProfile
   try {
     const currentWeight = await WeightTracker.getLatestWeight()
@@ -365,11 +354,11 @@ async function buildUserProfile() {
   } catch (error) {
     console.error('Error getting current weight:', error)
   }
-  
+
   if (userProfile.height) profile.height = userProfile.height
   if (userProfile.activityLevel) profile.activityLevel = userProfile.activityLevel
   if (userProfile.goal) profile.goals = [userProfile.goal]
-  
+
   // Daily goals and targets
   profile.dailyGoals = {
     calories: dailyGoals.calories,
@@ -377,12 +366,12 @@ async function buildUserProfile() {
     carbs: dailyGoals.carbs,
     fats: dailyGoals.fats
   }
-  
+
   // Get today's consumed foods
   try {
     const scanHistory = await ScanHistory.get()
     const today = new Date().toISOString().split('T')[0]
-    
+
     const todaysScans = scanHistory.filter(scan => {
       const scanDate = new Date(scan.timestamp).toISOString().split('T')[0]
       return scanDate === today
@@ -423,7 +412,7 @@ async function buildUserProfile() {
   } catch (error) {
     console.log('Could not load weight history:', error)
   }
-  
+
   return profile
 }
 
@@ -459,7 +448,7 @@ function extractFoodName(scan: any): string {
 
 function extractCalories(scan: any): number {
   const amount = scan.amount || 1.0
-  
+
   if (scan.type === 'food') {
     return (scan.data.total?.calories || 0)
   } else if (scan.type === 'barcode') {
@@ -471,7 +460,7 @@ function extractCalories(scan: any): number {
 
 function extractProtein(scan: any): number {
   const amount = scan.amount || 1.0
-  
+
   if (scan.type === 'food') {
     return (scan.data.total?.protein || 0)
   } else if (scan.type === 'barcode') {
@@ -483,7 +472,7 @@ function extractProtein(scan: any): number {
 
 function extractCarbs(scan: any): number {
   const amount = scan.amount || 1.0
-  
+
   if (scan.type === 'food') {
     return (scan.data.total?.carbs || 0)
   } else if (scan.type === 'barcode') {
@@ -495,7 +484,7 @@ function extractCarbs(scan: any): number {
 
 function extractFats(scan: any): number {
   const amount = scan.amount || 1.0
-  
+
   if (scan.type === 'food') {
     return (scan.data.total?.fat || 0)
   } else if (scan.type === 'barcode') {
@@ -509,21 +498,21 @@ function getErrorMessage(error: any): string {
   if (error.message?.includes('rate_limit_exceeded')) {
     return t('chat.rateLimitError')
   }
-  
+
   if (error.message?.includes('insufficient_quota')) {
     return t('chat.serviceUnavailable')
   }
-  
+
   if (!navigator.onLine) {
     return t('chat.networkError')
   }
-  
+
   return t('chat.error')
 }
 
 onMounted(() => {
   scrollToBottom()
-  loadSuggestions()
+  // loadSuggestions() // COMMENTED OUT - Using predefined translations instead
 })
 </script>
 
@@ -533,7 +522,8 @@ onMounted(() => {
   background: #1e1e2e;
   display: flex;
   flex-direction: column;
-  padding-bottom: env(safe-area-inset-bottom, 0px); /* Only safe area, no extra padding */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  /* Only safe area, no extra padding */
 }
 
 /* Header */
@@ -615,7 +605,8 @@ onMounted(() => {
 .chat-messages {
   flex: 1;
   padding: 20px;
-  padding-bottom: 100px; /* Space for fixed input area */
+  padding-bottom: 100px;
+  /* Space for fixed input area */
   overflow-y: auto;
   max-height: calc(100vh - 200px);
 }
@@ -645,6 +636,7 @@ onMounted(() => {
 .message-avatar-icon {
   width: 100%;
   height: 100%;
+  border-radius: 100%;
   object-fit: cover;
 }
 
@@ -764,7 +756,8 @@ onMounted(() => {
   font-style: italic;
 }
 
-.markdown-content ul, .markdown-content ol {
+.markdown-content ul,
+.markdown-content ol {
   margin: 8px 0;
   padding-left: 20px;
 }
@@ -773,19 +766,40 @@ onMounted(() => {
   margin: 4px 0;
 }
 
-.markdown-content h1, .markdown-content h2, .markdown-content h3, 
-.markdown-content h4, .markdown-content h5, .markdown-content h6 {
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
   margin: 12px 0 8px 0;
   font-weight: 600;
   color: #f1f5f9;
 }
 
-.markdown-content h1 { font-size: 1.4em; }
-.markdown-content h2 { font-size: 1.3em; }
-.markdown-content h3 { font-size: 1.2em; }
-.markdown-content h4 { font-size: 1.1em; }
-.markdown-content h5 { font-size: 1.05em; }
-.markdown-content h6 { font-size: 1em; }
+.markdown-content h1 {
+  font-size: 1.4em;
+}
+
+.markdown-content h2 {
+  font-size: 1.3em;
+}
+
+.markdown-content h3 {
+  font-size: 1.2em;
+}
+
+.markdown-content h4 {
+  font-size: 1.1em;
+}
+
+.markdown-content h5 {
+  font-size: 1.05em;
+}
+
+.markdown-content h6 {
+  font-size: 1em;
+}
 
 .markdown-content a {
   color: #60a5fa;
@@ -812,7 +826,8 @@ onMounted(() => {
   white-space: nowrap;
 }
 
-.markdown-content th, .markdown-content td {
+.markdown-content th,
+.markdown-content td {
   border: 1px solid #374151;
   padding: 8px;
   text-align: left;
@@ -904,10 +919,14 @@ onMounted(() => {
 }
 
 @keyframes typing {
-  0%, 60%, 100% {
+
+  0%,
+  60%,
+  100% {
     transform: translateY(0);
     opacity: 0.4;
   }
+
   30% {
     transform: translateY(-10px);
     opacity: 1;
@@ -981,17 +1000,18 @@ onMounted(() => {
 @media (max-width: 480px) {
   .chat-messages {
     padding: 16px;
+    padding-bottom: 48px;
   }
-  
+
   .message-content {
     max-width: 85%;
   }
-  
+
   .chat-header {
     padding: 12px 16px;
     padding-top: calc(12px + env(safe-area-inset-top));
   }
-  
+
   .chat-input-area {
     padding: 12px 16px;
     padding-bottom: calc(12px + env(safe-area-inset-bottom));
