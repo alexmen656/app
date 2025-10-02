@@ -72,15 +72,16 @@
                 <p class="step-subtitle">This helps us personalize your experience</p>
 
                 <div class="form-group">
-                    <input v-model="userInfo.name" type="text" class="form-input"
-                        placeholder="Your name (e.g., John Doe)" />
+                    <input ref="nameInput" v-model="userInfo.name" type="text" class="form-input"
+                        placeholder="Your name (e.g., John Doe)" @keydown.enter="focusNextInput('ageInput')" />
                 </div>
 
                 <div class="form-row">
-                    <input v-model="userInfo.age" type="number" class="form-input" placeholder="Age (e.g., 25)" />
+                    <input ref="ageInput" v-model="userInfo.age" type="number" class="form-input"
+                        placeholder="Age (e.g., 25)" @keydown.enter="focusNextInput('heightInput')" />
                     <div class="input-with-unit">
-                        <input v-model="userInfo.height" type="number" class="form-input"
-                            placeholder="Height (e.g., 175)" />
+                        <input ref="heightInput" v-model="userInfo.height" type="number" class="form-input"
+                            placeholder="Height (e.g., 175)" @keydown.enter="focusNextInput('weightInput')" />
                         <span class="unit">cm</span>
                     </div>
                 </div>
@@ -88,8 +89,8 @@
                 <div class="form-row">
                     <div class="form-group">
                         <div class="input-with-unit">
-                            <input v-model="userInfo.weight" type="number" class="form-input"
-                                placeholder="Weight (e.g., 70)" />
+                            <input ref="weightInput" v-model="userInfo.weight" type="number" class="form-input"
+                                placeholder="Weight (e.g., 70)" @keydown.enter="handleWeightEnter" />
                             <span class="unit">kg</span>
                         </div>
                     </div>
@@ -426,6 +427,12 @@ const currentStep = ref(1)
 const totalSteps = 6
 const showSourceModal = ref(false)
 
+// Refs for input fields
+const nameInput = ref<HTMLInputElement>()
+const ageInput = ref<HTMLInputElement>()
+const heightInput = ref<HTMLInputElement>()
+const weightInput = ref<HTMLInputElement>()
+
 const userInfo = reactive({
     name: '',
     email: '',
@@ -561,6 +568,28 @@ const goalTypeText = computed(() => {
     return 'Weight Loss'
 })
 
+// Input navigation functions
+function focusNextInput(inputRefName: string) {
+    const inputsMap: Record<string, typeof nameInput | typeof ageInput | typeof heightInput | typeof weightInput> = {
+        nameInput,
+        ageInput,
+        heightInput,
+        weightInput
+    }
+    
+    const nextInput = inputsMap[inputRefName]
+    if (nextInput?.value) {
+        nextInput.value.focus()
+    }
+}
+
+function handleWeightEnter() {
+    // If all required fields are filled, proceed to next step
+    if (canProceed.value) {
+        nextStep()
+    }
+}
+
 function calculateRecommendedCalories() {
     if (!userInfo.age || !userInfo.weight || !userInfo.height || !userInfo.gender || !userInfo.activityLevel) {
         return
@@ -660,20 +689,21 @@ async function finishOnboarding() {
     background-size: 100% 100vh;
     background-position: bottom;
     color: white;
-    padding: 0 16px 16px 16px;
+    padding: 0 16px 0 16px;
     margin-top: max(44px, env(safe-area-inset-top, 44px));
-    padding-bottom: max(80px, calc(80px + env(safe-area-inset-bottom, 0px)));
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+    position: relative;
 }
 
 .progress-container {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 32px;
+    margin-bottom: 24px;
+    padding-top: 16px;
 }
 
 .progress-bar {
@@ -703,6 +733,8 @@ async function finishOnboarding() {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    padding-bottom: 100px;
+    /* Make room for fixed navigation buttons */
 }
 
 .hero-section {
@@ -1068,10 +1100,18 @@ async function finishOnboarding() {
 }
 
 .navigation-buttons {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
     display: flex;
     gap: 16px;
-    margin-top: 20px;
-    padding-top: 16px;
+    padding: 16px;
+    padding-bottom: max(16px, calc(16px + env(safe-area-inset-bottom, 0px)));
+    background: linear-gradient(to top, rgba(30, 30, 46, 0.98) 0%, rgba(30, 30, 46, 0.95) 80%, transparent 100%);
+    backdrop-filter: blur(10px);
+    z-index: 10;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .nav-button {
@@ -1122,7 +1162,7 @@ async function finishOnboarding() {
     display: flex;
     align-items: center;
     gap: 1.5rem;
-    padding: 1.5rem;
+    padding: 1.25rem;
     background: rgba(255, 255, 255, 0.05);
     border: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: 16px;
@@ -1183,6 +1223,11 @@ async function finishOnboarding() {
 }
 
 @media (max-width: 480px) {
+    .step-container {
+        padding-bottom: 120px;
+        /* Extra room on mobile for fixed buttons */
+    }
+
     .hero-icon {
         width: 90px;
         height: 90px;
