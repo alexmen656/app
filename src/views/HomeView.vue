@@ -114,7 +114,7 @@
                 <span>Give Feedback</span>
             </div>
 
-            <div class="action-chip" @click="goToView('water')">
+          <!--<div class="action-chip" @click="goToView('water')">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                     <path
                         d="M12,2C13.73,7.21 16.69,9.88 16.69,13.58C16.69,17.65 14.54,19.12 12,19.12C9.46,19.12 7.31,17.65 7.31,13.58C7.31,9.88 10.27,7.21 12,2Z" />
@@ -128,7 +128,7 @@
                         d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,17L7,12L8.41,10.59L12,14.17L15.59,10.59L17,12L12,17Z" />
                 </svg>
                 <span>Goals</span>
-            </div>
+            </div>-->  
 
             <div class="action-chip" @click="goToFavorites">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
