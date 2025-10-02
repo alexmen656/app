@@ -11,54 +11,56 @@
         <!-- Welcome Step -->
         <div v-if="currentStep === 1" class="step-container">
             <div class="hero-section">
-                <div class="hero-header">
-                    <div class="hero-icon">
-                        <img src="../assets/kalbuddy.png" alt="KalBuddy" class="hero-logo" />
-                    </div>
-                    <div class="hero-text">
-                        <h1 class="hero-title">Welcome to <span class="brand">KalBuddy</span></h1>
-                        <p class="hero-subtitle">Track your nutrition with AI-powered food recognition and achieve your
-                            health
-                            goals with personalized insights.</p>
-                    </div>
+                <div class="hero-icon">
+                    <img src="../assets/kalbuddy.png" alt="KalBuddy" class="hero-logo" />
                 </div>
+                <h1 class="hero-title">Welcome to <span class="brand">KalBuddy</span></h1>
+                <p class="hero-subtitle">Track your nutrition with AI-powered food recognition and achieve your
+                    health
+                    goals with personalized insights.</p>
             </div>
 
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2">
                             <path
                                 d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
                             <circle cx="12" cy="13" r="3" />
                         </svg>
                     </div>
-                    <h3>AI Food Recognition</h3>
-                    <p>Simply take a photo of your meal</p>
+                    <div class="feature-content">
+                        <h3>AI Food Recognition</h3>
+                        <p>Simply take a photo of your meal</p>
+                    </div>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2">
                             <path d="M18 20V10" />
                             <path d="M12 20V4" />
                             <path d="M6 20v-6" />
                         </svg>
                     </div>
-                    <h3>Smart Analytics</h3>
-                    <p>Track macros and calories effortlessly</p>
+                    <div class="feature-content">
+                        <h3>Smart Analytics</h3>
+                        <p>Track macros and calories effortlessly</p>
+                    </div>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2">
                             <circle cx="12" cy="12" r="10" />
                             <path d="M16.2 7.8l-2 6.3-6.3 2 2-6.3 6.3-2z" />
                         </svg>
                     </div>
-                    <h3>Personal Goals</h3>
-                    <p>Set and achieve your nutrition targets</p>
+                    <div class="feature-content">
+                        <h3>Personal Goals</h3>
+                        <p>Set and achieve your nutrition targets</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -70,34 +72,28 @@
                 <p class="step-subtitle">This helps us personalize your experience</p>
 
                 <div class="form-group">
-                    <label class="form-label">Name</label>
-                    <input v-model="userInfo.name" type="text" class="form-input" placeholder="Enter your name" />
+                    <input v-model="userInfo.name" type="text" class="form-input"
+                        placeholder="Your name (e.g., John Doe)" />
                 </div>
 
                 <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Age</label>
-                        <input v-model="userInfo.age" type="number" class="form-input" placeholder="25" />
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Height</label>
-                        <div class="input-with-unit">
-                            <input v-model="userInfo.height" type="number" class="form-input" placeholder="175" />
-                            <span class="unit">cm</span>
-                        </div>
+                    <input v-model="userInfo.age" type="number" class="form-input" placeholder="Age (e.g., 25)" />
+                    <div class="input-with-unit">
+                        <input v-model="userInfo.height" type="number" class="form-input"
+                            placeholder="Height (e.g., 175)" />
+                        <span class="unit">cm</span>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Weight</label>
                         <div class="input-with-unit">
-                            <input v-model="userInfo.weight" type="number" class="form-input" placeholder="70" />
+                            <input v-model="userInfo.weight" type="number" class="form-input"
+                                placeholder="Weight (e.g., 70)" />
                             <span class="unit">kg</span>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Gender</label>
                         <div class="gender-selector">
                             <button type="button" class="gender-option" :class="{ active: userInfo.gender === 'male' }"
                                 @click="userInfo.gender = 'male'">
@@ -320,13 +316,13 @@
                             <div class="formula-container">
                                 <div class="formula-item">
                                     <span class="formula-label">{{ $t('onboarding.calculationSource.menFormula')
-                                        }}:</span>
+                                    }}:</span>
                                     <code
                                         class="formula-code">BMR = 88.362 + (13.397 × weight) + (4.799 × height) - (5.677 × age)</code>
                                 </div>
                                 <div class="formula-item">
                                     <span class="formula-label">{{ $t('onboarding.calculationSource.womenFormula')
-                                        }}:</span>
+                                    }}:</span>
                                     <code
                                         class="formula-code">BMR = 447.593 + (9.247 × weight) + (3.098 × height) - (4.330 × age)</code>
                                 </div>
@@ -710,25 +706,19 @@ async function finishOnboarding() {
 }
 
 .hero-section {
+    text-align: center;
     margin-bottom: 32px;
 }
 
-.hero-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    margin-bottom: 24px;
-}
-
 .hero-icon {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     background: linear-gradient(135deg, #007052, #00a86b);
-    border-radius: 20px;
+    border-radius: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
+    margin: 0 auto 20px;
     overflow: hidden;
 }
 
@@ -736,11 +726,6 @@ async function finishOnboarding() {
     width: 100%;
     height: 100%;
     object-fit: cover;
-}
-
-.hero-text {
-    flex: 1;
-    text-align: left;
 }
 
 .hero-title {
@@ -757,43 +742,52 @@ async function finishOnboarding() {
     font-size: 16px;
     opacity: 0.8;
     line-height: 1.4;
+    max-width: 400px;
+    margin: 0 auto;
 }
 
 .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     margin-top: 20px;
 }
 
 .feature-card {
-    text-align: center;
-    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 16px;
     backdrop-filter: blur(10px);
+    text-align: left;
 }
 
 .feature-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 60px;
-    height: 60px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    margin: 0 auto 12px;
+    border-radius: 12px;
     color: #007052;
+}
+
+.feature-content {
+    flex: 1;
 }
 
 .feature-card h3 {
     font-size: 16px;
     font-weight: 600;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
 }
 
 .feature-card p {
-    font-size: 14px;
+    font-size: 13px;
     opacity: 0.7;
     margin: 0;
 }
@@ -819,14 +813,14 @@ async function finishOnboarding() {
 }
 
 .form-group {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
 .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
 .form-label {
@@ -1189,16 +1183,10 @@ async function finishOnboarding() {
 }
 
 @media (max-width: 480px) {
-    .hero-header {
-        flex-direction: row;
-        align-items: center;
-        gap: 16px;
-    }
-
     .hero-icon {
-        width: 70px;
-        height: 70px;
-        border-radius: 18px;
+        width: 90px;
+        height: 90px;
+        border-radius: 22px;
     }
 
     .hero-title {
@@ -1210,8 +1198,17 @@ async function finishOnboarding() {
     }
 
     .features-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
+        gap: 10px;
+    }
+
+    .feature-card {
+        padding: 14px;
+    }
+
+    .feature-icon {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
     }
 
     .form-row {
