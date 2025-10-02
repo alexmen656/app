@@ -1232,15 +1232,7 @@ async function finishOnboarding() {
         width: 90px;
         height: 90px;
         border-radius: 22px;
-    }
-
-    .hero-title {
-        font-size: 24px;
-    }
-
-    .hero-subtitle {
-        font-size: 14px;
-    }
+    }   
 
     .features-grid {
         gap: 10px;
