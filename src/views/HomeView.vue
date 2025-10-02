@@ -753,10 +753,10 @@ const availableDates = computed(() => {
         let subtitle = ''
 
         if (i === 0) {
-            display = t('today')
+            display = t('today')[0].toUpperCase() + t('today').slice(1)
             subtitle = date.toLocaleDateString(locale.value, { weekday: 'long', day: 'numeric', month: 'long' })
         } else if (i === 1) {
-            display = t('yesterday')
+            display = t('yesterday')[0].toUpperCase() + t('yesterday').slice(1)
             subtitle = date.toLocaleDateString(locale.value, { weekday: 'long', day: 'numeric', month: 'long' })
         } else {
             display = date.toLocaleDateString(locale.value, { weekday: 'long', day: 'numeric', month: 'long' })
@@ -1039,9 +1039,9 @@ function formatCurrentDate(): string {
     const yesterdayString = yesterday.toDateString()
 
     if (selectedDateString === todayString) {
-        return t('app.today')
+        return t('app.today')[0].toUpperCase() + t('app.today').slice(1)
     } else if (selectedDateString === yesterdayString) {
-        return t('app.yesterday')
+        return t('app.yesterday')[0].toUpperCase() + t('app.yesterday').slice(1)
     } else {
         return selectedDate.value.toLocaleDateString('de-DE', {
             weekday: 'short',
@@ -1434,8 +1434,10 @@ async function performBackgroundDelete(itemId: number) {
 .date-dropdown {
     position: absolute;
     top: 100%;
-    left: 0;
-    right: 0;
+    left: 50%;
+    transform: translateX(-80%);
+    min-width: 220px;
+    max-width: calc(100vw - 40px);
     background: rgba(40, 44, 52, 0.95);
     backdrop-filter: blur(10px);
     border-radius: 12px;

@@ -75,7 +75,7 @@
 
                 <div class="scan-info">
                     <div class="scan-header">
-                        <h4 class="scan-name">{{ getLocalizedName(scan) }}</h4>
+                        <h4 class="scan-name">{{ scan.name }}</h4>
                         <span class="scan-type-badge" :class="scan.type">
                             {{ scan.type === 'food' || scan.type === 'favorite' ? $t('allScans.foodScan') : $t('allScans.barcodeScan') }}
                         </span>
