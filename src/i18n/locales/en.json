@@ -28,8 +28,11 @@
     "noScansSubtitle": "Use the scan button to scan your first meal!",
     "scannedFood": "Scanned food",
     "unknownProduct": "Unknown product",
-        "showAllScans": "Show All Scans",
-    "favorites": "Favorites"
+    "showAllScans": "Show All Scans",
+    "favorites": "Favorites",
+    "chat": "Chat",
+    "logWeight": "Log Weight",
+    "giveFeedback": "Give Feedback"
   },
   "history": {
     "title": "History",
@@ -143,7 +146,7 @@
     "editNutrition": "Edit Nutrition",
     "update": "Update",
     "confidenceHigh": "High",
-    "confidenceMedium": "Medium", 
+    "confidenceMedium": "Medium",
     "confidenceLow": "Low",
     "dataSource": "Data Source",
     "aiSourceDescription": "This analysis was performed using artificial intelligence to identify foods and estimate nutritional values. AI estimates may not be 100% accurate.",
@@ -164,7 +167,7 @@
     "accuracyWarning": "AI analysis results may not be 100% accurate. Please verify important values.",
     "aiAccuracyWarning": "AI text analysis results may not be 100% accurate. Please verify important values.",
     "database": "Database",
-    "aiAnalysis": "AI Analysis", 
+    "aiAnalysis": "AI Analysis",
     "manualEntry": "Manual Entry",
     "unknownSource": "Unknown Source",
     "visitOpenFoodFacts": "Visit Open Food Facts"
@@ -326,7 +329,7 @@
       "categories": "BMI Categories",
       "underweight": "Underweight",
       "normal": "Normal weight",
-      "overweight": "Overweight", 
+      "overweight": "Overweight",
       "obese": "Obese",
       "important": "Important Note",
       "disclaimer": "BMI is a screening tool and is not diagnostic of the health of an individual. A trained healthcare provider should perform appropriate health assessments to evaluate an individual's health status.",
@@ -436,11 +439,11 @@
       "title": "Daily Scan Limit Reached",
       "description": "You've reached your daily limit of 5 scans. Upgrade to Premium for unlimited scans!",
       "feature1": "Unlimited food scans",
-      "feature2": "AI-powered food recognition", 
+      "feature2": "AI-powered food recognition",
       "feature3": "No daily limits"
     },
     "analytics": {
-      "title": "Advanced Analytics", 
+      "title": "Advanced Analytics",
       "description": "Get deeper insights into your nutrition habits with Premium Analytics.",
       "feature1": "Unlimited data history",
       "feature2": "Monthly and yearly comparisons",
@@ -459,7 +462,7 @@
     "features": {
       "unlimited_scans_desc": "Scan unlimited foods with AI recognition",
       "widgets_desc": "3 different widget sizes for your home screen",
-      "analytics_desc": "Detailed historical analysis and trends", 
+      "analytics_desc": "Detailed historical analysis and trends",
       "export_desc": "Export your data as CSV or PDF",
       "healthkit_desc": "Automatic synchronization with Apple Health",
       "charts_desc": "Advanced charts and statistics",
@@ -755,7 +758,7 @@
     "barcodeScans": "Barcodes",
     "sortBy": "Sort by",
     "newest": "Newest",
-    "oldest": "Oldest", 
+    "oldest": "Oldest",
     "name": "Name",
     "calories": "Calories",
     "results": "results",
@@ -872,7 +875,15 @@
       "grains": "Grains",
       "dairy": "Dairy",
       "nuts": "Nuts",
-      "beverages": "Beverages"
+      "beverages": "Beverages",
+      "fast_food": "Fast Food",
+      "desserts": "Desserts",
+      "seafood": "Seafood",
+      "snacks": "Snacks",
+      "bakery": "Bakery",
+      "condiments": "Condiments & Sauces",
+      "frozen": "Frozen Foods",
+      "candy": "Candy"
     },
     "units": {
       "piece": "piece",

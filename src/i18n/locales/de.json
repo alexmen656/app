@@ -29,7 +29,10 @@
     "scannedFood": "Gescanntes Essen",
     "unknownProduct": "Unbekanntes Produkt",
     "showAllScans": "Alle Scans anzeigen",
-    "favorites": "Favoriten"
+    "favorites": "Favoriten",
+    "chat": "Chat",
+    "logWeight": "Gewicht erfassen",
+    "giveFeedback": "Feedback geben"
   },
   "history": {
     "title": "Verlauf",
@@ -436,14 +439,14 @@
       "title": "Tägliches Scan-Limit erreicht",
       "description": "Sie haben Ihr tägliches Limit von 5 Scans erreicht. Upgraden Sie auf Premium für unbegrenzte Scans!",
       "feature1": "Unbegrenzte Food-Scans",
-      "feature2": "KI-basierte Lebensmittelerkennung", 
+      "feature2": "KI-basierte Lebensmittelerkennung",
       "feature3": "Keine täglichen Limits"
     },
     "analytics": {
       "title": "Erweiterte Analytics",
       "description": "Erhalten Sie tiefere Einblicke in Ihre Ernährungsgewohnheiten mit Premium Analytics.",
       "feature1": "Unbegrenzter Daten-Verlauf",
-      "feature2": "Monats- und Jahresvergleiche", 
+      "feature2": "Monats- und Jahresvergleiche",
       "feature3": "Export-Funktionen",
       "upgradeTitle": "Premium Analytics",
       "upgradeSubtitle": "Freischaltung detaillierter Verlaufsanalysen"
@@ -872,7 +875,15 @@
       "grains": "Getreide",
       "dairy": "Milchprodukte",
       "nuts": "Nüsse",
-      "beverages": "Getränke"
+      "beverages": "Getränke",
+      "fast_food": "Fast Food",
+      "desserts": "Desserts",
+      "seafood": "Meeresfrüchte",
+      "snacks": "Snacks",
+      "bakery": "Bäckerei",
+      "condiments": "Gewürze & Soßen",
+      "frozen": "Tiefkühlkost",
+      "candy": "Süßwaren"
     },
     "units": {
       "piece": "Stück",

@@ -28,7 +28,11 @@
     "noScansSubtitle": "¡Usa el botón de escanear para registrar tu primera comida!",
     "scannedFood": "Comida escaneada",
     "unknownProduct": "Producto desconocido",
-    "showAllScans": "Ver todos los escaneos"
+    "showAllScans": "Ver todos los escaneos",
+    "favorites": "Favoritos",
+    "chat": "Chat",
+    "logWeight": "Registrar Peso",
+    "giveFeedback": "Dar Opinión"
   },
   "yesterday": {
     "title": "Comidas de ayer",
@@ -136,7 +140,7 @@
     "editNutrition": "Editar Nutrición",
     "update": "Actualizar",
     "confidenceHigh": "Alta",
-    "confidenceMedium": "Media", 
+    "confidenceMedium": "Media",
     "confidenceLow": "Baja",
     "dataSource": "Fuente de Datos",
     "aiSourceDescription": "Este análisis fue realizado usando inteligencia artificial para identificar alimentos y estimar valores nutricionales. Las estimaciones de IA pueden no ser 100% precisas.",
@@ -152,7 +156,7 @@
     "accuracyWarning": "Los resultados del análisis de IA pueden no ser 100% precisos. Por favor verifique los valores importantes.",
     "aiAccuracyWarning": "Los resultados del análisis de texto con IA pueden no ser 100% precisos. Por favor verifique los valores importantes.",
     "database": "Base de datos",
-    "aiAnalysis": "Análisis IA", 
+    "aiAnalysis": "Análisis IA",
     "manualEntry": "Entrada Manual",
     "unknownSource": "Fuente Desconocida",
     "visitOpenFoodFacts": "Visitar Open Food Facts"
@@ -309,7 +313,7 @@
       "categories": "Categorías del IMC",
       "underweight": "Bajo peso",
       "normal": "Peso normal",
-      "overweight": "Sobrepeso", 
+      "overweight": "Sobrepeso",
       "obese": "Obeso",
       "important": "Nota Importante",
       "disclaimer": "El IMC es una herramienta de detección y no es diagnóstica de la salud de un individuo. Un proveedor de atención médica capacitado debe realizar evaluaciones de salud apropiadas para evaluar el estado de salud de un individuo.",
@@ -419,11 +423,11 @@
       "title": "Límite Diario de Escaneos Alcanzado",
       "description": "Ha alcanzado su límite diario de 5 escaneos. ¡Actualice a Premium para escaneos ilimitados!",
       "feature1": "Escaneos ilimitados de comida",
-      "feature2": "Reconocimiento de comida potenciado por IA", 
+      "feature2": "Reconocimiento de comida potenciado por IA",
       "feature3": "Sin límites diarios"
     },
     "analytics": {
-      "title": "Análisis Avanzados", 
+      "title": "Análisis Avanzados",
       "description": "Obtenga información más profunda sobre sus hábitos nutricionales con Premium Analytics.",
       "feature1": "Historial ilimitado de datos",
       "feature2": "Comparaciones mensuales y anuales",
@@ -442,7 +446,7 @@
     "features": {
       "unlimited_scans_desc": "Escanee alimentos ilimitados con reconocimiento IA",
       "widgets_desc": "3 tamaños diferentes de widgets para su pantalla de inicio",
-      "analytics_desc": "Análisis histórico detallado y tendencias", 
+      "analytics_desc": "Análisis histórico detallado y tendencias",
       "export_desc": "Exporte sus datos como CSV o PDF",
       "healthkit_desc": "Sincronización automática con Apple Health",
       "charts_desc": "Gráficos y estadísticas avanzados",
@@ -721,7 +725,7 @@
     "barcodeScans": "Códigos de barras",
     "sortBy": "Ordenar por",
     "newest": "Más reciente",
-    "oldest": "Más antiguo", 
+    "oldest": "Más antiguo",
     "name": "Nombre",
     "calories": "Calorías",
     "results": "resultados",
@@ -831,13 +835,22 @@
     "adding": "Añadiendo...",
     "categoryNames": {
       "all": "Todos",
+      "favorites": "Favoritos",
       "fruits": "Frutas",
       "vegetables": "Verduras",
       "proteins": "Proteínas",
       "grains": "Cereales",
       "dairy": "Lácteos",
       "nuts": "Frutos Secos",
-      "beverages": "Bebidas"
+      "beverages": "Bebidas",
+      "fast_food": "Comida Rápida",
+      "desserts": "Postres",
+      "seafood": "Mariscos",
+      "snacks": "Aperitivos",
+      "bakery": "Panadería",
+      "condiments": "Condimentos y Salsas",
+      "frozen": "Congelados",
+      "candy": "Dulces"
     },
     "units": {
       "piece": "pieza",
