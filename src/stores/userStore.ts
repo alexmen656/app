@@ -6,7 +6,7 @@ interface UserProfile {
   name: string
   email: string
   age: number | null
-  gender: 'male' | 'female' | ''
+  gender: 'male' | 'female' | 'other' | ''
   height: number | null
   targetWeight: number | null
   activityLevel: string

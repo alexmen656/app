@@ -11,16 +11,17 @@
         <!-- Welcome Step -->
         <div v-if="currentStep === 1" class="step-container">
             <div class="hero-section">
-                <div class="hero-icon">
-                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="1.5">
-                        <path
-                            d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z" />
-                    </svg>
+                <div class="hero-header">
+                    <div class="hero-icon">
+                        <img src="../assets/kalbuddy.png" alt="KalBuddy" class="hero-logo" />
+                    </div>
+                    <div class="hero-text">
+                        <h1 class="hero-title">Welcome to <span class="brand">KalBuddy</span></h1>
+                        <p class="hero-subtitle">Track your nutrition with AI-powered food recognition and achieve your
+                            health
+                            goals with personalized insights.</p>
+                    </div>
                 </div>
-                <h1 class="hero-title">Welcome to <span class="brand">KalBuddy</span></h1>
-                <p class="hero-subtitle">Track your nutrition with AI-powered food recognition and achieve your health
-                    goals with personalized insights.</p>
             </div>
 
             <div class="features-grid">
@@ -79,29 +80,37 @@
                         <input v-model="userInfo.age" type="number" class="form-input" placeholder="25" />
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Gender</label>
-                        <select v-model="userInfo.gender" class="form-select">
-                            <option value="">Select</option>
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
                         <label class="form-label">Height</label>
                         <div class="input-with-unit">
                             <input v-model="userInfo.height" type="number" class="form-input" placeholder="175" />
                             <span class="unit">cm</span>
                         </div>
                     </div>
+                </div>
+
+                <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Weight</label>
                         <div class="input-with-unit">
                             <input v-model="userInfo.weight" type="number" class="form-input" placeholder="70" />
                             <span class="unit">kg</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Gender</label>
+                        <div class="gender-selector">
+                            <button type="button" class="gender-option" :class="{ active: userInfo.gender === 'male' }"
+                                @click="userInfo.gender = 'male'">
+                                Male
+                            </button>
+                            <button type="button" class="gender-option"
+                                :class="{ active: userInfo.gender === 'female' }" @click="userInfo.gender = 'female'">
+                                Female
+                            </button>
+                            <button type="button" class="gender-option" :class="{ active: userInfo.gender === 'other' }"
+                                @click="userInfo.gender = 'other'">
+                                Other
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -305,17 +314,21 @@
                     <h4 class="source-title">{{ $t('onboarding.calculationSource.title') }}</h4>
                     <div class="source-explanation">
                         <p>{{ $t('onboarding.calculationSource.description') }}</p>
-                        
+
                         <div class="formula-section">
                             <h5>{{ $t('onboarding.calculationSource.bmrFormula') }}</h5>
                             <div class="formula-container">
                                 <div class="formula-item">
-                                    <span class="formula-label">{{ $t('onboarding.calculationSource.menFormula') }}:</span>
-                                    <code class="formula-code">BMR = 88.362 + (13.397 × weight) + (4.799 × height) - (5.677 × age)</code>
+                                    <span class="formula-label">{{ $t('onboarding.calculationSource.menFormula')
+                                        }}:</span>
+                                    <code
+                                        class="formula-code">BMR = 88.362 + (13.397 × weight) + (4.799 × height) - (5.677 × age)</code>
                                 </div>
                                 <div class="formula-item">
-                                    <span class="formula-label">{{ $t('onboarding.calculationSource.womenFormula') }}:</span>
-                                    <code class="formula-code">BMR = 447.593 + (9.247 × weight) + (3.098 × height) - (4.330 × age)</code>
+                                    <span class="formula-label">{{ $t('onboarding.calculationSource.womenFormula')
+                                        }}:</span>
+                                    <code
+                                        class="formula-code">BMR = 447.593 + (9.247 × weight) + (3.098 × height) - (4.330 × age)</code>
                                 </div>
                             </div>
                             <p class="formula-note">{{ $t('onboarding.calculationSource.formulaNote') }}</p>
@@ -358,7 +371,8 @@
                 <div class="modal-header">
                     <h3>{{ $t('onboarding.calculationSource.modalTitle') }}</h3>
                     <button @click="showSourceModal = false" class="close-button">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
                             <line x1="6" y1="6" x2="18" y2="18"></line>
                         </svg>
@@ -368,24 +382,28 @@
                     <div class="source-section">
                         <h4>{{ $t('onboarding.calculationSource.harrisTitle') }}</h4>
                         <p>{{ $t('onboarding.calculationSource.harrisDescription') }}</p>
-                        
+
                         <div class="formula-details">
                             <div class="formula-group">
                                 <h5>{{ $t('onboarding.calculationSource.menFormula') }}</h5>
-                                <code class="formula-display">BMR = 88.362 + (13.397 × weight) + (4.799 × height) - (5.677 × age)</code>
+                                <code
+                                    class="formula-display">BMR = 88.362 + (13.397 × weight) + (4.799 × height) - (5.677 × age)</code>
                             </div>
                             <div class="formula-group">
                                 <h5>{{ $t('onboarding.calculationSource.womenFormula') }}</h5>
-                                <code class="formula-display">BMR = 447.593 + (9.247 × weight) + (3.098 × height) - (4.330 × age)</code>
+                                <code
+                                    class="formula-display">BMR = 447.593 + (9.247 × weight) + (3.098 × height) - (4.330 × age)</code>
                             </div>
                         </div>
-                        
+
                         <p>{{ $t('onboarding.calculationSource.totalCalculation') }}</p>
-                        
+
                         <div class="reference-link">
-                            <a href="https://www.calculator.net/bmr-calculator.html" target="_blank" rel="noopener noreferrer">
+                            <a href="https://www.calculator.net/bmr-calculator.html" target="_blank"
+                                rel="noopener noreferrer">
                                 {{ $t('onboarding.calculationSource.learnMoreLink') }}
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
                                     <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                                     <polyline points="15,3 21,3 21,9"></polyline>
                                     <line x1="10" y1="14" x2="21" y2="3"></line>
@@ -416,7 +434,7 @@ const userInfo = reactive({
     name: '',
     email: '',
     age: null as number | null,
-    gender: '' as '' | 'male' | 'female',
+    gender: '' as '' | 'male' | 'female' | 'other',
     height: null as number | null,
     weight: null as number | null,
     targetWeight: null as number | null,
@@ -607,7 +625,7 @@ function previousStep() {
 async function finishOnboarding() {
     // Create a copy of userInfo without weight (weight is now managed by WeightTracker)
     const { weight, targetWeight, ...profileWithoutWeight } = userInfo
-    
+
     // Update user store with data (excluding weight)
     await updateUserProfile(profileWithoutWeight)
     await updateDailyGoals(goals)
@@ -641,12 +659,14 @@ async function finishOnboarding() {
 <style scoped>
 .onboarding-view {
     height: 100vh;
-    height: 100dvh;
+    height: calc(100vh - max(44px, env(safe-area-inset-top, 44px)));
     background: linear-gradient(135deg, #1e1e2e 0%, #2a2d37 100%);
+    background-size: 100% 100vh;
+    background-position: bottom;
     color: white;
-    padding: 20px;
-    padding-top: max(44px, env(safe-area-inset-top, 44px));
-    padding-bottom: max(20px, env(safe-area-inset-bottom, 20px));
+    padding: 0 16px 16px 16px;
+    margin-top: max(44px, env(safe-area-inset-top, 44px));
+    padding-bottom: max(80px, calc(80px + env(safe-area-inset-bottom, 0px)));
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
     display: flex;
     flex-direction: column;
@@ -690,26 +710,43 @@ async function finishOnboarding() {
 }
 
 .hero-section {
-    text-align: center;
-    margin-bottom: 48px;
+    margin-bottom: 32px;
+}
+
+.hero-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 24px;
 }
 
 .hero-icon {
-    width: 120px;
-    height: 120px;
+    width: 80px;
+    height: 80px;
     background: linear-gradient(135deg, #007052, #00a86b);
-    border-radius: 60px;
+    border-radius: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 24px;
-    color: white;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.hero-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hero-text {
+    flex: 1;
+    text-align: left;
 }
 
 .hero-title {
-    font-size: 32px;
+    font-size: 28px;
     font-weight: 700;
-    margin-bottom: 16px;
+    margin-bottom: 8px;
 }
 
 .brand {
@@ -717,18 +754,16 @@ async function finishOnboarding() {
 }
 
 .hero-subtitle {
-    font-size: 18px;
+    font-size: 16px;
     opacity: 0.8;
     line-height: 1.4;
-    max-width: 400px;
-    margin: 0 auto;
 }
 
 .features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 24px;
-    margin-top: 32px;
+    gap: 16px;
+    margin-top: 20px;
 }
 
 .feature-card {
@@ -773,24 +808,25 @@ async function finishOnboarding() {
     font-size: 28px;
     font-weight: 700;
     text-align: center;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .step-subtitle {
     font-size: 16px;
     opacity: 0.8;
     text-align: center;
-    margin-bottom: 32px;
+    margin-bottom: 24px;
 }
 
 .form-group {
-    margin-bottom: 24px;
+    margin-bottom: 16px;
 }
 
 .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 16px;
+    gap: 12px;
+    margin-bottom: 16px;
 }
 
 .form-label {
@@ -816,6 +852,36 @@ async function finishOnboarding() {
 .form-select:focus {
     outline: none;
     border-color: #007052;
+}
+
+.gender-selector {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+}
+
+.gender-option {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    color: white;
+    padding: 12px 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.gender-option:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.gender-option.active {
+    background: rgba(0, 112, 82, 0.3);
+    border-color: #007052;
+    color: #00a86b;
+    font-weight: 600;
 }
 
 .input-with-unit {
@@ -1010,8 +1076,8 @@ async function finishOnboarding() {
 .navigation-buttons {
     display: flex;
     gap: 16px;
-    margin-top: 32px;
-    padding-top: 20px;
+    margin-top: 20px;
+    padding-top: 16px;
 }
 
 .nav-button {
@@ -1123,20 +1189,37 @@ async function finishOnboarding() {
 }
 
 @media (max-width: 480px) {
+    .hero-header {
+        flex-direction: row;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .hero-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 18px;
+    }
+
     .hero-title {
-        font-size: 28px;
+        font-size: 24px;
     }
 
     .hero-subtitle {
-        font-size: 16px;
+        font-size: 14px;
     }
 
     .features-grid {
         grid-template-columns: 1fr;
+        gap: 12px;
     }
 
     .form-row {
         grid-template-columns: 1fr;
+    }
+
+    .gender-selector {
+        flex-direction: row;
     }
 
     .goal-input {
@@ -1507,12 +1590,12 @@ async function finishOnboarding() {
         background: rgba(255, 255, 255, 0.03);
         border-color: rgba(255, 255, 255, 0.08);
     }
-    
+
     .formula-section {
         background: rgba(0, 0, 0, 0.4);
         border-color: rgba(255, 255, 255, 0.08);
     }
-    
+
     .modal-content {
         background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
     }
