@@ -319,6 +319,7 @@
 
     <div class="bmi-buttons">
       <button class="info-btn" @click.stop="showBMIInfoModal = true">
+        <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="currentColor"><path d="M320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C178.6 64 64 178.6 64 320C64 461.4 178.6 576 320 576zM288 224C288 206.3 302.3 192 320 192C337.7 192 352 206.3 352 224C352 241.7 337.7 256 320 256C302.3 256 288 241.7 288 224zM280 288L328 288C341.3 288 352 298.7 352 312L352 400L360 400C373.3 400 384 410.7 384 424C384 437.3 373.3 448 360 448L280 448C266.7 448 256 437.3 256 424C256 410.7 266.7 400 280 400L304 400L304 336L280 336C266.7 336 256 325.3 256 312C256 298.7 266.7 288 280 288z"/></svg>
         info
       </button>
       <button @click="navigateToBMIDetail" class="detail-btn">
@@ -793,7 +794,7 @@ function navigateToWeightDetail() {
   width: 50%;
   color: white;
   padding: 8px 12px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   gap: 6px;
   cursor: pointer;
@@ -1256,7 +1257,7 @@ function navigateToWeightDetail() {
   border-radius: 0 0 16px 0;
   color: white;
   padding: 8px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   display: flex;
   align-items: center;
@@ -1264,7 +1265,6 @@ function navigateToWeightDetail() {
   cursor: pointer;
   transition: all 0.2s ease;
   width: 50%;
-  height: 32px;
 }
 
 .detail-btn:hover {
@@ -1278,7 +1278,7 @@ function navigateToWeightDetail() {
   width: 50%;
   color: white;
   padding: 8px 12px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   display: flex;
   align-items: center;
