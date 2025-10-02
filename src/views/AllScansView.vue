@@ -215,7 +215,7 @@ const filterOptions = [
     { value: 'all' as const, label: t('allScans.all') },
     { value: 'food' as const, label: t('allScans.foodScans') },
     { value: 'barcode' as const, label: t('allScans.barcodeScans') },
-    { value: 'manual' as const, label: t('allScans.manualEntries') },
+    //{ value: 'manual' as const, label: t('allScans.manualEntries') },
 ]
 
 // Computed properties
