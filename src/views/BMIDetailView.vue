@@ -511,7 +511,7 @@ const getBMIDescription = (bmi: number): string => {
 
 .section-subtitle {
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 16px;
   color: #ffffff;
 }
@@ -519,88 +519,130 @@ const getBMIDescription = (bmi: number): string => {
 .bmi-scale-detailed {
   background: linear-gradient(135deg, #2a2d37 0%, #343a47 100%);
   border-radius: 16px;
-  padding: 24px;
+  padding: 24px 20px;
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 380px) {
+  .bmi-scale-detailed {
+    padding: 20px 16px;
+  }
 }
 
 .bmi-scale-bar {
   position: relative;
-  height: 12px;
-  border-radius: 6px;
-  overflow: hidden;
+  height: 16px;
+  border-radius: 8px;
+  overflow: visible;
   display: flex;
-  margin-bottom: 20px;
+  margin-bottom: 50px;
 }
 
 .scale-segment {
   flex: 1;
   height: 100%;
+  position: relative;
+}
+
+.scale-segment:first-child {
+  border-radius: 8px 0 0 8px;
+}
+
+.scale-segment:last-child {
+  border-radius: 0 8px 8px 0;
 }
 
 .scale-segment.underweight {
-  background: #2196F3;
+  background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
 }
 
 .scale-segment.normal {
-  background: #4CAF50;
+  background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
 }
 
 .scale-segment.overweight {
-  background: #FF9800;
+  background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
 }
 
 .scale-segment.obese {
-  background: #F44336;
+  background: linear-gradient(135deg, #F44336 0%, #D32F2F 100%);
 }
 
 .bmi-indicator {
   position: absolute;
-  top: -8px;
+  top: -12px;
   transform: translateX(-50%);
   z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .indicator-dot {
-  width: 8px;
-  height: 8px;
+  width: 12px;
+  height: 12px;
   background: #ffffff;
   border-radius: 50%;
-  margin: 0 auto 4px;
+  margin-bottom: 6px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border: 2px solid #1a1d26;
 }
 
 .indicator-label {
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 700;
   background: #ffffff;
   color: #1a1d26;
-  padding: 2px 6px;
+  padding: 4px 8px;
   border-radius: 8px;
   white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .scale-labels {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+  gap: 4px;
+  margin-top: 8px;
 }
 
 .scale-label {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .label-value {
   display: block;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   color: #ffffff;
-  margin-bottom: 2px;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
 .label-text {
   display: block;
-  font-size: 11px;
+  font-size: 10px;
   color: #9ca3af;
+  line-height: 1.2;
+  word-wrap: break-word;
+  hyphens: auto;
+}
+
+@media (max-width: 380px) {
+  .scale-labels {
+    gap: 2px;
+  }
+  
+  .label-value {
+    font-size: 10px;
+  }
+  
+  .label-text {
+    font-size: 9px;
+  }
 }
 
 .bmi-chart-section,

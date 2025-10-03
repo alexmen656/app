@@ -4,13 +4,13 @@
     <header class="header">
       <button @click="$router.back()" class="back-btn">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
         </svg>
       </button>
       <h1 class="title">{{ $t('weightDetail.title') }}</h1>
       <button @click="showWeightLogModal = true" class="add-weight-btn">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+          <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
         </svg>
       </button>
     </header>
@@ -25,14 +25,14 @@
           </div>
           <div class="weight-change" :class="{ 'positive': weightChange >= 0, 'negative': weightChange < 0 }">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path v-if="weightChange >= 0" d="M7 14l5-5 5 5H7z"/>
-              <path v-else d="M7 10l5 5 5-5H7z"/>
+              <path v-if="weightChange >= 0" d="M7 14l5-5 5 5H7z" />
+              <path v-else d="M7 10l5 5 5-5H7z" />
             </svg>
             {{ weightChange >= 0 ? '+' : '' }}{{ Math.abs(weightChange).toFixed(1) }}kg
             <span class="change-period">{{ $t('weightDetail.thisWeek') }}</span>
           </div>
         </div>
-        
+
         <div class="weight-stats">
           <div class="stat-item">
             <span class="stat-label">{{ $t('weightDetail.target') }}</span>
@@ -41,7 +41,8 @@
           <div class="stat-item">
             <span class="stat-label">{{ $t('weightDetail.remaining') }}</span>
             <span class="stat-value" :class="{ 'achieved': isGoalAchieved }">
-              {{ isGoalAchieved ? $t('weightDetail.achieved') : Math.abs(currentWeight - targetWeight).toFixed(1) + 'kg' }}
+              {{ isGoalAchieved ? $t('weightDetail.achieved') : Math.abs(currentWeight - targetWeight).toFixed(1) + 'kg'
+              }}
             </span>
           </div>
           <div class="stat-item">
@@ -67,14 +68,9 @@
           </select>
         </div>
       </div>
-      
-      <WeightChart 
-        :data="getWeightChartData()"
-        :goal-weight="targetWeight"
-        :current-weight="currentWeight"
-        :period="selectedChartPeriod"
-        :show-statistics="true"
-      />
+
+      <WeightChart :data="getWeightChartData()" :goal-weight="targetWeight" :current-weight="currentWeight"
+        :period="selectedChartPeriod" :show-statistics="true" />
     </div>
 
     <!-- Weight Statistics -->
@@ -84,7 +80,7 @@
         <div class="stat-card">
           <div class="stat-icon average">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M3 5h18v2H3V5zm0 6h18v2H3v-2zm0 6h18v2H3v-2z"/>
+              <path d="M3 5h18v2H3V5zm0 6h18v2H3v-2zm0 6h18v2H3v-2z" />
             </svg>
           </div>
           <div class="stat-content">
@@ -97,7 +93,7 @@
         <div class="stat-card">
           <div class="stat-icon highest">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M7 14l5-5 5 5H7z"/>
+              <path d="M7 14l5-5 5 5H7z" />
             </svg>
           </div>
           <div class="stat-content">
@@ -110,7 +106,7 @@
         <div class="stat-card">
           <div class="stat-icon lowest">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M7 10l5 5 5-5H7z"/>
+              <path d="M7 10l5 5 5-5H7z" />
             </svg>
           </div>
           <div class="stat-content">
@@ -123,7 +119,7 @@
         <div class="stat-card">
           <div class="stat-icon change">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
+              <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z" />
             </svg>
           </div>
           <div class="stat-content">
@@ -142,24 +138,27 @@
       <h3 class="section-title">{{ $t('weightDetail.recentEntries') }}</h3>
       <div class="history-list">
         <div v-for="entry in recentWeightEntries" :key="entry.id" class="history-entry">
-          <div class="entry-date">
-            <span class="date">{{ formatDate(entry.date) }}</span>
-            <span class="time">{{ formatTime(entry.date) }}</span>
-          </div>
-          <div class="entry-weight">
-            <span class="weight">{{ entry.weight }}kg</span>
-            <span v-if="entry.change" class="change" :class="{ 'positive': entry.change >= 0, 'negative': entry.change < 0 }">
-              {{ entry.change >= 0 ? '+' : '' }}{{ entry.change.toFixed(1) }}
-            </span>
+          <div>
+            <div class="entry-date">
+              <span class="date">{{ formatDate(entry.date) }}</span>
+              <span class="time">{{ formatTime(entry.date) }}</span>
+            </div>
+            <div class="entry-weight">
+              <span class="weight">{{ entry.weight }}kg</span>
+              <span v-if="entry.change" class="change"
+                :class="{ 'positive': entry.change >= 0, 'negative': entry.change < 0 }">
+                {{ entry.change >= 0 ? '+' : '' }}{{ entry.change.toFixed(1) }}
+              </span>
+            </div>
+            <button @click="deleteWeightEntry(entry.id)" class="delete-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+              </svg>
+            </button>
           </div>
           <div class="entry-note" v-if="entry.note">
             {{ entry.note }}
           </div>
-          <button @click="deleteWeightEntry(entry.id)" class="delete-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-            </svg>
-          </button>
         </div>
       </div>
     </div>
@@ -178,18 +177,20 @@
           </div>
           <div class="goal-details">
             <span>{{ startWeight }}kg → {{ targetWeight }}kg</span>
-            <span class="remaining">{{ Math.abs(currentWeight - targetWeight).toFixed(1) }}kg {{ $t('weightDetail.remaining') }}</span>
+            <span class="remaining">{{ Math.abs(currentWeight - targetWeight).toFixed(1) }}kg {{
+              $t('weightDetail.remaining') }}</span>
           </div>
         </div>
 
         <div class="milestones">
           <h4>{{ $t('weightDetail.milestones') }}</h4>
           <div class="milestone-list">
-            <div v-for="milestone in milestones" :key="milestone.id" class="milestone-item" :class="{ completed: milestone.completed }">
+            <div v-for="milestone in milestones" :key="milestone.id" class="milestone-item"
+              :class="{ completed: milestone.completed }">
               <div class="milestone-icon">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                  <path v-if="milestone.completed" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
-                  <circle v-else cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/>
+                  <path v-if="milestone.completed" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
+                  <circle v-else cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2" />
                 </svg>
               </div>
               <div class="milestone-content">
@@ -212,32 +213,17 @@
         <div class="modal-body">
           <div class="weight-input-section">
             <label class="modal-label">{{ $t('weightDetail.weight') }} (kg)</label>
-            <input 
-              v-model="newWeight" 
-              type="number" 
-              step="0.1"
-              min="30"
-              max="300"
-              class="modal-input"
-              :placeholder="$t('weightDetail.enterWeight')"
-            />
+            <input v-model="newWeight" type="number" step="0.1" min="30" max="300" class="modal-input"
+              :placeholder="$t('weightDetail.enterWeight')" />
           </div>
           <div class="weight-input-section">
             <label class="modal-label">{{ $t('weightDetail.date') }}</label>
-            <input 
-              v-model="newWeightDate" 
-              type="datetime-local"
-              class="modal-input"
-            />
+            <input v-model="newWeightDate" type="datetime-local" class="modal-input" />
           </div>
           <div class="weight-input-section">
             <label class="modal-label">{{ $t('weightDetail.note') }} ({{ $t('common.optional') }})</label>
-            <input 
-              v-model="weightNote" 
-              type="text"
-              class="modal-input"
-              :placeholder="$t('weightDetail.notePlaceholder')"
-            />
+            <input v-model="weightNote" type="text" class="modal-input"
+              :placeholder="$t('weightDetail.notePlaceholder')" />
           </div>
         </div>
         <div class="modal-footer">
@@ -344,7 +330,7 @@ const recentWeightEntries = computed(() => {
   return weightEntries.value.slice(0, 10).map((entry, index) => {
     const prevEntry = weightEntries.value[index + 1]
     const change = prevEntry ? entry.weight - prevEntry.weight : null
-    
+
     return {
       id: entry.timestamp,
       date: new Date(entry.date),
@@ -357,33 +343,38 @@ const recentWeightEntries = computed(() => {
 
 // Methods
 const getWeightChartData = () => {
+  const now = new Date()
+  const cutoffDate = new Date()
+
+  switch (selectedChartPeriod.value) {
+    case 'week':
+      cutoffDate.setDate(now.getDate() - 7)
+      break
+    case 'month':
+      cutoffDate.setMonth(now.getMonth() - 1)
+      break
+    case '3months':
+      cutoffDate.setMonth(now.getMonth() - 3)
+      break
+    case '6months':
+      cutoffDate.setMonth(now.getMonth() - 6)
+      break
+    case 'year':
+      cutoffDate.setFullYear(now.getFullYear() - 1)
+      break
+    case 'all':
+      return weightEntries.value
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+        .map(entry => ({
+          date: entry.date,
+          weight: entry.weight
+        }))
+  }
+
   return weightEntries.value
     .filter(entry => {
       const entryDate = new Date(entry.date)
-      const now = new Date()
-      const cutoffDate = new Date()
-      
-      switch (selectedChartPeriod.value) {
-        case 'week':
-          cutoffDate.setDate(now.getDate() - 7)
-          break
-        case 'month':
-          cutoffDate.setMonth(now.getMonth() - 1)
-          break
-        case '3months':
-          cutoffDate.setMonth(now.getMonth() - 3)
-          break
-        case '6months':
-          cutoffDate.setMonth(now.getMonth() - 6)
-          break
-        case 'year':
-          cutoffDate.setFullYear(now.getFullYear() - 1)
-          break
-        case 'all':
-          return true
-      }
-      
-      return entryDate >= cutoffDate
+      return entryDate >= cutoffDate && entryDate <= now
     })
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
     .map(entry => ({
@@ -395,7 +386,7 @@ const getWeightChartData = () => {
 const getFilteredEntries = () => {
   const now = new Date()
   const cutoffDate = new Date()
-  
+
   switch (selectedChartPeriod.value) {
     case 'week':
       cutoffDate.setDate(now.getDate() - 7)
@@ -415,7 +406,7 @@ const getFilteredEntries = () => {
     case 'all':
       return weightEntries.value
   }
-  
+
   return weightEntries.value.filter(entry => new Date(entry.date) >= cutoffDate)
 }
 
@@ -462,14 +453,14 @@ const getLowestWeightDate = () => {
 
 const logWeight = async () => {
   if (!newWeight.value) return
-  
+
   try {
     // Add the weight entry
     await WeightTracker.addWeightEntry(newWeight.value, weightNote.value)
-    
+
     // Reload data
     await loadData()
-    
+
     // Reset form
     newWeight.value = null
     newWeightDate.value = ''
@@ -485,7 +476,7 @@ const deleteWeightEntry = async (timestamp: number) => {
     // Remove the entry from the array
     const updatedEntries = weightEntries.value.filter(entry => entry.timestamp !== timestamp)
     await import('../utils/storage').then(({ Storage }) => Storage.set('weightEntries', updatedEntries))
-    
+
     // Reload data
     await loadData()
   } catch (error) {
@@ -497,32 +488,32 @@ const loadData = async () => {
   try {
     // Load weight entries
     weightEntries.value = await WeightTracker.getWeightEntries()
-    
+
     // Load weight statistics
     const weightStats = await WeightTracker.getWeightStats()
     if (weightStats.currentWeight) {
       currentWeight.value = weightStats.currentWeight
     }
-    
+
     // Load weight goal
     const goal = await WeightTracker.getWeightGoal()
     if (goal) {
       targetWeight.value = goal.targetWeight
       startWeight.value = goal.startWeight
     }
-    
+
     // Calculate weekly weight change
     const oneWeekAgo = new Date()
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
-    
-    const weekOldEntry = weightEntries.value.find(entry => 
+
+    const weekOldEntry = weightEntries.value.find(entry =>
       new Date(entry.date) <= oneWeekAgo
     )
-    
+
     if (weekOldEntry) {
       weightChange.value = currentWeight.value - weekOldEntry.weight
     }
-    
+
   } catch (error) {
     console.error('Error loading weight data:', error)
   }
@@ -532,7 +523,7 @@ onMounted(() => {
   // Set default date to now
   const now = new Date()
   newWeightDate.value = now.toISOString().slice(0, 16)
-  
+
   // Load data
   loadData()
 })
@@ -710,27 +701,62 @@ onMounted(() => {
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  gap: 12px;
+}
+
+@media (max-width: 380px) {
+  .stats-grid {
+    gap: 10px;
+  }
+
+  .stat-card {
+    padding: 14px;
+    min-height: 110px;
+  }
+
+  .stat-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .stat-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .stat-title {
+    font-size: 12px;
+  }
+
+  .stat-number {
+    font-size: 18px;
+  }
+
+  .stat-period {
+    font-size: 10px;
+  }
 }
 
 .stat-card {
   background: linear-gradient(135deg, #2a2d37 0%, #343a47 100%);
   border-radius: 16px;
-  padding: 20px;
+  padding: 16px;
   display: flex;
-  align-items: flex-start;
-  gap: 16px;
+  flex-direction: column;
+  gap: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  min-height: 120px;
 }
 
 .stat-icon {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  align-self: flex-start;
 }
 
 .stat-icon.average {
@@ -751,21 +777,24 @@ onMounted(() => {
 
 .stat-content {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .stat-title {
   display: block;
-  font-size: 14px;
+  font-size: 13px;
   color: #9ca3af;
-  margin-bottom: 4px;
+  line-height: 1.3;
 }
 
 .stat-number {
   display: block;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
   color: #ffffff;
-  margin-bottom: 2px;
+  line-height: 1.2;
 }
 
 .stat-number.positive {
@@ -778,8 +807,9 @@ onMounted(() => {
 
 .stat-period {
   display: block;
-  font-size: 12px;
+  font-size: 11px;
   color: #9ca3af;
+  line-height: 1.3;
 }
 
 .history-list {
@@ -792,12 +822,19 @@ onMounted(() => {
   background: linear-gradient(135deg, #2a2d37 0%, #343a47 100%);
   border-radius: 16px;
   padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+
+.history-entry>div:first-child {
   display: grid;
   grid-template-columns: auto 1fr auto;
   gap: 16px;
   align-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  position: relative;
+  width: 100%;
 }
 
 .entry-date {
@@ -842,13 +879,12 @@ onMounted(() => {
 }
 
 .entry-note {
-  grid-column: 1 / -1;
   font-size: 14px;
   color: #9ca3af;
   font-style: italic;
-  margin-top: 8px;
-  padding-top: 8px;
+  padding-top: 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+  width: 100%;
 }
 
 .delete-btn {
