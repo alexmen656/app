@@ -65,9 +65,6 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-//import { useI18n } from 'vue-i18n'
-
-//const { t } = useI18n()
 
 defineProps<{
     show: boolean
@@ -92,15 +89,11 @@ async function logWeight() {
     isLogging.value = true
 
     try {
-        // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 1000))
-        
         emit('logged', weight.value!, notes.value)
         
-        // Reset form
         weight.value = null
         notes.value = ''
-        
     } catch (error) {
         console.error('Error logging weight:', error)
     } finally {
@@ -112,7 +105,6 @@ function handleOverlayClick() {
     emit('close')
 }
 
-// Reset form when modal closes
 watch(() => weight.value, (newVal) => {
     if (!newVal) {
         notes.value = ''

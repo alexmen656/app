@@ -1,72 +1,43 @@
 <template>
   <div class="premium-blocker-overlay">
     <div class="premium-blocker-content">
-      <!-- Premium Icon -->
       <div class="premium-icon">
         <svg width="60" height="60" viewBox="0 0 24 24" fill="none">
-          <path 
-            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" 
-            fill="#FFD700" 
-            stroke="#FFD700" 
-            stroke-width="1"
-          />
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+            fill="#FFD700" stroke="#FFD700" stroke-width="1" />
         </svg>
       </div>
-
-      <!-- Title -->
       <h2 class="premium-title">{{ title || $t('premium.upgrade.title') }}</h2>
-      
-      <!-- Description -->
       <p class="premium-description">
         {{ description || getFeatureDescription(feature) }}
       </p>
-
-      <!-- Feature List (if provided) -->
       <div v-if="features.length > 0" class="premium-features">
-        <div 
-          v-for="(feature, index) in features" 
-          :key="index" 
-          class="premium-feature-item"
-        >
+        <div v-for="(feature, index) in features" :key="index" class="premium-feature-item">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="#FFD700">
-            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
           </svg>
           <span>{{ feature }}</span>
         </div>
       </div>
-
-      <!-- Usage Info (for scan limits) -->
       <div v-if="showUsageInfo" class="usage-info">
         <div class="usage-bar">
-          <div 
-            class="usage-progress" 
-            :style="{ width: usagePercentage + '%' }"
-          ></div>
+          <div class="usage-progress" :style="{ width: usagePercentage + '%' }"></div>
         </div>
         <p class="usage-text">
           {{ $t('premium.scans.used', { used: scansUsed, total: scansTotal }) }}
         </p>
       </div>
-
-      <!-- Action Buttons -->
       <div class="premium-actions">
         <button @click="upgradeNow" class="upgrade-button">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
           </svg>
           {{ $t('premium.upgrade.button') }}
         </button>
-        
-        <button 
-          v-if="showCloseButton" 
-          @click="closeBlocker" 
-          class="close-button"
-        >
+        <button v-if="showCloseButton" @click="closeBlocker" class="close-button">
           {{ $t('premium.close') }}
         </button>
       </div>
-
-      <!-- Legal Text -->
       <p class="premium-legal">
         {{ $t('premium.legal.text') }}
       </p>
@@ -107,14 +78,12 @@ const emit = defineEmits<{
 const router = useRouter()
 const { t } = useI18n()
 
-// Usage Information
 const scansUsed = computed(() => props.scansUsed || usageTracking.value.dailyFoodScans)
 const scansTotal = computed(() => props.scansTotal || freeLimits.DAILY_FOOD_SCANS)
-const usagePercentage = computed(() => 
+const usagePercentage = computed(() =>
   Math.min((scansUsed.value / scansTotal.value) * 100, 100)
 )
 
-// Feature Descriptions
 const getFeatureDescription = (feature: string): string => {
   const descriptions: Record<string, string> = {
     'unlimited_food_scans': t('premium.features.unlimited_scans_desc'),
@@ -124,11 +93,10 @@ const getFeatureDescription = (feature: string): string => {
     'healthkit_sync': t('premium.features.healthkit_desc'),
     'detailed_charts': t('premium.features.charts_desc')
   }
-  
+
   return descriptions[feature] || t('premium.features.default_desc')
 }
 
-// Actions
 const upgradeNow = () => {
   emit('upgrade', props.feature)
   router.push({
@@ -300,15 +268,15 @@ const closeBlocker = () => {
   .premium-blocker-overlay {
     padding: 16px;
   }
-  
+
   .premium-blocker-content {
     padding: 24px 20px;
   }
-  
+
   .premium-title {
     font-size: 20px;
   }
-  
+
   .premium-description {
     font-size: 14px;
   }

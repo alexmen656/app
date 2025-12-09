@@ -12,8 +12,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { default as ApexCharts } from 'vue3-apexcharts'
-
-// Register the component locally
 const apexchart = ApexCharts
 
 interface BMIDataPoint {

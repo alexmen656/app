@@ -6,7 +6,6 @@
                 <button @click="$emit('close')" class="close-btn">×</button>
             </div>
             <div class="details-content">
-                <!-- Main Nutrition Values -->
                 <div class="details-section">
                     <h4>{{ $t('nutrition.mainNutrients') }} ({{ amount }}x {{ $t('nutrition.portion') }})</h4>
                     <div class="details-grid">
@@ -40,8 +39,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Per 100g Values -->
                 <div v-if="product.nutritionPer100g" class="details-section">
                     <h4>{{ $t('nutrition.per100g') }}</h4>
                     <div class="details-grid">
@@ -75,8 +72,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Per Serving Values -->
                 <div v-if="product.nutritionPerServing" class="details-section">
                     <h4>{{ $t('nutrition.perServing') }} ({{ product.servingSize }}{{ product.servingUnit }})</h4>
                     <div class="details-grid">
@@ -110,8 +105,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Product Information -->
                 <div class="details-section">
                     <h4>{{ $t('nutrition.productInfo') }}</h4>
                     <div class="product-details">
@@ -166,7 +159,6 @@ defineEmits(['close']);
 </script>
 
 <style scoped>
-/* Modal Styles */
 .modal-overlay {
     position: fixed;
     top: 0;

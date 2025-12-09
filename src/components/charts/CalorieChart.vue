@@ -12,9 +12,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { default as ApexCharts } from 'vue3-apexcharts'
-import {useI18n} from 'vue-i18n';
+import { useI18n } from 'vue-i18n';
 const { t } = useI18n()
-// Register the component locally
 const apexchart = ApexCharts
 
 interface ChartProps {
@@ -35,13 +34,6 @@ const chartData = computed(() => {
   // Fallback mock data
   console.log('⚠️ CalorieChart using fallback mock data, period:', props.period)
   return [
-    /* { label: 'Mo', calories: 2200 },
-     { label: 'Di', calories: 2400 },
-     { label: 'Mi', calories: 2100 },
-     { label: 'Do', calories: 2600 },
-     { label: 'Fr', calories: 2300 },
-     { label: 'Sa', calories: 2800 },
-     { label: 'So', calories: 2150 }*/
     { label: 'Mo', calories: 0 },
     { label: 'Di', calories: 0 },
     { label: 'Mi', calories: 0 },
