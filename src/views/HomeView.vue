@@ -2,297 +2,21 @@
     <div class="home-view">
         <IsProcessingPhoto v-if="isProcessingPhoto" />
         <IsProcessingLabel v-if="isProcessingLabel" />
-
-        <header class="header">
-            <div class="logo-section">
-                <h1 class="app-title"><span style="color: #007052;">Digmio</span></h1><!--#005e4a #005f4a -->
-            </div>
-            <div class="streak" @click="toggleDateDropdown" ref="dateDropdownContainer">
-                <span class="streak-content">{{ formatCurrentDate() }}</span>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"
-                    :class="{ 'dropdown-arrow': true, 'dropdown-open': showDateDropdown }">
-                    <path d="M7 10l5 5 5-5z" />
-                </svg>
-                <div v-if="showDateDropdown" class="date-dropdown">
-                    <div v-for="date in availableDates" :key="date.dateString" class="date-option"
-                        :class="{ 'active': date.dateString === selectedDate.toDateString() }"
-                        @click.stop="selectDate(date)">
-                        <span class="date-main">{{ date.display }}</span>
-                        <span v-if="date.subtitle" class="date-sub">{{ date.subtitle }}</span>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <!-- AUSKOMMENTIERT: Alter Date-Toggle
-        <div class="date-toggle">
-            <button class="date-nav-btn" @click="changeDate(-1)" :disabled="!canGoBack">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-                </svg>
-            </button>
-            <div class="current-date-compact">
-                <span class="date-label">{{ formatCurrentDate() }}</span>
-            </div>
-            <button class="date-nav-btn" @click="changeDate(1)" :disabled="!canGoForward">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-                </svg>
-            </button>
-        </div>
-        -->
-        <!-- Digmio Chat Link 
-        <div class="kalbuddy-chat-section">
-            <router-link to="/chat" class="kalbuddy-chat-link">
-                <div class="chat-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path
-                            d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" />
-                    </svg>
-                </div>
-                <div class="chat-content">
-                    <h3 class="chat-title">{{ $t('home.chatWithDigmio') }}</h3>
-                    <p class="chat-subtitle">{{ getChatSubtitle() }}</p>
-                </div>
-                <div class="chat-arrow">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
-                    </svg>
-                </div>
-            </router-link>
-        </div>-->
-
-        <div class="quick-actions">
-            <div class="action-chip" @click="goToView('chat')">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                        d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" />
-                </svg>
-                <span>{{ $t('home.chat') }}</span>
-            </div>
-            <div class="action-chip" @click="openWeightModal">
-                <!-- <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12,2C6.48,2 2,6.48 2,12C2,17.52 6.48,22 12,22C17.52,22 22,17.52 22,12C22,6.48 17.52,2 12,2M13,7H11V11H7V13H11V17H13V13H17V11H13V7Z"/>
-                </svg>
-                <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M212.6 256C209.6 245.9 208 235.1 208 224C208 162.1 258.1 112 320 112C381.9 112 432 162.1 432 224C432 235.1 430.4 245.9 427.4 256L356.4 256L381 211.7C387.4 200.1 383.3 185.5 371.7 179.1C360.1 172.7 345.5 176.8 339.1 188.4L301.5 256.1L212.7 256.1zM224 96L160 96C124.7 96 96 124.7 96 160L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 160C544 124.7 515.3 96 480 96L416 96C389.3 75.9 356 64 320 64C284 64 250.7 75.9 224 96z"/></svg>-->
-
-                <svg width="16" height="16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 640 640">
-                    <path
-                        d="M288 160C288 142.3 302.3 128 320 128C337.7 128 352 142.3 352 160C352 177.7 337.7 192 320 192C302.3 192 288 177.7 288 160zM410.5 192C414 182 416 171.2 416 160C416 107 373 64 320 64C267 64 224 107 224 160C224 171.2 225.9 182 229.5 192L207.7 192C179.4 192 154.5 210.5 146.4 237.6L66.4 504.2C64.8 509.4 64 514.8 64 520.2C64 551 89 576 119.8 576L520.2 576C551 576 576 551 576 520.2C576 514.8 575.2 509.4 573.6 504.2L493.6 237.7C485.5 210.6 460.6 192.1 432.3 192.1L410.5 192.1z" />
-                </svg>
-                <span>{{ $t('home.logWeight') }}</span>
-            </div>
-            <div class="action-chip" @click="goToView('feedback')">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                        d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z" />
-                </svg>
-                <span>{{ $t('home.giveFeedback') }}</span>
-            </div>
-
-            <!--<div class="action-chip" @click="goToView('water')">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                        d="M12,2C13.73,7.21 16.69,9.88 16.69,13.58C16.69,17.65 14.54,19.12 12,19.12C9.46,19.12 7.31,17.65 7.31,13.58C7.31,9.88 10.27,7.21 12,2Z" />
-                </svg>
-                <span>Water</span>
-            </div>
-
-            <div class="action-chip" @click="goToView('goals')">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                        d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,17L7,12L8.41,10.59L12,14.17L15.59,10.59L17,12L12,17Z" />
-                </svg>
-                <span>Goals</span>
-            </div>-->
-
-            <div class="action-chip" @click="goToFavorites">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                </svg>
-                <span>{{ $t('home.favorites') }}</span>
-            </div>
-        </div>
-        <div class="main-card" @click="goToView('calories')">
-            <div class="calories-section">
-                <h2 class="calories-number">{{ caloriesNumberDisplay }}</h2>
-                <p class="calories-label">{{ caloriesLabelDisplay }}</p>
-                <div class="streak-line" @click.stop="goToView('streak')">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#ff6b35">
-                        <path
-                            d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z" />
-                    </svg>
-                    <span class="streak-text">{{ currentStreak }} {{ $t('streak.days') }}</span>
-                </div>
-            </div>
-            <div class="progress-ring">
-                <svg class="progress-svg" width="100" height="100" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="40" stroke="#2a2d37" stroke-width="6" fill="none" />
-                    <circle cx="50" cy="50" r="40" stroke="white" stroke-width="6" fill="none" stroke-dasharray="251.2"
-                        :stroke-dashoffset="251.2 - (251.2 * caloriesProgress)" stroke-linecap="round"
-                        class="progress-circle" transform="rotate(-90 50 50)" />
-                </svg>
-                <div class="flame-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
-                        <path
-                            d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z" />
-                    </svg>
-                </div>
-            </div>
-        </div>
-        <div v-if="!isPremiumUser && showPremiumBanner" class="premium-banner" @click="goToView('upgrade')">
-            <div class="banner-content">
-                <div class="banner-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="#FFD700">
-                        <path
-                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                    </svg>
-                </div>
-                <div class="banner-text">
-                    <span class="banner-title">{{ $t('premium.banner.title') }}</span>
-                    <span class="banner-subtitle">{{ $t('premium.banner.subtitle') }}</span>
-                </div>
-                <div class="banner-close" @click.stop="hidePremiumBanner">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path
-                            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-                    </svg>
-                </div>
-            </div>
-        </div>
-        <div class="macros-grid">
-            <div class="macro-card protein" @click="goToView('protein')">
-                <div class="macro-amount">{{ proteinNumberDisplay }}</div>
-                <div class="macro-label">{{ proteinLabelDisplay }}</div>
-                <div class="macro-progress">
-                    <svg width="60" height="60" viewBox="0 0 60 60">
-                        <circle cx="30" cy="30" r="24" stroke="#2a2d37" stroke-width="5" fill="none" />
-                        <circle cx="30" cy="30" r="24" stroke="#ff6b6b" stroke-width="5" fill="none"
-                            stroke-dasharray="150.8" :stroke-dashoffset="calculateMacroOffset(proteinProgress, 150.8)"
-                            stroke-linecap="round" transform="rotate(-90 30 30)" class="progress-circle" />
-                    </svg>
-                    <div class="macro-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
-                            <path fill="#ff6b6b"
-                                d="M224 329.2C224 337.7 220.6 345.8 214.6 351.8L187.8 378.6C175.5 390.9 155.3 390 138.4 385.8C133.8 384.7 128.9 384 123.9 384C90.8 384 63.9 410.9 63.9 444C63.9 477.1 90.8 504 123.9 504C130.2 504 135.9 509.7 135.9 516C135.9 549.1 162.8 576 195.9 576C229 576 255.9 549.1 255.9 516C255.9 511 255.3 506.2 254.1 501.5C249.9 484.6 248.9 464.4 261.3 452.1L288.1 425.3C294.1 419.3 302.2 415.9 310.7 415.9L399.9 415.9C406.2 415.9 412.3 415.6 418.4 414.9C430.3 413.7 434.8 399.4 429.2 388.9C420.7 373.1 415.9 355.1 415.9 335.9C415.9 274 466 223.9 527.9 223.9C535.9 223.9 543.6 224.7 551.1 226.3C562.8 228.8 575.2 220.4 573.1 208.7C558.4 126.4 486.4 63.9 399.9 63.9C302.7 63.9 223.9 142.7 223.9 239.9L223.9 329.1z" />
-                        </svg>
-                    </div>
-                </div>
-            </div>
-            <div class="macro-card carbs" @click="goToView('carbs')">
-                <div class="macro-amount">{{ carbsNumberDisplay }}</div>
-                <div class="macro-label">{{ carbsLabelDisplay }}</div>
-                <div class="macro-progress">
-                    <svg width="60" height="60" viewBox="0 0 60 60">
-                        <circle cx="30" cy="30" r="24" stroke="#2a2d37" stroke-width="5" fill="none" />
-                        <circle cx="30" cy="30" r="24" stroke="#ffa726" stroke-width="5" fill="none"
-                            stroke-dasharray="150.8" :stroke-dashoffset="calculateMacroOffset(carbsProgress, 150.8)"
-                            stroke-linecap="round" transform="rotate(-90 30 30)" class="progress-circle" />
-                    </svg>
-                    <div class="macro-icon macro-icon-carbs">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-                            <path fill="#ffa726"
-                                d="M79.7 234.6c6.2-4.1 14.7-3.4 20.1 2.1l46.1 46.1 6.1 6.7c19.7 23.8 26.3 55 19.2 83.9 31.7-7.7 66.2 1 90.6 25.3l46.1 46.1c6.2 6.2 6.2 16.4 0 22.6l-7.4 7.4c-37.5 37.5-98.3 37.5-135.8 0L134.1 444.3 49.4 529c-9.4 9.4-24.5 9.4-33.9 0-9.4-9.4-9.4-24.6 0-33.9l84.7-84.7-30.5-30.5c-37.5-37.5-37.5-98.3 0-135.7l7.4-7.4 2.5-2.1zm104-104c6.2-4.1 14.7-3.4 20.1 2.1l46.1 46.1 6.1 6.7c19.7 23.8 26.3 55 19.2 83.9 31.7-7.7 66.2 1 90.6 25.3l46.1 46.1c6.2 6.2 6.2 16.4 0 22.6l-7.4 7.4c-37.5 37.5-98.3 37.5-135.8 0l-94.9-94.9c-37.5-37.5-37.5-98.3 0-135.7l7.4-7.4 2.5-2.1zM495.2 15c9.4-9.4 24.6-9.4 34 0 8.8 8.8 9.3 22.7 1.6 32.2L529.2 49 414.7 163.4c7.7 1 15.2 3 22.5 5.9L495.5 111c9.4-9.4 24.6-9.4 34 0 8.8 8.8 9.3 22.7 1.6 32.1l-1.7 1.8-52.7 52.7 39 39c6.2 6.2 6.2 16.4 0 22.6l-7.4 7.4c-37.5 37.5-98.3 37.5-135.8 0l-94.9-94.9c-37.5-37.5-37.5-98.3 0-135.7l7.4-7.4 2.5-2.1c6.2-4.1 14.7-3.4 20.1 2.1l39 39 52.7-52.7c9.4-9.4 24.6-9.4 34 0 8.8 8.8 9.3 22.7 1.6 32.1l-1.7 1.8-58.3 58.3c2.8 7.1 4.7 14.5 5.7 22.1L495.2 15z" />
-                        </svg>
-                    </div>
-                </div>
-            </div>
-            <div class="macro-card fats" @click="goToView('fats')">
-                <div class="macro-amount">{{ fatsNumberDisplay }}</div>
-                <div class="macro-label">{{ fatsLabelDisplay }}</div>
-                <div class="macro-progress">
-                    <svg width="60" height="60" viewBox="0 0 60 60">
-                        <circle cx="30" cy="30" r="24" stroke="#2a2d37" stroke-width="5" fill="none" />
-                        <circle cx="30" cy="30" r="24" stroke="#42a5f5" stroke-width="5" fill="none"
-                            stroke-dasharray="150.8" :stroke-dashoffset="calculateMacroOffset(fatsProgress, 150.8)"
-                            stroke-linecap="round" transform="rotate(-90 30 30)" class="progress-circle" />
-                    </svg>
-                    <div class="macro-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
-                            <path fill="#42a5f5"
-                                d="M240 64C240 46.3 254.3 32 272 32L368 32C385.7 32 400 46.3 400 64C400 81.7 385.7 96 368 96L368 199.3C432.9 219.7 480 280.3 480 352L480 544C480 579.3 451.3 608 416 608L224 608C188.7 608 160 579.3 160 544L160 352C160 280.4 207.1 219.7 272 199.3L272 96C254.3 96 240 81.7 240 64zM320 480C355.3 480 384 447.6 384 416C384 394.8 355.1 351.5 336.1 325.4C328 314.3 311.9 314.3 303.8 325.4C284.8 351.5 255.9 394.8 255.9 416C255.9 447.6 284.6 480 319.9 480z" />
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="recent-section">
-            <h3 class="section-title">{{ $t('home.recentlyUploaded') }}</h3>
-            <div v-if="recentFoods.length === 0" class="empty-state">
-                <div class="empty-icon">📱</div>
-                <p>{{ $t('home.noScansYet') }}</p>
-                <p class="empty-subtitle">{{ $t('home.noScansSubtitle') }}</p>
-            </div>
-            <div v-else class="food-item-wrapper" v-for="item in recentFoods" :key="item.id"
-                :class="{ 'swiped': isItemSwiped(item.id), 'deleting': deletingItems.has(item.id) }">
-                <div class="food-item" @click="goToNutritionDetail(item)"
-                    @touchstart="handleTouchStart($event, item.id)" @touchmove="handleTouchMove($event, item.id)"
-                    @touchend="handleTouchEnd(item.id, $event)" @mousedown="handleMouseDown($event, item.id)"
-                    @mousemove="handleMouseMove($event, item.id)" @mouseup="handleMouseEnd(item.id, $event)"
-                    @mouseleave="handleMouseEnd(item.id, $event)">
-                    <div class="food-image">
-                        <img v-if="item.image && !item.image.includes('placeholder') && !item.image.includes('image_')"
-                            :src="item.image" :alt="item.name" />
-                        <img v-else-if="item.image && item.image.includes('image_')" :src="getItemImageSrc(item)"
-                            :alt="item.name" />
-                        <span v-else-if="item.icon" class="food-db-icon">{{ item.icon }}</span>
-                        <span v-else>{{ item.type === 'food' ? '🍽️' : '📦' }}</span>
-                    </div>
-                    <div class="food-info">
-                        <h4 class="food-name">{{ item.name }}</h4><!--getLocalizedName(-->
-                        <div class="food-calories">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#ff6b35">
-                                <path
-                                    d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z" />
-                            </svg>
-                            <span>{{ item.calories }} kcal</span>
-                        </div>
-                        <div class="food-macros">
-                            <span class="macro-item protein-color">
-                                <svg width="10" height="10" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
-                                    <path fill="#ff6b6b"
-                                        d="M224 329.2C224 337.7 220.6 345.8 214.6 351.8L187.8 378.6C175.5 390.9 155.3 390 138.4 385.8C133.8 384.7 128.9 384 123.9 384C90.8 384 63.9 410.9 63.9 444C63.9 477.1 90.8 504 123.9 504C130.2 504 135.9 509.7 135.9 516C135.9 549.1 162.8 576 195.9 576C229 576 255.9 549.1 255.9 516C255.9 511 255.3 506.2 254.1 501.5C249.9 484.6 248.9 464.4 261.3 452.1L288.1 425.3C294.1 419.3 302.2 415.9 310.7 415.9L399.9 415.9C406.2 415.9 412.3 415.6 418.4 414.9C430.3 413.7 434.8 399.4 429.2 388.9C420.7 373.1 415.9 355.1 415.9 335.9C415.9 274 466 223.9 527.9 223.9C535.9 223.9 543.6 224.7 551.1 226.3C562.8 228.8 575.2 220.4 573.1 208.7C558.4 126.4 486.4 63.9 399.9 63.9C302.7 63.9 223.9 142.7 223.9 239.9L223.9 329.1z" />
-                                </svg>
-                                {{ item.protein }}g
-                            </span>
-                            <span class="macro-item carbs-color">
-                                <svg width="10" height="10" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-                                    <path fill="#ffa726"
-                                        d="M79.7 234.6c6.2-4.1 14.7-3.4 20.1 2.1l46.1 46.1 6.1 6.7c19.7 23.8 26.3 55 19.2 83.9 31.7-7.7 66.2 1 90.6 25.3l46.1 46.1c6.2 6.2 6.2 16.4 0 22.6l-7.4 7.4c-37.5 37.5-98.3 37.5-135.8 0L134.1 444.3 49.4 529c-9.4 9.4-24.5 9.4-33.9 0-9.4-9.4-9.4-24.6 0-33.9l84.7-84.7-30.5-30.5c-37.5-37.5-37.5-98.3 0-135.7l7.4-7.4 2.5-2.1zm104-104c6.2-4.1 14.7-3.4 20.1 2.1l46.1 46.1 6.1 6.7c19.7 23.8 26.3 55 19.2 83.9 31.7-7.7 66.2 1 90.6 25.3l46.1 46.1c6.2 6.2 6.2 16.4 0 22.6l-7.4 7.4c-37.5 37.5-98.3 37.5-135.8 0l-94.9-94.9c-37.5-37.5-37.5-98.3 0-135.7l7.4-7.4 2.5-2.1zM495.2 15c9.4-9.4 24.6-9.4 34 0 8.8 8.8 9.3 22.7 1.6 32.2L529.2 49 414.7 163.4c7.7 1 15.2 3 22.5 5.9L495.5 111c9.4-9.4 24.6-9.4 34 0 8.8 8.8 9.3 22.7 1.6 32.1l-1.7 1.8-52.7 52.7 39 39c6.2 6.2 6.2 16.4 0 22.6l-7.4 7.4c-37.5 37.5-98.3 37.5-135.8 0l-94.9-94.9c-37.5-37.5-37.5-98.3 0-135.7l7.4-7.4 2.5-2.1c6.2-4.1 14.7-3.4 20.1 2.1l39 39 52.7-52.7c9.4-9.4 24.6-9.4 34 0 8.8 8.8 9.3 22.7 1.6 32.1l-1.7 1.8-58.3 58.3c2.8 7.1 4.7 14.5 5.7 22.1L495.2 15z" />
-                                </svg>
-                                {{ item.carbs }}g
-                            </span>
-                            <span class="macro-item fats-color">
-                                <svg width="10" height="10" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
-                                    <path fill="#42a5f5"
-                                        d="M240 64C240 46.3 254.3 32 272 32L368 32C385.7 32 400 46.3 400 64C400 81.7 385.7 96 368 96L368 199.3C432.9 219.7 480 280.3 480 352L480 544C480 579.3 451.3 608 416 608L224 608C188.7 608 160 579.3 160 544L160 352C160 280.4 207.1 219.7 272 199.3L272 96C254.3 96 240 81.7 240 64zM320 480C355.3 480 384 447.6 384 416C384 394.8 355.1 351.5 336.1 325.4C328 314.3 311.9 314.3 303.8 325.4C284.8 351.5 255.9 394.8 255.9 416C255.9 447.6 284.6 480 319.9 480z" />
-                                </svg>
-                                {{ item.fats }}g
-                            </span>
-                        </div>
-                    </div>
-                    <div class="food-time">{{ item.time }}</div>
-                </div>
-                <div class="delete-action">
-                    <button @click="deleteFoodItem(item.id)" class="delete-button">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
-                        </svg>
-                        {{ $t('delete') }}
-                    </button>
-                </div>
-            </div>
-            <div class="show-all-link">
-                <router-link to="/all-scans" class="show-all-btn">
-                    {{ $t('home.showAllScans') }}
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
-                    </svg>
-                </router-link>
-            </div>
-        </div>
+        <HomeHeader v-model="selectedDate" />
+        <QuickActions @chat="goToView('chat')" @log-weight="openWeightModal" @feedback="goToView('feedback')"
+            @favorites="goToFavorites" />
+        <MainCaloriesCard :calories-display="caloriesNumberDisplay" :label-display="caloriesLabelDisplay"
+            :current-streak="currentStreak" :progress="caloriesProgress" @click="goToView('calories')"
+            @streak-click="goToView('streak')" />
+        <HomePremiumBanner :show="!isPremiumUser && showPremiumBanner" @upgrade="goToView('upgrade')"
+            @close="hidePremiumBanner" />
+        <MacrosGrid :protein-display="proteinNumberDisplay" :protein-label="proteinLabelDisplay"
+            :protein-progress="proteinProgress" :carbs-display="carbsNumberDisplay" :carbs-label="carbsLabelDisplay"
+            :carbs-progress="carbsProgress" :fats-display="fatsNumberDisplay" :fats-label="fatsLabelDisplay"
+            :fats-progress="fatsProgress" @protein-click="goToView('protein')" @carbs-click="goToView('carbs')"
+            @fats-click="goToView('fats')" />
+        <RecentFoodsList :foods="recentFoods" :image-uris="imageUris" :deleting-items="deletingItems"
+            @item-click="goToNutritionDetail" @delete="deleteFoodItem" />
         <BottomNavigation />
         <div @click="toggleAddFoodModal(true)" class="add-button">
             <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
@@ -335,9 +59,15 @@ import AddFoodModal from '../components/AddFoodModal.vue'
 import WeightLogModal from '../components/WeightLogModal.vue'
 import IsProcessingLabel from '../components/home/IsProcessingLabel.vue'
 import IsProcessingPhoto from '../components/home/IsProcessingPhoto.vue'
+import HomeHeader from '../components/home/HomeHeader.vue'
+import QuickActions from '../components/home/QuickActions.vue'
+import MainCaloriesCard from '../components/home/MainCaloriesCard.vue'
+import MacrosGrid from '../components/home/MacrosGrid.vue'
+import RecentFoodsList from '../components/home/RecentFoodsList.vue'
+import HomePremiumBanner from '../components/home/HomePremiumBanner.vue'
 
 const router = useRouter()
-const { t, locale } = useI18n()
+const { t } = useI18n()
 const { startScanning, isProcessingPhoto, isProcessingLabel, checkScanLimit, getScanUsage } = useBarcodeScanner()
 
 const showPremiumBanner = ref(true)
@@ -345,24 +75,7 @@ const showScanLimitBlocker = ref(false)
 const currentScanUsage = ref<any>(null)
 const isAddFoodModalVisible = ref(false)
 const showWeightModal = ref(false)
-
-// Reactive function to get image URI
 const imageUris = ref(new Map<string, string>())
-
-// Reactive computed property for each item's image
-function getItemImageSrc(item: any) {
-    if (!item.image) return '';
-
-    if (item.image.includes('placeholder')) return item.image;
-
-    if (item.image.startsWith('image_')) {
-        // Return cached URI or empty string if not yet loaded
-        console.log('Getting image URI for', item.image, imageUris.value.get(item.image))
-        return imageUris.value.get(item.image) || '';
-    }
-
-    return item.image;
-}
 
 // Temporary migration function to convert base64 images to files
 async function migrateBase64ImagesToFiles() {
@@ -376,10 +89,8 @@ async function migrateBase64ImagesToFiles() {
             const scan = updatedHistory[i];
             if (scan.image && typeof scan.image === 'string' && scan.image.startsWith('data:image/')) {
                 try {
-                    // Save base64 image as file
                     const fileName = await ImageFile.save(scan.image);
                     if (fileName) {
-                        // Update scan with filename instead of base64
                         updatedHistory[i] = {
                             ...scan,
                             image: fileName
@@ -394,7 +105,6 @@ async function migrateBase64ImagesToFiles() {
         }
 
         if (migrationCount > 0) {
-            // Save updated history
             await ScanHistory.clear();
             for (let i = updatedHistory.length - 1; i >= 0; i--) {
                 await ScanHistory.add(updatedHistory[i]);
@@ -409,12 +119,10 @@ async function migrateBase64ImagesToFiles() {
     }
 }
 
-// Migration function to convert old naming formats to names object
 async function migrateNamesToStandardFormat() {
     try {
         console.log('🔄 Starting names format migration...');
 
-        // Migrate Scan History
         const history = await ScanHistory.get();
         let historyMigrationCount = 0;
         let updatedHistory = [...history];
@@ -422,7 +130,6 @@ async function migrateNamesToStandardFormat() {
         for (let i = 0; i < updatedHistory.length; i++) {
             const scan = updatedHistory[i];
 
-            // Check if migration is needed
             const needsMigration = (
                 scan.data?.name ||
                 scan.data?.name_en ||
@@ -432,7 +139,6 @@ async function migrateNamesToStandardFormat() {
 
             if (needsMigration) {
                 try {
-                    // Migrate scan data
                     const migratedScan = { ...scan };
                     if (migratedScan.data) {
                         migratedScan.data = migrateFoodsArray(migratedScan.data);
@@ -448,7 +154,6 @@ async function migrateNamesToStandardFormat() {
         }
 
         if (historyMigrationCount > 0) {
-            // Save updated history
             await ScanHistory.clear();
             for (let i = updatedHistory.length - 1; i >= 0; i--) {
                 await ScanHistory.add(updatedHistory[i]);
@@ -456,7 +161,6 @@ async function migrateNamesToStandardFormat() {
             console.log(`🎉 Scan history migration completed! Migrated ${historyMigrationCount} items.`);
         }
 
-        // Migrate Barcode Cache
         const cacheKeys = await Storage.keys();
         const barcodeKeys = cacheKeys.filter(key => key.startsWith('barcode_cache_'));
         let cacheMigrationCount = 0;
@@ -482,7 +186,6 @@ async function migrateNamesToStandardFormat() {
             console.log(`🎉 Barcode cache migration completed! Migrated ${cacheMigrationCount} items.`);
         }
 
-        // Migrate Favorites
         const favorites = await FavoriteFood.get();
         let favoritesMigrationCount = 0;
         let updatedFavorites = [...favorites];
@@ -522,16 +225,14 @@ async function migrateNamesToStandardFormat() {
     }
 }
 
-// Load image URIs for items with image_ prefixed paths
 async function loadImageUris(items: any[]) {
     const imagesToLoad = items
         .map(item => item.image)
         .filter(image => image && typeof image === 'string' && image.startsWith('image_'))
-        .filter(image => !imageUris.value.has(image)) // Only load images we don't have cached
+        .filter(image => !imageUris.value.has(image))
 
     if (imagesToLoad.length === 0) return;
 
-    // Load images in parallel
     await Promise.allSettled(
         imagesToLoad.map(async (imagePath) => {
             try {
@@ -604,14 +305,12 @@ onMounted(async () => {
 
     loadScanHistoryAndStreak()
 
-    // Run one-time migration for base64 images
     try {
         await migrateBase64ImagesToFiles()
     } catch (error) {
         console.error('Error during image migration:', error)
     }
 
-    // Run one-time migration for names format
     try {
         await migrateNamesToStandardFormat()
     } catch (error) {
@@ -639,15 +338,11 @@ onMounted(async () => {
     })
 
     window.addEventListener('beforeunload', unsubscribe)
-
-    // Add click outside listener for date dropdown
-    document.addEventListener('click', handleClickOutside)
 })
 
 onUnmounted(() => {
     window.removeEventListener('scanHistoryUpdated', loadScanHistoryAndStreak)
     window.removeEventListener('focus', loadScanHistoryAndStreak)
-    document.removeEventListener('click', handleClickOutside)
 })
 
 interface ScanData {
@@ -686,43 +381,6 @@ const consumedFats = computed(() => todaysNutrition.value.fats)
 const scanHistory = ref<ScanData[]>([])
 const currentStreak = ref<number>(0)
 const selectedDate = ref(new Date())
-
-// Dropdown state
-const showDateDropdown = ref(false)
-const dateDropdownContainer = ref<HTMLElement>()
-
-// Available dates for dropdown (last 30 days)
-const availableDates = computed(() => {
-    const dates = []
-    const today = new Date()
-
-    for (let i = 0; i < 30; i++) {
-        const date = new Date(today.getTime() - (i * 24 * 60 * 60 * 1000))
-        const dateString = date.toDateString()
-
-        let display = ''
-        let subtitle = ''
-
-        if (i === 0) {
-            display = t('today')[0].toUpperCase() + t('today').slice(1)
-            subtitle = date.toLocaleDateString(locale.value, { weekday: 'long', day: 'numeric', month: 'long' })
-        } else if (i === 1) {
-            display = t('yesterday')[0].toUpperCase() + t('yesterday').slice(1)
-            subtitle = date.toLocaleDateString(locale.value, { weekday: 'long', day: 'numeric', month: 'long' })
-        } else {
-            display = date.toLocaleDateString(locale.value, { weekday: 'long', day: 'numeric', month: 'long' })
-        }
-
-        dates.push({
-            date,
-            dateString,
-            display,
-            subtitle
-        })
-    }
-
-    return dates
-})
 
 function createMacroCalculations(
     dailyValue: ComputedRef<number>,
@@ -803,8 +461,6 @@ async function loadScanHistory(context: string) {
         }
 
         calculateNutritionFromHistory(history)
-
-        // Load image URIs for items with image_ prefixed images
         await loadImageUris(scanHistory.value)
 
         if (selectedDateString === today) {
@@ -915,26 +571,19 @@ function closeWeightModal() {
 async function handleWeightLogged(weight: number, notes: string) {
     try {
         console.log('Weight logged:', weight, 'kg', notes ? `Notes: ${notes}` : '')
-
-        // Save weight entry using the same system as AnalyticsView
         await WeightTracker.addWeightEntry(weight, notes || undefined)
 
-        // Close the modal
         closeWeightModal()
 
-        // Optionally sync to HealthKit if available
         try {
             await HealthKitService.syncTodaysData()
         } catch (healthKitError) {
             console.log('HealthKit sync not available or failed:', healthKitError)
         }
 
-        // Show success feedback (you could add a toast notification here)
         console.log('Weight successfully saved!')
-
     } catch (error) {
         console.error('Error saving weight:', error)
-        // You could show an error toast here
         closeWeightModal()
     }
 }
@@ -977,57 +626,11 @@ function handleSelect(view: string) {
     router.push(`/${view}`)
 }
 
-/*function getChatSubtitle(): string {
-    return t('home.chatSubtitle')
-}*/
-
-function formatCurrentDate(): string {
-    const today = new Date()
-    const yesterday = new Date(today.getTime() - (24 * 60 * 60 * 1000))
-
-    const selectedDateString = selectedDate.value.toDateString()
-    const todayString = today.toDateString()
-    const yesterdayString = yesterday.toDateString()
-
-    if (selectedDateString === todayString) {
-        return t('app.today')[0].toUpperCase() + t('app.today').slice(1)
-    } else if (selectedDateString === yesterdayString) {
-        return t('app.yesterday')[0].toUpperCase() + t('app.yesterday').slice(1)
-    } else {
-        return selectedDate.value.toLocaleDateString('de-DE', {
-            weekday: 'short',
-            day: 'numeric',
-            month: 'short'
-        })
-    }
-}
-
-// Dropdown functions
-function toggleDateDropdown() {
-    showDateDropdown.value = !showDateDropdown.value
-}
-
-function selectDate(dateObj: any) {
-    selectedDate.value = new Date(dateObj.date)
-    showDateDropdown.value = false
-    loadScanHistory("selectDate")
-}
-
-function handleClickOutside(event: Event) {
-    if (dateDropdownContainer.value && !dateDropdownContainer.value.contains(event.target as Node)) {
-        showDateDropdown.value = false
-    }
-
-    closeAllSwipedItems()
-}
-
 function hidePremiumBanner() {
     showPremiumBanner.value = false
 }
 
 function goToNutritionDetail(item: FoodItem) {
-    closeAllSwipedItems()
-
     router.push({
         path: '/scan-detail',
         query: {
@@ -1065,129 +668,11 @@ watch(selectedDate, () => {
     loadScanHistoryAndStreak()
 }, { immediate: false })
 
-function calculateMacroOffset(progress: number, circumference: number): number {
-    const clampedProgress = Math.max(0, Math.min(1, progress))
-    return circumference - (circumference * clampedProgress)
-}
-
-const swipeStates = ref<Map<string, { startX: number, startY: number, currentX: number, isDragging: boolean, isOpen: boolean }>>(new Map())
 const deletingItems = ref<Set<number>>(new Set())
-
-function closeAllSwipedItems(exceptId?: string) {
-    swipeStates.value.forEach((state, id) => {
-        if (id !== exceptId && state.isOpen) {
-            state.isOpen = false
-        }
-    })
-}
-
-function handleTouchStart(event: TouchEvent, itemId: number) {
-    const touch = event.touches[0]
-    const id = itemId.toString()
-    const existingState = swipeStates.value.get(id) || { startX: 0, startY: 0, currentX: 0, isDragging: false, isOpen: false }
-
-    swipeStates.value.set(id, {
-        ...existingState,
-        startX: touch.clientX,
-        startY: touch.clientY,
-        isDragging: true
-    })
-}
-
-function handleTouchMove(event: TouchEvent, itemId: number) {
-    const id = itemId.toString()
-    const state = swipeStates.value.get(id)
-    if (!state?.isDragging) return
-
-    const touch = event.touches[0]
-    const deltaX = touch.clientX - state.startX
-    const deltaY = touch.clientY - state.startY
-
-    const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY)
-    const isSignificantSwipe = Math.abs(deltaX) > 20
-
-    if (isHorizontalSwipe && isSignificantSwipe) {
-        event.preventDefault()
-    }
-}
-
-function handleTouchEnd(itemId: number, event: TouchEvent) {
-    const id = itemId.toString()
-    const state = swipeStates.value.get(id)
-    if (!state?.isDragging) return
-
-    const touch = event.changedTouches[0]
-    const deltaX = touch.clientX - state.startX
-    const deltaY = touch.clientY - state.startY
-
-    state.isDragging = false
-
-    const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY)
-    const isSignificantSwipe = Math.abs(deltaX) > 40
-
-    if (isHorizontalSwipe && isSignificantSwipe) {
-        closeAllSwipedItems(id)
-
-        if (deltaX < -40) {
-            state.isOpen = true
-        } else if (deltaX > 40) {
-            state.isOpen = false
-        }
-    }
-}
-
-function handleMouseDown(event: MouseEvent, itemId: number) {
-    const id = itemId.toString()
-    const existingState = swipeStates.value.get(id) || { startX: 0, startY: 0, currentX: 0, isDragging: false, isOpen: false }
-
-    swipeStates.value.set(id, {
-        ...existingState,
-        startX: event.clientX,
-        startY: event.clientY,
-        isDragging: true
-    })
-}
-
-function handleMouseMove(_event: MouseEvent, _itemId: number) {
-    // No need to do anything during mouse move for this implementation
-}
-
-function handleMouseEnd(itemId: number, event: MouseEvent) {
-    const id = itemId.toString()
-    const state = swipeStates.value.get(id)
-    if (!state?.isDragging) return
-
-    const deltaX = event.clientX - state.startX
-    const deltaY = event.clientY - state.startY
-
-    state.isDragging = false
-
-    const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY)
-    const isSignificantSwipe = Math.abs(deltaX) > 40
-
-    if (isHorizontalSwipe && isSignificantSwipe) {
-        closeAllSwipedItems(id)
-
-        if (deltaX < -40) {
-            state.isOpen = true
-        } else if (deltaX > 40) {
-            state.isOpen = false
-        }
-    }
-}
-
-function isItemSwiped(itemId: number): boolean {
-    const id = itemId.toString()
-    const state = swipeStates.value.get(id)
-    return state?.isOpen || false
-}
 
 async function deleteFoodItem(itemId: number) {
     try {
         deletingItems.value.add(itemId)
-
-        const id = itemId.toString()
-        swipeStates.value.delete(id)
 
         setTimeout(() => {
             const itemToDelete = scanHistory.value.find(item => item.id === itemId)
@@ -1289,664 +774,7 @@ async function performBackgroundDelete(itemId: number) {
 
 }
 
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    height: 44px;
-}
 
-.logo-section {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.logo {
-    width: 24px;
-    height: 24px;
-}
-
-.app-title {
-    font-size: 32px;
-    font-weight: 600;
-    margin: 0;
-}
-
-.streak {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 8px 12px;
-    border-radius: 20px;
-    cursor: pointer;
-    position: relative;
-}
-
-.streak:hover {
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.dropdown-arrow {
-    transition: transform 0.2s ease;
-}
-
-.dropdown-arrow.dropdown-open {
-    transform: rotate(180deg);
-}
-
-.streak-content {
-    flex: 1;
-    text-align: center;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.date-dropdown {
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-80%);
-    min-width: 220px;
-    max-width: calc(100vw - 40px);
-    background: rgba(40, 44, 52, 0.95);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
-    margin-top: 8px;
-    max-height: 300px;
-    overflow-y: auto;
-    z-index: 1000;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.date-option {
-    padding: 12px 16px;
-    cursor: pointer;
-    transition: background 0.2s ease;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.date-option:last-child {
-    border-bottom: none;
-}
-
-.date-option:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.date-option.active {
-    background: rgba(0, 112, 82, 0.3);
-}
-
-.date-main {
-    display: block;
-    font-weight: 500;
-    font-size: 14px;
-}
-
-.date-sub {
-    display: block;
-    font-size: 12px;
-    opacity: 0.7;
-    margin-top: 2px;
-}
-
-.date-toggle {
-    display: flex;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 16px;
-    padding: 8px 10px;
-    margin-bottom: 12px;
-    backdrop-filter: blur(10px);
-    height: auto;
-}
-
-.date-nav-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    color: white;
-    padding: 8px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-}
-
-.date-nav-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-.date-nav-btn:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-}
-
-.date-nav-btn:disabled:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.current-date-compact {
-    text-align: center;
-    flex: 1;
-    margin: 0 16px;
-}
-
-.date-label {
-    font-size: 18px;
-    font-weight: 600;
-    display: block;
-    line-height: 1.2;
-}
-
-.date-btn {
-    background: transparent;
-    border: none;
-    color: white;
-    padding: 8px 0;
-    font-size: 16px;
-    cursor: pointer;
-    position: relative;
-}
-
-.date-btn.active::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: white;
-    border-radius: 1px;
-}
-
-.history-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    color: white;
-    text-decoration: none;
-    margin-left: auto;
-    transition: all 0.2s ease;
-}
-
-.history-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-.history-btn:active {
-    transform: scale(0.95);
-}
-
-.quick-actions {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 10px;
-    overflow-x: auto;
-    padding: 0 2px;
-}
-
-.quick-actions::-webkit-scrollbar {
-    display: none;
-}
-
-.action-chip {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(255, 255, 255, 0.08);
-    padding: 8px 12px;
-    border-radius: 16px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-    backdrop-filter: blur(10px);
-    /*border: 1px solid rgba(255, 255, 255, 0.1);*/
-}
-
-.action-chip:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateY(-1px);
-}
-
-.action-chip:active {
-    transform: translateY(0);
-}
-
-.action-chip span {
-    font-size: 13px;
-    font-weight: 500;
-}
-
-.action-chip svg {
-    opacity: 0.9;
-}
-
-/* AUSKOMMENTIERT: Altes Date-Toggle CSS
-.date-toggle {
-    display: flex;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 16px;
-    padding: 8px 10px;
-    margin-bottom: 12px;
-    backdrop-filter: blur(10px);
-    height: auto;
-}
-
-.date-nav-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    color: white;
-    padding: 8px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-}
-
-.date-nav-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-.date-nav-btn:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-}
-
-.date-nav-btn:disabled:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.current-date-compact {
-    text-align: center;
-    flex: 1;
-    margin: 0 16px;
-}
-
-.date-label {
-    font-size: 18px;
-    font-weight: 600;
-    display: block;
-    line-height: 1.2;
-}
-*/
-
-.main-card {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 20px;
-    padding: 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    /*24px*/
-    backdrop-filter: blur(10px);
-    height: 140px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    /*cursor: pointer;
-    transition: transform 0.2s, background 0.2s;*/
-}
-
-/*.main-card:active {
-    transform: translateY(0px);
-    background: rgba(255, 255, 255, 0.12);
-}*/
-
-.calories-number {
-    font-size: 48px;
-    font-weight: 700;
-    margin: 0;
-    line-height: 1;
-}
-
-.calories-label {
-    font-size: 16px;
-    opacity: 0.8;
-    margin: 5px 0 0 0;
-}
-
-.streak-line {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 8px;
-    cursor: pointer;
-    transition: opacity 0.2s ease;
-}
-
-.streak-line:hover {
-    opacity: 0.8;
-}
-
-.streak-text {
-    font-size: 14px;
-    font-weight: 500;
-    color: #ff6b35;
-}
-
-.progress-ring {
-    position: relative;
-    width: 100px;
-    height: 100px;
-}
-
-.progress-circle {
-    transition: stroke-dashoffset 0.8s ease-in-out;
-}
-
-.flame-icon {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 24px;
-}
-
-.macros-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 32px;
-}
-
-.macro-card {
-    background: rgba(255, 255, 255, 0.05);
-    /*border: 1px solid rgba(255, 255, 255, 0.1);*/
-    border-radius: 15px;
-    padding: 16px;
-    text-align: center;
-    backdrop-filter: blur(10px);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    /* cursor: pointer;
-    transition: transform 0.2s, background 0.2s;*/
-}
-
-/*.macro-card:active {
-    transform: translateY(0px);
-    background: rgba(255, 255, 255, 0.12);
-}*/
-
-.macro-amount {
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 5px;
-}
-
-.macro-label {
-    font-size: 12px;
-    opacity: 0.8;
-    margin-bottom: 15px;
-}
-
-.macro-progress {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    width: 60px;
-    height: 60px;
-    margin: 0 auto;
-}
-
-.macro-progress>svg {
-    width: 60px;
-    height: 60px;
-}
-
-.macro-progress svg .progress-circle {
-    transition: stroke-dashoffset 0.8s ease-in-out;
-}
-
-.macro-icon {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    /*font-size: 12px;*/
-    pointer-events: none;
-    z-index: 1;
-    padding-top: 2px;
-}
-
-.macro-icon>svg {
-    width: 30px;
-    height: 30px;
-}
-
-.macro-icon-carbs {
-    padding-top: 4px;
-}
-
-.macro-icon-carbs>svg {
-    width: 26px;
-    height: 26px;
-}
-
-/*.recent-section {
-    margin-bottom: 30px;
-}*/
-
-.section-title {
-    font-size: 22px;
-    font-weight: 600;
-    margin-bottom: 12px;
-}
-
-.empty-state {
-    text-align: center;
-    padding: 40px 20px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 15px;
-    backdrop-filter: blur(10px);
-}
-
-.empty-icon {
-    font-size: 3rem;
-    margin-bottom: 16px;
-    opacity: 0.6;
-}
-
-.empty-state p {
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 16px;
-    margin-bottom: 8px;
-}
-
-.empty-subtitle {
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 14px !important;
-    margin-bottom: 0 !important;
-}
-
-.food-item {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 15px;
-    padding: 8px;
-    padding-right: 12px;
-    backdrop-filter: blur(10px);
-    flex: 1;
-    margin-bottom: 0;
-}
-
-.food-item-wrapper {
-    position: relative;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.food-item-wrapper.deleting {
-    opacity: 0;
-    transform: translateX(-100%);
-    height: 0;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-}
-
-.delete-action {
-    width: 0;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.food-item-wrapper.swiped .delete-action {
-    width: 80px;
-}
-
-.delete-button {
-    background: #ff4757;
-    border: none;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 10px;
-    font-size: 12px;
-    font-weight: 600;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    cursor: pointer;
-    transition: all 0.2s;
-    min-height: 60px;
-    justify-content: center;
-    width: 70px;
-    margin-left: 10px;
-    white-space: nowrap;
-}
-
-.delete-button:hover {
-    background: #ff3742;
-    transform: scale(1.05);
-}
-
-.delete-button:active {
-    background: #ff1e2e;
-    transform: scale(0.95);
-}
-
-.delete-button svg {
-    width: 16px;
-    height: 16px;
-}
-
-.food-image {
-    width: 72px;
-    height: 72px;
-    border-radius: 10px;
-    overflow: hidden;
-    background: #333;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-}
-
-.food-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.food-db-icon {
-    font-size: 30px;
-}
-
-.food-info {
-    flex: 1;
-}
-
-.food-name {
-    font-size: 16px;
-    font-weight: 500;
-    margin: 0 0 8px 0;
-}
-
-.food-calories {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    margin-bottom: 8px;
-    font-size: 14px;
-}
-
-.food-macros {
-    display: flex;
-    gap: 10px;
-    font-size: 12px;
-}
-
-.macro-item {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-}
-
-.protein-color {
-    color: #ff6b6b;
-}
-
-.carbs-color {
-    color: #ffa726;
-}
-
-.fats-color {
-    color: #42a5f5;
-}
-
-.food-time {
-    font-size: 14px;
-    opacity: 0.6;
-}
-
-.show-all-link {
-    text-align: center;
-    /*margin-top: 20px;*/
-}
-
-.show-all-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /*gap: 8px;*/
-    background: rgba(255, 255, 255, 0.05);
-    color: white;
-    text-decoration: none;
-    padding: 12px 20px;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: 500;
-    backdrop-filter: blur(10px);
-    transition: all 0.2s;
-}
-
-.show-all-btn:active {
-    transform: translateY(0px);
-    background: rgba(255, 255, 255, 0.2);
-}
 
 .add-button {
     position: fixed;
@@ -1967,198 +795,5 @@ async function performBackgroundDelete(itemId: number) {
 
 a {
     text-decoration: none;
-}
-
-.mode-selector-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    padding: 20px;
-}
-
-.mode-selector-content {
-    background: #fff;
-    border-radius: 20px;
-    padding: 24px;
-    max-width: 400px;
-    width: 100%;
-    text-align: center;
-}
-
-.mode-selector-content h3 {
-    margin: 0 0 24px 0;
-    color: #1a1a1a;
-    font-size: 20px;
-    font-weight: 600;
-}
-
-.mode-options {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 24px;
-}
-
-.mode-option {
-    display: flex;
-    align-items: center;
-    padding: 16px;
-    border: 2px solid #f0f0f0;
-    border-radius: 12px;
-    background: #fff;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-align: left;
-}
-
-.mode-icon {
-    font-size: 32px;
-    margin-right: 16px;
-    min-width: 48px;
-}
-
-.mode-option h4 {
-    margin: 0 0 4px 0;
-    font-size: 16px;
-    font-weight: 600;
-    color: #1a1a1a;
-}
-
-.mode-option p {
-    margin: 0;
-    font-size: 14px;
-    color: #666;
-    line-height: 1.4;
-}
-
-.mode-cancel {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background: #fff;
-    color: #666;
-    font-size: 16px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.premium-banner {
-    /*margin: 16px 20px 0;*/
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.9), rgba(255, 165, 0, 0.9));
-    border-radius: 16px;
-    padding: 16px;
-    margin-bottom: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.banner-content {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    color: #1e1e2e;
-}
-
-.banner-icon {
-    flex-shrink: 0;
-    width: 36px;
-    height: 36px;
-    background: rgba(30, 30, 46, 0.1);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.banner-text {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.banner-title {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 2px;
-}
-
-.banner-subtitle {
-    font-size: 13px;
-    opacity: 0.8;
-}
-
-.banner-close {
-    width: 24px;
-    height: 24px;
-    border-radius: 12px;
-    background: rgba(30, 30, 46, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    flex-shrink: 0;
-}
-
-.kalbuddy-chat-link {
-    display: flex;
-    align-items: center;
-    padding: 12px;
-    background: linear-gradient(135deg, #007052, #005e4a);
-    border-radius: 16px;
-    text-decoration: none;
-    color: white;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 16px rgba(0, 112, 82, 0.2);
-}
-
-.chat-icon {
-    flex-shrink: 0;
-    width: 48px;
-    height: 48px;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 16px;
-}
-
-.chat-content {
-    flex: 1;
-}
-
-.chat-title {
-    font-size: 18px;
-    font-weight: 600;
-    margin: 0 0 4px 0;
-    color: white;
-}
-
-.chat-subtitle {
-    font-size: 14px;
-    margin: 0;
-    opacity: 0.9;
-    color: white;
-}
-
-.chat-arrow {
-    flex-shrink: 0;
-    opacity: 0.8;
-    transition: transform 0.3s ease;
-}
-
-.kalbuddy-chat-section {
-    margin-bottom: 12px;
 }
 </style>
