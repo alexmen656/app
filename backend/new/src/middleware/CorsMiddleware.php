@@ -1,6 +1,6 @@
 <?php
 
-namespace KalBuddy\Middleware;
+namespace Digmio\Middleware;
 
 /**
  * CORS Middleware

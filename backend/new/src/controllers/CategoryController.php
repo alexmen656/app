@@ -1,8 +1,8 @@
 <?php
 
-namespace KalBuddy\Controllers;
+namespace Digmio\Controllers;
 
-use KalBuddy\Models\Category;
+use Digmio\Models\Category;
 
 /**
  * Category Controller

@@ -21,7 +21,7 @@
     "quickAdd": "Añadir Rápido",
     "foodDatabase": "Base de Datos",
     "scanFood": "Escanear Comida",
-    "chatWithKalBuddy": "Chatear con KalBuddy",
+    "chatWithDigmio": "Chatear con Digmio",
     "chatSubtitle": "Pregúntame cualquier cosa sobre nutrición",
     "recentlyUploaded": "Subidos recientemente",
     "noScansYet": "Aún no hay escaneos",
@@ -334,7 +334,7 @@
     "finish": "Finalizar",
     "whatIsYourGoal": "¿Cuál es su objetivo?",
     "goalSubtitle": "Elija su objetivo principal para que podamos optimizar su plan nutricional",
-    "welcomeToKalBuddy": "Bienvenido a KalBuddy",
+    "welcomeToDigmio": "Bienvenido a Digmio",
     "welcomeDescription": "Siga su nutrición con reconocimiento de alimentos potenciado por IA y alcance sus objetivos de salud con información personalizada.",
     "progressStep": "de",
     "features": {
@@ -537,7 +537,7 @@
     }
   },
   "chat": {
-    "title": "Chat KalBuddy",
+    "title": "Chat Digmio",
     "placeholder": "Escribe tu pregunta sobre nutrición...",
     "send": "Enviar",
     "examples": {
@@ -547,8 +547,8 @@
       "example3": "¿Esta comida está equilibrada para mis objetivos?",
       "example4": "¿Qué nutrientes me faltan hoy?"
     },
-    "greeting": "¡Hola! Soy KalBuddy, tu asistente de nutrición IA. ¿Cómo puedo ayudarte hoy?",
-    "typing": "KalBuddy está escribiendo...",
+    "greeting": "¡Hola! Soy Digmio, tu asistente de nutrición IA. ¿Cómo puedo ayudarte hoy?",
+    "typing": "Digmio está escribiendo...",
     "error": "Lo siento, no pude procesar eso. Por favor intenta de nuevo.",
     "networkError": "Sin conexión a internet. Por favor verifica tu red e intenta de nuevo.",
     "rateLimitError": "Demasiados mensajes. Por favor espera un momento antes de enviar otro mensaje.",

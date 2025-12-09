@@ -21,7 +21,7 @@
     "quickAdd": "Quick Add",
     "foodDatabase": "Food Database",
     "scanFood": "Scan Food",
-    "chatWithKalBuddy": "Chat with KalBuddy",
+    "chatWithDigmio": "Chat with Digmio",
     "chatSubtitle": "Ask me anything about nutrition",
     "recentlyUploaded": "Recently uploaded",
     "noScansYet": "No scans yet",
@@ -350,7 +350,7 @@
     "finish": "Finish",
     "whatIsYourGoal": "What is your goal?",
     "goalSubtitle": "Choose your main goal so we can optimize your nutrition plan",
-    "welcomeToKalBuddy": "Welcome to KalBuddy",
+    "welcomeToDigmio": "Welcome to Digmio",
     "welcomeDescription": "Track your nutrition with AI-powered food recognition and achieve your health goals with personalized insights.",
     "progressStep": "of",
     "features": {
@@ -553,7 +553,7 @@
     }
   },
   "chat": {
-    "title": "KalBuddy Chat",
+    "title": "Digmio Chat",
     "placeholder": "Type your nutrition question...",
     "send": "Send",
     "examples": {
@@ -563,8 +563,8 @@
       "example3": "Is this meal balanced for my goals?",
       "example4": "What nutrients am I missing today?"
     },
-    "greeting": "Hi! I'm KalBuddy, your AI nutrition assistant. How can I help you today?",
-    "typing": "KalBuddy is typing...",
+    "greeting": "Hi! I'm Digmio, your AI nutrition assistant. How can I help you today?",
+    "typing": "Digmio is typing...",
     "error": "Sorry, I couldn't process that. Please try again.",
     "networkError": "No internet connection. Please check your network and try again.",
     "rateLimitError": "Too many messages. Please wait a moment before sending another message.",

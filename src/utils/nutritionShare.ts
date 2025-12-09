@@ -231,7 +231,7 @@ function drawNutritionPanel(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasEle
   ctx.fillStyle = '#007052'; // Correct green color from HomeView
   ctx.font = 'bold 24px system-ui, -apple-system, BlinkMacSystemFont, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('KalBuddy', canvas.width / 2, panelY + panelHeight - 30); // Correct spelling
+  ctx.fillText('Digmio', canvas.width / 2, panelY + panelHeight - 30); // Correct spelling
 }
 
 function createFallbackImage(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, nutritionData: NutritionData, amount: number) {

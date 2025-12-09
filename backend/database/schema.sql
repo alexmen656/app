@@ -1,5 +1,5 @@
--- KalBuddy Food Database Schema
--- Author: Generated for KalBuddy App
+-- Digmio Food Database Schema
+-- Author: Generated for Digmio App
 -- Date: 2025-09-10
 
 -- Database creation

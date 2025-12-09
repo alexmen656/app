@@ -1,11 +1,11 @@
 <?php
 /**
  * Application Configuration
- * KalBuddy Food API
+ * Digmio Food API
  */
 
 return [
-    'app_name' => 'KalBuddy Food API',
+    'app_name' => 'Digmio Food API',
     'version' => '1.0.0',
     'debug' => $_ENV['DEBUG'] ?? false,
     'timezone' => 'UTC',

@@ -1,8 +1,8 @@
 <?php
 
-namespace KalBuddy\Models;
+namespace Digmio\Models;
 
-use KalBuddy\Database\Database;
+use Digmio\Database\Database;
 
 /**
  * Category Model

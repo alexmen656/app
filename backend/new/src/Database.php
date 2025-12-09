@@ -1,6 +1,6 @@
 <?php
 
-namespace KalBuddy\Database;
+namespace Digmio\Database;
 
 use PDO;
 use PDOException;

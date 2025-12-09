@@ -1,4 +1,4 @@
--- Zusätzliche Lebensmittel für KalBuddy Food Database
+-- Zusätzliche Lebensmittel für Digmio Food Database
 -- Enthält Fast Food, Snacks, Desserts und weitere beliebte Produkte
 -- Datum: 2025-09-11
 

@@ -1,15 +1,15 @@
 <?php
 /**
- * KalBuddy Food API
+ * Digmio Food API
  * Entry Point
  */
 
 require_once __DIR__ . '/autoload.php';
 
-use KalBuddy\Router\Router;
-use KalBuddy\Controllers\FoodController;
-use KalBuddy\Controllers\CategoryController;
-use KalBuddy\Middleware\CorsMiddleware;
+use Digmio\Router\Router;
+use Digmio\Controllers\FoodController;
+use Digmio\Controllers\CategoryController;
+use Digmio\Middleware\CorsMiddleware;
 
 // Set timezone
 date_default_timezone_set('UTC');
@@ -27,7 +27,7 @@ $router = new Router('/api');
 $router->get('/health', function() {
     return [
         'success' => true,
-        'message' => 'KalBuddy Food API is running',
+        'message' => 'Digmio Food API is running',
         'version' => '1.0.0',
         'timestamp' => date('c')
     ];

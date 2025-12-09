@@ -1,4 +1,4 @@
-# KalBuddy - Calorie Tracking App
+# Digmio - Calorie Tracking App
 
 A modern Vue.js + Capacitor app for calorie tracking with AI-powered food recognition and barcode scanning.
 

@@ -12,9 +12,9 @@
         <div v-if="currentStep === 1" class="step-container">
             <div class="hero-section">
                 <div class="hero-icon">
-                    <img src="../assets/kalbuddy.png" alt="KalBuddy" class="hero-logo" />
+                    <img src="../assets/kalbuddy.png" alt="Digmio" class="hero-logo" />
                 </div>
-                <h1 class="hero-title">{{ $t('onboarding.welcomeToKalBuddy').replace('KalBuddy', '') }}<span class="brand">KalBuddy</span></h1>
+                <h1 class="hero-title">{{ $t('onboarding.welcomeToDigmio').replace('Digmio', '') }}<span class="brand">Digmio</span></h1>
                 <p class="hero-subtitle">{{ $t('onboarding.welcomeDescription') }}</p>
             </div>
 

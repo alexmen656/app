@@ -1,12 +1,12 @@
 <?php
 /**
  * Simple PSR-4 Autoloader
- * KalBuddy Food API
+ * Digmio Food API
  */
 
 spl_autoload_register(function ($className) {
     // Base namespace
-    $baseNamespace = 'KalBuddy\\';
+    $baseNamespace = 'Digmio\\';
     
     // Base directory for the namespace prefix
     $baseDirectory = __DIR__ . '/src/';

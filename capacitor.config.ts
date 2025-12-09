@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'eu.controlcenter.sites.kaloriq',
-  appName: 'KalBuddy',
+  appName: 'Digmio',
   webDir: 'dist',
   server: {
     androidScheme: 'https'

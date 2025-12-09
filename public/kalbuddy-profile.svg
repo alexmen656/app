@@ -31,8 +31,8 @@
     <ellipse cx="8" cy="11" rx="2" ry="0.6"/>
   </g>
   
-  <!-- KalBuddy text -->
-  <text x="128" y="230" text-anchor="middle" fill="white" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="600">KalBuddy</text>
+  <!-- Digmio text -->
+  <text x="128" y="230" text-anchor="middle" fill="white" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="600">Digmio</text>
   <text x="128" y="248" text-anchor="middle" fill="white" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="400" opacity="0.9">AI Nutrition Assistant</text>
   
   <!-- Gradient definitions -->

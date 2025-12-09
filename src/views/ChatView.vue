@@ -15,7 +15,7 @@
         </div>
       </div>
       <div class="kalbuddy-avatar">
-        <img src="../assets/kalbuddy.png" alt="KalBuddy" class="avatar-icon" />
+        <img src="../assets/kalbuddy.png" alt="Digmio" class="avatar-icon" />
       </div>
     </header>
 
@@ -24,7 +24,7 @@
       <!-- Welcome Message -->
       <div class="message bot-message" v-if="messages.length === 0">
         <div class="message-avatar">
-          <img src="../assets/kalbuddy.png" alt="KalBuddy" class="message-avatar-icon" />
+          <img src="../assets/kalbuddy.png" alt="Digmio" class="message-avatar-icon" />
         </div>
         <div class="message-content">
           <div class="message-bubble">
@@ -57,7 +57,7 @@
       <div v-for="(message, index) in messages" :key="index" class="message"
         :class="{ 'user-message': message.isUser, 'bot-message': !message.isUser }">
         <div class="message-avatar" v-if="!message.isUser">
-          <img src="../assets/kalbuddy.png" alt="KalBuddy" class="message-avatar-icon" />
+          <img src="../assets/kalbuddy.png" alt="Digmio" class="message-avatar-icon" />
         </div>
         <div class="message-content">
           <div class="message-bubble">
@@ -78,7 +78,7 @@
       <!-- Typing Indicator -->
       <div class="message bot-message" v-if="isTyping">
         <div class="message-avatar">
-          <img src="../assets/kalbuddy.png" alt="KalBuddy" class="message-avatar-icon" />
+          <img src="../assets/kalbuddy.png" alt="Digmio" class="message-avatar-icon" />
         </div>
         <div class="message-content">
           <div class="message-bubble typing-bubble">

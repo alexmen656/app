@@ -1,6 +1,6 @@
-# KalBuddy Food Database Backend
+# Digmio Food Database Backend
 
-Einfaches PHP Backend für die KalBuddy Food Database - Old School Style! 🍎
+Einfaches PHP Backend für die Digmio Food Database - Old School Style! 🍎
 
 ## 🚀 Quick Start
 

@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>KalBuddy</string>
+	<string>Digmio</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -32,9 +32,9 @@
 	<string>Allow camera access to scan meals and barcodes.
 </string>
 	<key>NSHealthShareUsageDescription</key>
-	<string>KalBuddy needs access to HealthKit to read your nutrition data and sync with your health profile.</string>
+	<string>Digmio needs access to HealthKit to read your nutrition data and sync with your health profile.</string>
 	<key>NSHealthUpdateUsageDescription</key>
-	<string>KalBuddy needs access to HealthKit to write your nutrition data and keep your health profile up to date.</string>
+	<string>Digmio needs access to HealthKit to write your nutrition data and keep your health profile up to date.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

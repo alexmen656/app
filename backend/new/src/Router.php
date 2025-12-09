@@ -1,6 +1,6 @@
 <?php
 
-namespace KalBuddy\Router;
+namespace Digmio\Router;
 
 /**
  * Simple Router

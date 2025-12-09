@@ -20,7 +20,7 @@
 
         <header class="header">
             <div class="logo-section">
-                <h1 class="app-title"><span style="color: #007052;">KalBuddy</span></h1><!--#005e4a #005f4a -->
+                <h1 class="app-title"><span style="color: #007052;">Digmio</span></h1><!--#005e4a #005f4a -->
             </div>
             <div class="streak" @click="toggleDateDropdown" ref="dateDropdownContainer">
                 <!-- Current Date Display with Dropdown Arrow -->
@@ -61,7 +61,7 @@
             </button>
         </div>
         -->
-        <!-- KalBuddy Chat Link 
+        <!-- Digmio Chat Link 
         <div class="kalbuddy-chat-section">
             <router-link to="/chat" class="kalbuddy-chat-link">
                 <div class="chat-icon">
@@ -71,7 +71,7 @@
                     </svg>
                 </div>
                 <div class="chat-content">
-                    <h3 class="chat-title">{{ $t('home.chatWithKalBuddy') }}</h3>
+                    <h3 class="chat-title">{{ $t('home.chatWithDigmio') }}</h3>
                     <p class="chat-subtitle">{{ getChatSubtitle() }}</p>
                 </div>
                 <div class="chat-arrow">

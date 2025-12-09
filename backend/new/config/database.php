@@ -1,7 +1,7 @@
 <?php
 /**
  * Database Configuration
- * KalBuddy Food API
+ * Digmio Food API
  */
 
 return [
