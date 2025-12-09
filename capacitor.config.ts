@@ -6,8 +6,8 @@ const config: CapacitorConfig = {
   webDir: "dist",
   server: {
     androidScheme: "https",
-    url: "http://192.168.1.169:5173",
-    cleartext: true,
+    //url: "http://192.168.1.169:5173",
+    //cleartext: true,
   },
   //ios: {
   //contentInset: "always"

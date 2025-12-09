@@ -1,38 +1,18 @@
 <template>
     <div class="home-view">
-        <!-- Photo Processing Overlay -->
-        <div v-if="isProcessingPhoto" class="processing-overlay">
-            <div class="processing-content">
-                <div class="processing-spinner"></div>
-                <h3>{{ $t('scanner.analyzingFood') }}</h3>
-                <p>{{ $t('scanner.pleaseWait') }}</p>
-            </div>
-        </div>
-
-        <!-- Label Processing Overlay -->
-        <div v-if="isProcessingLabel" class="processing-overlay">
-            <div class="processing-content">
-                <div class="processing-spinner"></div>
-                <h3>{{ $t('scanner.analyzingLabel') }}</h3>
-                <p>{{ $t('scanner.pleaseWait') }}</p>
-            </div>
-        </div>
+        <IsProcessingPhoto v-if="isProcessingPhoto" />
+        <IsProcessingLabel v-if="isProcessingLabel" />
 
         <header class="header">
             <div class="logo-section">
                 <h1 class="app-title"><span style="color: #007052;">Digmio</span></h1><!--#005e4a #005f4a -->
             </div>
             <div class="streak" @click="toggleDateDropdown" ref="dateDropdownContainer">
-                <!-- Current Date Display with Dropdown Arrow -->
                 <span class="streak-content">{{ formatCurrentDate() }}</span>
-
-                <!-- Dropdown Arrow -->
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"
                     :class="{ 'dropdown-arrow': true, 'dropdown-open': showDateDropdown }">
                     <path d="M7 10l5 5 5-5z" />
                 </svg>
-
-                <!-- Dropdown Menu -->
                 <div v-if="showDateDropdown" class="date-dropdown">
                     <div v-for="date in availableDates" :key="date.dateString" class="date-option"
                         :class="{ 'active': date.dateString === selectedDate.toDateString() }"
@@ -82,7 +62,6 @@
             </router-link>
         </div>-->
 
-        <!-- Quick Actions -->
         <div class="quick-actions">
             <div class="action-chip" @click="goToView('chat')">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -91,7 +70,6 @@
                 </svg>
                 <span>{{ $t('home.chat') }}</span>
             </div>
-
             <div class="action-chip" @click="openWeightModal">
                 <!-- <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12,2C6.48,2 2,6.48 2,12C2,17.52 6.48,22 12,22C17.52,22 22,17.52 22,12C22,6.48 17.52,2 12,2M13,7H11V11H7V13H11V17H13V13H17V11H13V7Z"/>
@@ -105,7 +83,6 @@
                 </svg>
                 <span>{{ $t('home.logWeight') }}</span>
             </div>
-
             <div class="action-chip" @click="goToView('feedback')">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                     <path
@@ -114,7 +91,7 @@
                 <span>{{ $t('home.giveFeedback') }}</span>
             </div>
 
-          <!--<div class="action-chip" @click="goToView('water')">
+            <!--<div class="action-chip" @click="goToView('water')">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                     <path
                         d="M12,2C13.73,7.21 16.69,9.88 16.69,13.58C16.69,17.65 14.54,19.12 12,19.12C9.46,19.12 7.31,17.65 7.31,13.58C7.31,9.88 10.27,7.21 12,2Z" />
@@ -128,7 +105,7 @@
                         d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,17L7,12L8.41,10.59L12,14.17L15.59,10.59L17,12L12,17Z" />
                 </svg>
                 <span>Goals</span>
-            </div>-->  
+            </div>-->
 
             <div class="action-chip" @click="goToFavorites">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -138,7 +115,6 @@
                 <span>{{ $t('home.favorites') }}</span>
             </div>
         </div>
-
         <div class="main-card" @click="goToView('calories')">
             <div class="calories-section">
                 <h2 class="calories-number">{{ caloriesNumberDisplay }}</h2>
@@ -166,7 +142,6 @@
                 </div>
             </div>
         </div>
-        <!-- Premium Banner for Free Users -->
         <div v-if="!isPremiumUser && showPremiumBanner" class="premium-banner" @click="goToView('upgrade')">
             <div class="banner-content">
                 <div class="banner-icon">
@@ -187,17 +162,13 @@
                 </div>
             </div>
         </div>
-
-        <!-- Macros Grid -->
         <div class="macros-grid">
             <div class="macro-card protein" @click="goToView('protein')">
                 <div class="macro-amount">{{ proteinNumberDisplay }}</div>
                 <div class="macro-label">{{ proteinLabelDisplay }}</div>
                 <div class="macro-progress">
                     <svg width="60" height="60" viewBox="0 0 60 60">
-                        <!-- Background circle -->
                         <circle cx="30" cy="30" r="24" stroke="#2a2d37" stroke-width="5" fill="none" />
-                        <!-- Progress circle -->
                         <circle cx="30" cy="30" r="24" stroke="#ff6b6b" stroke-width="5" fill="none"
                             stroke-dasharray="150.8" :stroke-dashoffset="calculateMacroOffset(proteinProgress, 150.8)"
                             stroke-linecap="round" transform="rotate(-90 30 30)" class="progress-circle" />
@@ -210,15 +181,12 @@
                     </div>
                 </div>
             </div>
-
             <div class="macro-card carbs" @click="goToView('carbs')">
                 <div class="macro-amount">{{ carbsNumberDisplay }}</div>
                 <div class="macro-label">{{ carbsLabelDisplay }}</div>
                 <div class="macro-progress">
                     <svg width="60" height="60" viewBox="0 0 60 60">
-                        <!-- Background circle -->
                         <circle cx="30" cy="30" r="24" stroke="#2a2d37" stroke-width="5" fill="none" />
-                        <!-- Progress circle -->
                         <circle cx="30" cy="30" r="24" stroke="#ffa726" stroke-width="5" fill="none"
                             stroke-dasharray="150.8" :stroke-dashoffset="calculateMacroOffset(carbsProgress, 150.8)"
                             stroke-linecap="round" transform="rotate(-90 30 30)" class="progress-circle" />
@@ -231,15 +199,12 @@
                     </div>
                 </div>
             </div>
-
             <div class="macro-card fats" @click="goToView('fats')">
                 <div class="macro-amount">{{ fatsNumberDisplay }}</div>
                 <div class="macro-label">{{ fatsLabelDisplay }}</div>
                 <div class="macro-progress">
                     <svg width="60" height="60" viewBox="0 0 60 60">
-                        <!-- Background circle -->
                         <circle cx="30" cy="30" r="24" stroke="#2a2d37" stroke-width="5" fill="none" />
-                        <!-- Progress circle -->
                         <circle cx="30" cy="30" r="24" stroke="#42a5f5" stroke-width="5" fill="none"
                             stroke-dasharray="150.8" :stroke-dashoffset="calculateMacroOffset(fatsProgress, 150.8)"
                             stroke-linecap="round" transform="rotate(-90 30 30)" class="progress-circle" />
@@ -253,20 +218,15 @@
                 </div>
             </div>
         </div>
-
-        <!-- Recently Uploaded Section -->
         <div class="recent-section">
             <h3 class="section-title">{{ $t('home.recentlyUploaded') }}</h3>
-
             <div v-if="recentFoods.length === 0" class="empty-state">
                 <div class="empty-icon">📱</div>
                 <p>{{ $t('home.noScansYet') }}</p>
                 <p class="empty-subtitle">{{ $t('home.noScansSubtitle') }}</p>
             </div>
-
             <div v-else class="food-item-wrapper" v-for="item in recentFoods" :key="item.id"
                 :class="{ 'swiped': isItemSwiped(item.id), 'deleting': deletingItems.has(item.id) }">
-                <!-- Food Item (swipeable) -->
                 <div class="food-item" @click="goToNutritionDetail(item)"
                     @touchstart="handleTouchStart($event, item.id)" @touchmove="handleTouchMove($event, item.id)"
                     @touchend="handleTouchEnd(item.id, $event)" @mousedown="handleMouseDown($event, item.id)"
@@ -315,8 +275,6 @@
                     </div>
                     <div class="food-time">{{ item.time }}</div>
                 </div>
-
-                <!-- Delete Action - appears on the right -->
                 <div class="delete-action">
                     <button @click="deleteFoodItem(item.id)" class="delete-button">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -326,8 +284,6 @@
                     </button>
                 </div>
             </div>
-
-            <!-- Show All Scans Link -->
             <div class="show-all-link">
                 <router-link to="/all-scans" class="show-all-btn">
                     {{ $t('home.showAllScans') }}
@@ -337,20 +293,15 @@
                 </router-link>
             </div>
         </div>
-
         <BottomNavigation />
         <div @click="toggleAddFoodModal(true)" class="add-button">
             <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
                 <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
             </svg>
         </div>
-
-        <!-- Add Food Modal -->
         <AddFoodModal :show="isAddFoodModalVisible" @close="toggleAddFoodModal(false)"
             @select-scanner="handleSelectScanner" @select-database="handleSelectDatabase"
             @select-manual="handleSelect('manual-entry')" />
-
-        <!-- Scan Limit Blocker -->
         <PremiumBlocker v-if="showScanLimitBlocker" feature="unlimited_food_scans"
             :title="$t('premium.scanLimit.title')" :description="$t('premium.scanLimit.description')" :features="[
                 $t('premium.scanLimit.feature1'),
@@ -359,8 +310,6 @@
             ]" :show-usage-info="true" :scans-used="currentScanUsage?.currentCount || 0"
             :scans-total="currentScanUsage?.limit || 10" @close="closeScanLimitBlocker"
             @upgrade="handleScanLimitUpgrade" />
-
-        <!-- Weight Log Modal -->
         <WeightLogModal :show="showWeightModal" @close="closeWeightModal" @logged="handleWeightLogged" />
     </div>
 </template>
@@ -384,6 +333,8 @@ import PremiumBlocker from '../components/PremiumBlocker.vue'
 import BottomNavigation from '../components/BottomNavigation.vue'
 import AddFoodModal from '../components/AddFoodModal.vue'
 import WeightLogModal from '../components/WeightLogModal.vue'
+import IsProcessingLabel from '../components/home/IsProcessingLabel.vue'
+import IsProcessingPhoto from '../components/home/IsProcessingPhoto.vue'
 
 const router = useRouter()
 const { t, locale } = useI18n()
@@ -462,7 +413,7 @@ async function migrateBase64ImagesToFiles() {
 async function migrateNamesToStandardFormat() {
     try {
         console.log('🔄 Starting names format migration...');
-        
+
         // Migrate Scan History
         const history = await ScanHistory.get();
         let historyMigrationCount = 0;
@@ -470,12 +421,12 @@ async function migrateNamesToStandardFormat() {
 
         for (let i = 0; i < updatedHistory.length; i++) {
             const scan = updatedHistory[i];
-            
+
             // Check if migration is needed
             const needsMigration = (
-                scan.data?.name || 
-                scan.data?.name_en || 
-                scan.data?.product_name || 
+                scan.data?.name ||
+                scan.data?.name_en ||
+                scan.data?.product_name ||
                 (scan.data?.foods && scan.data.foods.some((f: any) => f.name || f.name_en || f.product_name))
             );
 
@@ -486,7 +437,7 @@ async function migrateNamesToStandardFormat() {
                     if (migratedScan.data) {
                         migratedScan.data = migrateFoodsArray(migratedScan.data);
                     }
-                    
+
                     updatedHistory[i] = migratedScan;
                     historyMigrationCount++;
                     console.log(`✅ Migrated names for scan ${scan.id}`);
@@ -538,14 +489,14 @@ async function migrateNamesToStandardFormat() {
 
         for (let i = 0; i < updatedFavorites.length; i++) {
             const fav = updatedFavorites[i];
-            
+
             if (fav.name || fav.name_en || fav.product_name || (fav.data?.name || fav.data?.name_en || fav.data?.product_name)) {
                 try {
                     const migratedFav = migrateToNamesFormat(fav);
                     if (migratedFav.data) {
                         migratedFav.data = migrateFoodsArray(migratedFav.data);
                     }
-                    
+
                     updatedFavorites[i] = migratedFav;
                     favoritesMigrationCount++;
                     console.log(`✅ Migrated favorite: ${fav.favoriteId}`);
@@ -565,7 +516,7 @@ async function migrateNamesToStandardFormat() {
         } else {
             console.log(`🎉 Names migration completed! Total migrated: ${historyMigrationCount + cacheMigrationCount + favoritesMigrationCount} items.`);
         }
-        
+
     } catch (error) {
         console.error('❌ Error during names format migration:', error);
     }
@@ -994,7 +945,7 @@ function toggleAddFoodModal(val: boolean) {
 
 async function handleSelectScanner(mode: 'barcode' | 'photo' | 'label') {
     toggleAddFoodModal(false)
-    
+
     try {
         const usage = await checkScanLimit()
         currentScanUsage.value = usage
@@ -1062,13 +1013,11 @@ function selectDate(dateObj: any) {
     loadScanHistory("selectDate")
 }
 
-// Close dropdown when clicking outside
 function handleClickOutside(event: Event) {
     if (dateDropdownContainer.value && !dateDropdownContainer.value.contains(event.target as Node)) {
         showDateDropdown.value = false
     }
 
-    // Also close all swiped items when clicking outside
     closeAllSwipedItems()
 }
 
@@ -1077,7 +1026,6 @@ function hidePremiumBanner() {
 }
 
 function goToNutritionDetail(item: FoodItem) {
-    // Close all swiped items before navigating
     closeAllSwipedItems()
 
     router.push({
@@ -1094,13 +1042,11 @@ const recentFoods = computed((): FoodItem[] => {
         .filter((item): item is FoodItem => item !== null)
 })
 
-// Verwende die generische Funktion für alle Makronährstoffe
 const calories = createMacroCalculations(dailyCalories, consumedCalories, '', 'home.caloriesOver', 'home.caloriesLeft')
 const protein = createMacroCalculations(dailyProtein, consumedProtein, 'g', 'home.proteinOver', 'home.proteinLeft')
 const carbs = createMacroCalculations(dailyCarbs, consumedCarbs, 'g', 'home.carbsOver', 'home.carbsLeft')
 const fats = createMacroCalculations(dailyFats, consumedFats, 'g', 'home.fatsOver', 'home.fatsLeft')
 
-// Aliases für Backward-Kompatibilität
 const caloriesProgress = calories.progress
 const proteinProgress = protein.progress
 const carbsProgress = carbs.progress
@@ -1115,7 +1061,6 @@ const carbsLabelDisplay = carbs.labelDisplay
 const fatsNumberDisplay = fats.numberDisplay
 const fatsLabelDisplay = fats.labelDisplay
 
-// Watch for date changes and reload data
 watch(selectedDate, () => {
     loadScanHistoryAndStreak()
 }, { immediate: false })
@@ -1125,7 +1070,6 @@ function calculateMacroOffset(progress: number, circumference: number): number {
     return circumference - (circumference * clampedProgress)
 }
 
-// Swipe functionality
 const swipeStates = ref<Map<string, { startX: number, startY: number, currentX: number, isDragging: boolean, isOpen: boolean }>>(new Map())
 const deletingItems = ref<Set<number>>(new Set())
 
@@ -1159,11 +1103,9 @@ function handleTouchMove(event: TouchEvent, itemId: number) {
     const deltaX = touch.clientX - state.startX
     const deltaY = touch.clientY - state.startY
 
-    // Check if this is more of a horizontal swipe than vertical
     const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY)
     const isSignificantSwipe = Math.abs(deltaX) > 20
 
-    // Only prevent scrolling if it's clearly a horizontal swipe
     if (isHorizontalSwipe && isSignificantSwipe) {
         event.preventDefault()
     }
@@ -1180,15 +1122,12 @@ function handleTouchEnd(itemId: number, event: TouchEvent) {
 
     state.isDragging = false
 
-    // Check if this was a horizontal swipe (not vertical scroll)
     const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY)
     const isSignificantSwipe = Math.abs(deltaX) > 40
 
     if (isHorizontalSwipe && isSignificantSwipe) {
-        // Close all other items first
         closeAllSwipedItems(id)
 
-        // Toggle this item
         if (deltaX < -40) {
             state.isOpen = true
         } else if (deltaX > 40) {
@@ -1197,7 +1136,6 @@ function handleTouchEnd(itemId: number, event: TouchEvent) {
     }
 }
 
-// Mouse support for testing on desktop
 function handleMouseDown(event: MouseEvent, itemId: number) {
     const id = itemId.toString()
     const existingState = swipeStates.value.get(id) || { startX: 0, startY: 0, currentX: 0, isDragging: false, isOpen: false }
@@ -1224,15 +1162,12 @@ function handleMouseEnd(itemId: number, event: MouseEvent) {
 
     state.isDragging = false
 
-    // Check if this was a horizontal swipe
     const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY)
     const isSignificantSwipe = Math.abs(deltaX) > 40
 
     if (isHorizontalSwipe && isSignificantSwipe) {
-        // Close all other items first
         closeAllSwipedItems(id)
 
-        // Toggle this item
         if (deltaX < -40) {
             state.isOpen = true
         } else if (deltaX > 40) {
@@ -1249,22 +1184,16 @@ function isItemSwiped(itemId: number): boolean {
 
 async function deleteFoodItem(itemId: number) {
     try {
-        // Add deleting animation immediately
         deletingItems.value.add(itemId)
 
-        // Reset swipe state immediately
         const id = itemId.toString()
         swipeStates.value.delete(id)
 
-        // Wait for animation to complete before removing from data
         setTimeout(() => {
-            // Optimistic update: Remove item from local state
             const itemToDelete = scanHistory.value.find(item => item.id === itemId)
             if (itemToDelete) {
-                // Remove from local scanHistory for instant UI feedback
                 scanHistory.value = scanHistory.value.filter(item => item.id !== itemId)
 
-                // Recalculate nutrition immediately (subtract deleted item's nutrition)
                 const itemNutrition = extractNutritionFromScan(itemToDelete)
                 todaysNutrition.value = {
                     calories: Math.max(0, todaysNutrition.value.calories - itemNutrition.calories),
@@ -1274,23 +1203,17 @@ async function deleteFoodItem(itemId: number) {
                 }
             }
 
-            // Remove from deleting items
             deletingItems.value.delete(itemId)
 
-            // Perform backend operations asynchronously in background
             performBackgroundDelete(itemId)
-        }, 300) // Match CSS transition duration
-
+        }, 300)
     } catch (error) {
         console.error('Error deleting food item:', error)
-        // Clean up animation state on error
         deletingItems.value.delete(itemId)
-        // If there's an immediate error, reload to restore correct state
         await loadScanHistory("Error deleting food item")
     }
 }
 
-// Helper function to extract nutrition from a scan item
 function extractNutritionFromScan(scan: any) {
     const amount = scan.amount || 1.0
 
@@ -1313,30 +1236,22 @@ function extractNutritionFromScan(scan: any) {
     return { calories: 0, protein: 0, carbs: 0, fats: 0 }
 }
 
-// Background operations that don't block UI
 async function performBackgroundDelete(itemId: number) {
     try {
-        // 1. Remove from storage (this is the most important operation)
         await ScanHistory.remove(itemId)
 
-        // 2. Perform expensive operations in background without blocking UI
-        // Run these in parallel and don't wait for them
         const backgroundOperations = [
-            // Widget update (can be slow)
             WidgetDataManager.updateWidgetData().catch(err =>
                 console.error('Widget update failed:', err)
             ),
-            // HealthKit sync (can be very slow)
             syncToHealthKit().catch(err =>
                 console.error('HealthKit sync failed:', err)
             ),
-            // Notification reset
             NotificationService.resetInactivityTimer().catch(err =>
                 console.error('Notification reset failed:', err)
             )
         ]
 
-        // Don't await these - let them run in background
         Promise.allSettled(backgroundOperations).then(() => {
             console.log('✅ All background operations completed')
         }).catch(err => {
@@ -1344,13 +1259,10 @@ async function performBackgroundDelete(itemId: number) {
         })
 
         console.log('✅ Item deleted from storage successfully')
-
     } catch (error) {
         console.error('❌ Failed to delete item from storage:', error)
-
-        // If storage deletion failed, rollback UI state
         console.log('🔄 Rolling back UI state due to storage error')
-        await loadScanHistory("loadScanHistoryAndStreak Failed") // This will restore the correct state
+        await loadScanHistory("loadScanHistoryAndStreak Failed")
     }
 }
 </script>
@@ -1374,7 +1286,7 @@ async function performBackgroundDelete(itemId: number) {
     -webkit-touch-callout: none;
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
-    
+
 }
 
 .header {
@@ -1875,7 +1787,6 @@ async function performBackgroundDelete(itemId: number) {
     margin-bottom: 0;
 }
 
-/* Swipe-to-delete wrapper and styles */
 .food-item-wrapper {
     position: relative;
     margin-bottom: 12px;
@@ -1884,7 +1795,6 @@ async function performBackgroundDelete(itemId: number) {
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-/* Add deleting animation */
 .food-item-wrapper.deleting {
     opacity: 0;
     transform: translateX(-100%);
@@ -2059,65 +1969,6 @@ a {
     text-decoration: none;
 }
 
-/* Processing Overlay */
-.processing-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(10px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-}
-
-.processing-content {
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 20px;
-    padding: 40px 30px;
-    text-align: center;
-    max-width: 300px;
-    width: 90%;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-}
-
-.processing-spinner {
-    width: 48px;
-    height: 48px;
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #007052;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 20px;
-}
-
-.processing-content h3 {
-    color: #333;
-    font-size: 18px;
-    font-weight: 600;
-    margin: 0 0 10px 0;
-}
-
-.processing-content p {
-    color: #666;
-    font-size: 14px;
-    margin: 0;
-}
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-/* Mode Selector */
 .mode-selector-overlay {
     position: fixed;
     top: 0;
@@ -2199,7 +2050,6 @@ a {
     transition: all 0.2s ease;
 }
 
-/* Premium Banner */
 .premium-banner {
     /*margin: 16px 20px 0;*/
     background: linear-gradient(135deg, rgba(255, 215, 0, 0.9), rgba(255, 165, 0, 0.9));
