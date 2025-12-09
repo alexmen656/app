@@ -4,8 +4,18 @@ A modern Vue.js + Capacitor app for calorie tracking with AI-powered food recogn
 
 ## Plan for new backend
 
-Download official open food facts json and import it in local postgres to get much much much faster responses 10ms vs 400ms-1,5s
+Download official open food facts json and import it in local postgres to get much much much faster responses 10ms vs 400ms-1,5s.
 
+Journey:
+I will need to test it on my cloud server because with my shitty 20mbits internet it will take ages to download 10GB lol
+
+For Testing: 
+```
+//curl -s https://static.openfoodfacts.org/data/openfoodfacts-products.jsonl.gz | gunzip | head -n 100 > sample.jsonl
+
+curl -L -A "Mozilla/5.0" "https://static.openfoodfacts.org/data/openfoodfacts-products.jsonl.gz" | gunzip | head -n 100 > sample.jsonl
+
+```
 ## Features
 
 ### Home View
