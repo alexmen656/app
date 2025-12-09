@@ -1,0 +1,891 @@
+{
+  "appName": "Digmio",
+  "appIcon": "256.png",
+  "ctaButtonText": "Download",
+  "iosLink": "https://apple.com",
+  "androidLink": "https://google.com",
+  "headline": "Your AI-powered<br /> calorie tracking companion",
+  "description": "Digmio makes nutrition tracking effortless with AI food recognition and barcode scanning.<br />Track macros, build healthy habits, and reach your goals.",
+  "links": [
+    { "name": "Support", "href": "/support" },
+    { "name": "Blog", "href": "/blog" },
+    { "name": "Updates", "href": "/updates" }
+  ],
+  "copyrightCompany": "Alex Polan",
+  "appStoreLink": "https://apple.com",
+  "googlePlayLink": "https://google.com",
+  "socialLinks": [
+    { "platform": "instagram", "link": "https://instagram.com" },
+    { "platform": "facebook", "link": "https://faceebook.com" },
+    { "platform": "tiktok", "link": "https://tiktok.com" },
+    { "platform": "x", "link": "https://x.com" }
+  ],
+  "feature_detail": {
+    "title": "Track your progress with<br />smart analytics.",
+    "description": "Get detailed insights into your nutrition journey with weekly charts, macro breakdowns, and streak tracking. Watch your healthy habits grow day by day."
+  },
+  "feature_highlight": {
+    "image1": "/assets/iphone.png",
+    "image2": "/assets/iphone.png",
+    "title": "Never wonder \"What did I eat today?\" again.",
+    "description": "AI-powered food recognition identifies your meals instantly. Just snap a photo, and Digmio analyzes the nutritional content for you."
+  },
+  "showcase_title": "Discover the Features.",
+  "feature_list": [
+    {
+      "icon": "/src/config/assets/iphone.png",
+      "title": "AI Food Recognition",
+      "description": "Snap a photo.<br />Get instant nutrition data."
+    },
+    {
+      "icon": "/src/config/assets/iphone.png",
+      "title": "Barcode Scanner",
+      "description": "Scan products.<br />Track in seconds."
+    },
+    {
+      "icon": "/src/config/assets/iphone.png",
+      "title": "Smart Analytics",
+      "description": "Weekly insights.<br />Track your progress."
+    },
+    {
+      "icon": "/src/config/assets/iphone.png",
+      "title": "Streak System",
+      "description": "Build habits.<br />Stay motivated."
+    },
+    {
+      "icon": "/src/config/assets/iphone.png",
+      "title": "iOS Widgets",
+      "description": "Quick glance.<br />Right on your homescreen."
+    }
+  ],
+  "supportCards": [
+    {
+      "title": "Getting Started",
+      "icon": "<svg width=\"48\" height=\"48\" viewBox=\"0 0 48 48\" fill=\"none\"><path d=\"M12 8h24a4 4 0 014 4v24a4 4 0 01-4 4H12a4 4 0 01-4-4V12a4 4 0 014-4z\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"M16 20l6 6 10-10\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>"
+    },
+    {
+      "title": "Food Tracking",
+      "icon": "<svg width=\"48\" height=\"48\" viewBox=\"0 0 48 48\" fill=\"none\"><circle cx=\"24\" cy=\"24\" r=\"16\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"M24 8v16l8 8\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>"
+    },
+    {
+      "title": "AI & Scanning",
+      "icon": "<svg width=\"48\" height=\"48\" viewBox=\"0 0 48 48\" fill=\"none\"><rect x=\"8\" y=\"14\" width=\"32\" height=\"20\" rx=\"2\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"M14 20v8M18 20v8M24 20v8M28 20v8M34 20v8\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>"
+    },
+    {
+      "title": "Premium Features",
+      "icon": "<svg width=\"48\" height=\"48\" viewBox=\"0 0 48 48\" fill=\"none\"><path d=\"M24 4l6 12 13 2-9 9 2 13-12-6-12 6 2-13-9-9 13-2z\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linejoin=\"round\"/></svg>"
+    }
+  ],
+  "supportTitle": "How can we help?",
+  "supportSearchPlaceholder": "Search for a topic or question",
+  "supportSectionTitle": "Getting started",
+  "supportCategories2": [
+    {
+      "id": "getting-started",
+      "title": "Getting Started",
+      "description": "Learn the basics of tracking your nutrition with Digmio.",
+      "icon": "<svg width=\"48\" height=\"48\" viewBox=\"0 0 48 48\" fill=\"none\"><path d=\"M12 8h24a4 4 0 014 4v24a4 4 0 01-4 4H12a4 4 0 01-4-4V12a4 4 0 014-4z\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"M16 20l6 6 10-10\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>"
+    },
+    {
+      "id": "food-tracking",
+      "title": "Food Tracking",
+      "description": "Everything about logging meals and tracking calories.",
+      "icon": "<svg width=\"48\" height=\"48\" viewBox=\"0 0 48 48\" fill=\"none\"><circle cx=\"24\" cy=\"24\" r=\"16\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"M24 8v16l8 8\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>"
+    },
+    {
+      "id": "ai-scanning",
+      "title": "AI & Barcode Scanning",
+      "description": "Use AI food recognition and barcode scanner.",
+      "icon": "<svg width=\"48\" height=\"48\" viewBox=\"0 0 48 48\" fill=\"none\"><rect x=\"8\" y=\"14\" width=\"32\" height=\"20\" rx=\"2\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"M14 20v8M18 20v8M24 20v8M28 20v8M34 20v8\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>"
+    },
+    {
+      "id": "widgets",
+      "title": "Widgets & iOS Features",
+      "description": "Home Screen widgets, HealthKit, and Apple Watch.",
+      "icon": "<svg width=\"48\" height=\"48\" viewBox=\"0 0 48 48\" fill=\"none\"><rect x=\"8\" y=\"8\" width=\"14\" height=\"14\" rx=\"3\" stroke=\"currentColor\" stroke-width=\"2\"/><rect x=\"26\" y=\"8\" width=\"14\" height=\"14\" rx=\"3\" stroke=\"currentColor\" stroke-width=\"2\"/><rect x=\"8\" y=\"26\" width=\"14\" height=\"14\" rx=\"3\" stroke=\"currentColor\" stroke-width=\"2\"/><rect x=\"26\" y=\"26\" width=\"14\" height=\"14\" rx=\"3\" stroke=\"currentColor\" stroke-width=\"2\"/></svg>"
+    },
+    {
+      "id": "premium",
+      "title": "Premium Features",
+      "description": "Unlimited scans, advanced analytics, and more.",
+      "icon": "<svg width=\"48\" height=\"48\" viewBox=\"0 0 48 48\" fill=\"none\"><path d=\"M24 4l6 12 13 2-9 9 2 13-12-6-12 6 2-13-9-9 13-2z\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linejoin=\"round\"/></svg>"
+    },
+    {
+      "id": "troubleshooting",
+      "title": "Troubleshooting",
+      "description": "Solutions for common issues and questions.",
+      "icon": "<svg width=\"48\" height=\"48\" viewBox=\"0 0 48 48\" fill=\"none\"><circle cx=\"24\" cy=\"24\" r=\"18\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"M24 32v.01M24 16v10\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>"
+    }
+  ],
+  "supportCategories": [
+    {
+      "id": "getting-started",
+      "title": "Getting Started with Digmio",
+      "articles": [
+        {
+          "id": "track-first-meal",
+          "title": "Track your first meal",
+          "description": "Learn how to log food using AI scanning or barcode scanning.",
+          "intro": "Tracking meals with Digmio is quick and easy. You can use AI photo recognition, scan barcodes, or enter food manually.",
+          "sections": [
+            {
+              "heading": "AI Photo Scan",
+              "content": "Tap the <strong>+</strong> button and select <strong>Take Photo</strong>. Point your camera at your meal and take a picture. Digmio's AI will automatically analyze the food and calculate nutritional values."
+            },
+            {
+              "heading": "Barcode Scan",
+              "content": "For packaged foods, tap <strong>Scan Barcode</strong> and point your camera at the product barcode. Digmio will instantly retrieve the nutritional information from the database."
+            },
+            {
+              "heading": "Adjust portions",
+              "content": "After scanning, you can adjust the portion size to match what you actually ate. The nutritional values update automatically based on your portion."
+            }
+          ]
+        },
+        {
+          "id": "set-goals",
+          "title": "Set your daily goals",
+          "description": "Customize your calorie and macro targets.",
+          "intro": "Setting the right goals helps you stay on track with your nutrition journey.",
+          "sections": [
+            {
+              "heading": "Calorie goals",
+              "content": "Go to <strong>Settings → Edit Profile</strong> to set your daily calorie target. The app calculates a recommended goal based on your age, weight, height, and activity level."
+            },
+            {
+              "heading": "Macro targets",
+              "content": "Adjust your protein, carbohydrates, and fat targets to match your dietary preferences. Whether you're high-protein, low-carb, or balanced, customize it your way."
+            },
+            {
+              "heading": "Track progress",
+              "content": "The home screen shows your progress with colorful rings for calories and macros. Watch them fill up as you log meals throughout the day."
+            }
+          ]
+        },
+        {
+          "id": "understand-dashboard",
+          "title": "Understand your dashboard",
+          "description": "Learn what all the numbers and rings mean.",
+          "intro": "The home dashboard gives you a complete overview of your daily nutrition at a glance.",
+          "sections": [
+            {
+              "heading": "Calorie ring",
+              "content": "The main ring shows your calories consumed vs. your daily target. The flame icon in the center displays remaining calories. Green means you're on track."
+            },
+            {
+              "heading": "Macro breakdown",
+              "content": "Three smaller rings show protein (red), carbs (orange), and fats (blue). Each displays current grams consumed and your daily goal."
+            },
+            {
+              "heading": "Streak counter",
+              "content": "The flame streak shows how many consecutive days you've logged food. Tap it to see detailed streak statistics and achievements."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "food-tracking",
+      "title": "Food Tracking",
+      "articles": [
+        {
+          "id": "ai-food-recognition",
+          "title": "How AI food recognition works",
+          "description": "Learn how Digmio analyzes your meal photos.",
+          "intro": "Digmio uses advanced AI to identify foods and calculate nutritional values from photos.",
+          "sections": [
+            {
+              "heading": "What the AI recognizes",
+              "content": "Digmio's AI can identify:",
+              "list": [
+                "Individual food items (fruits, vegetables, proteins)",
+                "Complete meals (pasta dishes, salads, sandwiches)",
+                "Packaged foods and snacks",
+                "Beverages and drinks",
+                "Multiple items in one photo",
+                "Various cuisines from around the world"
+              ]
+            },
+            {
+              "heading": "How it works",
+              "content": "When you take a photo, the AI analyzes the image, identifies the food items, estimates portion sizes, and calculates the nutritional content. Results appear in seconds."
+            }
+          ]
+        },
+        {
+          "id": "photo-tips",
+          "title": "Tips for better food photos",
+          "description": "Get more accurate results with these photo tips.",
+          "intro": "Taking good food photos helps the AI provide more accurate nutritional estimates.",
+          "sections": [
+            {
+              "heading": "Good lighting",
+              "content": "Take photos in good lighting conditions. Natural light works best. Make sure the food is clearly visible and not in shadow."
+            },
+            {
+              "heading": "Clear view",
+              "content": "Position your phone directly above or at a slight angle. Make sure all food items in the meal are visible and not obscured."
+            },
+            {
+              "heading": "Close enough",
+              "content": "Get close enough that the food fills most of the frame, but not so close that items are cut off. A clear, complete view of the meal works best."
+            }
+          ]
+        },
+        {
+          "id": "edit-food-entry",
+          "title": "Edit logged food",
+          "description": "Adjust portions or nutritional values for logged meals.",
+          "intro": "You can edit any logged food entry to ensure accuracy.",
+          "sections": [
+            {
+              "heading": "Edit from history",
+              "content": "Tap on any food item in your recent foods list on the home screen. You'll see the full nutrition details and can adjust values."
+            },
+            {
+              "heading": "Adjust portions",
+              "content": "Change the portion size using the slider or input field. All nutritional values update automatically based on the new portion."
+            },
+            {
+              "heading": "Delete entries",
+              "content": "Swipe left on any food item in your history to delete it. This is useful if you logged something by mistake."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ai-scanning",
+      "title": "AI & Barcode Scanning",
+      "articles": [
+        {
+          "id": "barcode-database",
+          "title": "Using the barcode scanner",
+          "description": "Scan packaged foods for instant nutrition data.",
+          "intro": "The barcode scanner makes tracking packaged foods incredibly fast and accurate.",
+          "sections": [
+            {
+              "heading": "How to scan",
+              "content": "Tap the <strong>+</strong> button, select <strong>Scan Barcode</strong>, and point your camera at the product barcode. The app reads the barcode and fetches nutrition data from a comprehensive food database."
+            },
+            {
+              "heading": "Supported barcodes",
+              "content": "Digmio supports all common barcode formats: EAN-13, UPC-A, Code 128, and more. Works with products from stores worldwide."
+            },
+            {
+              "heading": "Database coverage",
+              "content": "The database contains millions of products. If a product isn't found, you can add it manually and it will be saved for future use."
+            }
+          ]
+        },
+        {
+          "id": "scan-limits",
+          "title": "Understanding scan limits",
+          "description": "Learn about daily scan limits and Premium features.",
+          "intro": "Free users get 10 AI food scans per day, while Premium users enjoy unlimited scanning.",
+          "sections": [
+            {
+              "heading": "Free tier limits",
+              "content": "Free users can perform 10 AI photo scans per day. The counter resets at midnight. Barcode scanning is always unlimited."
+            },
+            {
+              "heading": "Upgrade to Premium",
+              "content": "Premium users get unlimited AI food scans, iOS widgets, advanced analytics, and HealthKit sync. Tap <strong>Upgrade</strong> in settings to learn more."
+            },
+            {
+              "heading": "Check your usage",
+              "content": "Your current scan count is displayed when you open the camera. The app will notify you when you're close to your daily limit."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "widgets",
+      "title": "Widgets & iOS Features",
+      "articles": [
+        {
+          "id": "home-widgets",
+          "title": "Add widgets to your Home Screen",
+          "description": "View your daily nutrition at a glance.",
+          "intro": "Digmio widgets show your calorie and macro progress right on your Home Screen (Premium feature).",
+          "sections": [
+            {
+              "heading": "Add a widget",
+              "content": "Long-press on your Home Screen and tap the <strong>+</strong> button in the top corner. Search for \"Digmio\" and choose your preferred widget size. Note: Widgets are a Premium feature."
+            },
+            {
+              "heading": "Widget sizes",
+              "content": "Digmio offers three widget sizes: Small (calorie ring only), Medium (calories + macros), and Large (complete overview with recent foods and streak)."
+            },
+            {
+              "heading": "Auto-updates",
+              "content": "Widgets automatically update when you log food. Your progress is always current without opening the app."
+            }
+          ]
+        },
+        {
+          "id": "healthkit-sync",
+          "title": "HealthKit integration",
+          "description": "Sync nutrition data with Apple Health.",
+          "intro": "Digmio can automatically sync your nutrition data to Apple's HealthKit (Premium feature).",
+          "sections": [
+            {
+              "heading": "Enable HealthKit sync",
+              "content": "Go to <strong>Settings → HealthKit</strong> and tap <strong>Enable Sync</strong>. You'll be asked to grant permissions for nutrition data in the Health app."
+            },
+            {
+              "heading": "What gets synced",
+              "content": "Digmio syncs calories, protein, carbohydrates, and fats to HealthKit automatically when you log food. Data appears in your Health app immediately."
+            }
+          ]
+        },
+        {
+          "id": "analytics-view",
+          "title": "Analytics and insights",
+          "description": "Track your progress over time.",
+          "intro": "The Analytics view shows your nutrition trends and helps you understand your eating patterns.",
+          "sections": [
+            {
+              "heading": "Weekly charts",
+              "content": "View your calorie intake over the past week with interactive charts. See which days you hit your goals and which days you went over."
+            },
+            {
+              "heading": "Macro breakdown",
+              "content": "Analyze your protein, carb, and fat distribution. The pie chart shows percentages to help you balance your nutrition."
+            },
+            {
+              "heading": "Premium analytics",
+              "content": "Premium users get extended history (monthly and yearly views), advanced comparisons, and detailed trends. Free users see the last 7 days."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "premium",
+      "title": "Premium Features",
+      "articles": [
+        {
+          "id": "premium-benefits",
+          "title": "What's included in Premium",
+          "description": "Unlock unlimited scans and advanced features.",
+          "intro": "Digmio Premium removes all limits and unlocks powerful features to supercharge your nutrition tracking.",
+          "sections": [
+            {
+              "heading": "Unlimited AI scans",
+              "content": "Free users get 10 AI food scans per day. Premium users get unlimited scans. Track as many meals as you want, whenever you want."
+            },
+            {
+              "heading": "iOS Widgets",
+              "content": "Add Home Screen widgets in three sizes to see your nutrition progress at a glance. Widgets update automatically as you log food."
+            },
+            {
+              "heading": "Advanced analytics",
+              "content": "Access extended history with monthly and yearly charts. See long-term trends and patterns in your nutrition. Free users see 7 days only."
+            },
+            {
+              "heading": "HealthKit sync",
+              "content": "Automatically sync your nutrition data to Apple Health. Your calories and macros appear in the Health app for a complete wellness picture."
+            }
+          ]
+        },
+        {
+          "id": "subscription-plans",
+          "title": "Subscription plans and pricing",
+          "description": "Choose the plan that works for you.",
+          "intro": "Digmio offers flexible subscription options with a free trial to test Premium features.",
+          "sections": [
+            {
+              "heading": "Free vs Premium",
+              "content": "The free version includes basic tracking with 10 daily AI scans and barcode scanning. Premium unlocks unlimited scans, widgets, advanced analytics, and HealthKit."
+            },
+            {
+              "heading": "Subscription options",
+              "content": "Choose monthly or annual billing. Annual subscribers save up to 40% compared to monthly. All subscriptions include a 7-day free trial."
+            }
+          ]
+        },
+        {
+          "id": "manage-subscription",
+          "title": "Manage your subscription",
+          "description": "Cancel, restore, or change your Premium plan.",
+          "intro": "Managing your Digmio subscription is easy through your device settings.",
+          "sections": [
+            {
+              "heading": "View subscription",
+              "content": "Go to iPhone <strong>Settings → [Your Name] → Subscriptions</strong> to see your Digmio subscription details, renewal date, and pricing."
+            },
+            {
+              "heading": "Cancel anytime",
+              "content": "You can cancel your subscription at any time. You'll continue to have Premium access until the end of your billing period."
+            },
+            {
+              "heading": "Restore purchases",
+              "content": "If you reinstall the app or switch devices, tap <strong>Restore Purchases</strong> in Settings to reactivate your Premium subscription."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "troubleshooting",
+      "title": "Troubleshooting",
+      "articles": [
+        {
+          "id": "ai-inaccurate",
+          "title": "AI recognition seems inaccurate",
+          "description": "What to do when the AI doesn't recognize food correctly.",
+          "intro": "While the AI is highly accurate, sometimes it needs help identifying specific foods.",
+          "sections": [
+            {
+              "heading": "Take better photos",
+              "content": "Ensure good lighting and a clear view of all food items. The AI works best when it can see the entire meal clearly."
+            },
+            {
+              "heading": "Adjust portions",
+              "content": "After the AI analyzes your photo, you can manually adjust the portion size to match what you actually ate. Use the slider to fine-tune."
+            },
+            {
+              "heading": "Edit nutrition values",
+              "content": "Tap on the nutrition card to view and edit individual values. You can adjust calories, protein, carbs, and fats manually if needed."
+            },
+            {
+              "heading": "Use barcode for packaged foods",
+              "content": "For packaged foods, the barcode scanner provides 100% accurate nutrition data from the product database."
+            }
+          ]
+        },
+        {
+          "id": "scan-limit-reached",
+          "title": "Daily scan limit reached",
+          "description": "What to do when you've used all your free scans.",
+          "intro": "Free users get 10 AI food scans per day. Here are your options when you reach the limit.",
+          "sections": [
+            {
+              "heading": "Use barcode scanning",
+              "content": "Barcode scanning is always unlimited, even for free users. Use it for packaged foods and products with barcodes."
+            },
+            {
+              "heading": "Wait for reset",
+              "content": "Your scan counter resets at midnight each day. You'll get 10 new scans automatically."
+            },
+            {
+              "heading": "Upgrade to Premium",
+              "content": "Premium users get unlimited AI food scans with no daily limits. Tap <strong>Upgrade</strong> to unlock unlimited scanning."
+            },
+            {
+              "heading": "Manual entry",
+              "content": "You can always log food manually by entering nutrition values yourself. This doesn't count toward your scan limit."
+            }
+          ]
+        },
+        {
+          "id": "app-crashes",
+          "title": "App crashes or freezes",
+          "description": "Steps to resolve app stability issues.",
+          "intro": "If Digmio is crashing or freezing, try these troubleshooting steps.",
+          "sections": [
+            {
+              "heading": "Force quit and restart",
+              "content": "Swipe up from the bottom of your screen (or double-click the home button), then swipe away Digmio. Reopen the app."
+            },
+            {
+              "heading": "Update the app",
+              "content": "Make sure you have the latest version of Digmio. Open the App Store and check for updates."
+            },
+            {
+              "heading": "Restart your device",
+              "content": "Sometimes a device restart can fix persistent issues. Turn your iPhone off and back on."
+            },
+            {
+              "heading": "Contact support",
+              "content": "If the issue persists, contact us at support@digmio.app with details about what happened."
+            }
+          ]
+        },
+        {
+          "id": "deleted-food",
+          "title": "Accidentally deleted a food entry",
+          "description": "How to recover a deleted food log.",
+          "intro": "Food entries are deleted permanently, but there are ways to recreate them.",
+          "sections": [
+            {
+              "heading": "Check recent foods",
+              "content": "If you logged the same food before, it may appear in your recent foods or favorites. You can quickly re-add it from there."
+            },
+            {
+              "heading": "Re-scan if needed",
+              "content": "For barcoded products, simply scan the barcode again. For photo-based entries, take a new photo of the food."
+            },
+            {
+              "heading": "Manual entry",
+              "content": "If you remember the nutritional values, you can manually enter them again using the manual entry option."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "popularArticles": [
+    {
+      "id": "track-first-meal",
+      "categoryId": "getting-started",
+      "category": "Getting Started",
+      "title": "Track your first meal"
+    },
+    {
+      "id": "ai-food-recognition",
+      "categoryId": "food-tracking",
+      "category": "Food Tracking",
+      "title": "How AI food recognition works"
+    },
+    {
+      "id": "home-widgets",
+      "categoryId": "widgets",
+      "category": "Widgets",
+      "title": "Add widgets to your Home Screen"
+    },
+    {
+      "id": "premium-benefits",
+      "categoryId": "premium",
+      "category": "Premium",
+      "title": "What's included in Premium"
+    },
+    {
+      "id": "scan-limits",
+      "categoryId": "ai-scanning",
+      "category": "AI & Scanning",
+      "title": "Understanding scan limits"
+    }
+  ],
+  "privacyPolicyEffectiveDate": "17. December 2024",
+  "termsOfUseEffectiveDate": "17. December 2024",
+  "updatesView": {
+    "hero": {
+      "title": "What's New?",
+      "description": "All updates, new features, and improvements at a glance."
+    },
+    "releases": [
+      {
+        "isLatest": true,
+        "badge": "New",
+        "version": "Version 2.5",
+        "date": "December 2024",
+        "title": "Premium Features Launch",
+        "description": "We've launched our Premium tier with game-changing features. Unlimited AI scans, iOS widgets, and advanced analytics help you reach your health goals faster.",
+        "features": [
+          {
+            "icon": "🚀",
+            "title": "Unlimited AI Scans",
+            "description": "Premium users get unlimited daily AI food recognition scans."
+          },
+          {
+            "icon": "📱",
+            "title": "iOS Widgets",
+            "description": "Three widget sizes show your nutrition progress on your Home Screen."
+          },
+          {
+            "icon": "📊",
+            "title": "Advanced Analytics",
+            "description": "Extended history with monthly and yearly nutrition trends."
+          }
+        ],
+        "imageUrl": "/assets/iphone.png"
+      },
+      {
+        "isLatest": false,
+        "version": "Version 2.4",
+        "date": "November 2024",
+        "title": "Streak System & Achievements",
+        "description": "Stay motivated with the new streak system. Track consecutive days of logging and unlock achievements as you build healthy habits.",
+        "changelog": [
+          "New streak tracking with daily logging rewards",
+          "Achievement badges for milestones",
+          "30-day calendar view of your tracking history",
+          "Improved onboarding experience"
+        ]
+      },
+      {
+        "isLatest": false,
+        "version": "Version 2.3",
+        "date": "October 2024",
+        "title": "AI Food Recognition 2.0",
+        "description": "Our AI is now smarter than ever. Improved recognition accuracy, faster processing, and support for more international cuisines.",
+        "changelog": [
+          "40% improvement in food recognition accuracy",
+          "2x faster photo processing",
+          "Support for 50+ new cuisines",
+          "Better portion size estimation"
+        ]
+      },
+      {
+        "isLatest": false,
+        "version": "Version 2.2",
+        "date": "September 2024",
+        "title": "HealthKit Integration",
+        "description": "Seamlessly sync your nutrition data with Apple Health. All your calories and macros appear automatically in the Health app.",
+        "changelog": [
+          "Full HealthKit sync for Premium users",
+          "Automatic nutrition data export",
+          "Privacy-focused implementation",
+          "Support for custom macro goals"
+        ]
+      },
+      {
+        "isLatest": false,
+        "version": "Version 2.1",
+        "date": "August 2024",
+        "title": "Barcode Scanner Enhancement",
+        "description": "Lightning-fast barcode scanning with an expanded database of millions of products from around the world.",
+        "changelog": [
+          "Custom barcode scanner plugin",
+          "Database with 5M+ products",
+          "Offline barcode cache",
+          "Manual product addition for missing items"
+        ]
+      },
+      {
+        "isLatest": false,
+        "version": "Version 2.0",
+        "date": "July 2024",
+        "title": "The Complete Redesign",
+        "description": "Built from the ground up with Vue.js and Capacitor. Beautiful dark design, smooth animations, and blazing-fast performance.",
+        "changelog": [
+          "Complete UI/UX redesign with dark theme",
+          "New Vue.js + Capacitor architecture",
+          "Glassmorphism effects and modern design",
+          "Multi-language support (English & German)"
+        ]
+      }
+    ],
+    "sidebar": {
+      "newsletter": {
+        "title": "Newsletter",
+        "description": "Get updates directly in your inbox.",
+        "placeholder": "your@email.com"
+      },
+      "quickAccess": {
+        "title": "Quick Access",
+        "links": [
+          { "version": "v2.5 – December 2024" },
+          { "version": "v2.4 – November 2024" },
+          { "version": "v2.3 – October 2024" },
+          { "version": "v2.2 – September 2024" },
+          { "version": "v2.1 – August 2024" },
+          { "version": "v2.0 – July 2024" }
+        ]
+      },
+      "cta": {
+        "title": "Not on board yet?",
+        "description": "Download the app now and experience all the features yourself.",
+        "buttonText": "Download App"
+      }
+    }
+  },
+  "reviews": {
+    "title": "What our users say.",
+    "reviews": [
+      {
+        "type": "tweet",
+        "avatar": "💪",
+        "name": "Sarah Johnson",
+        "handle": "@sarahfitness",
+        "texts": [
+          "Since I started using Digmio, I've lost 15 pounds! The AI food recognition makes tracking so effortless.",
+          "Finally an app that doesn't feel like work. Highly recommend! 🙌"
+        ]
+      },
+      {
+        "type": "testimonial",
+        "avatar": "🥗",
+        "name": "Michael",
+        "handle": "Game changer!",
+        "date": "Dec 15, 2024",
+        "text": "I've tried every calorie tracking app out there. Digmio is the only one I've actually stuck with. The AI photo feature is incredible - just snap and done!"
+      },
+      {
+        "type": "appstore",
+        "title": "Best nutrition app!",
+        "date": "Dec 8, 2024 • by HealthyLiving92",
+        "stars": 5,
+        "text": "This app is a revelation. The AI recognizes my food instantly and the barcode scanner is lightning fast. The dark design is gorgeous and widgets are super useful. Worth every penny for Premium!"
+      },
+      {
+        "type": "social",
+        "avatar": "🍽️",
+        "name": "Fitness Coach Emma",
+        "handle": "@coachemma • 5h",
+        "videoCaption": "The easiest way to track macros",
+        "socialStat": "Helped 100K+ people reach their goals",
+        "viewMoreBtn": true
+      },
+      {
+        "type": "tweet",
+        "avatar": "🏋️‍♂️",
+        "name": "David Chen",
+        "handle": "@davidfitness",
+        "text": "Digmio's AI is scary accurate. Took a photo of my lunch, it identified everything perfectly. This is the future of nutrition tracking."
+      },
+      {
+        "type": "appstore",
+        "title": "Finally, tracking that works",
+        "date": "Dec 10, 2024 • FitnessJunkie",
+        "stars": 5,
+        "text": "I've been tracking my nutrition for 2 years with various apps. Digmio is by far the easiest and most accurate. The streak feature keeps me motivated every day. Love it!"
+      },
+      {
+        "type": "tweet",
+        "avatar": "🥑",
+        "name": "Lisa Martinez",
+        "handle": "@lisamfitness",
+        "text": "Down 20 pounds thanks to Digmio! The barcode scanner and AI make tracking actually enjoyable. Never going back to manual entry. 💯"
+      }
+    ]
+  },
+  "footer": {
+    "section1": {
+      "title": "Product",
+      "links": [
+        { "name": "Try for Free", "href": "/try-for-free" },
+        { "name": "Get on Setapp", "href": "/get-on-setapp" },
+        { "name": "Use Cases", "href": "/use-cases" },
+        { "name": "Updates", "href": "/updates" },
+        { "name": "Pricing", "href": "/pricing" }
+      ]
+    },
+    "section3": {
+      "title": "More",
+      "links": [
+        { "name": "About", "href": "/about" },
+        { "name": "Contact", "href": "/contact" },
+        { "name": "Beta", "href": "/beta" },
+        { "name": "Suggest a feature", "href": "/suggest-feature" },
+        { "name": "Jobs", "href": "/jobs" }
+      ]
+    }
+  },
+  "blogView": {
+    "hero": {
+      "title": "Blog",
+      "description": "Tips, insights, and guides for healthier nutrition tracking."
+    },
+    "featuredPost": {
+      "image": "/assets/iphone.png",
+      "category": "Nutrition",
+      "date": "December 15, 2024",
+      "readTime": "6 min. read",
+      "title": "10 Science-Backed Tips for Sustainable Weight Loss",
+      "excerpt": "Learn evidence-based strategies for losing weight and keeping it off. From calorie tracking to macro balancing - we'll show you what actually works.",
+      "link": "#"
+    },
+    "posts": [
+      {
+        "image": "/assets/iphone.png",
+        "category": "Feature",
+        "date": "December 12, 2024",
+        "readTime": "4 min. read",
+        "title": "How Our AI Food Recognition Works",
+        "excerpt": "Deep dive into the technology behind instant food identification.",
+        "link": "#"
+      },
+      {
+        "image": "/assets/iphone.png",
+        "category": "Tutorial",
+        "date": "December 10, 2024",
+        "readTime": "5 min. read",
+        "title": "Mastering Macro Tracking for Beginners",
+        "excerpt": "Complete guide to understanding and tracking proteins, carbs, and fats.",
+        "link": "#"
+      },
+      {
+        "image": "/assets/iphone.png",
+        "category": "News",
+        "date": "December 8, 2024",
+        "readTime": "2 min. read",
+        "title": "Premium Features Now Available!",
+        "excerpt": "Unlock unlimited scans, widgets, and advanced analytics with Premium.",
+        "readMoreLink": "#"
+      },
+      {
+        "image": "/assets/iphone.png",
+        "category": "Tips",
+        "date": "December 5, 2024",
+        "readTime": "7 min. read",
+        "title": "7 Tips for Better Food Photos",
+        "excerpt": "Get more accurate AI results with these photography techniques.",
+        "readMoreLink": "#"
+      },
+      {
+        "image": "/assets/iphone.png",
+        "category": "Success Story",
+        "date": "December 1, 2024",
+        "readTime": "8 min. read",
+        "title": "How Sarah Lost 30 Pounds with Digmio",
+        "excerpt": "Real user story: From weight loss struggle to sustainable success.",
+        "readMoreLink": "#"
+      },
+      {
+        "image": "/assets/iphone.png",
+        "category": "Tutorial",
+        "date": "November 28, 2024",
+        "readTime": "5 min. read",
+        "title": "Setting Up iOS Widgets",
+        "excerpt": "Step-by-step guide to adding nutrition widgets to your Home Screen.",
+        "readMoreLink": "#"
+      }
+    ],
+    "sidebar": {
+      "categories": {
+        "title": "Categories",
+        "items": [
+          { "name": "All Posts", "count": 32, "link": "#" },
+          { "name": "Nutrition", "count": 12, "link": "#" },
+          { "name": "Tutorials", "count": 8, "link": "#" },
+          { "name": "Features", "count": 6, "link": "#" },
+          { "name": "Success Stories", "count": 4, "link": "#" },
+          { "name": "Tips", "count": 2, "link": "#" }
+        ]
+      },
+      "newsletter": {
+        "title": "Newsletter",
+        "description": "New articles directly in your inbox.",
+        "placeholder": "your@email.com",
+        "buttonText": "Subscribe"
+      },
+      "popularPosts": {
+        "title": "Popular Articles",
+        "posts": [
+          {
+            "number": "01",
+            "title": "10 Science-Backed Tips for Weight Loss",
+            "link": "#"
+          },
+          {
+            "number": "02",
+            "title": "How Our AI Food Recognition Works",
+            "link": "#"
+          },
+          {
+            "number": "03",
+            "title": "Mastering Macro Tracking for Beginners",
+            "link": "#"
+          },
+          {
+            "number": "04",
+            "title": "How Sarah Lost 30 Pounds with Digmio",
+            "link": "#"
+          }
+        ]
+      },
+      "cta": {
+        "title": "Get Started Now",
+        "description": "Try all features for free.",
+        "buttonText": "Download App"
+      }
+    },
+    "loadMore": {
+      "buttonText": "Load More Articles"
+    }
+  }
+}
