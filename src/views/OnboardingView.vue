@@ -5,7 +5,7 @@
             <div class="progress-bar">
                 <div class="progress-fill" :style="{ width: `${(currentStep / totalSteps) * 100}%` }"></div>
             </div>
-            <span class="progress-text">{{ currentStep }} of {{ totalSteps }}</span>
+            <span class="progress-text">{{ currentStep }} {{ $t('onboarding.progressStep') }} {{ totalSteps }}</span>
         </div>
 
         <!-- Welcome Step -->
@@ -14,10 +14,8 @@
                 <div class="hero-icon">
                     <img src="../assets/kalbuddy.png" alt="KalBuddy" class="hero-logo" />
                 </div>
-                <h1 class="hero-title">Welcome to <span class="brand">KalBuddy</span></h1>
-                <p class="hero-subtitle">Track your nutrition with AI-powered food recognition and achieve your
-                    health
-                    goals with personalized insights.</p>
+                <h1 class="hero-title">{{ $t('onboarding.welcomeToKalBuddy').replace('KalBuddy', '') }}<span class="brand">KalBuddy</span></h1>
+                <p class="hero-subtitle">{{ $t('onboarding.welcomeDescription') }}</p>
             </div>
 
             <div class="features-grid">
@@ -31,8 +29,8 @@
                         </svg>
                     </div>
                     <div class="feature-content">
-                        <h3>AI Food Recognition</h3>
-                        <p>Simply take a photo of your meal</p>
+                        <h3>{{ $t('onboarding.features.aiFoodRecognition') }}</h3>
+                        <p>{{ $t('onboarding.features.aiFoodDescription') }}</p>
                     </div>
                 </div>
                 <div class="feature-card">
@@ -45,8 +43,8 @@
                         </svg>
                     </div>
                     <div class="feature-content">
-                        <h3>Smart Analytics</h3>
-                        <p>Track macros and calories effortlessly</p>
+                        <h3>{{ $t('onboarding.features.smartAnalytics') }}</h3>
+                        <p>{{ $t('onboarding.features.smartAnalyticsDescription') }}</p>
                     </div>
                 </div>
                 <div class="feature-card">
@@ -58,8 +56,8 @@
                         </svg>
                     </div>
                     <div class="feature-content">
-                        <h3>Personal Goals</h3>
-                        <p>Set and achieve your nutrition targets</p>
+                        <h3>{{ $t('onboarding.features.personalGoals') }}</h3>
+                        <p>{{ $t('onboarding.features.personalGoalsDescription') }}</p>
                     </div>
                 </div>
             </div>
@@ -68,20 +66,20 @@
         <!-- Personal Info Step -->
         <div v-if="currentStep === 2" class="step-container">
             <div class="content-section">
-                <h2 class="step-title">Tell us about yourself</h2>
-                <p class="step-subtitle">This helps us personalize your experience</p>
+                <h2 class="step-title">{{ $t('onboarding.personalInfo.title') }}</h2>
+                <p class="step-subtitle">{{ $t('onboarding.personalInfo.subtitle') }}</p>
 
                 <div class="form-group">
                     <input ref="nameInput" v-model="userInfo.name" type="text" class="form-input"
-                        placeholder="Your name (e.g., John Doe)" @keydown.enter="focusNextInput('ageInput')" />
+                        :placeholder="$t('onboarding.personalInfo.namePlaceholder')" @keydown.enter="focusNextInput('ageInput')" />
                 </div>
 
                 <div class="form-row">
                     <input ref="ageInput" v-model="userInfo.age" type="number" class="form-input"
-                        placeholder="Age (e.g., 25)" @keydown.enter="focusNextInput('heightInput')" />
+                        :placeholder="$t('onboarding.personalInfo.agePlaceholder')" @keydown.enter="focusNextInput('heightInput')" />
                     <div class="input-with-unit">
                         <input ref="heightInput" v-model="userInfo.height" type="number" class="form-input"
-                            placeholder="Height (e.g., 175)" @keydown.enter="focusNextInput('weightInput')" />
+                            :placeholder="$t('onboarding.personalInfo.heightPlaceholder')" @keydown.enter="focusNextInput('weightInput')" />
                         <span class="unit">cm</span>
                     </div>
                 </div>
@@ -90,7 +88,7 @@
                     <div class="form-group">
                         <div class="input-with-unit">
                             <input ref="weightInput" v-model="userInfo.weight" type="number" class="form-input"
-                                placeholder="Weight (e.g., 70)" @keydown.enter="handleWeightEnter" />
+                                :placeholder="$t('onboarding.personalInfo.weightPlaceholder')" @keydown.enter="handleWeightEnter" />
                             <span class="unit">kg</span>
                         </div>
                     </div>
@@ -98,15 +96,15 @@
                         <div class="gender-selector">
                             <button type="button" class="gender-option" :class="{ active: userInfo.gender === 'male' }"
                                 @click="userInfo.gender = 'male'">
-                                Male
+                                {{ $t('onboarding.personalInfo.male') }}
                             </button>
                             <button type="button" class="gender-option"
                                 :class="{ active: userInfo.gender === 'female' }" @click="userInfo.gender = 'female'">
-                                Female
+                                {{ $t('onboarding.personalInfo.female') }}
                             </button>
                             <button type="button" class="gender-option" :class="{ active: userInfo.gender === 'other' }"
                                 @click="userInfo.gender = 'other'">
-                                Other
+                                {{ $t('onboarding.personalInfo.other') }}
                             </button>
                         </div>
                     </div>
@@ -117,16 +115,16 @@
         <!-- Activity Level Step -->
         <div v-if="currentStep === 3" class="step-container">
             <div class="content-section">
-                <h2 class="step-title">What's your activity level?</h2>
-                <p class="step-subtitle">This helps us calculate your calorie needs</p>
+                <h2 class="step-title">{{ $t('onboarding.activityLevel.title') }}</h2>
+                <p class="step-subtitle">{{ $t('onboarding.activityLevel.subtitle') }}</p>
 
                 <div class="activity-options">
                     <div v-for="activity in activityLevels" :key="activity.value" class="activity-card"
                         :class="{ active: userInfo.activityLevel === activity.value }"
                         @click="userInfo.activityLevel = activity.value">
                         <div class="activity-icon">{{ activity.icon }}</div>
-                        <h3 class="activity-title">{{ activity.title }}</h3>
-                        <p class="activity-description">{{ activity.description }}</p>
+                        <h3 class="activity-title">{{ $t(`onboarding.activityLevel.${activity.translationKey}`) }}</h3>
+                        <p class="activity-description">{{ $t(`onboarding.activityLevel.${activity.translationKey}Desc`) }}</p>
                     </div>
                 </div>
             </div>
@@ -161,13 +159,13 @@
         <!-- Target Weight Step -->
         <div v-if="currentStep === 5" class="step-container">
             <div class="content-section">
-                <h2 class="step-title">Set Your Weight Goal</h2>
-                <p class="step-subtitle">What is your target weight to achieve your goal?</p>
+                <h2 class="step-title">{{ $t('onboarding.weightGoal.title') }}</h2>
+                <p class="step-subtitle">{{ $t('onboarding.weightGoal.subtitle') }}</p>
 
                 <div class="weight-goal-container">
                     <div class="current-weight-display">
                         <div class="weight-info">
-                            <span class="weight-label">Current Weight</span>
+                            <span class="weight-label">{{ $t('onboarding.weightGoal.currentWeight') }}</span>
                             <span class="weight-value">{{ userInfo.weight || 0 }} kg</span>
                         </div>
                     </div>
@@ -179,21 +177,21 @@
                     </div>
 
                     <div class="target-weight-input">
-                        <label class="form-label">Target Weight (kg)</label>
-                        <input v-model="userInfo.targetWeight" type="number" placeholder="Enter your target weight"
+                        <label class="form-label">{{ $t('onboarding.weightGoal.targetWeightLabel') }}</label>
+                        <input v-model="userInfo.targetWeight" type="number" :placeholder="$t('onboarding.weightGoal.targetWeightPlaceholder')"
                             class="form-input weight-input" min="30" max="300" step="0.1" />
                     </div>
 
                     <div v-if="userInfo.weight && userInfo.targetWeight" class="weight-goal-summary">
                         <div class="goal-calculation">
                             <div class="calculation-item">
-                                <span class="calc-label">Weight Change</span>
+                                <span class="calc-label">{{ $t('onboarding.weightGoal.weightChange') }}</span>
                                 <span class="calc-value" :class="weightChangeClass">
                                     {{ weightChangeText }}
                                 </span>
                             </div>
                             <div class="calculation-item">
-                                <span class="calc-label">Goal Type</span>
+                                <span class="calc-label">{{ $t('onboarding.weightGoal.goalType') }}</span>
                                 <span class="calc-value">{{ goalTypeText }}</span>
                             </div>
                         </div>
@@ -205,8 +203,8 @@
         <!-- Goals Step -->
         <div v-if="currentStep === 6" class="step-container">
             <div class="content-section">
-                <h2 class="step-title">Set your daily goals</h2>
-                <p class="step-subtitle">Based on your profile, we recommend these targets</p>
+                <h2 class="step-title">{{ $t('onboarding.dailyGoals.title') }}</h2>
+                <p class="step-subtitle">{{ $t('onboarding.dailyGoals.subtitle') }}</p>
 
                 <div class="goals-container">
                     <!-- Calories Goal -->
@@ -219,13 +217,13 @@
                                 </svg>
                             </div>
                             <div class="goal-info">
-                                <h3 class="goal-title">Calories</h3>
-                                <p class="goal-subtitle">Daily energy target</p>
+                                <h3 class="goal-title">{{ $t('onboarding.dailyGoals.calories') }}</h3>
+                                <p class="goal-subtitle">{{ $t('onboarding.dailyGoals.caloriesSubtitle') }}</p>
                             </div>
                         </div>
                         <div class="goal-input-container">
                             <input v-model="goals.calories" type="number" class="goal-input" step="50" />
-                            <span class="goal-unit">kcal</span>
+                            <span class="goal-unit">{{ $t('onboarding.dailyGoals.unit.kcal') }}</span>
                         </div>
                         <div class="goal-slider">
                             <input v-model="goals.calories" type="range" min="1200" max="4000" step="50"
@@ -243,13 +241,13 @@
                                 </svg>
                             </div>
                             <div class="goal-info">
-                                <h3 class="goal-title">Protein</h3>
-                                <p class="goal-subtitle">Muscle building support</p>
+                                <h3 class="goal-title">{{ $t('onboarding.dailyGoals.protein') }}</h3>
+                                <p class="goal-subtitle">{{ $t('onboarding.dailyGoals.proteinSubtitle') }}</p>
                             </div>
                         </div>
                         <div class="goal-input-container">
                             <input v-model="goals.protein" type="number" class="goal-input" step="5" />
-                            <span class="goal-unit">g</span>
+                            <span class="goal-unit">{{ $t('onboarding.dailyGoals.unit.g') }}</span>
                         </div>
                         <div class="goal-slider">
                             <input v-model="goals.protein" type="range" min="50" max="300" step="5"
@@ -267,13 +265,13 @@
                                 </svg>
                             </div>
                             <div class="goal-info">
-                                <h3 class="goal-title">Carbs</h3>
-                                <p class="goal-subtitle">Energy for activities</p>
+                                <h3 class="goal-title">{{ $t('onboarding.dailyGoals.carbs') }}</h3>
+                                <p class="goal-subtitle">{{ $t('onboarding.dailyGoals.carbsSubtitle') }}</p>
                             </div>
                         </div>
                         <div class="goal-input-container">
                             <input v-model="goals.carbs" type="number" class="goal-input" step="10" />
-                            <span class="goal-unit">g</span>
+                            <span class="goal-unit">{{ $t('onboarding.dailyGoals.unit.g') }}</span>
                         </div>
                         <div class="goal-slider">
                             <input v-model="goals.carbs" type="range" min="100" max="500" step="10"
@@ -291,13 +289,13 @@
                                 </svg>
                             </div>
                             <div class="goal-info">
-                                <h3 class="goal-title">Fats</h3>
-                                <p class="goal-subtitle">Essential nutrients</p>
+                                <h3 class="goal-title">{{ $t('onboarding.dailyGoals.fats') }}</h3>
+                                <p class="goal-subtitle">{{ $t('onboarding.dailyGoals.fatsSubtitle') }}</p>
                             </div>
                         </div>
                         <div class="goal-input-container">
                             <input v-model="goals.fats" type="number" class="goal-input" step="5" />
-                            <span class="goal-unit">g</span>
+                            <span class="goal-unit">{{ $t('onboarding.dailyGoals.unit.g') }}</span>
                         </div>
                         <div class="goal-slider">
                             <input v-model="goals.fats" type="range" min="30" max="200" step="5"
@@ -355,10 +353,10 @@
         <!-- Navigation Buttons -->
         <div class="navigation-buttons">
             <button v-if="currentStep > 1" @click="previousStep" class="nav-button secondary">
-                Back
+                {{ $t('common.back') }}
             </button>
             <button @click="nextStep" class="nav-button primary" :disabled="!canProceed">
-                {{ currentStep === totalSteps ? 'Get Started' : 'Continue' }}
+                {{ currentStep === totalSteps ? $t('onboarding.getStarted') : $t('onboarding.continue') }}
             </button>
         </div>
 
@@ -420,8 +418,10 @@ import { useRouter } from 'vue-router'
 import { updateUserProfile, updateDailyGoals, completeOnboarding } from '../stores/userStore'
 import { WeightTracker } from '../utils/weightTracking'
 import { revenueCatService } from '../services/revenuecat'
+import { useI18n } from 'vue-i18n'
 
 const router = useRouter()
+const { t } = useI18n()
 
 const currentStep = ref(1)
 const totalSteps = 6
@@ -467,30 +467,35 @@ const activityLevels = [
     {
         value: 'sedentary',
         icon: '🛋️',
+        translationKey: 'sedentary',
         title: 'Sedentary',
         description: 'Little to no exercise, desk job'
     },
     {
         value: 'light',
         icon: '🚶',
+        translationKey: 'light',
         title: 'Lightly Active',
         description: 'Light exercise 1-3 days/week'
     },
     {
         value: 'moderate',
         icon: '🏃',
+        translationKey: 'moderate',
         title: 'Moderately Active',
         description: 'Moderate exercise 3-5 days/week'
     },
     {
         value: 'very',
         icon: '💪',
+        translationKey: 'active',
         title: 'Very Active',
         description: 'Hard exercise 6-7 days/week'
     },
     {
         value: 'extra',
         icon: '🏋️',
+        translationKey: 'extreme',
         title: 'Extremely Active',
         description: 'Very hard exercise, physical job'
     }
@@ -548,7 +553,7 @@ const weightChangeText = computed(() => {
     } else if (change < 0) {
         return `-${absChange.toFixed(1)} kg`
     } else {
-        return 'Maintain current weight'
+        return t('onboarding.weightGoal.maintain')
     }
 })
 
@@ -563,9 +568,9 @@ const weightChangeClass = computed(() => {
 const goalTypeText = computed(() => {
     if (!userInfo.weight || !userInfo.targetWeight) return ''
     const change = userInfo.targetWeight - userInfo.weight
-    if (Math.abs(change) <= 1) return 'Maintain Weight'
-    if (change > 0) return 'Weight Gain'
-    return 'Weight Loss'
+    if (Math.abs(change) <= 1) return t('onboarding.weightGoal.maintain')
+    if (change > 0) return t('onboarding.weightGoal.gain')
+    return t('onboarding.weightGoal.lose')
 })
 
 // Input navigation functions
