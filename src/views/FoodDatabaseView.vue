@@ -1,73 +1,59 @@
 <template>
     <div class="food-database-view">
-        <!-- Header -->
         <header class="header">
             <button class="back-button" @click="goBack">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-                    <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/>
+                    <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" />
                 </svg>
             </button>
             <h1 class="page-title">{{ $t('foodDatabase.title') }}</h1>
             <div class="header-spacer"></div>
         </header>
-
-        <!-- Search Bar -->
         <div class="search-section">
             <div class="search-input-container">
                 <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    <path
+                        d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
                 </svg>
-                <input 
-                    v-model="searchQuery" 
-                    type="text" 
-                    :placeholder="$t('foodDatabase.searchPlaceholder')"
-                    class="search-input"
-                >
+                <input v-model="searchQuery" type="text" :placeholder="$t('foodDatabase.searchPlaceholder')"
+                    class="search-input">
             </div>
         </div>
-
-        <!-- Categories -->
         <div class="categories-section">
             <h3 class="section-title">{{ $t('foodDatabase.categories') }}</h3>
             <div class="categories-grid">
-                <button 
-                    v-for="category in categories" 
-                    :key="category.id"
-                    class="category-button"
-                    :class="{ active: selectedCategory === category.id }"
-                    @click="selectCategory(category.id)"
-                >
+                <button v-for="category in categories" :key="category.id" class="category-button"
+                    :class="{ active: selectedCategory === category.id }" @click="selectCategory(category.id)">
                     <span class="category-icon">{{ category.icon }}</span>
-                    <span class="category-name">{{ category.name || $t(`foodDatabase.categoryNames.${category.id}`) }}</span>
+                    <span class="category-name">{{ category.name || $t(`foodDatabase.categoryNames.${category.id}`)
+                        }}</span>
                 </button>
             </div>
         </div>
-
-        <!-- Food Items -->
         <div class="food-items-section">
             <h3 class="section-title">
-                {{ selectedCategory === 'all' ? $t('foodDatabase.allFoods') : $t(`foodDatabase.categoryNames.${selectedCategory}`) }}
+                {{ selectedCategory === 'all' ? $t('foodDatabase.allFoods') :
+                    $t(`foodDatabase.categoryNames.${selectedCategory}`) }}
             </h3>
-            
             <div class="food-grid">
-                <div 
-                    v-for="food in filteredFoods" 
-                    :key="food.id"
-                    class="food-card"
-                    @click="selectFood(food)"
-                >
+                <div v-for="food in filteredFoods" :key="food.id" class="food-card" @click="selectFood(food)">
                     <div class="food-icon">
-                        <img v-if="food.image && !food.image.includes('placeholder') && !food.image.startsWith('image_')" :src="food.image" :alt="food.names?.[0]" />
-                        <img v-else-if="food.image && food.image.startsWith('image_')" :src="getItemImageSrc(food)" :alt="food.names?.[0]" />
+                        <img v-if="food.image && !food.image.includes('placeholder') && !food.image.startsWith('image_')"
+                            :src="food.image" :alt="food.names?.[0]" />
+                        <img v-else-if="food.image && food.image.startsWith('image_')" :src="getItemImageSrc(food)"
+                            :alt="food.names?.[0]" />
                         <span v-else class="food-db-icon">{{ food.icon }}</span>
                     </div>
                     <div class="food-info">
-                        <h4 class="food-name">{{ getLocalizedName({names: food.names}) || $t(`foodDatabase.foods.${food.id}.name`) }}</h4>
+                        <h4 class="food-name">{{ getLocalizedName({ names: food.names }) ||
+                            $t(`foodDatabase.foods.${food.id}.name`) }}</h4>
                         <div class="food-calories">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="#ff6b35">
-                                <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z"/>
+                                <path
+                                    d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z" />
                             </svg>
-                            <span>{{ food.calories }} kcal/{{ food.unit_name || $t(`foodDatabase.units.${food.unit}`) }}</span>
+                            <span>{{ food.calories }} kcal/{{ food.unit_name || $t(`foodDatabase.units.${food.unit}`)
+                                }}</span>
                         </div>
                         <div class="food-macros">
                             <span class="macro protein">P: {{ food.protein }}g</span>
@@ -78,88 +64,80 @@
                 </div>
             </div>
         </div>
-
-        <!-- Food Selection Modal -->
         <div v-if="selectedFood" class="modal-overlay" @click="closeFoodModal">
             <div class="modal-content" @click.stop>
                 <div class="modal-header">
-                    <h3>{{ getLocalizedName({names: selectedFood?.names}) || $t(`foodDatabase.foods.${selectedFood?.id}.name`) }}</h3>
+                    <h3>{{ getLocalizedName({ names: selectedFood?.names }) ||
+                        $t(`foodDatabase.foods.${selectedFood?.id}.name`) }}</h3>
                     <button class="close-button" @click="closeFoodModal">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                            <path
+                                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
                         </svg>
                     </button>
                 </div>
-
                 <div class="modal-body">
                     <div class="food-preview">
                         <div class="food-large-icon">
-                            <img v-if="selectedFood?.image && !selectedFood.image.includes('placeholder') && !selectedFood.image.startsWith('image_')" :src="selectedFood.image" :alt="selectedFood.names?.[0]" />
-                            <img v-else-if="selectedFood?.image && selectedFood.image.startsWith('image_')" :src="getItemImageSrc(selectedFood)" :alt="selectedFood.names?.[0]" />
+                            <img v-if="selectedFood?.image && !selectedFood.image.includes('placeholder') && !selectedFood.image.startsWith('image_')"
+                                :src="selectedFood.image" :alt="selectedFood.names?.[0]" />
+                            <img v-else-if="selectedFood?.image && selectedFood.image.startsWith('image_')"
+                                :src="getItemImageSrc(selectedFood)" :alt="selectedFood.names?.[0]" />
                             <span v-else class="food-db-icon">{{ selectedFood?.icon }}</span>
                         </div>
                         <div class="food-nutrition">
                             <div class="nutrition-item">
                                 <span class="nutrition-label">{{ $t('foodDatabase.calories') }}</span>
-                                <span class="nutrition-value">{{ Math.round((selectedFood?.calories || 0) * selectedAmount) }} kcal</span>
+                                <span class="nutrition-value">{{ Math.round((selectedFood?.calories || 0) *
+                                    selectedAmount) }} kcal</span>
                             </div>
                             <div class="nutrition-item">
                                 <span class="nutrition-label">{{ $t('foodDatabase.protein') }}</span>
-                                <span class="nutrition-value">{{ Math.round((selectedFood?.protein || 0) * selectedAmount) }}g</span>
+                                <span class="nutrition-value">{{ Math.round((selectedFood?.protein || 0) *
+                                    selectedAmount) }}g</span>
                             </div>
                             <div class="nutrition-item">
                                 <span class="nutrition-label">{{ $t('foodDatabase.carbs') }}</span>
-                                <span class="nutrition-value">{{ Math.round((selectedFood?.carbs || 0) * selectedAmount) }}g</span>
+                                <span class="nutrition-value">{{ Math.round((selectedFood?.carbs || 0) * selectedAmount)
+                                    }}g</span>
                             </div>
                             <div class="nutrition-item">
                                 <span class="nutrition-label">{{ $t('foodDatabase.fats') }}</span>
-                                <span class="nutrition-value">{{ Math.round((selectedFood?.fats || 0) * selectedAmount) }}g</span>
+                                <span class="nutrition-value">{{ Math.round((selectedFood?.fats || 0) * selectedAmount)
+                                    }}g</span>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Amount Selection -->
                     <div class="amount-section">
                         <label class="amount-label">{{ $t('foodDatabase.amount') }}</label>
                         <div class="amount-input-container">
                             <button class="amount-button" @click="decreaseAmount">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M19 13H5v-2h14v2z"/>
+                                    <path d="M19 13H5v-2h14v2z" />
                                 </svg>
                             </button>
-                            <input 
-                                v-model.number="selectedAmount" 
-                                type="number" 
-                                step="0.1" 
-                                min="0.1"
-                                class="amount-input"
-                            >
+                            <input v-model.number="selectedAmount" type="number" step="0.1" min="0.1"
+                                class="amount-input">
                             <button class="amount-button" @click="increaseAmount">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
                                 </svg>
                             </button>
                         </div>
-                        <span class="unit-label">{{ selectedFood?.unit_name || $t(`foodDatabase.units.${selectedFood?.unit}`) }}</span>
+                        <span class="unit-label">{{ selectedFood?.unit_name ||
+                            $t(`foodDatabase.units.${selectedFood?.unit}`) }}</span>
                     </div>
-
-                    <!-- Quick Amount Buttons -->
                     <div class="quick-amounts">
-                        <button 
-                            v-for="quickAmount in getQuickAmounts(selectedFood?.unit || 'piece')" 
-                            :key="quickAmount.value"
-                            class="quick-amount-btn"
+                        <button v-for="quickAmount in getQuickAmounts(selectedFood?.unit || 'piece')"
+                            :key="quickAmount.value" class="quick-amount-btn"
                             :class="{ active: selectedAmount === quickAmount.value }"
-                            @click="selectedAmount = quickAmount.value"
-                        >
+                            @click="selectedAmount = quickAmount.value">
                             {{ quickAmount.label }}
                         </button>
                     </div>
-
-                    <!-- Add Button -->
                     <button class="add-food-button" @click="addFoodToHistory" :disabled="isAdding">
                         <svg v-if="!isAdding" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
                         </svg>
                         <div v-else class="loading-spinner"></div>
                         {{ isAdding ? $t('foodDatabase.adding') : $t('foodDatabase.addToMeals') }}
@@ -177,34 +155,32 @@ import { useI18n } from 'vue-i18n'
 import { ScanHistory, FavoriteFood, ImageFile } from '../utils/storage'
 import { getLocalizedName } from '../utils/localization'
 
-// TypeScript interfaces
 interface Category {
-  id: string
-  icon: string
-  name?: string
-  dbId: number
+    id: string
+    icon: string
+    name?: string
+    dbId: number
 }
 
 interface Food {
-  id: string
-  dbId: number
-  category: string
-  icon: string
-  image?: string
-  names?: { [key: string]: string }
-  calories: number
-  protein: number
-  carbs: number
-  fats: number
-  unit: string
-  unit_name?: string
+    id: string
+    dbId: number
+    category: string
+    icon: string
+    image?: string
+    names?: { [key: string]: string }
+    calories: number
+    protein: number
+    carbs: number
+    fats: number
+    unit: string
+    unit_name?: string
 }
 
 const router = useRouter()
 const route = useRoute()
 const { t } = useI18n()
 
-// API Configuration
 const API_BASE = 'https://alex.polan.sk/kalbuddy'
 
 const searchQuery = ref('')
@@ -214,32 +190,28 @@ const selectedAmount = ref(1)
 const isAdding = ref(false)
 const isLoading = ref(false)
 
-// Image handling
 const imageUris = ref(new Map())
 
 function getItemImageSrc(item: any) {
     if (!item.image) return '';
-    
+
     if (item.image.includes('placeholder')) return item.image;
-    
+
     if (item.image.startsWith('image_')) {
-        // Return cached URI or empty string if not yet loaded
         return imageUris.value.get(item.image) || '';
     }
-    
+
     return item.image;
 }
 
-// Load image URIs for items with image_ prefixed paths
 async function loadImageUris(items: any[]) {
     const imagesToLoad = items
         .map(item => item.image)
         .filter(image => image && typeof image === 'string' && image.startsWith('image_'))
-        .filter(image => !imageUris.value.has(image)) // Only load images we don't have cached
-    
+        .filter(image => !imageUris.value.has(image))
+
     if (imagesToLoad.length === 0) return;
-    
-    // Load images in parallel
+
     await Promise.allSettled(
         imagesToLoad.map(async (imagePath) => {
             try {
@@ -264,7 +236,7 @@ async function loadCategories() {
         isLoading.value = true
         const response = await fetch(`${API_BASE}/get_categories.php`)
         const data = await response.json()
-        
+
         if (data.success) {
             const allCategories = [
                 { id: 'all', icon: '🍽️', name: t('foodDatabase.categoryNames.all'), dbId: 0 },
@@ -292,7 +264,7 @@ async function loadFoods() {
         isLoading.value = true
         const response = await fetch(`${API_BASE}/get_foods.php`)
         const data = await response.json()
-        
+
         if (data.success) {
             allFoods.value = data.data.map((food: any) => ({
                 id: food.code,
@@ -339,7 +311,7 @@ async function loadFavorites() {
             unit: 'piece',
             unit_name: t('foodDatabase.units.piece')
         }))
-        
+
         await loadImageUris(favoriteFoods.value)
     } catch (error) {
         console.error('Error loading favorites:', error)
@@ -349,19 +321,17 @@ async function loadFavorites() {
 
 const filteredFoods = computed(() => {
     let result: Food[] = []
-    
+
     if (selectedCategory.value === 'favorites') {
         result = favoriteFoods.value
     } else {
         result = allFoods.value
-        
-        // Filter by category
+
         if (selectedCategory.value !== 'all') {
             result = result.filter(food => food.category === selectedCategory.value)
         }
     }
 
-    // Filter by search query
     if (searchQuery.value.trim()) {
         const query = searchQuery.value.toLowerCase()
         result = result.filter(food => {
@@ -375,8 +345,7 @@ const filteredFoods = computed(() => {
 
 function selectCategory(categoryId: string) {
     selectedCategory.value = categoryId
-    
-    // Load favorites when favorites category is selected
+
     if (categoryId === 'favorites') {
         loadFavorites()
     }
@@ -458,9 +427,9 @@ async function addFoodToHistory() {
             id: Date.now(),
             type: selectedCategory.value === 'favorites' ? 'favorite' : 'food' as const,
             timestamp: new Date().toISOString(),
-            time: new Date().toLocaleTimeString('de-DE', { 
-                hour: '2-digit', 
-                minute: '2-digit' 
+            time: new Date().toLocaleTimeString('de-DE', {
+                hour: '2-digit',
+                minute: '2-digit'
             }),
             amount: amount,
             image: food.image || '',
@@ -482,17 +451,9 @@ async function addFoodToHistory() {
             }
         }
 
-        console.log('Scan entry to add:', scanEntry)
-
-        // Add to scan history
         await ScanHistory.add(scanEntry)
-
-        console.log('Successfully added to scan history')
-
-        // Dispatch event to update UI
         window.dispatchEvent(new CustomEvent('scanHistoryUpdated'))
 
-        // Close modal and go back
         closeFoodModal()
         router.push('/')
 
@@ -508,14 +469,11 @@ function goBack() {
 }
 
 onMounted(async () => {
-    // Load categories and foods from API
     await loadCategories()
     await loadFoods()
-    
-    // Set initial filtered foods
+
     foods.value = allFoods.value
-    
-    // Check for category parameter from URL
+
     const categoryParam = route.query.category as string
     if (categoryParam) {
         selectedCategory.value = categoryParam
@@ -523,8 +481,7 @@ onMounted(async () => {
             await loadFavorites()
         }
     }
-    
-    // Listen for favorites updates
+
     window.addEventListener('favoritesUpdated', () => {
         if (selectedCategory.value === 'favorites') {
             loadFavorites()
@@ -989,7 +946,12 @@ onMounted(async () => {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 </style>

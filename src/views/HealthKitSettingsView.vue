@@ -3,14 +3,12 @@
     <header class="header">
       <button class="back-button" @click="$router.go(-1)">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+          <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
         </svg>
       </button>
       <h1 class="title">{{ $t('settings.healthKit') }}</h1>
     </header>
-
     <div class="content">
-      <!-- HealthKit Status -->
       <div class="settings-section">
         <div class="settings-card">
           <div class="setting-item">
@@ -18,7 +16,8 @@
               <div class="healthkit-header">
                 <div class="healthkit-icon">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19.35,10.04C18.67,6.59 15.64,4 12,4C9.11,4 6.6,5.64 5.35,8.04C2.34,8.36 0,10.91 0,14A6,6 0 0,0 6,20H19A5,5 0 0,0 24,15C24,12.36 21.95,10.22 19.35,10.04M17,13L12,18L7,13H10V9H14V13H17Z"/>
+                    <path
+                      d="M19.35,10.04C18.67,6.59 15.64,4 12,4C9.11,4 6.6,5.64 5.35,8.04C2.34,8.36 0,10.91 0,14A6,6 0 0,0 6,20H19A5,5 0 0,0 24,15C24,12.36 21.95,10.22 19.35,10.04M17,13L12,18L7,13H10V9H14V13H17Z" />
                   </svg>
                 </div>
                 <div class="healthkit-info">
@@ -33,8 +32,6 @@
           </div>
         </div>
       </div>
-
-      <!-- HealthKit Actions -->
       <div v-if="!healthKitStatus.isConnected && healthKitStatus.isAvailable && isPremiumUser" class="settings-section">
         <div class="settings-card">
           <div class="setting-item">
@@ -44,15 +41,15 @@
           </div>
         </div>
       </div>
-
-      <!-- Premium Required Message for HealthKit -->
-      <div v-if="!healthKitStatus.isConnected && healthKitStatus.isAvailable && !isPremiumUser" class="settings-section">
+      <div v-if="!healthKitStatus.isConnected && healthKitStatus.isAvailable && !isPremiumUser"
+        class="settings-section">
         <div class="settings-card">
           <div class="setting-item">
             <div class="premium-required-message">
               <div class="premium-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                 </svg>
               </div>
               <div class="premium-message-content">
@@ -66,32 +63,29 @@
           </div>
         </div>
       </div>
-
-      <!-- Connected Actions -->
       <div v-if="healthKitStatus.isConnected" class="settings-section">
         <h3 class="section-title">Actions</h3>
         <div class="settings-card">
           <div class="setting-item">
             <button class="action-button" @click="syncHealthKit">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"/>
+                <path
+                  d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z" />
               </svg>
               <span>{{ $t('settings.syncNow') }}</span>
             </button>
           </div>
-
           <div class="setting-item">
             <button class="action-button" @click="loadHealthKitStatus">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M17.65,6.35C16.2,4.9 14.21,4 12,4C7.58,4 4,7.58 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12C6,8.69 8.69,6 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"/>
+                <path
+                  d="M17.65,6.35C16.2,4.9 14.21,4 12,4C7.58,4 4,7.58 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12C6,8.69 8.69,6 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z" />
               </svg>
               <span>Refresh Status</span>
             </button>
           </div>
         </div>
       </div>
-
-      <!-- HealthKit Permissions -->
       <div v-if="healthKitStatus.isConnected" class="settings-section">
         <h3 class="section-title">{{ $t('settings.permissions') }}</h3>
         <div class="settings-card">
@@ -102,17 +96,16 @@
             </div>
             <div class="permission-status" :class="{ 'granted': permission.granted }">
               <svg v-if="permission.granted" width="16" height="16" viewBox="0 0 24 24" fill="#4CAF50">
-                <path d="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z"/>
+                <path d="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z" />
               </svg>
               <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="#F44336">
-                <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/>
+                <path
+                  d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
               </svg>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- HealthKit Last Sync Info -->
       <div v-if="healthKitStatus.isConnected && healthKitStatus.lastSync" class="settings-section">
         <h3 class="section-title">Sync Information</h3>
         <div class="settings-card">
@@ -124,23 +117,19 @@
           </div>
         </div>
       </div>
-
-      <!-- HealthKit Disconnect Option -->
       <div v-if="healthKitStatus.isConnected" class="settings-section">
         <h3 class="section-title">Danger Zone</h3>
         <div class="settings-card">
           <div class="setting-item">
             <button class="action-button danger" @click="disconnectHealthKit">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z"/>
+                <path d="M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z" />
               </svg>
               <span>{{ $t('settings.disconnectHealthKit') }}</span>
             </button>
           </div>
         </div>
       </div>
-
-      <!-- HealthKit Unavailable Message -->
       <div v-if="!healthKitStatus.isAvailable" class="settings-section">
         <div class="settings-card">
           <div class="setting-item">
@@ -163,7 +152,6 @@ import { isPremiumUser, onPremiumStatusChange } from '../utils/premiumManager'
 
 const router = useRouter()
 
-// HealthKit reactive variables
 const healthKitStatus = ref({
   isConnected: false,
   isAvailable: false,
@@ -188,7 +176,6 @@ function goToUpgrade() {
   router.push('/upgrade')
 }
 
-// HealthKit functions
 async function loadHealthKitStatus() {
   try {
     if (!Capacitor.isNativePlatform() || Capacitor.getPlatform() !== 'ios') {
@@ -199,13 +186,12 @@ async function loadHealthKitStatus() {
 
     healthKitStatus.value.isAvailable = await HealthKitService.isHealthKitAvailable()
     healthKitStatus.value.isConnected = await HealthKitService.isAvailable()
-    
+
     if (healthKitStatus.value.isConnected) {
-      // Set all permissions as granted if HealthKit is connected
       healthKitPermissions.value.forEach(permission => {
         permission.granted = true
       })
-      // Set a mock last sync time
+
       healthKitStatus.value.lastSync = new Date().toISOString()
     }
   } catch (error) {
@@ -251,13 +237,11 @@ function formatLastSync(timestamp: string): string {
 
 onMounted(async () => {
   await loadHealthKitStatus()
-  
-  // Listen for premium status changes
+
   const unsubscribe = onPremiumStatusChange(async (isPremium) => {
     if (isPremium) {
       await loadHealthKitStatus()
     } else {
-      // Reset HealthKit status when premium is lost
       healthKitStatus.value.isConnected = false
       healthKitStatus.value.lastSync = null
       healthKitPermissions.value.forEach(permission => {
@@ -265,8 +249,7 @@ onMounted(async () => {
       })
     }
   })
-  
-  // Cleanup
+
   onUnmounted(() => {
     unsubscribe()
   })
