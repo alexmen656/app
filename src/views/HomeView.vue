@@ -1374,6 +1374,7 @@ async function performBackgroundDelete(itemId: number) {
     -webkit-touch-callout: none;
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
+    
 }
 
 .header {
