@@ -2,6 +2,10 @@
 
 A modern Vue.js + Capacitor app for calorie tracking with AI-powered food recognition and barcode scanning.
 
+## Plan for new backend
+
+Download official open food facts json and import it in local postgres to get much much much faster responses 10ms vs 400ms-1,5s
+
 ## Features
 
 ### Home View
