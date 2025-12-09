@@ -83,9 +83,6 @@ function onEnter(el: Element) {
 </script>
 
 <style>
-/* App-specific styles are in globals.css */
-
-/* Slide Left Animation (swipe left = go right in navigation) */
 .slide-left-enter-active,
 .slide-left-leave-active {
   transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -99,7 +96,6 @@ function onEnter(el: Element) {
   transform: translateX(-100%);
 }
 
-/* Slide Right Animation (swipe right = go left in navigation) */
 .slide-right-enter-active,
 .slide-right-leave-active {
   transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -113,7 +109,6 @@ function onEnter(el: Element) {
   transform: translateX(100%);
 }
 
-/* Fade Animation (for non-sequential navigation) */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.2s ease;
@@ -124,7 +119,6 @@ function onEnter(el: Element) {
   opacity: 0;
 }
 
-/* Ensure proper stacking and prevent scroll during transitions */
 #app {
   position: relative;
   overflow-x: hidden;

@@ -209,7 +209,7 @@ async function loadSubscriptionPlans() {
 async function forceRetryWithFallback() {
     // Force retry with no fallback - user must purchase
     await loadSubscriptionPlans()
-    
+
     // If still no plans after retry, show critical error but no bypass
     if (subscriptionPlans.value.length === 0) {
         errorMessage.value = 'Subscription required to continue. This app cannot be used without an active subscription.'

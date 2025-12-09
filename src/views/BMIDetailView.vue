@@ -1,16 +1,13 @@
 <template>
   <div class="bmi-detail-view">
-    <!-- Header -->
     <header class="header">
       <button @click="$router.back()" class="back-btn">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
         </svg>
       </button>
       <h1 class="title">{{ $t('bmiDetail.title') }}</h1>
     </header>
-
-    <!-- Current BMI Section -->
     <div class="current-bmi-section">
       <div class="bmi-main-card">
         <div class="bmi-value-display">
@@ -26,8 +23,6 @@
           {{ currentBMI.description }}
         </div>
       </div>
-
-      <!-- BMI Scale -->
       <div class="bmi-scale-container">
         <h3 class="section-subtitle">{{ $t('bmiDetail.bmiScale') }}</h3>
         <div class="bmi-scale-detailed">
@@ -43,8 +38,9 @@
           </div>
           <div class="scale-labels">
             <div class="scale-label">
-              <span class="label-value">< 18.5</span>
-              <span class="label-text">{{ $t('bmiDetail.underweight') }}</span>
+              <span class="label-value">
+                < 18.5</span>
+                  <span class="label-text">{{ $t('bmiDetail.underweight') }}</span>
             </div>
             <div class="scale-label">
               <span class="label-value">18.5 - 24.9</span>
@@ -67,30 +63,23 @@
     <div class="bmi-chart-section">
       <h3 class="section-title">{{ $t('bmiDetail.bmiHistory') }}</h3>
       <div class="chart-period-selector">
-        <button 
-          v-for="period in chartPeriods" 
-          :key="period.value"
-          @click="selectedChartPeriod = period.value"
-          :class="['period-btn', { active: selectedChartPeriod === period.value }]"
-        >
+        <button v-for="period in chartPeriods" :key="period.value" @click="selectedChartPeriod = period.value"
+          :class="['period-btn', { active: selectedChartPeriod === period.value }]">
           {{ period.label }}
         </button>
       </div>
-      <BMIChart 
-        :data="getBMIChartData()"
-        :period="selectedChartPeriod"
-      />
+      <BMIChart :data="getBMIChartData()" :period="selectedChartPeriod" />
     </div>
 
     <!-- Health Information -->
     <div class="health-info-section">
       <h3 class="section-title">{{ $t('bmiDetail.healthInformation') }}</h3>
-      
+
       <div class="info-cards">
         <div class="info-card">
           <div class="info-icon healthy-weight">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
             </svg>
           </div>
           <div class="info-content">
@@ -103,7 +92,8 @@
         <div class="info-card">
           <div class="info-icon target-weight">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
             </svg>
           </div>
           <div class="info-content">
@@ -116,7 +106,7 @@
         <div class="info-card">
           <div class="info-icon weight-to-goal">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
+              <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z" />
             </svg>
           </div>
           <div class="info-content">
@@ -135,7 +125,7 @@
         <div v-for="tip in getHealthTips()" :key="tip.id" class="tip-card">
           <div class="tip-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M9 11H7v6h2v-6zm4 0h-2v6h2v-6zm4-4H7v2h10V7zM5 5h14v2H5V5z"/>
+              <path d="M9 11H7v6h2v-6zm4 0h-2v6h2v-6zm4-4H7v2h10V7zM5 5h14v2H5V5z" />
             </svg>
           </div>
           <div class="tip-content">
@@ -153,24 +143,12 @@
         <div class="calculator-inputs">
           <div class="input-group">
             <label>{{ $t('bmiDetail.height') }} (cm)</label>
-            <input 
-              v-model.number="calculatorHeight" 
-              type="number" 
-              min="100" 
-              max="250"
-              class="calculator-input"
-            />
+            <input v-model.number="calculatorHeight" type="number" min="100" max="250" class="calculator-input" />
           </div>
           <div class="input-group">
             <label>{{ $t('bmiDetail.weight') }} (kg)</label>
-            <input 
-              v-model.number="calculatorWeight" 
-              type="number" 
-              min="30" 
-              max="300" 
-              step="0.1"
-              class="calculator-input"
-            />
+            <input v-model.number="calculatorWeight" type="number" min="30" max="300" step="0.1"
+              class="calculator-input" />
           </div>
         </div>
         <div v-if="calculatedBMI" class="calculator-result">
@@ -251,7 +229,7 @@ const getBMIPosition = (bmi: number): number => {
 const getBMIChartData = () => {
   const now = new Date()
   const cutoffDate = new Date()
-  
+
   switch (selectedChartPeriod.value) {
     case '3months':
       cutoffDate.setMonth(now.getMonth() - 3)
@@ -266,11 +244,11 @@ const getBMIChartData = () => {
       cutoffDate.setFullYear(2020) // Far back enough to include all data
       break
   }
-  
+
   const filteredEntries = weightEntries.value
     .filter(entry => new Date(entry.date) >= cutoffDate)
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-  
+
   // Calculate BMI for each weight entry
   return filteredEntries.map(entry => {
     const heightInM = userHeight.value / 100
@@ -292,7 +270,7 @@ const getHealthyWeightRange = (): string => {
 
 const getCalculatedBMICategory = () => {
   if (!calculatedBMI.value) return { category: '', color: '#ffffff' }
-  
+
   const bmi = calculatedBMI.value
   if (bmi < 18.5) return { category: t('bmiDetail.underweight'), color: '#2196F3' }
   if (bmi < 25) return { category: t('bmiDetail.normal'), color: '#4CAF50' }
@@ -302,7 +280,7 @@ const getCalculatedBMICategory = () => {
 
 const getHealthTips = () => {
   const bmi = currentBMI.value.value
-  
+
   if (bmi < 18.5) {
     return [
       {
@@ -349,10 +327,10 @@ const loadData = async () => {
   try {
     // Load weight entries
     weightEntries.value = await WeightTracker.getWeightEntries()
-    
+
     // Get user height
     userHeight.value = userProfile.height || 175
-    
+
     // Calculate current BMI
     const weightStats = await WeightTracker.getWeightStats()
     if (weightStats.currentWeight && userHeight.value) {
@@ -363,12 +341,12 @@ const loadData = async () => {
         categoryColor: bmiData.categoryColor,
         description: getBMIDescription(bmiData.value)
       }
-      
+
       // Update calculator with current values
       calculatorHeight.value = userHeight.value
       calculatorWeight.value = weightStats.currentWeight
     }
-    
+
     // Load weight goal information
     await loadWeightGoalInfo()
   } catch (error) {
@@ -380,20 +358,20 @@ const loadWeightGoalInfo = async () => {
   try {
     const weightStats = await WeightTracker.getWeightStats()
     const goal = await WeightTracker.getWeightGoal()
-    
+
     if (!weightStats.currentWeight || !goal) {
       weightToGoalTitle.value = t('bmiDetail.weightMaintained')
       weightToGoal.value = '0.0'
       weightToGoalDescription.value = t('bmiDetail.weightMaintainedDescription')
       return
     }
-    
+
     const currentWeight = weightStats.currentWeight
     const targetWeight = goal.targetWeight
     const difference = Math.abs(currentWeight - targetWeight)
-    
+
     weightToGoal.value = difference.toFixed(1)
-    
+
     if (currentWeight > targetWeight) {
       weightToGoalTitle.value = t('bmiDetail.weightToLose')
       weightToGoalDescription.value = t('bmiDetail.weightToLoseDescription')
@@ -635,11 +613,11 @@ const getBMIDescription = (bmi: number): string => {
   .scale-labels {
     gap: 2px;
   }
-  
+
   .label-value {
     font-size: 10px;
   }
-  
+
   .label-text {
     font-size: 9px;
   }

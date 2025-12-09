@@ -284,7 +284,7 @@
                                 stroke-linejoin="round" />
                         </svg>
                         <span>{{ isFavorite ? $t('nutrition.removeFromFavorites') : $t('nutrition.addToFavorites')
-                            }}</span>
+                        }}</span>
                     </button>
                     <button class="menu-option" @click="openDetailsModal">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -640,8 +640,8 @@ onMounted(async () => {
                 const firstFood = foodData.foods[0] || {};
 
                 product.value = {
-                    names: foodData.names || { 
-                        de: getLocalizedName(foodData) || 'Unbekanntes Essen', 
+                    names: foodData.names || {
+                        de: getLocalizedName(foodData) || 'Unbekanntes Essen',
                         en: getLocalizedName(foodData) || 'Unknown Food',
                         es: getLocalizedName(foodData) || 'Comida Desconocida'
                     },
@@ -742,8 +742,8 @@ onMounted(async () => {
             const nutrition = labelData.nutrition || {};
 
             product.value = {
-                names: labelData.names || { 
-                    de: getLocalizedName(labelData) || 'Gescanntes Label', 
+                names: labelData.names || {
+                    de: getLocalizedName(labelData) || 'Gescanntes Label',
                     en: getLocalizedName(labelData) || 'Scanned Label',
                     es: getLocalizedName(labelData) || 'Etiqueta Escaneada'
                 },
@@ -1087,10 +1087,10 @@ async function saveAndReturn() {
                     fat: Math.round(product.value.fats * amount.value)
                 },
                 foods: [{
-                    names: product.value.names || { 
-                        de: 'Unbekannt', 
+                    names: product.value.names || {
+                        de: 'Unbekannt',
                         en: 'Unknown',
-                        es: 'Desconocido' 
+                        es: 'Desconocido'
                     },
                     amount: { de: '1 Portion', en: '1 serving' },
                     calories: Math.round(product.value.calories * amount.value),

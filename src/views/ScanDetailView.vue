@@ -209,7 +209,7 @@
                                 <span class="food-macro">P: {{ Math.round((food.protein || 0) * amount) }}g</span>
                                 <span class="food-macro">K: {{ Math.round((food.carbs || 0) * amount) }}g</span>
                                 <span class="food-macro">F: {{ Math.round((food.fat || food.fats || 0) * amount)
-                                }}g</span>
+                                    }}g</span>
                             </div>
                         </div>
                     </div>
@@ -282,7 +282,7 @@
                                 stroke-linejoin="round" />
                         </svg>
                         <span>{{ isFavorite ? $t('nutrition.removeFromFavorites') : $t('nutrition.addToFavorites')
-                        }}</span>
+                            }}</span>
                     </button>
                     <button class="menu-option" @click="openDetailsModal">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">

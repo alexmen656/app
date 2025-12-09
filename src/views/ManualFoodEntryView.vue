@@ -26,7 +26,7 @@
                 <div class="instruction-icon">✍️</div>
                 <h3>{{ $t('manualEntry.instructions.title') }}</h3>
                 <p>{{ $t('manualEntry.instructions.description') }}</p>
-                
+
                 <!-- Examples -->
                 <div class="examples">
                     <h4>{{ $t('manualEntry.examples.title') }}</h4>
@@ -43,15 +43,9 @@
                 <label for="foodDescription" class="input-label">
                     {{ $t('manualEntry.whatDidYouEat') }}
                 </label>
-                <textarea
-                    id="foodDescription"
-                    v-model="foodDescription"
-                    :placeholder="$t('manualEntry.placeholder')"
-                    class="food-textarea"
-                    rows="6"
-                    maxlength="500"
-                ></textarea>
-                
+                <textarea id="foodDescription" v-model="foodDescription" :placeholder="$t('manualEntry.placeholder')"
+                    class="food-textarea" rows="6" maxlength="500"></textarea>
+
                 <!-- Character counter -->
                 <div class="char-counter">
                     {{ foodDescription.length }}/500
@@ -59,13 +53,11 @@
 
                 <!-- Action Buttons -->
                 <div class="action-buttons">
-                    <button 
-                        class="analyze-btn"
-                        @click="analyzeFood"
-                        :disabled="!foodDescription.trim() || isProcessing"
-                    >
+                    <button class="analyze-btn" @click="analyzeFood"
+                        :disabled="!foodDescription.trim() || isProcessing">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V21C3 22.1 3.89 23 5 23H11V21H5V3H13V9H21Z" />
+                            <path
+                                d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V21C3 22.1 3.89 23 5 23H11V21H5V3H13V9H21Z" />
                         </svg>
                         {{ $t('manualEntry.analyzeButton') }}
                     </button>
@@ -159,7 +151,7 @@ async function analyzeFood() {
 
     isProcessing.value = true
     errorMessage.value = ''
-    
+
     try {
         const response = await fetch('https://api.kalbuddy.com/api/text/analyze', {
             method: 'POST',
@@ -177,7 +169,7 @@ async function analyzeFood() {
         }
 
         const apiResponse: APIResponse = await response.json()
-        
+
         if (!apiResponse.success) {
             throw new Error(apiResponse.message || 'Analysis failed')
         }
@@ -202,11 +194,11 @@ async function analyzeFood() {
 
         // Navigate directly to NutritionView with the analysis data
         await addToDiary()
-        
+
     } catch (error) {
         console.error('Analysis failed:', error)
         errorMessage.value = 'Analysis failed. Please try again.'
-        
+
         // Fallback to mock data for testing
         await simulateAnalysis()
     } finally {
@@ -217,7 +209,7 @@ async function analyzeFood() {
 async function simulateAnalysis() {
     // This is just a fallback - won't be used with real API
     await new Promise(resolve => setTimeout(resolve, 1000))
-    
+
     const mockResult: AnalysisResult = {
         names: { de: 'Gemischtes Essen', en: 'Mixed Meal', es: 'Comida Mixta' },
         foods: [{
@@ -230,19 +222,19 @@ async function simulateAnalysis() {
         }],
         total: { calories: 300, protein: 15, carbs: 30, fat: 12 },
         confidence: 'medium',
-        notes: { 
-            de: 'Dies ist eine Beispielanalyse', 
-            en: 'This is a sample analysis', 
-            es: 'Este es un análisis de muestra' 
+        notes: {
+            de: 'Dies ist eine Beispielanalyse',
+            en: 'This is a sample analysis',
+            es: 'Este es un análisis de muestra'
         }
     }
-    
+
     analysisResult.value = mockResult
 }
 
 async function addToDiary() {
     if (!analysisResult.value) return
-    
+
     try {
         // Create manual data object similar to foodData/labelData
         const manualData = {
@@ -256,7 +248,7 @@ async function addToDiary() {
             timestamp: new Date().toISOString(),
             source: 'manual'
         }
-        
+
         // Navigate directly to NutritionView with manual data (like foodData/labelData)
         router.push({
             path: '/nutrition',
@@ -265,7 +257,7 @@ async function addToDiary() {
                 photo: analysisResult.value.image ? `data:image/png;base64,${analysisResult.value.image.data}` : undefined
             }
         })
-        
+
     } catch (error) {
         console.error('Failed to navigate to nutrition view:', error)
     }
@@ -423,9 +415,17 @@ async function addToDiary() {
     margin-left: 8px;
 }
 
-.confidence-high { color: #4caf50; }
-.confidence-medium { color: #ff9800; }
-.confidence-low { color: #f44336; }
+.confidence-high {
+    color: #4caf50;
+}
+
+.confidence-medium {
+    color: #ff9800;
+}
+
+.confidence-low {
+    color: #f44336;
+}
 
 .action-buttons {
     display: flex;
@@ -504,8 +504,13 @@ async function addToDiary() {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* Responsive */
@@ -513,15 +518,16 @@ async function addToDiary() {
     .content {
         padding: 0 12px 24px 12px;
     }
-    
-    .instructions-card, .input-card {
+
+    .instructions-card,
+    .input-card {
         padding: 20px;
     }
-    
+
     .example-items {
         gap: 6px;
     }
-    
+
     .food-textarea {
         padding: 12px;
     }

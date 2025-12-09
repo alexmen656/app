@@ -3,7 +3,7 @@
     <header class="header">
       <button class="back-button" @click="$router.go(-1)">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+          <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
         </svg>
       </button>
       <h1 class="title">{{ $t('settings.notificationsSection') }}</h1>
@@ -125,12 +125,12 @@
           </div>
 
           <!-- Weekly Reports -->
-          <div v-if="showDebugInfo"class="setting-item meal-setting">
+          <div v-if="showDebugInfo" class="setting-item meal-setting">
             <div class="meal-header">
               <label class="setting-label">Weekly Reports</label>
               <div class="toggle-switch">
-                <input type="checkbox" v-model="notificationSettings.weeklyReports"
-                  @change="saveNotificationSettings" class="toggle-input" id="weekly-reports-toggle" />
+                <input type="checkbox" v-model="notificationSettings.weeklyReports" @change="saveNotificationSettings"
+                  class="toggle-input" id="weekly-reports-toggle" />
                 <label for="weekly-reports-toggle" class="toggle-slider"></label>
               </div>
             </div>
@@ -140,12 +140,12 @@
           </div>
 
           <!-- Goal Achievements -->
-          <div v-if="showDebugInfo"class="setting-item meal-setting">
+          <div v-if="showDebugInfo" class="setting-item meal-setting">
             <div class="meal-header">
               <label class="setting-label">Goal Achievements</label>
               <div class="toggle-switch">
-                <input type="checkbox" v-model="notificationSettings.achievements"
-                  @change="saveNotificationSettings" class="toggle-input" id="achievements-toggle" />
+                <input type="checkbox" v-model="notificationSettings.achievements" @change="saveNotificationSettings"
+                  class="toggle-input" id="achievements-toggle" />
                 <label for="achievements-toggle" class="toggle-slider"></label>
               </div>
             </div>
@@ -174,7 +174,8 @@
           <div class="setting-item">
             <button class="action-button" @click="testNotification">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7.91,10.08L6.5,11.5L11,16L21,6L19.59,4.58L11,13.17L7.91,10.08Z"/>
+                <path
+                  d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7.91,10.08L6.5,11.5L11,16L21,6L19.59,4.58L11,13.17L7.91,10.08Z" />
               </svg>
               <span>Send Test Notification</span>
             </button>
@@ -187,7 +188,7 @@
 
 <script setup lang="ts">
 import { computed, ref, onMounted, watch } from 'vue'
-import { 
+import {
   getNotificationSettings,
   setNotificationSettings as saveNotificationSettingsToStore
 } from '../stores/preferencesStore'
@@ -223,9 +224,9 @@ async function saveNotificationSettings() {
       snacks: notificationSettings.value.snacks,
       inactivityReminders: notificationSettings.value.inactivityReminders
     }
-    
+
     await saveNotificationSettingsToStore(basicSettings)
-    
+
     if (notificationSettings.value.enabled) {
       await NotificationService.scheduleAllMealNotifications(basicSettings)
     } else {
@@ -255,9 +256,9 @@ onMounted(async () => {
       ...savedSettings
     }
 
-     // Initialize debug mode
+    // Initialize debug mode
     initializeDebugMode().then(() => {
-        showDebugInfo.value = isDebugMode.value
+      showDebugInfo.value = isDebugMode.value
     })
   } catch (error) {
     console.error('Error loading notification settings:', error)
@@ -266,7 +267,7 @@ onMounted(async () => {
 })
 
 watch(isDebugMode, (newValue) => {
-    showDebugInfo.value = newValue
+  showDebugInfo.value = newValue
 }, { immediate: true })
 </script>
 
@@ -391,11 +392,11 @@ watch(isDebugMode, (newValue) => {
   border-radius: 50%;
 }
 
-.toggle-input:checked + .toggle-slider {
+.toggle-input:checked+.toggle-slider {
   background-color: #4CAF50;
 }
 
-.toggle-input:checked + .toggle-slider:before {
+.toggle-input:checked+.toggle-slider:before {
   transform: translateX(22px);
 }
 

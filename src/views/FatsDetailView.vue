@@ -79,7 +79,8 @@
             </div>
             <div class="apple-health-trend-container">
                 <div class="trend-chart-wrapper">
-                    <AppleHealthTrendChart :chart-data="fatsChartData" :selected-period="selectedPeriod" color="#42a5f5"/>
+                    <AppleHealthTrendChart :chart-data="fatsChartData" :selected-period="selectedPeriod"
+                        color="#42a5f5" />
                 </div>
             </div>
         </div>

@@ -1,6 +1,5 @@
 <template>
   <div class="chat-view">
-    <!-- Header -->
     <header class="chat-header">
       <button class="back-btn" @click="goBack">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -18,10 +17,7 @@
         <img src="../assets/kalbuddy.png" alt="Digmio" class="avatar-icon" />
       </div>
     </header>
-
-    <!-- Chat Messages -->
     <div class="chat-messages" ref="messagesContainer">
-      <!-- Welcome Message -->
       <div class="message bot-message" v-if="messages.length === 0">
         <div class="message-avatar">
           <img src="../assets/kalbuddy.png" alt="Digmio" class="message-avatar-icon" />

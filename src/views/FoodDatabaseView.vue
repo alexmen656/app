@@ -26,7 +26,7 @@
                     :class="{ active: selectedCategory === category.id }" @click="selectCategory(category.id)">
                     <span class="category-icon">{{ category.icon }}</span>
                     <span class="category-name">{{ category.name || $t(`foodDatabase.categoryNames.${category.id}`)
-                        }}</span>
+                    }}</span>
                 </button>
             </div>
         </div>
@@ -53,7 +53,7 @@
                                     d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z" />
                             </svg>
                             <span>{{ food.calories }} kcal/{{ food.unit_name || $t(`foodDatabase.units.${food.unit}`)
-                                }}</span>
+                            }}</span>
                         </div>
                         <div class="food-macros">
                             <span class="macro protein">P: {{ food.protein }}g</span>
@@ -99,12 +99,12 @@
                             <div class="nutrition-item">
                                 <span class="nutrition-label">{{ $t('foodDatabase.carbs') }}</span>
                                 <span class="nutrition-value">{{ Math.round((selectedFood?.carbs || 0) * selectedAmount)
-                                    }}g</span>
+                                }}g</span>
                             </div>
                             <div class="nutrition-item">
                                 <span class="nutrition-label">{{ $t('foodDatabase.fats') }}</span>
                                 <span class="nutrition-value">{{ Math.round((selectedFood?.fats || 0) * selectedAmount)
-                                    }}g</span>
+                                }}g</span>
                             </div>
                         </div>
                     </div>

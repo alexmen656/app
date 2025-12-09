@@ -4,7 +4,7 @@
         <header class="header">
             <button class="back-btn" @click="goBack">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
                 </svg>
             </button>
             <div class="logo-section">
@@ -23,7 +23,7 @@
         <div class="date-selection">
             <button class="date-nav-btn" @click="changeDate(-1)" :disabled="!canGoBack">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
                 </svg>
             </button>
             <div class="selected-date">
@@ -32,7 +32,7 @@
             </div>
             <button class="date-nav-btn" @click="changeDate(1)" :disabled="!canGoForward">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
                 </svg>
             </button>
         </div>
@@ -134,7 +134,8 @@
                 <p class="empty-subtitle">{{ $t('history.noDataSubtitle') }}</p>
             </div>
 
-            <div v-else class="food-item" @click="goToNutritionDetail(item)" v-for="item in historicalFoods" :key="item.id">
+            <div v-else class="food-item" @click="goToNutritionDetail(item)" v-for="item in historicalFoods"
+                :key="item.id">
                 <div class="food-image">
                     <img v-if="item.image && !item.image.includes('placeholder')" :src="item.image" :alt="item.name" />
                     <span v-else-if="item.icon" class="food-db-icon">{{ item.icon }}</span>
@@ -380,27 +381,27 @@ async function loadStreak() {
 function changeDate(direction: number) {
     const newDate = new Date(selectedDate.value)
     newDate.setDate(newDate.getDate() + direction)
-    
+
     if (direction < 0 && !canGoBack.value) return
     if (direction > 0 && !canGoForward.value) return
-    
+
     selectedDate.value = newDate
 }
 
 function formatSelectedDate(): string {
     const today = new Date()
     const yesterday = new Date(today.getTime() - (24 * 60 * 60 * 1000))
-    
+
     const selectedDateString = selectedDate.value.toDateString()
     const todayString = today.toDateString()
     const yesterdayString = yesterday.toDateString()
-    
+
     if (selectedDateString === todayString) {
         return t('app.today')
     } else if (selectedDateString === yesterdayString) {
         return t('app.yesterday')
     } else {
-        return selectedDate.value.toLocaleDateString('en-US', { 
+        return selectedDate.value.toLocaleDateString('en-US', {
             weekday: 'long',
             month: 'short',
             day: 'numeric'
@@ -412,12 +413,12 @@ function getDateSubtitle(): string {
     const today = new Date()
     const selectedDateString = selectedDate.value.toDateString()
     const todayString = today.toDateString()
-    
+
     if (selectedDateString === todayString) {
         return ''
     }
-    
-    return selectedDate.value.toLocaleDateString('en-US', { 
+
+    return selectedDate.value.toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
@@ -428,7 +429,7 @@ function formatHistorySectionTitle(): string {
     const today = new Date()
     const selectedDateString = selectedDate.value.toDateString()
     const todayString = today.toDateString()
-    
+
     if (selectedDateString === todayString) {
         return t('home.recentlyUploaded')
     } else {
@@ -584,7 +585,8 @@ onMounted(async () => {
     gap: 10px;
     flex: 1;
     justify-content: center;
-    margin-right: 40px; /* Compensate for back button space */
+    margin-right: 40px;
+    /* Compensate for back button space */
 }
 
 .app-title {
@@ -738,7 +740,7 @@ onMounted(async () => {
     margin: 0 auto;
 }
 
-.macro-progress > svg {
+.macro-progress>svg {
     width: 60px;
     height: 60px;
 }
@@ -757,7 +759,7 @@ onMounted(async () => {
     padding-top: 2px;
 }
 
-.macro-icon > svg {
+.macro-icon>svg {
     width: 30px;
     height: 30px;
 }
@@ -766,7 +768,7 @@ onMounted(async () => {
     padding-top: 4px;
 }
 
-.macro-icon-carbs > svg {
+.macro-icon-carbs>svg {
     width: 26px;
     height: 26px;
 }

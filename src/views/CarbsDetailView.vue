@@ -79,7 +79,8 @@
             </div>
             <div class="apple-health-trend-container">
                 <div class="trend-chart-wrapper">
-                    <AppleHealthTrendChart :chart-data="carbsChartData" :selected-period="selectedPeriod" color="#ffa726"/>
+                    <AppleHealthTrendChart :chart-data="carbsChartData" :selected-period="selectedPeriod"
+                        color="#ffa726" />
                 </div>
             </div>
         </div>
@@ -846,7 +847,7 @@ watch(selectedPeriod, () => {
 .apple-health-trend-container {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 20px;
-    padding:8px;
+    padding: 8px;
     backdrop-filter: blur(10px);
 }
 

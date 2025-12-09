@@ -67,17 +67,21 @@
 
             <div v-else class="scan-item" v-for="scan in paginatedScans" :key="scan.id" @click="viewScanDetails(scan)">
                 <div class="scan-image">
-                    <img v-if="scan.image && !scan.image.includes('placeholder') && !scan.image.startsWith('image_')" :src="scan.image" :alt="scan.name" />
-                    <img v-else-if="scan.image && scan.image.startsWith('image_')" :src="getItemImageSrc(scan)" :alt="scan.name" />
+                    <img v-if="scan.image && !scan.image.includes('placeholder') && !scan.image.startsWith('image_')"
+                        :src="scan.image" :alt="scan.name" />
+                    <img v-else-if="scan.image && scan.image.startsWith('image_')" :src="getItemImageSrc(scan)"
+                        :alt="scan.name" />
                     <span v-else-if="scan.icon" class="food-db-icon">{{ scan.icon }}</span>
-                    <span v-else class="scan-type-icon">{{ scan.type === 'food' || scan.type === 'favorite' ? '🍽️' : '📦' }}</span>
+                    <span v-else class="scan-type-icon">{{ scan.type === 'food' || scan.type === 'favorite' ? '🍽️' :
+                        '📦' }}</span>
                 </div>
 
                 <div class="scan-info">
                     <div class="scan-header">
                         <h4 class="scan-name">{{ scan.name }}</h4>
                         <span class="scan-type-badge" :class="scan.type">
-                            {{ scan.type === 'food' || scan.type === 'favorite' ? $t('allScans.foodScan') : $t('allScans.barcodeScan') }}
+                            {{ scan.type === 'food' || scan.type === 'favorite' ? $t('allScans.foodScan') :
+                                $t('allScans.barcodeScan') }}
                         </span>
                     </div>
 
@@ -175,14 +179,14 @@ const imageUris = ref(new Map())
 
 function getItemImageSrc(item: any) {
     if (!item.image) return '';
-    
+
     if (item.image.includes('placeholder')) return item.image;
-    
+
     if (item.image.startsWith('image_')) {
         // Return cached URI or empty string if not yet loaded
         return imageUris.value.get(item.image) || '';
     }
-    
+
     return item.image;
 }
 
@@ -192,9 +196,9 @@ async function loadImageUris(items: any[]) {
         .map(item => item.image)
         .filter(image => image && typeof image === 'string' && image.startsWith('image_'))
         .filter(image => !imageUris.value.has(image)) // Only load images we don't have cached
-    
+
     if (imagesToLoad.length === 0) return;
-    
+
     // Load images in parallel
     await Promise.allSettled(
         imagesToLoad.map(async (imagePath) => {

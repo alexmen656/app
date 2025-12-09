@@ -292,7 +292,7 @@ function openPrivacy() {
 }
 
 function openMore() {
-    router.push('/coupon')
+  router.push('/coupon')
 }
 
 onMounted(async () => {

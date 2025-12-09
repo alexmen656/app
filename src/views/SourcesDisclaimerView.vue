@@ -1,10 +1,11 @@
 <template>
-  <div class="sources-disclaimer-view" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
+  <div class="sources-disclaimer-view" @touchstart="handleTouchStart" @touchmove="handleTouchMove"
+    @touchend="handleTouchEnd">
     <!-- Header -->
     <header class="header">
       <button class="back-button" @click="goBack">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+          <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
         </svg>
       </button>
       <h1 class="title">{{ $t('sourcesDisclaimer.title') }}</h1>
@@ -17,7 +18,7 @@
         <div class="section-card">
           <div class="icon-header">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12,3L1,9L12,15L21,9V16H23V9M5,13.18V17.18L12,21L19,17.18V13.18L12,17L5,13.18Z"/>
+              <path d="M12,3L1,9L12,15L21,9V16H23V9M5,13.18V17.18L12,21L19,17.18V13.18L12,17L5,13.18Z" />
             </svg>
             <h2 class="section-title">{{ $t('sourcesDisclaimer.educational.title') }}</h2>
           </div>
@@ -26,7 +27,7 @@
             <p>{{ $t('sourcesDisclaimer.educational.content2') }}</p>
             <div class="warning-box">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+                <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
               </svg>
               <span>{{ $t('sourcesDisclaimer.educational.warning') }}</span>
             </div>
@@ -39,7 +40,8 @@
         <div class="section-card">
           <div class="icon-header">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,7H13V9H11V7M11,11H13V17H11V11Z"/>
+              <path
+                d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,7H13V9H11V7M11,11H13V17H11V11Z" />
             </svg>
             <h2 class="section-title">{{ $t('sourcesDisclaimer.sources.title') }}</h2>
           </div>
@@ -55,7 +57,8 @@
               <a href="https://world.openfoodfacts.org" target="_blank" rel="noopener" class="source-link">
                 {{ $t('sourcesDisclaimer.sources.barcodes.link') }}
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z"/>
+                  <path
+                    d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z" />
                 </svg>
               </a>
             </div>
@@ -70,7 +73,7 @@
               </div>
               <div class="ai-note">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z"/>
+                  <path d="M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z" />
                 </svg>
                 <span>{{ $t('sourcesDisclaimer.sources.ai.note') }}</span>
               </div>
@@ -84,7 +87,7 @@
         <div class="section-card">
           <div class="icon-header">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z"/>
+              <path d="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z" />
             </svg>
             <h2 class="section-title">{{ $t('sourcesDisclaimer.accuracy.title') }}</h2>
           </div>
@@ -105,7 +108,8 @@
         <div class="section-card">
           <div class="icon-header">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9L10,17Z"/>
+              <path
+                d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9L10,17Z" />
             </svg>
             <h2 class="section-title">{{ $t('sourcesDisclaimer.privacy.title') }}</h2>
           </div>
@@ -121,7 +125,8 @@
         <div class="section-card">
           <div class="icon-header">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4M20,8L12,13L4,8V6L12,11L20,6V8Z"/>
+              <path
+                d="M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4M20,8L12,13L4,8V6L12,11L20,6V8Z" />
             </svg>
             <h2 class="section-title">{{ $t('sourcesDisclaimer.contact.title') }}</h2>
           </div>
@@ -130,7 +135,8 @@
             <a href="mailto:Digmio@control-center.eu" class="contact-email">
               kalbuddy@control-center.eu
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z"/>
+                <path
+                  d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z" />
               </svg>
             </a>
           </div>

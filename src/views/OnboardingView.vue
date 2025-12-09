@@ -14,7 +14,8 @@
                 <div class="hero-icon">
                     <img src="../assets/kalbuddy.png" alt="Digmio" class="hero-logo" />
                 </div>
-                <h1 class="hero-title">{{ $t('onboarding.welcomeToDigmio').replace('Digmio', '') }}<span class="brand">Digmio</span></h1>
+                <h1 class="hero-title">{{ $t('onboarding.welcomeToDigmio').replace('Digmio', '') }}<span
+                        class="brand">Digmio</span></h1>
                 <p class="hero-subtitle">{{ $t('onboarding.welcomeDescription') }}</p>
             </div>
 
@@ -71,15 +72,18 @@
 
                 <div class="form-group">
                     <input ref="nameInput" v-model="userInfo.name" type="text" class="form-input"
-                        :placeholder="$t('onboarding.personalInfo.namePlaceholder')" @keydown.enter="focusNextInput('ageInput')" />
+                        :placeholder="$t('onboarding.personalInfo.namePlaceholder')"
+                        @keydown.enter="focusNextInput('ageInput')" />
                 </div>
 
                 <div class="form-row">
                     <input ref="ageInput" v-model="userInfo.age" type="number" class="form-input"
-                        :placeholder="$t('onboarding.personalInfo.agePlaceholder')" @keydown.enter="focusNextInput('heightInput')" />
+                        :placeholder="$t('onboarding.personalInfo.agePlaceholder')"
+                        @keydown.enter="focusNextInput('heightInput')" />
                     <div class="input-with-unit">
                         <input ref="heightInput" v-model="userInfo.height" type="number" class="form-input"
-                            :placeholder="$t('onboarding.personalInfo.heightPlaceholder')" @keydown.enter="focusNextInput('weightInput')" />
+                            :placeholder="$t('onboarding.personalInfo.heightPlaceholder')"
+                            @keydown.enter="focusNextInput('weightInput')" />
                         <span class="unit">cm</span>
                     </div>
                 </div>
@@ -88,7 +92,8 @@
                     <div class="form-group">
                         <div class="input-with-unit">
                             <input ref="weightInput" v-model="userInfo.weight" type="number" class="form-input"
-                                :placeholder="$t('onboarding.personalInfo.weightPlaceholder')" @keydown.enter="handleWeightEnter" />
+                                :placeholder="$t('onboarding.personalInfo.weightPlaceholder')"
+                                @keydown.enter="handleWeightEnter" />
                             <span class="unit">kg</span>
                         </div>
                     </div>
@@ -124,7 +129,8 @@
                         @click="userInfo.activityLevel = activity.value">
                         <div class="activity-icon">{{ activity.icon }}</div>
                         <h3 class="activity-title">{{ $t(`onboarding.activityLevel.${activity.translationKey}`) }}</h3>
-                        <p class="activity-description">{{ $t(`onboarding.activityLevel.${activity.translationKey}Desc`) }}</p>
+                        <p class="activity-description">{{ $t(`onboarding.activityLevel.${activity.translationKey}Desc`)
+                            }}</p>
                     </div>
                 </div>
             </div>
@@ -178,7 +184,8 @@
 
                     <div class="target-weight-input">
                         <label class="form-label">{{ $t('onboarding.weightGoal.targetWeightLabel') }}</label>
-                        <input v-model="userInfo.targetWeight" type="number" :placeholder="$t('onboarding.weightGoal.targetWeightPlaceholder')"
+                        <input v-model="userInfo.targetWeight" type="number"
+                            :placeholder="$t('onboarding.weightGoal.targetWeightPlaceholder')"
                             class="form-input weight-input" min="30" max="300" step="0.1" />
                     </div>
 
@@ -315,13 +322,13 @@
                             <div class="formula-container">
                                 <div class="formula-item">
                                     <span class="formula-label">{{ $t('onboarding.calculationSource.menFormula')
-                                    }}:</span>
+                                        }}:</span>
                                     <code
                                         class="formula-code">BMR = 88.362 + (13.397 × weight) + (4.799 × height) - (5.677 × age)</code>
                                 </div>
                                 <div class="formula-item">
                                     <span class="formula-label">{{ $t('onboarding.calculationSource.womenFormula')
-                                    }}:</span>
+                                        }}:</span>
                                     <code
                                         class="formula-code">BMR = 447.593 + (9.247 × weight) + (3.098 × height) - (4.330 × age)</code>
                                 </div>
@@ -581,7 +588,7 @@ function focusNextInput(inputRefName: string) {
         heightInput,
         weightInput
     }
-    
+
     const nextInput = inputsMap[inputRefName]
     if (nextInput?.value) {
         nextInput.value.focus()
@@ -1237,7 +1244,7 @@ async function finishOnboarding() {
         width: 90px;
         height: 90px;
         border-radius: 22px;
-    }   
+    }
 
     .features-grid {
         gap: 10px;

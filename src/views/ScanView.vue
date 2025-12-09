@@ -13,7 +13,7 @@
       </button>
       <h1 class="header-title">{{ $t('app.scanner') }}</h1>
       <button class="header-btn menu-btn bg-trans">
-       <!-- <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <!-- <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <circle cx="12" cy="12" r="1" fill="currentColor" />
           <circle cx="12" cy="5" r="1" fill="currentColor" />
           <circle cx="12" cy="19" r="1" fill="currentColor" />
@@ -25,7 +25,7 @@
     <div v-if="!isPremiumUser && mode === 'photo'" class="scan-counter-overlay">
       <div class="scan-counter">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="#FFD700">
-          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
         </svg>
         <span>{{ remainingFoodScans }}/{{ freeLimits.DAILY_FOOD_SCANS }} {{ $t('premium.scans.remaining') }}</span>
       </div>
@@ -66,7 +66,7 @@
     <!-- Bottom controls -->
     <div class="bottom-controls">
       <button class="control-btn gallery-btn bg-trans" @click="switchCamera">
-       <!-- <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+        <!-- <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
           <path d="M17 17.5V15.5C17 14.1193 15.8807 13 14.5 13H9.5C8.11929 13 7 14.1193 7 15.5V17.5"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" />
           <path d="M12 7V3M12 3L9 6M12 3L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -98,15 +98,9 @@
     </div>
 
     <!-- Premium Blocker Modal -->
-    <PremiumBlocker
-      v-if="showPremiumBlocker"
-      :feature="'unlimited_food_scans'"
-      :title="$t('premium.foodScans.title')"
-      :description="$t('premium.foodScans.description')"
-      :show-usage-info="true"
-      @close="showPremiumBlocker = false"
-      @upgrade="handleUpgrade"
-    />
+    <PremiumBlocker v-if="showPremiumBlocker" :feature="'unlimited_food_scans'" :title="$t('premium.foodScans.title')"
+      :description="$t('premium.foodScans.description')" :show-usage-info="true" @close="showPremiumBlocker = false"
+      @upgrade="handleUpgrade" />
 
     <!-- Result display -->
     <!-- Overlay entfernt: Navigation erfolgt direkt nach Scan -->
@@ -121,10 +115,10 @@ import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { WidgetDataManager, StreakManager } from '../utils/widgetData';
 import PremiumBlocker from '../components/PremiumBlocker.vue';
-import { 
-  premiumManager, 
-  isPremiumUser, 
-  remainingFoodScans, 
+import {
+  premiumManager,
+  isPremiumUser,
+  remainingFoodScans,
   freeLimits,
   premiumFeatures
 } from '../utils/premiumManager';
@@ -453,7 +447,7 @@ const handleUpgrade = (feature) => {
 
 onMounted(async () => {
   await setupCamera(cameraFacing.value);
-  
+
   // Premium-Status initialisieren
   await premiumManager.updatePremiumStatus();
   await premiumManager.loadUsageTracking();
