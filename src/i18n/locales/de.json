@@ -179,7 +179,8 @@
       "description": "Kamera verwenden um Barcodes zu scannen oder Essen zu analysieren",
       "barcode": "Barcode",
       "photo": "Foto",
-      "label": "Etikett"
+      "label": "Etikett",
+      "menu": "Menükarte"
     },
     "database": {
       "title": "Lebensmittel-Datenbank",
@@ -336,7 +337,7 @@
       "cdcLink": "Mehr erfahren von der CDC"
     }
   },
-    "onboarding": {
+  "onboarding": {
     "welcome": "Willkommen bei Kaloriq",
     "subtitle": "Verfolgen Sie Ihre Ernährung mit KI-gestütztem Lebensmittel-Scanning",
     "getStarted": "Loslegen",

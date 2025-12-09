@@ -10,9 +10,7 @@
                     </svg>
                 </button>
             </div>
-
             <div class="modal-options">
-                <!-- Scanner Options -->
                 <div class="option-section">
                     <h4 class="section-title">
                         <svg class="section-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"
@@ -44,10 +42,15 @@
                             </svg>
                             <span>{{ $t('addFood.scanner.label') }}</span>
                         </button>
+                        <button class="option-btn" @click="selectScanner('label')">
+                            <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M5.5,7A1.5,1.5 0 0,1 4,5.5A1.5,1.5 0 0,1 5.5,4A1.5,1.5 0 0,1 7,5.5A1.5,1.5 0 0,1 5.5,7M21.41,11.58L12.41,2.58C12.05,2.22 11.55,2 11,2H4C2.89,2 2,2.89 2,4V11C2,11.55 2.22,12.05 2.59,12.41L11.58,21.41C11.95,21.78 12.45,22 13,22C13.55,22 14.05,21.78 14.41,21.41L21.41,14.41C21.78,14.05 22,13.55 22,13C22,12.45 21.78,11.95 21.41,11.58Z" />
+                            </svg>
+                            <span>{{ $t('addFood.scanner.menu') }}</span>
+                        </button>
                     </div>
                 </div>
-
-                <!-- Database Options -->
                 <div class="option-section">
                     <h4 class="section-title">
                         <svg class="section-icon" viewBox="0 0 24 24" fill="currentColor">

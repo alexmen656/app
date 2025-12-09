@@ -50,7 +50,8 @@
     "modes": {
       "barcode": "Código de barras",
       "photo": "Foto",
-      "label": "Etiqueta"
+      "label": "Etiqueta",
+      "menu": "Menú"
     },
     "checking": "Verificando acceso a la cámara...",
     "requesting": "Solicitando permiso de cámara...",

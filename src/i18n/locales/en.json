@@ -179,7 +179,8 @@
       "description": "Use camera to scan barcodes or analyze food photos",
       "barcode": "Barcode",
       "photo": "Photo",
-      "label": "Label"
+      "label": "Label",
+      "menu": "Menu card"
     },
     "database": {
       "title": "Food Database",
@@ -336,7 +337,7 @@
       "cdcLink": "Learn more from CDC"
     }
   },
-    "onboarding": {
+  "onboarding": {
     "welcome": "Welcome to Kaloriq",
     "subtitle": "Track your nutrition with AI-powered food scanning",
     "getStarted": "Get Started",
