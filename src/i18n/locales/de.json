@@ -21,7 +21,7 @@
     "quickAdd": "Schnell hinzufügen",
     "foodDatabase": "Lebensmittel-DB",
     "scanFood": "Essen scannen",
-    "chatWithDigmio": "Mit Digmio chatten",
+    "chatWithDigmio": "Mit KalBuddy chatten",
     "chatSubtitle": "Frage mich alles über Ernährung",
     "recentlyUploaded": "Kürzlich gescannt",
     "noScansYet": "Noch keine Scans vorhanden",
@@ -351,7 +351,7 @@
     "finish": "Fertig",
     "whatIsYourGoal": "Was ist Ihr Ziel?",
     "goalSubtitle": "Wählen Sie Ihr Hauptziel aus, damit wir Ihre Ernährung optimal anpassen können",
-    "welcomeToDigmio": "Willkommen bei Digmio",
+    "welcomeToDigmio": "Willkommen bei KalBuddy",
     "welcomeDescription": "Verfolgen Sie Ihre Ernährung mit KI-gestützter Lebensmittelerkennung und erreichen Sie Ihre Gesundheitsziele mit personalisierten Einblicken.",
     "progressStep": "von",
     "features": {
@@ -554,7 +554,7 @@
     }
   },
   "chat": {
-    "title": "Digmio Chat",
+    "title": "KalBuddy Chat",
     "placeholder": "Stellen Sie Ihre Ernährungsfrage...",
     "send": "Senden",
     "examples": {
@@ -564,8 +564,8 @@
       "example3": "Ist diese Mahlzeit ausgewogen für meine Ziele?",
       "example4": "Welche Nährstoffe fehlen mir heute?"
     },
-    "greeting": "Hallo! Ich bin Digmio, Ihr KI-Ernährungsassistent. Wie kann ich Ihnen heute helfen?",
-    "typing": "Digmio tippt...",
+    "greeting": "Hallo! Ich bin KalBuddy, Ihr KI-Ernährungsassistent. Wie kann ich Ihnen heute helfen?",
+    "typing": "KalBuddy tippt...",
     "error": "Entschuldigung, das konnte ich nicht verarbeiten. Bitte versuchen Sie es erneut.",
     "networkError": "Keine Internetverbindung. Bitte überprüfen Sie Ihr Netzwerk und versuchen Sie es erneut.",
     "rateLimitError": "Zu viele Nachrichten. Bitte warten Sie einen Moment, bevor Sie eine weitere Nachricht senden.",

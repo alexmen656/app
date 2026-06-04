@@ -132,7 +132,7 @@
           </div>
           <div class="section-content">
             <p>{{ $t('sourcesDisclaimer.contact.content') }}</p>
-            <a href="mailto:Digmio@control-center.eu" class="contact-email">
+            <a href="mailto:kalbuddy@control-center.eu" class="contact-email">
               kalbuddy@control-center.eu
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                 <path
