@@ -16,7 +16,7 @@
   "googlePlayLink": "https://google.com",
   "socialLinks": [
     { "platform": "instagram", "link": "https://instagram.com" },
-    { "platform": "facebook", "link": "https://faceebook.com" },
+    { "platform": "facebook", "link": "https://facebook.com" },
     { "platform": "tiktok", "link": "https://tiktok.com" },
     { "platform": "x", "link": "https://x.com" }
   ],
