@@ -6,6 +6,20 @@
   "androidLink": "https://google.com",
   "headline": "Your AI-powered<br /> calorie tracking companion",
   "description": "KalBuddy makes nutrition tracking effortless with AI food recognition and barcode scanning.<br />Track macros, build healthy habits, and reach your goals.",
+  "hero_cards_left": [
+    { "icon": "📸", "iconClass": "icon-blue", "title": "Meal logged", "subtitle": "AI recognized your lunch instantly" },
+    { "icon": "🔥", "iconClass": "icon-coral", "title": "1,840 kcal today", "subtitle": "Right on track with your daily goal" },
+    { "icon": "📊", "iconClass": "icon-green", "title": "Macros updated", "subtitle": "Protein, carbs & fat tracked automatically" },
+    { "icon": "🏷️", "iconClass": "icon-yellow", "title": "Barcode scanned", "subtitle": "Nutrition pulled from the database" },
+    { "icon": "🔥", "iconClass": "icon-orange", "title": "7-day streak", "subtitle": "Keep your healthy habit going" }
+  ],
+  "hero_cards_right": [
+    { "icon": "⚖️", "iconClass": "icon-brown", "title": "Weight logged", "subtitle": "See your progress over time" },
+    { "icon": "🍎", "iconClass": "icon-yellow-soft", "title": "Apple Health sync", "subtitle": "Calories synced to your Health app" },
+    { "icon": "📈", "iconClass": "icon-orange", "title": "Weekly insights", "subtitle": "Trends and charts for your nutrition" },
+    { "icon": "🎯", "iconClass": "icon-gray-light", "title": "Personalized goals", "subtitle": "Calories & macros tailored to you" },
+    { "icon": "🔒", "iconClass": "icon-green", "title": "Private by design", "subtitle": "Your data stays on your device" }
+  ],
   "links": [
     { "name": "Support", "href": "/support" },
     { "name": "Blog", "href": "/blog" },
@@ -559,8 +573,8 @@
       "title": "Understanding scan limits"
     }
   ],
-  "privacyPolicyEffectiveDate": "17. December 2024",
-  "termsOfUseEffectiveDate": "17. December 2024",
+  "privacyPolicyEffectiveDate": "5. June 2026",
+  "termsOfUseEffectiveDate": "5. June 2026",
   "updatesView": {
     "hero": {
       "title": "What's New?",
