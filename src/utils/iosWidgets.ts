@@ -181,7 +181,7 @@ struct LargeOverviewWidget: View {
                 // Header with streak
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Kaloriq")
+                        Text("KalBuddy")
                             .font(.system(size: 18, weight: .bold))
                             .foregroundColor(.white)
                         
