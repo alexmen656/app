@@ -125,8 +125,6 @@
     <section class="dowload-section">
       <button class="download-btn" @click="downloadOnAppStore()"><img height="100" src="/assets/app_store.svg"
           alt="Apple App Store Badge"></button>
-      <button class="download-btn" @click="downloadOnGooglePlay()"><img height="100" src="/assets/google_play.svg"
-          alt="Google Play Store Badge"></button>
     </section>
     <section class="feature-showcase">
       <h2 class="showcase-title">{{ config.showcase_title }}</h2>
@@ -267,10 +265,6 @@ const downloadOnAppStore = () => {
   location.href = config.iosLink
 }
 
-const downloadOnGooglePlay = () => {
-  location.href = config.androidLink
-}
-
 const scrollCarousel = (direction: number) => {
   const carousel = document.querySelector('.showcase-carousel')
   if (carousel) {
@@ -292,7 +286,7 @@ const os = getOS();
 console.log("Detected OS:", os);
 
 function goToDownload() {
-  location.href = (os == 'android' ? config.androidLink : config.iosLink)
+  location.href = config.iosLink
 }
 </script>
 

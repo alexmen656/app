@@ -1,18 +1,18 @@
 {
-  "appName": "Digmio",
+  "appName": "KalBuddy",
   "appIcon": "256.png",
   "ctaButtonText": "Download",
-  "iosLink": "https://apple.com",
+  "iosLink": "https://apps.apple.com/us/app/kalbuddy/id6751226253",
   "androidLink": "https://google.com",
   "headline": "Your AI-powered<br /> calorie tracking companion",
-  "description": "Digmio makes nutrition tracking effortless with AI food recognition and barcode scanning.<br />Track macros, build healthy habits, and reach your goals.",
+  "description": "KalBuddy makes nutrition tracking effortless with AI food recognition and barcode scanning.<br />Track macros, build healthy habits, and reach your goals.",
   "links": [
     { "name": "Support", "href": "/support" },
     { "name": "Blog", "href": "/blog" },
     { "name": "Updates", "href": "/updates" }
   ],
   "copyrightCompany": "Alex Polan",
-  "appStoreLink": "https://apple.com",
+  "appStoreLink": "https://apps.apple.com/us/app/kalbuddy/id6751226253",
   "googlePlayLink": "https://google.com",
   "socialLinks": [
     { "platform": "instagram", "link": "https://instagram.com" },
@@ -28,7 +28,7 @@
     "image1": "/assets/iphone.png",
     "image2": "/assets/iphone.png",
     "title": "Never wonder \"What did I eat today?\" again.",
-    "description": "AI-powered food recognition identifies your meals instantly. Just snap a photo, and Digmio analyzes the nutritional content for you."
+    "description": "AI-powered food recognition identifies your meals instantly. Just snap a photo, and KalBuddy analyzes the nutritional content for you."
   },
   "showcase_title": "Discover the Features.",
   "feature_list": [
@@ -83,7 +83,7 @@
     {
       "id": "getting-started",
       "title": "Getting Started",
-      "description": "Learn the basics of tracking your nutrition with Digmio.",
+      "description": "Learn the basics of tracking your nutrition with KalBuddy.",
       "icon": "<svg width=\"48\" height=\"48\" viewBox=\"0 0 48 48\" fill=\"none\"><path d=\"M12 8h24a4 4 0 014 4v24a4 4 0 01-4 4H12a4 4 0 01-4-4V12a4 4 0 014-4z\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"M16 20l6 6 10-10\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>"
     },
     {
@@ -120,21 +120,21 @@
   "supportCategories": [
     {
       "id": "getting-started",
-      "title": "Getting Started with Digmio",
+      "title": "Getting Started with KalBuddy",
       "articles": [
         {
           "id": "track-first-meal",
           "title": "Track your first meal",
           "description": "Learn how to log food using AI scanning or barcode scanning.",
-          "intro": "Tracking meals with Digmio is quick and easy. You can use AI photo recognition, scan barcodes, or enter food manually.",
+          "intro": "Tracking meals with KalBuddy is quick and easy. You can use AI photo recognition, scan barcodes, or enter food manually.",
           "sections": [
             {
               "heading": "AI Photo Scan",
-              "content": "Tap the <strong>+</strong> button and select <strong>Take Photo</strong>. Point your camera at your meal and take a picture. Digmio's AI will automatically analyze the food and calculate nutritional values."
+              "content": "Tap the <strong>+</strong> button and select <strong>Take Photo</strong>. Point your camera at your meal and take a picture. KalBuddy's AI will automatically analyze the food and calculate nutritional values."
             },
             {
               "heading": "Barcode Scan",
-              "content": "For packaged foods, tap <strong>Scan Barcode</strong> and point your camera at the product barcode. Digmio will instantly retrieve the nutritional information from the database."
+              "content": "For packaged foods, tap <strong>Scan Barcode</strong> and point your camera at the product barcode. KalBuddy will instantly retrieve the nutritional information from the database."
             },
             {
               "heading": "Adjust portions",
@@ -191,12 +191,12 @@
         {
           "id": "ai-food-recognition",
           "title": "How AI food recognition works",
-          "description": "Learn how Digmio analyzes your meal photos.",
-          "intro": "Digmio uses advanced AI to identify foods and calculate nutritional values from photos.",
+          "description": "Learn how KalBuddy analyzes your meal photos.",
+          "intro": "KalBuddy uses advanced AI to identify foods and calculate nutritional values from photos.",
           "sections": [
             {
               "heading": "What the AI recognizes",
-              "content": "Digmio's AI can identify:",
+              "content": "KalBuddy's AI can identify:",
               "list": [
                 "Individual food items (fruits, vegetables, proteins)",
                 "Complete meals (pasta dishes, salads, sandwiches)",
@@ -270,7 +270,7 @@
             },
             {
               "heading": "Supported barcodes",
-              "content": "Digmio supports all common barcode formats: EAN-13, UPC-A, Code 128, and more. Works with products from stores worldwide."
+              "content": "KalBuddy supports all common barcode formats: EAN-13, UPC-A, Code 128, and more. Works with products from stores worldwide."
             },
             {
               "heading": "Database coverage",
@@ -308,15 +308,15 @@
           "id": "home-widgets",
           "title": "Add widgets to your Home Screen",
           "description": "View your daily nutrition at a glance.",
-          "intro": "Digmio widgets show your calorie and macro progress right on your Home Screen (Premium feature).",
+          "intro": "KalBuddy widgets show your calorie and macro progress right on your Home Screen (Premium feature).",
           "sections": [
             {
               "heading": "Add a widget",
-              "content": "Long-press on your Home Screen and tap the <strong>+</strong> button in the top corner. Search for \"Digmio\" and choose your preferred widget size. Note: Widgets are a Premium feature."
+              "content": "Long-press on your Home Screen and tap the <strong>+</strong> button in the top corner. Search for \"KalBuddy\" and choose your preferred widget size. Note: Widgets are a Premium feature."
             },
             {
               "heading": "Widget sizes",
-              "content": "Digmio offers three widget sizes: Small (calorie ring only), Medium (calories + macros), and Large (complete overview with recent foods and streak)."
+              "content": "KalBuddy offers three widget sizes: Small (calorie ring only), Medium (calories + macros), and Large (complete overview with recent foods and streak)."
             },
             {
               "heading": "Auto-updates",
@@ -328,7 +328,7 @@
           "id": "healthkit-sync",
           "title": "HealthKit integration",
           "description": "Sync nutrition data with Apple Health.",
-          "intro": "Digmio can automatically sync your nutrition data to Apple's HealthKit (Premium feature).",
+          "intro": "KalBuddy can automatically sync your nutrition data to Apple's HealthKit (Premium feature).",
           "sections": [
             {
               "heading": "Enable HealthKit sync",
@@ -336,7 +336,7 @@
             },
             {
               "heading": "What gets synced",
-              "content": "Digmio syncs calories, protein, carbohydrates, and fats to HealthKit automatically when you log food. Data appears in your Health app immediately."
+              "content": "KalBuddy syncs calories, protein, carbohydrates, and fats to HealthKit automatically when you log food. Data appears in your Health app immediately."
             }
           ]
         },
@@ -370,7 +370,7 @@
           "id": "premium-benefits",
           "title": "What's included in Premium",
           "description": "Unlock unlimited scans and advanced features.",
-          "intro": "Digmio Premium removes all limits and unlocks powerful features to supercharge your nutrition tracking.",
+          "intro": "KalBuddy Premium removes all limits and unlocks powerful features to supercharge your nutrition tracking.",
           "sections": [
             {
               "heading": "Unlimited AI scans",
@@ -394,7 +394,7 @@
           "id": "subscription-plans",
           "title": "Subscription plans and pricing",
           "description": "Choose the plan that works for you.",
-          "intro": "Digmio offers flexible subscription options with a free trial to test Premium features.",
+          "intro": "KalBuddy offers flexible subscription options with a free trial to test Premium features.",
           "sections": [
             {
               "heading": "Free vs Premium",
@@ -410,11 +410,11 @@
           "id": "manage-subscription",
           "title": "Manage your subscription",
           "description": "Cancel, restore, or change your Premium plan.",
-          "intro": "Managing your Digmio subscription is easy through your device settings.",
+          "intro": "Managing your KalBuddy subscription is easy through your device settings.",
           "sections": [
             {
               "heading": "View subscription",
-              "content": "Go to iPhone <strong>Settings → [Your Name] → Subscriptions</strong> to see your Digmio subscription details, renewal date, and pricing."
+              "content": "Go to iPhone <strong>Settings → [Your Name] → Subscriptions</strong> to see your KalBuddy subscription details, renewal date, and pricing."
             },
             {
               "heading": "Cancel anytime",
@@ -484,15 +484,15 @@
           "id": "app-crashes",
           "title": "App crashes or freezes",
           "description": "Steps to resolve app stability issues.",
-          "intro": "If Digmio is crashing or freezing, try these troubleshooting steps.",
+          "intro": "If KalBuddy is crashing or freezing, try these troubleshooting steps.",
           "sections": [
             {
               "heading": "Force quit and restart",
-              "content": "Swipe up from the bottom of your screen (or double-click the home button), then swipe away Digmio. Reopen the app."
+              "content": "Swipe up from the bottom of your screen (or double-click the home button), then swipe away KalBuddy. Reopen the app."
             },
             {
               "heading": "Update the app",
-              "content": "Make sure you have the latest version of Digmio. Open the App Store and check for updates."
+              "content": "Make sure you have the latest version of KalBuddy. Open the App Store and check for updates."
             },
             {
               "heading": "Restart your device",
@@ -500,7 +500,7 @@
             },
             {
               "heading": "Contact support",
-              "content": "If the issue persists, contact us at support@digmio.app with details about what happened."
+              "content": "If the issue persists, contact us at support@kalbuddy.com with details about what happened."
             }
           ]
         },
@@ -692,7 +692,7 @@
         "name": "Sarah Johnson",
         "handle": "@sarahfitness",
         "texts": [
-          "Since I started using Digmio, I've lost 15 pounds! The AI food recognition makes tracking so effortless.",
+          "Since I started using KalBuddy, I've lost 15 pounds! The AI food recognition makes tracking so effortless.",
           "Finally an app that doesn't feel like work. Highly recommend! 🙌"
         ]
       },
@@ -702,7 +702,7 @@
         "name": "Michael",
         "handle": "Game changer!",
         "date": "Dec 15, 2024",
-        "text": "I've tried every calorie tracking app out there. Digmio is the only one I've actually stuck with. The AI photo feature is incredible - just snap and done!"
+        "text": "I've tried every calorie tracking app out there. KalBuddy is the only one I've actually stuck with. The AI photo feature is incredible - just snap and done!"
       },
       {
         "type": "appstore",
@@ -725,21 +725,21 @@
         "avatar": "🏋️‍♂️",
         "name": "David Chen",
         "handle": "@davidfitness",
-        "text": "Digmio's AI is scary accurate. Took a photo of my lunch, it identified everything perfectly. This is the future of nutrition tracking."
+        "text": "KalBuddy's AI is scary accurate. Took a photo of my lunch, it identified everything perfectly. This is the future of nutrition tracking."
       },
       {
         "type": "appstore",
         "title": "Finally, tracking that works",
         "date": "Dec 10, 2024 • FitnessJunkie",
         "stars": 5,
-        "text": "I've been tracking my nutrition for 2 years with various apps. Digmio is by far the easiest and most accurate. The streak feature keeps me motivated every day. Love it!"
+        "text": "I've been tracking my nutrition for 2 years with various apps. KalBuddy is by far the easiest and most accurate. The streak feature keeps me motivated every day. Love it!"
       },
       {
         "type": "tweet",
         "avatar": "🥑",
         "name": "Lisa Martinez",
         "handle": "@lisamfitness",
-        "text": "Down 20 pounds thanks to Digmio! The barcode scanner and AI make tracking actually enjoyable. Never going back to manual entry. 💯"
+        "text": "Down 20 pounds thanks to KalBuddy! The barcode scanner and AI make tracking actually enjoyable. Never going back to manual entry. 💯"
       }
     ]
   },
@@ -821,7 +821,7 @@
         "category": "Success Story",
         "date": "December 1, 2024",
         "readTime": "8 min. read",
-        "title": "How Sarah Lost 30 Pounds with Digmio",
+        "title": "How Sarah Lost 30 Pounds with KalBuddy",
         "excerpt": "Real user story: From weight loss struggle to sustainable success.",
         "readMoreLink": "#"
       },
@@ -873,7 +873,7 @@
           },
           {
             "number": "04",
-            "title": "How Sarah Lost 30 Pounds with Digmio",
+            "title": "How Sarah Lost 30 Pounds with KalBuddy",
             "link": "#"
           }
         ]

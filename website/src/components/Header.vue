@@ -13,7 +13,7 @@
                 <a :href="link.href" class="nav-link" v-for="link in config.links" :key="link.name">{{ link.name }}</a>
             </div>
             <div class="nav-right">
-                <a class="cta-a" :href="os == 'android' ? config.androidLink : config.iosLink"><button
+                <a class="cta-a" :href="config.iosLink"><button
                         class="cta-button">
                         <p style="text-align: center; font-weight: 500;">{{
                             config.ctaButtonText }}</p>
@@ -30,7 +30,7 @@
                     @click="closeMobileMenu">
                     {{ link.name }}
                 </a>
-                <a :href="os == 'android' ? config.androidLink : config.iosLink" class="dropdown-cta"
+                <a :href="config.iosLink" class="dropdown-cta"
                     @click="closeMobileMenu">
                     {{ config.ctaButtonText }}
                 </a>
@@ -77,17 +77,6 @@ console.log(route.name);
 const isTransparentAtTop = computed(() => {
     return isAtTop.value && (route.name === 'home' || route.name === 'support' || route.name === 'support-detail' || route.name === 'terms-of-use' || route.name === 'privacy-policy' || route.name === 'blog' || route.name === 'updates');
 });
-
-function getOS() {
-    const ua = navigator.userAgent || navigator.vendor || (window as any).opera || '';
-
-    if (/android/i.test(ua)) return "android";
-    if (/iPad|iPhone|iPod/.test(ua) && !(window as any).MSStream) return "ios";
-
-    return "unknown";
-}
-
-const os = getOS();
 
 const toggleMobileMenu = () => {
     mobileMenuOpen.value = !mobileMenuOpen.value;
