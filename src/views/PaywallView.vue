@@ -289,7 +289,7 @@ function openTerms() {
 }
 
 function openPrivacy() {
-    location.href = 'https://kalbuddy.com/privacy-policy.html'
+    location.href = 'https://www.kalbuddy.com/privacy-policy'
 }
 
 function openMore() {

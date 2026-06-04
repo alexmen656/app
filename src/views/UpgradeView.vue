@@ -288,7 +288,7 @@ function openTerms() {
 }
 
 function openPrivacy() {
-  window.open('https://kalbuddy.com/privacy-policy.html', '_blank')
+  window.open('https://www.kalbuddy.com/privacy-policy', '_blank')
 }
 
 function openMore() {
