@@ -169,14 +169,10 @@ class RevenueCatService {
   }
 
   private checkPremiumAccess(customerInfo: any): boolean {
-    // Check if user has active premium entitlement
-    if (customerInfo.entitlements?.active?.premium) {
-      return true;
-    }
-
-    // Check if user has any active entitlements
-    const activeEntitlements = customerInfo.entitlements?.active || {};
-    return Object.keys(activeEntitlements).length > 0;
+    // Grant premium access only for the dedicated `premium` entitlement.
+    // (Previously any active entitlement counted, which would wrongly unlock
+    // premium if another entitlement is ever added in RevenueCat.)
+    return !!customerInfo.entitlements?.active?.premium;
   }
 
   async presentCodeRedemptionSheet(): Promise<void> {

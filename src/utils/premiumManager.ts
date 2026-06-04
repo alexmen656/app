@@ -54,8 +54,11 @@ export const premiumFeatures = {
 } as const
 
 // Free User Limits
+// NOTE: DAILY_FOOD_SCANS must match FREE_DAILY_SCANS in the native
+// ScanLimitManager.swift (the native side is what actually enforces the limit;
+// this value only drives the UI counter).
 export const freeLimits = {
-  DAILY_FOOD_SCANS: 10,
+  DAILY_FOOD_SCANS: 5,
   ANALYTICS_HISTORY_DAYS: 7,
   WIDGET_ACCESS: false,
   HEALTHKIT_SYNC: false,
