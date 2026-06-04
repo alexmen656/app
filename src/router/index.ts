@@ -1,33 +1,37 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import YesterdayView from "../views/YesterdayView.vue";
-import HistoryView from "../views/HistoryView.vue";
-import OnboardingView from "../views/OnboardingView.vue";
-import PaywallView from "../views/PaywallView.vue";
-import UpgradeView from "../views/UpgradeView.vue";
-import CouponView from "../views/CouponView.vue";
-import ScanView from "../views/ScanView.vue";
-import NutritionView from "../views/NutritionView.vue";
-import AnalyticsView from "../views/AnalyticsView.vue";
-import SettingsView from "../views/SettingsView.vue";
-import HealthKitSettingsView from "../views/HealthKitSettingsView.vue";
-import NotificationSettingsView from "../views/NotificationSettingsView.vue";
-import SourcesDisclaimerView from "../views/SourcesDisclaimerView.vue";
-import StreakView from "../views/StreakView.vue";
-import ProfileEditView from "../views/ProfileEditView.vue";
-import CaloriesDetailView from "../views/CaloriesDetailView.vue";
-import ProteinDetailView from "../views/ProteinDetailView.vue";
-import CarbsDetailView from "../views/CarbsDetailView.vue";
-import FatsDetailView from "../views/FatsDetailView.vue";
-import BMIDetailView from "../views/BMIDetailView.vue";
-import WeightDetailView from "../views/WeightDetailView.vue";
-import AllScansView from "../views/AllScansView.vue";
-import ScanDetailView from "../views/ScanDetailView.vue";
-import FoodDatabaseView from "../views/FoodDatabaseView.vue";
-import ManualFoodEntryView from "../views/ManualFoodEntryView.vue";
-import ChatView from "../views/ChatView.vue";
-import FeedbackView from "../views/FeedbackView.vue";
 import { isOnboardingCompleted } from "../stores/userStore";
+
+// Only the initial HomeView is eagerly imported. Every other view is
+// lazy-loaded so it lands in its own chunk and is fetched on first navigation,
+// keeping the initial bundle small.
+const YesterdayView = () => import("../views/YesterdayView.vue");
+const HistoryView = () => import("../views/HistoryView.vue");
+const OnboardingView = () => import("../views/OnboardingView.vue");
+const PaywallView = () => import("../views/PaywallView.vue");
+const UpgradeView = () => import("../views/UpgradeView.vue");
+const CouponView = () => import("../views/CouponView.vue");
+const ScanView = () => import("../views/ScanView.vue");
+const NutritionView = () => import("../views/NutritionView.vue");
+const AnalyticsView = () => import("../views/AnalyticsView.vue");
+const SettingsView = () => import("../views/SettingsView.vue");
+const HealthKitSettingsView = () => import("../views/HealthKitSettingsView.vue");
+const NotificationSettingsView = () => import("../views/NotificationSettingsView.vue");
+const SourcesDisclaimerView = () => import("../views/SourcesDisclaimerView.vue");
+const StreakView = () => import("../views/StreakView.vue");
+const ProfileEditView = () => import("../views/ProfileEditView.vue");
+const CaloriesDetailView = () => import("../views/CaloriesDetailView.vue");
+const ProteinDetailView = () => import("../views/ProteinDetailView.vue");
+const CarbsDetailView = () => import("../views/CarbsDetailView.vue");
+const FatsDetailView = () => import("../views/FatsDetailView.vue");
+const BMIDetailView = () => import("../views/BMIDetailView.vue");
+const WeightDetailView = () => import("../views/WeightDetailView.vue");
+const AllScansView = () => import("../views/AllScansView.vue");
+const ScanDetailView = () => import("../views/ScanDetailView.vue");
+const FoodDatabaseView = () => import("../views/FoodDatabaseView.vue");
+const ManualFoodEntryView = () => import("../views/ManualFoodEntryView.vue");
+const ChatView = () => import("../views/ChatView.vue");
+const FeedbackView = () => import("../views/FeedbackView.vue");
 
 const routes = [
   {

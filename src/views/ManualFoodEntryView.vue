@@ -71,6 +71,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { API_BASE_URL } from '../config/api'
 
 const router = useRouter()
 // @ts-ignore - t is used in template  
@@ -153,7 +154,7 @@ async function analyzeFood() {
     errorMessage.value = ''
 
     try {
-        const response = await fetch('https://api.kalbuddy.com/api/text/analyze', {
+        const response = await fetch(`${API_BASE_URL}/text/analyze`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

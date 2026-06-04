@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { KaloriqBarcodeScanner } from 'kaloriq-barcode-scanner'
 import { useRouter } from 'vue-router'
+import { API_BASE_URL } from '../config/api'
 
 export interface ScanResult {
   barcode: string
@@ -349,7 +350,7 @@ export function useBarcodeScanner() {
       const formData = new FormData()
       formData.append('image', blob, 'photo.jpg')
       
-      const apiResponse = await fetch('https://api.kalbuddy.com/api/food/analyze', {
+      const apiResponse = await fetch(`${API_BASE_URL}/food/analyze`, {
         method: 'POST',
         body: formData
       })
@@ -390,7 +391,7 @@ export function useBarcodeScanner() {
       const formData = new FormData()
       formData.append('image', blob, 'label.jpg')
 
-      const apiResponse = await fetch('https://api.kalbuddy.com/api/label/analyze', {
+      const apiResponse = await fetch(`${API_BASE_URL}/label/analyze`, {
         method: 'POST',
         body: formData
       })

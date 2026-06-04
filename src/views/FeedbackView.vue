@@ -94,6 +94,7 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import BottomNavigation from '../components/BottomNavigation.vue'
+import { API_BASE_URL } from '../config/api'
 
 const router = useRouter()
 const { t } = useI18n()
@@ -127,7 +128,7 @@ async function submitFeedback() {
             description: description.value.trim()
         }
 
-        const response = await fetch('https://api.kalbuddy.com/api/feedback/new', {
+        const response = await fetch(`${API_BASE_URL}/feedback/new`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

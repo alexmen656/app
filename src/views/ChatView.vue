@@ -14,13 +14,13 @@
         </div>
       </div>
       <div class="kalbuddy-avatar">
-        <img src="../assets/kalbuddy.png" alt="Digmio" class="avatar-icon" />
+        <img src="../assets/kalbuddy.png" alt="KalBuddy" class="avatar-icon" />
       </div>
     </header>
     <div class="chat-messages" ref="messagesContainer">
       <div class="message bot-message" v-if="messages.length === 0">
         <div class="message-avatar">
-          <img src="../assets/kalbuddy.png" alt="Digmio" class="message-avatar-icon" />
+          <img src="../assets/kalbuddy.png" alt="KalBuddy" class="message-avatar-icon" />
         </div>
         <div class="message-content">
           <div class="message-bubble">
@@ -53,7 +53,7 @@
       <div v-for="(message, index) in messages" :key="index" class="message"
         :class="{ 'user-message': message.isUser, 'bot-message': !message.isUser }">
         <div class="message-avatar" v-if="!message.isUser">
-          <img src="../assets/kalbuddy.png" alt="Digmio" class="message-avatar-icon" />
+          <img src="../assets/kalbuddy.png" alt="KalBuddy" class="message-avatar-icon" />
         </div>
         <div class="message-content">
           <div class="message-bubble">
@@ -74,7 +74,7 @@
       <!-- Typing Indicator -->
       <div class="message bot-message" v-if="isTyping">
         <div class="message-avatar">
-          <img src="../assets/kalbuddy.png" alt="Digmio" class="message-avatar-icon" />
+          <img src="../assets/kalbuddy.png" alt="KalBuddy" class="message-avatar-icon" />
         </div>
         <div class="message-content">
           <div class="message-bubble typing-bubble">
@@ -112,6 +112,7 @@ import { userProfile, dailyGoals } from '../stores/userStore'
 import { ScanHistory } from '../utils/storage'
 import { WeightTracker } from '../utils/weightTracking'
 import { getLocalizedName } from '../utils/localization'
+import { API_BASE_URL } from '../config/api'
 import { marked } from 'marked'
 
 const router = useRouter()
@@ -145,7 +146,7 @@ function renderMarkdown(text: string): string {
 }
 
 // API Configuration
-const API_BASE_URL = 'https://api.kalbuddy.com/api/ai'
+const AI_API_URL = `${API_BASE_URL}/ai`
 
 // Reactive data
 const currentMessage = ref('')
@@ -319,7 +320,7 @@ async function callChatAPI(message: string) {
 
   console.log('Sending payload to chat API:', payload)
 
-  const response = await fetch(`${API_BASE_URL}/chat`, {
+  const response = await fetch(`${AI_API_URL}/chat`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

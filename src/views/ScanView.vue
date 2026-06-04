@@ -115,6 +115,7 @@ import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { WidgetDataManager, StreakManager } from '../utils/widgetData';
 import PremiumBlocker from '../components/PremiumBlocker.vue';
+import { API_BASE_URL } from '../config/api';
 import {
   premiumManager,
   isPremiumUser,
@@ -311,7 +312,7 @@ const analyzeFoodPhoto = async (photoDataUrl) => {
     formData.append('image', blob, 'photo.jpg');
 
     // Send to KaloriQ Food Analyze API
-    const apiResponse = await fetch('https://api.kalbuddy.com/api/food/analyze', {
+    const apiResponse = await fetch(`${API_BASE_URL}/food/analyze`, {
       method: 'POST',
       body: formData
     });

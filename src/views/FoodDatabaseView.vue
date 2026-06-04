@@ -154,6 +154,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ScanHistory, FavoriteFood, ImageFile } from '../utils/storage'
 import { getLocalizedName } from '../utils/localization'
+import { FOOD_DB_BASE_URL } from '../config/api'
 
 interface Category {
     id: string
@@ -181,7 +182,7 @@ const router = useRouter()
 const route = useRoute()
 const { t } = useI18n()
 
-const API_BASE = 'https://alex.polan.sk/kalbuddy'
+const API_BASE = FOOD_DB_BASE_URL
 
 const searchQuery = ref('')
 const selectedCategory = ref('all')

@@ -479,6 +479,7 @@ import { Share } from '@capacitor/share';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { BarcodeCache, ScanHistory, FavoriteFood, ImageFile } from '../utils/storage';
 import { WidgetDataManager, StreakManager } from '../utils/widgetData';
+import { API_BASE_URL } from '../config/api';
 import { getLocalizedName, getLocalizedNotes, getLocalizedAmount, capitalizeIfLetter } from '../utils/localization';
 import { getCurrentLanguage } from '../i18n';
 import NutritionDetailsModal from '../components/NutritionDetailsModal.vue';
@@ -561,7 +562,7 @@ const fetchProduct = async (barcode) => {
         }
 
         console.log('Fetching product data from API for barcode:', barcode);
-        const response = await fetch(`https://api.kalbuddy.com/api/product/${barcode}`);
+        const response = await fetch(`${API_BASE_URL}/product/${barcode}`);
 
         if (!response.ok) {
             throw new Error(`KaloriQ API error: ${response.status}`);
