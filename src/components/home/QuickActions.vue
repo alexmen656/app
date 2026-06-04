@@ -1,5 +1,6 @@
 <template>
     <div class="quick-actions">
+        <!-- Chat hidden for now — feature ships in a later version. Keep markup + route/view intact for re-enabling.
         <div class="action-chip" @click="$emit('chat')">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                 <path
@@ -7,6 +8,7 @@
             </svg>
             <span>{{ $t('home.chat') }}</span>
         </div>
+        -->
         <div class="action-chip" @click="$emit('log-weight')">
             <svg width="16" height="16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
                 <path
