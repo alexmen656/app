@@ -1,0 +1,4 @@
+.env
+
+# Large data dumps (exceed GitHub's 100 MB limit) — keep local only
+sample2.jsonl

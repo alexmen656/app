@@ -9,23 +9,33 @@ Download official open food facts json and import it in local postgres to get mu
 Journey:
 I will need to test it on my cloud server because with my shitty 20mbits internet it will take ages to download 10GB lol
 
-For Testing: 
+For Testing:
+
 ```
 //curl -s https://static.openfoodfacts.org/data/openfoodfacts-products.jsonl.gz | gunzip | head -n 100 > sample.jsonl
 
 curl -L -A "Mozilla/5.0" "https://static.openfoodfacts.org/data/openfoodfacts-products.jsonl.gz" | gunzip | head -n 100 > sample.jsonl
 
 ```
+
+Please _do not_ open these jsonl files in VS code, your laptop will instantly lag
+
+This will be a overnight task for my serer lol, end db should be around 12GB which is very acceptable for postgres.
+
+By Intenet would take 1h for 100k products *30 = 30h to get them all
+ETA on server for all is 30mins lol
 ## Features
 
 ### Home View
+
 - Daily calorie overview with remaining calories
 - Macronutrient tracking (Proteins, Carbohydrates, Fats)
 - Interactive progress rings
 - Recently added foods
 - Professional dark design
 
-### Scan View  
+### Scan View
+
 - **Photo Scan**: Take photos of your food for AI analysis
 - **Barcode Scanner**: Scan product barcodes for instant nutrition data
 - Portion size adjustment
@@ -33,18 +43,21 @@ curl -L -A "Mozilla/5.0" "https://static.openfoodfacts.org/data/openfoodfacts-pr
 - Recently scanned items
 
 ### Design
+
 - Clean and professional interface
 - Dark theme with glassmorphism effects
 - Responsive design for all screen sizes
 - Smooth animations and transitions
 
 ### Backend Integration
+
 - PHP backend with MySQL database
 - Food categories and units management
 - Consumption logging
 - Admin panel for data management
 
 ### Native Features
+
 - Custom barcode scanner plugin
 - HealthKit integration for iOS
 - Cross-platform mobile support
@@ -60,16 +73,19 @@ curl -L -A "Mozilla/5.0" "https://static.openfoodfacts.org/data/openfoodfacts-pr
 ## Installation
 
 1. Install dependencies:
+
 ```bash
 npm install
 ```
 
 2. Start development server:
+
 ```bash
 npm run dev
 ```
 
 3. Prepare app for mobile:
+
 ```bash
 npm run build
 npx cap add ios
@@ -77,11 +93,13 @@ npx cap add android
 ```
 
 4. Sync mobile platforms:
+
 ```bash
 npx cap sync
 ```
 
 5. Open in native IDE:
+
 ```bash
 npx cap open ios
 npx cap open android
@@ -124,6 +142,7 @@ plugins/
 ## Permissions
 
 The app requires the following permissions:
+
 - **Camera**: For photo scans and barcode scanning
 - **Storage**: For saving images (optional)
 - **HealthKit**: For health data integration (iOS only)
@@ -131,12 +150,13 @@ The app requires the following permissions:
 ## Browser Support
 
 - Chrome/Safari (mobile)
-- iOS Safari  
+- iOS Safari
 - Android Chrome
 
 ## Documentation
 
 Additional documentation can be found in the `mds/` directory:
+
 - Feature summaries and implementation guides
 - HealthKit setup and debugging
 - Premium features and paywall implementation
