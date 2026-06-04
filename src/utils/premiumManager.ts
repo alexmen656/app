@@ -14,10 +14,33 @@ export function onPremiumStatusChange(callback: PremiumStatusCallback) {
   return () => premiumStatusCallbacks.delete(callback)
 }
 
+// Pushes the current premium state into the native scan-limit system so the
+// free 5-scan/day cap is lifted (or restored) immediately, regardless of which
+// flow changed the status (purchase, restore, coupon, or the startup refresh).
+async function syncNativeScanLimits(isPremium: boolean, expiryDate?: Date): Promise<void> {
+  try {
+    const { KaloriqBarcodeScanner } = await import('kaloriq-barcode-scanner')
+    await (KaloriqBarcodeScanner as any).setPremiumStatus({
+      isPremium,
+      expiryDate: expiryDate ? expiryDate.getTime() : undefined,
+    })
+    console.log('Native scan limits synchronized with premium status:', isPremium)
+  } catch (error) {
+    console.error('Error syncing with native scan limits:', error)
+  }
+}
+
 // Watch für automatische Callbacks
 watch([isPremiumUser, subscriptionType], ([newIsPremium, newType], [oldIsPremium, oldType]) => {
   if (newIsPremium !== oldIsPremium || newType !== oldType) {
     console.log('🎉 Premium status changed:', { from: oldIsPremium, to: newIsPremium, type: newType })
+
+    // Any premium-state change must reach the native scan-limit system so a
+    // coupon/purchase lifts the cap without requiring an app restart.
+    if (newIsPremium !== oldIsPremium) {
+      syncNativeScanLimits(newIsPremium)
+    }
+
     premiumStatusCallbacks.forEach(callback => {
       try {
         callback(newIsPremium, newType)
@@ -124,18 +147,20 @@ export class PremiumManager {
   async updatePremiumStatus(): Promise<void> {
     try {
       const hasSubscription = await revenueCatService.checkSubscriptionStatus()
-      isPremiumUser.value = hasSubscription
-      
-      if (hasSubscription) {
-        // Subscription-Typ ermitteln (falls nötig)
-        subscriptionType.value = 'Premium'
-      } else {
-        subscriptionType.value = ''
-      }
-      
-      // NEW: Synchronisiere mit nativem Scan-Limit-System
+
+      // Reconcile the PERSISTED subscription status (read by SettingsView via
+      // isSubscriptionActive) with the LIVE RevenueCat status. Without this the
+      // stored flag can stay `true` after a subscription lapses, so Settings
+      // shows "Premium Active" while Home and the scan limit treat the user as
+      // free. updateSubscriptionStatus also updates isPremiumUser +
+      // subscriptionType, keeping every view on a single source of truth.
+      // (Dynamic import avoids a static cycle: userStore imports premiumManager.)
+      const { updateSubscriptionStatus } = await import('../stores/userStore')
+      await updateSubscriptionStatus(hasSubscription, hasSubscription ? 'Premium' : '')
+
+      // Keep the native scan-limit system in sync as well.
       await this.syncWithNativeScanLimits(hasSubscription)
-      
+
       console.log('Premium status updated:', { isPremiumUser: isPremiumUser.value })
     } catch (error) {
       console.error('Error updating premium status:', error)
@@ -161,20 +186,7 @@ export class PremiumManager {
    * Synchronisiere Premium-Status mit nativem Swift Scan-Limit-System
    */
   private async syncWithNativeScanLimits(isPremium: boolean, expiryDate?: Date): Promise<void> {
-    try {
-      // Importiere das Barcode Scanner Plugin dynamisch
-      const { KaloriqBarcodeScanner } = await import('kaloriq-barcode-scanner')
-      
-      // Setze Premium-Status im nativen System
-      await (KaloriqBarcodeScanner as any).setPremiumStatus({
-        isPremium,
-        expiryDate: expiryDate ? expiryDate.getTime() : undefined
-      })
-      
-      console.log('Native scan limits synchronized with premium status:', isPremium)
-    } catch (error) {
-      console.error('Error syncing with native scan limits:', error)
-    }
+    await syncNativeScanLimits(isPremium, expiryDate)
   }
   
   /**
