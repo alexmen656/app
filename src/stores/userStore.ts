@@ -85,6 +85,12 @@ const subscriptionStatus = reactive({
 
 async function initializeStore() {
   try {
+    // For automated screenshot UITests: seed demo data before anything is read.
+    const { isUiTestMode, seedUiTestData } = await import('../utils/uiTestSeed')
+    if (await isUiTestMode()) {
+      await seedUiTestData()
+    }
+
     const [loadedProfile, loadedGoals, loadedPreferences, loadedOnboarding, loadedSubscription] = await Promise.all([
       loadFromStorage('userProfile', defaultUserProfile),
       loadFromStorage('dailyGoals', defaultGoals),

@@ -146,6 +146,15 @@ export class PremiumManager {
    */
   async updatePremiumStatus(): Promise<void> {
     try {
+      // Screenshot UITests run premium so no upgrade banners / scan caps appear.
+      const { isUiTestMode } = await import('./uiTestSeed')
+      if (await isUiTestMode()) {
+        isPremiumUser.value = true
+        subscriptionType.value = 'Premium'
+        await this.syncWithNativeScanLimits(true)
+        return
+      }
+
       const hasSubscription = await revenueCatService.checkSubscriptionStatus()
 
       // Reconcile the PERSISTED subscription status (read by SettingsView via
