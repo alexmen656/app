@@ -1,6 +1,10 @@
 import { Purchases } from "@revenuecat/purchases-capacitor";
 import { Capacitor } from '@capacitor/core';
 
+// Identifier of the entitlement that unlocks premium, as configured in the
+// RevenueCat dashboard. Must match exactly (it is "Pro", not "premium").
+const PREMIUM_ENTITLEMENT_ID = "Pro";
+
 export interface SubscriptionPlan {
   id: string;
   title: string;
@@ -169,10 +173,10 @@ class RevenueCatService {
   }
 
   private checkPremiumAccess(customerInfo: any): boolean {
-    // Grant premium access only for the dedicated `premium` entitlement.
-    // (Previously any active entitlement counted, which would wrongly unlock
-    // premium if another entitlement is ever added in RevenueCat.)
-    return !!customerInfo.entitlements?.active?.premium;
+    // Grant premium access only for the dedicated premium entitlement.
+    // (Checking any active entitlement would wrongly unlock premium if another
+    // entitlement is ever added in RevenueCat.)
+    return !!customerInfo.entitlements?.active?.[PREMIUM_ENTITLEMENT_ID];
   }
 
   async presentCodeRedemptionSheet(): Promise<void> {
