@@ -4,7 +4,7 @@
       <apexchart type="bar" :options="chartOptions" :series="chartSeries" height="240" />
     </template>
     <template v-else>
-      <div class="no-data">Keine Daten</div>
+      <div class="no-data">{{ t('analytics.chartNoData') }}</div>
     </template>
   </div>
 </template>

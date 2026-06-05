@@ -68,6 +68,9 @@ function buildScanHistory(): any[] {
         id: id++,
         type: 'food',
         timestamp: isoDaysAgo(day, meal.hour),
+        // analyticsData groups the day chart by `scan.time` (HH:MM), separate
+        // from the ISO timestamp — without it the day chart stays empty.
+        time: `${String(meal.hour).padStart(2, '0')}:15`,
         data: {
           names: meal.names,
           foods: [{ names: meal.names }],

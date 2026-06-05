@@ -278,6 +278,7 @@
     "lastSync": "Letzte Synchronisation"
   },
   "analytics": {
+    "chartNoData": "Noch keine Daten",
     "weeklyOverview": "Wochenübersicht",
     "monthlyTrends": "Monatstrends",
     "goals": "Ziele",
