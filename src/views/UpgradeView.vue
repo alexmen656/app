@@ -28,12 +28,12 @@
           <div class="feature-icon premium">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
               <path
-                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                d="M9 2L7.17 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3.17L15 2H9zm3 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-2a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
             </svg>
           </div>
           <div class="feature-content">
-            <h3>iOS Widgets</h3>
-            <p>Track your calories and macros directly from your home screen</p>
+            <h3>Unlimited Scans</h3>
+            <p>Scan as many meals as you want — no more 5-per-day limit</p>
           </div>
           <div class="feature-lock">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -52,7 +52,25 @@
           </div>
           <div class="feature-content">
             <h3>Advanced Analytics</h3>
-            <p>Detailed nutrition trends and personalized insights</p>
+            <p>Full history, trends and personalized insights</p>
+          </div>
+          <div class="feature-lock">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon premium">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z" />
+            </svg>
+          </div>
+          <div class="feature-content">
+            <h3>iOS Widgets</h3>
+            <p>Track your calories and macros right from your home screen</p>
           </div>
           <div class="feature-lock">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -66,30 +84,12 @@
           <div class="feature-icon premium">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
               <path
-                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
             </svg>
           </div>
           <div class="feature-content">
-            <h3>HealthKit Sync</h3>
-            <p>Automatic synchronization with Apple Health</p>
-          </div>
-          <div class="feature-lock">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
-          </div>
-        </div>
-
-        <div class="feature-item">
-          <div class="feature-icon premium">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-            </svg>
-          </div>
-          <div class="feature-content">
-            <h3>Premium Support</h3>
-            <p>Priority customer support and exclusive features</p>
+            <h3>Apple Health Sync</h3>
+            <p>Automatically sync your nutrition with Apple Health</p>
           </div>
           <div class="feature-lock">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -151,7 +151,7 @@
 
         <!-- Legal Links -->
         <div class="legal-links">
-          <a href="#" @cxlick.prevent="openTerms" class="legal-link">Terms of Service</a>
+          <a href="#" @click.prevent="openTerms" class="legal-link">Terms of Service</a>
           <span class="separator">•</span>
           <a href="#" @click.prevent="openPrivacy" class="legal-link">Privacy Policy</a>
           <span v-if="isIOS" class="separator">•</span>
