@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { KaloriqBarcodeScanner } from 'kaloriq-barcode-scanner'
+import { KaloriqBarcodeScanner } from 'kalbuddy-barcode-scanner'
 import { useRouter } from 'vue-router'
 import { API_BASE_URL } from '../config/api'
 

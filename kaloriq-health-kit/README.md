@@ -5,7 +5,7 @@ Ein Capacitor Plugin für die Integration von Apple HealthKit in die Kaloriq Kal
 ## Installation
 
 ```bash
-npm install kaloriq-health-kit
+npm install kalbuddy-health-kit
 npx cap sync ios
 ```
 
@@ -29,7 +29,7 @@ Füge diese Entries zu deiner `ios/App/App/Info.plist` hinzu:
 ## Verwendung
 
 ```typescript
-import { HealthKit } from 'kaloriq-health-kit';
+import { HealthKit } from 'kalbuddy-health-kit';
 
 // Überprüfen ob HealthKit verfügbar ist
 const { available } = await HealthKit.isAvailable();

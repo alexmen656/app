@@ -453,6 +453,51 @@
       "disclaimer": "Hinweis: Diese Berechnungen liefern Schätzwerte. Der individuelle Bedarf kann variieren. Konsultieren Sie einen Gesundheitsexperten für persönliche Beratung."
     }
   },
+  "upgrade": {
+    "title": "Auf Premium upgraden",
+    "premiumBadge": "Premium",
+    "heroTitle": "Schöpfe das volle Potenzial aus",
+    "heroSubtitle": "Hol dir erweiterte Funktionen und detaillierte Einblicke, um deine Ernährungsziele schneller zu erreichen",
+    "features": {
+      "unlimitedScans": "Unbegrenzte Scans",
+      "unlimitedScansDesc": "Scanne so viele Mahlzeiten du willst — kein 5-pro-Tag-Limit mehr",
+      "advancedAnalytics": "Erweiterte Analysen",
+      "advancedAnalyticsDesc": "Vollständige Historie, Trends und persönliche Einblicke",
+      "widgets": "iOS-Widgets",
+      "widgetsDesc": "Verfolge Kalorien und Makros direkt vom Home-Bildschirm",
+      "healthSync": "Apple-Health-Sync",
+      "healthSyncDesc": "Synchronisiere deine Ernährung automatisch mit Apple Health"
+    },
+    "mostPopular": "Am beliebtesten",
+    "loadingPlans": "Abos werden geladen...",
+    "unableToLoad": "Pläne konnten nicht geladen werden",
+    "checkConnection": "Bitte überprüfe deine Internetverbindung und versuche es erneut.",
+    "retry": "Erneut versuchen",
+    "restorePurchases": "Käufe wiederherstellen",
+    "termsOfService": "Nutzungsbedingungen",
+    "privacyPolicy": "Datenschutzerklärung",
+    "selectPlan": "Plan auswählen",
+    "continue": "Weiter",
+    "upgradeNow": "Jetzt upgraden – {price}",
+    "startPlan": "{title} starten – {price}",
+    "loadError": "Abos konnten nicht geladen werden. Bitte versuche es erneut.",
+    "purchaseFailed": "Kauf fehlgeschlagen. Bitte versuche es erneut.",
+    "noPurchases": "Keine wiederherstellbaren Käufe gefunden.",
+    "restoreFailed": "Wiederherstellung fehlgeschlagen. Bitte versuche es erneut.",
+    "plans": {
+      "monthly": "Monatlich",
+      "annual": "Jährlich",
+      "lifetime": "Einmalig",
+      "monthlyDesc": "Perfekt zum Ausprobieren",
+      "annualDesc": "Bestes Angebot — 50% sparen",
+      "lifetimeDesc": "Einmalige Zahlung",
+      "premium": "Premium",
+      "month": "Monat",
+      "year": "Jahr",
+      "week": "Woche",
+      "lifetimePeriod": "einmalig"
+    }
+  },
   "paywall": {
     "title": "Jetzt starten",
     "subtitle": "Mit einem Abo erhältst du vollen Zugriff auf alle Funktionen der App.",

@@ -437,6 +437,51 @@
       "disclaimer": "Nota: Estos cálculos proporcionan estimaciones. Las necesidades individuales pueden variar. Consulte con un profesional de la salud para asesoramiento personalizado."
     }
   },
+  "upgrade": {
+    "title": "Pasa a Premium",
+    "premiumBadge": "Premium",
+    "heroTitle": "Aprovecha todo el potencial",
+    "heroSubtitle": "Obtén funciones avanzadas e información detallada para alcanzar tus objetivos nutricionales más rápido",
+    "features": {
+      "unlimitedScans": "Escaneos Ilimitados",
+      "unlimitedScansDesc": "Escanea todas las comidas que quieras — sin el límite de 5 al día",
+      "advancedAnalytics": "Análisis Avanzados",
+      "advancedAnalyticsDesc": "Historial completo, tendencias e información personalizada",
+      "widgets": "Widgets de iOS",
+      "widgetsDesc": "Controla tus calorías y macros desde tu pantalla de inicio",
+      "healthSync": "Sincronización con Apple Health",
+      "healthSyncDesc": "Sincroniza tu nutrición automáticamente con Apple Health"
+    },
+    "mostPopular": "Más Popular",
+    "loadingPlans": "Cargando suscripciones...",
+    "unableToLoad": "No se pudieron cargar los planes",
+    "checkConnection": "Comprueba tu conexión a internet e inténtalo de nuevo.",
+    "retry": "Reintentar",
+    "restorePurchases": "Restaurar Compras",
+    "termsOfService": "Términos de Servicio",
+    "privacyPolicy": "Política de Privacidad",
+    "selectPlan": "Elige un Plan",
+    "continue": "Continuar",
+    "upgradeNow": "Adquirir ahora - {price}",
+    "startPlan": "Empezar {title} - {price}",
+    "loadError": "No se pudieron cargar las suscripciones. Inténtalo de nuevo.",
+    "purchaseFailed": "La compra falló. Inténtalo de nuevo.",
+    "noPurchases": "No se encontraron compras para restaurar.",
+    "restoreFailed": "No se pudieron restaurar las compras. Inténtalo de nuevo.",
+    "plans": {
+      "monthly": "Mensual",
+      "annual": "Anual",
+      "lifetime": "De por vida",
+      "monthlyDesc": "Perfecto para probar",
+      "annualDesc": "Mejor valor — Ahorra 50%",
+      "lifetimeDesc": "Pago único",
+      "premium": "Premium",
+      "month": "mes",
+      "year": "año",
+      "week": "semana",
+      "lifetimePeriod": "de por vida"
+    }
+  },
   "paywall": {
     "title": "Comenzar",
     "subtitle": "Una suscripción le da acceso completo al seguimiento de comidas e información nutricional.",

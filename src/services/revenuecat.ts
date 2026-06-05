@@ -1,5 +1,8 @@
 import { Purchases } from "@revenuecat/purchases-capacitor";
 import { Capacitor } from '@capacitor/core';
+import i18n from '../i18n';
+
+const t = (key: string) => i18n.global.t(key);
 
 // Identifier of the entitlement that unlocks premium, as configured in the
 // RevenueCat dashboard. Must match exactly (it is "Pro", not "premium").
@@ -10,7 +13,8 @@ export interface SubscriptionPlan {
   title: string;
   description: string;
   price: string;
-  period: string;
+  period: string;        // raw key for logic ("month" | "year" | "lifetime" | "week")
+  periodLabel: string;   // localized label for display
   isPopular?: boolean;
 }
 
@@ -89,6 +93,7 @@ class RevenueCatService {
           description: this.getPackageDescription(pkg.identifier),
           price: pkg.product?.priceString || "Price unavailable",
           period: this.getPackagePeriod(pkg.packageType),
+          periodLabel: this.getPackagePeriodLabel(pkg.packageType),
           isPopular: this.isPopularPackage(pkg.identifier),
         };
       });
@@ -209,35 +214,26 @@ class RevenueCatService {
   }
 
   private getPackageTitle(identifier: string): string {
-    const titles: Record<string, string> = {
-      $rc_monthly: "Monthly",
-      $rc_annual: "Annual",
-      $rc_lifetime: "Lifetime",
-      monthly: "Monthly",
-      annual: "Annual",
-      lifetime: "Lifetime",
-      monthly_premium: "Monthly",
-      annual_premium: "Annual",
-      lifetime_premium: "Lifetime",
+    const keys: Record<string, string> = {
+      $rc_monthly: "monthly", $rc_annual: "annual", $rc_lifetime: "lifetime",
+      monthly: "monthly", annual: "annual", lifetime: "lifetime",
+      monthly_premium: "monthly", annual_premium: "annual", lifetime_premium: "lifetime",
     };
-    return titles[identifier] || "Premium";
+    const key = keys[identifier];
+    return key ? t(`upgrade.plans.${key}`) : t("upgrade.plans.premium");
   }
 
   private getPackageDescription(identifier: string): string {
-    const descriptions: Record<string, string> = {
-      $rc_monthly: "Perfect for trying out",
-      $rc_annual: "Best value - Save 50%",
-      $rc_lifetime: "One-time payment",
-      monthly: "Perfect for trying out",
-      annual: "Best value - Save 50%",
-      lifetime: "One-time payment",
-      monthly_premium: "Perfect for trying out",
-      annual_premium: "Best value - Save 50%",
-      lifetime_premium: "One-time payment",
+    const keys: Record<string, string> = {
+      $rc_monthly: "monthlyDesc", $rc_annual: "annualDesc", $rc_lifetime: "lifetimeDesc",
+      monthly: "monthlyDesc", annual: "annualDesc", lifetime: "lifetimeDesc",
+      monthly_premium: "monthlyDesc", annual_premium: "annualDesc", lifetime_premium: "lifetimeDesc",
     };
-    return descriptions[identifier] || "Premium access";
+    const key = keys[identifier];
+    return key ? t(`upgrade.plans.${key}`) : t("upgrade.plans.premium");
   }
 
+  // Raw period key used for logic (do not localize).
   private getPackagePeriod(packageType: string): string {
     const periods: Record<string, string> = {
       MONTHLY: "month",
@@ -246,6 +242,17 @@ class RevenueCatService {
       WEEKLY: "week",
     };
     return periods[packageType] || "month";
+  }
+
+  // Localized period label for display.
+  private getPackagePeriodLabel(packageType: string): string {
+    const keys: Record<string, string> = {
+      MONTHLY: "month",
+      ANNUAL: "year",
+      LIFETIME: "lifetimePeriod",
+      WEEKLY: "week",
+    };
+    return t(`upgrade.plans.${keys[packageType] || "month"}`);
   }
 }
 

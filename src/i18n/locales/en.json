@@ -453,6 +453,51 @@
       "disclaimer": "Note: These calculations provide estimates. Individual needs may vary. Consult with a healthcare professional for personalized advice."
     }
   },
+  "upgrade": {
+    "title": "Upgrade to Premium",
+    "premiumBadge": "Premium",
+    "heroTitle": "Unlock the Full Potential",
+    "heroSubtitle": "Get advanced features and detailed insights to reach your nutrition goals faster",
+    "features": {
+      "unlimitedScans": "Unlimited Scans",
+      "unlimitedScansDesc": "Scan as many meals as you want — no more 5-per-day limit",
+      "advancedAnalytics": "Advanced Analytics",
+      "advancedAnalyticsDesc": "Full history, trends and personalized insights",
+      "widgets": "iOS Widgets",
+      "widgetsDesc": "Track your calories and macros right from your home screen",
+      "healthSync": "Apple Health Sync",
+      "healthSyncDesc": "Automatically sync your nutrition with Apple Health"
+    },
+    "mostPopular": "Most Popular",
+    "loadingPlans": "Loading subscription plans...",
+    "unableToLoad": "Unable to load plans",
+    "checkConnection": "Please check your internet connection and try again.",
+    "retry": "Retry",
+    "restorePurchases": "Restore Purchases",
+    "termsOfService": "Terms of Service",
+    "privacyPolicy": "Privacy Policy",
+    "selectPlan": "Select a Plan",
+    "continue": "Continue",
+    "upgradeNow": "Upgrade Now - {price}",
+    "startPlan": "Start {title} - {price}",
+    "loadError": "Unable to load subscription plans. Please try again.",
+    "purchaseFailed": "Purchase failed. Please try again.",
+    "noPurchases": "No purchases found to restore.",
+    "restoreFailed": "Failed to restore purchases. Please try again.",
+    "plans": {
+      "monthly": "Monthly",
+      "annual": "Annual",
+      "lifetime": "Lifetime",
+      "monthlyDesc": "Perfect for trying out",
+      "annualDesc": "Best value — Save 50%",
+      "lifetimeDesc": "One-time payment",
+      "premium": "Premium",
+      "month": "month",
+      "year": "year",
+      "week": "week",
+      "lifetimePeriod": "lifetime"
+    }
+  },
   "paywall": {
     "title": "Get Started",
     "subtitle": "A subscription gives you full access to meal tracking and nutrition insights.",

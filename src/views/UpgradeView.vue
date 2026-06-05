@@ -6,7 +6,7 @@
           <path d="m15 18-6-6 6-6" />
         </svg>
       </button>
-      <h1 class="title">Upgrade to Premium</h1>
+      <h1 class="title">{{ $t('upgrade.title') }}</h1>
     </div>
 
     <div class="content">
@@ -16,10 +16,10 @@
           <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
           </svg>
-          <span>Premium</span>
+          <span>{{ $t('upgrade.premiumBadge') }}</span>
         </div>
-        <h2 class="hero-title">Unlock the Full Potential</h2>
-        <p class="hero-subtitle">Get advanced features and detailed insights to reach your nutrition goals faster</p>
+        <h2 class="hero-title">{{ $t('upgrade.heroTitle') }}</h2>
+        <p class="hero-subtitle">{{ $t('upgrade.heroSubtitle') }}</p>
       </div>
 
       <!-- Features Grid -->
@@ -32,8 +32,8 @@
             </svg>
           </div>
           <div class="feature-content">
-            <h3>Unlimited Scans</h3>
-            <p>Scan as many meals as you want — no more 5-per-day limit</p>
+            <h3>{{ $t('upgrade.features.unlimitedScans') }}</h3>
+            <p>{{ $t('upgrade.features.unlimitedScansDesc') }}</p>
           </div>
           <div class="feature-lock">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -51,8 +51,8 @@
             </svg>
           </div>
           <div class="feature-content">
-            <h3>Advanced Analytics</h3>
-            <p>Full history, trends and personalized insights</p>
+            <h3>{{ $t('upgrade.features.advancedAnalytics') }}</h3>
+            <p>{{ $t('upgrade.features.advancedAnalyticsDesc') }}</p>
           </div>
           <div class="feature-lock">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -69,8 +69,8 @@
             </svg>
           </div>
           <div class="feature-content">
-            <h3>iOS Widgets</h3>
-            <p>Track your calories and macros right from your home screen</p>
+            <h3>{{ $t('upgrade.features.widgets') }}</h3>
+            <p>{{ $t('upgrade.features.widgetsDesc') }}</p>
           </div>
           <div class="feature-lock">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -88,8 +88,8 @@
             </svg>
           </div>
           <div class="feature-content">
-            <h3>Apple Health Sync</h3>
-            <p>Automatically sync your nutrition with Apple Health</p>
+            <h3>{{ $t('upgrade.features.healthSync') }}</h3>
+            <p>{{ $t('upgrade.features.healthSyncDesc') }}</p>
           </div>
           <div class="feature-lock">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -105,16 +105,16 @@
         <div class="plans-container">
           <div v-for="plan in subscriptionPlans" :key="plan.id" class="plan-card"
             :class="{ active: selectedPlan === plan.id, popular: plan.isPopular }" @click="selectPlan(plan.id)">
-            <div v-if="plan.isPopular" class="popular-badge">Most Popular</div>
+            <div v-if="plan.isPopular" class="popular-badge">{{ $t('upgrade.mostPopular') }}</div>
             <div class="plan-header">
               <h3 class="plan-title">{{ plan.title }}</h3>
               <div class="plan-price">
                 <span class="price">{{ plan.price }}</span>
-                <span class="period">{{ plan.period }}</span>
+                <span class="period">{{ plan.periodLabel }}</span>
               </div>
             </div>
             <p class="plan-description">{{ plan.description }}</p>
-            <div v-if="plan.description.includes('Save')" class="plan-savings">
+            <div v-if="plan.isPopular" class="plan-savings">
               {{ plan.description }}
             </div>
           </div>
@@ -124,16 +124,16 @@
       <!-- Loading State -->
       <div v-else-if="isLoading" class="loading-state">
         <div class="loading-spinner-large"></div>
-        <p>Loading subscription plans...</p>
+        <p>{{ $t('upgrade.loadingPlans') }}</p>
       </div>
 
       <!-- Error State -->
       <div v-else class="error-state">
         <div class="error-icon">⚠️</div>
-        <h3>Unable to load plans</h3>
-        <p>Please check your internet connection and try again.</p>
+        <h3>{{ $t('upgrade.unableToLoad') }}</h3>
+        <p>{{ $t('upgrade.checkConnection') }}</p>
         <button @click="loadSubscriptionPlans" class="retry-button">
-          Retry
+          {{ $t('upgrade.retry') }}
         </button>
       </div>
 
@@ -146,14 +146,14 @@
         </button>
 
         <button @click="restorePurchases" :disabled="isLoading" class="restore-button">
-          Restore Purchases
+          {{ $t('upgrade.restorePurchases') }}
         </button>
 
         <!-- Legal Links -->
         <div class="legal-links">
-          <a href="#" @click.prevent="openTerms" class="legal-link">Terms of Service</a>
+          <a href="#" @click.prevent="openTerms" class="legal-link">{{ $t('upgrade.termsOfService') }}</a>
           <span class="separator">•</span>
-          <a href="#" @click.prevent="openPrivacy" class="legal-link">Privacy Policy</a>
+          <a href="#" @click.prevent="openPrivacy" class="legal-link">{{ $t('upgrade.privacyPolicy') }}</a>
           <span v-if="isIOS" class="separator">•</span>
           <a v-if="isIOS" href="#" @click.prevent="openMore" class="legal-link">{{ $t('paywall.redeemCode') }}</a>
         </div>
@@ -170,12 +170,14 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { revenueCatService, type SubscriptionPlan } from '../services/revenuecat'
 import { updateSubscriptionStatus } from '../stores/userStore'
 import { PremiumManager } from '../utils/premiumManager'
 import { Capacitor } from '@capacitor/core'
 
 const router = useRouter()
+const { t } = useI18n()
 
 const selectedPlan = ref<string>('annual')
 const subscriptionPlans = ref<SubscriptionPlan[]>([])
@@ -184,16 +186,16 @@ const errorMessage = ref('')
 const isIOS = Capacitor.getPlatform() === 'ios'
 
 const getPurchaseButtonText = computed(() => {
-  if (!selectedPlan.value) return 'Select a Plan'
+  if (!selectedPlan.value) return t('upgrade.selectPlan')
 
   const plan = subscriptionPlans.value.find(p => p.id === selectedPlan.value)
-  if (!plan) return 'Continue'
+  if (!plan) return t('upgrade.continue')
 
   if (plan.period === 'lifetime') {
-    return `Upgrade Now - ${plan.price}`
+    return t('upgrade.upgradeNow', { price: plan.price })
   }
 
-  return `Start ${plan.title} - ${plan.price}`
+  return t('upgrade.startPlan', { title: plan.title, price: plan.price })
 })
 
 function goBack() {
@@ -217,7 +219,7 @@ async function loadSubscriptionPlans() {
     }
   } catch (error: any) {
     console.error('Failed to load subscription plans:', error)
-    errorMessage.value = 'Unable to load subscription plans. Please try again.'
+    errorMessage.value = t('upgrade.loadError')
   } finally {
     isLoading.value = false
   }
@@ -246,11 +248,11 @@ async function purchaseSelected() {
       console.log('🎉 Purchase successful - navigating to home')
       router.push('/')
     } else {
-      errorMessage.value = 'Purchase failed. Please try again.'
+      errorMessage.value = t('upgrade.purchaseFailed')
     }
   } catch (error: any) {
     console.error('Purchase error:', error)
-    errorMessage.value = error.message || 'Purchase failed. Please try again.'
+    errorMessage.value = error.message || t('upgrade.purchaseFailed')
   } finally {
     isLoading.value = false
   }
@@ -273,11 +275,11 @@ async function restorePurchases() {
       console.log('🎉 Restore successful - navigating to home')
       router.push('/')
     } else {
-      errorMessage.value = 'No purchases found to restore.'
+      errorMessage.value = t('upgrade.noPurchases')
     }
   } catch (error) {
     console.error('Restore error:', error)
-    errorMessage.value = 'Failed to restore purchases. Please try again.'
+    errorMessage.value = t('upgrade.restoreFailed')
   } finally {
     isLoading.value = false
   }

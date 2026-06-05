@@ -19,7 +19,7 @@ export function onPremiumStatusChange(callback: PremiumStatusCallback) {
 // flow changed the status (purchase, restore, coupon, or the startup refresh).
 async function syncNativeScanLimits(isPremium: boolean, expiryDate?: Date): Promise<void> {
   try {
-    const { KaloriqBarcodeScanner } = await import('kaloriq-barcode-scanner')
+    const { KaloriqBarcodeScanner } = await import('kalbuddy-barcode-scanner')
     await (KaloriqBarcodeScanner as any).setPremiumStatus({
       isPremium,
       expiryDate: expiryDate ? expiryDate.getTime() : undefined,

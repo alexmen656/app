@@ -1,4 +1,4 @@
-import { HealthKit } from 'kaloriq-health-kit';
+import { HealthKit } from 'kalbuddy-health-kit';
 import { Capacitor } from '@capacitor/core';
 import { Preferences } from '@capacitor/preferences';
 
@@ -8,14 +8,6 @@ export interface HealthKitData {
   carbs?: number;
   fat?: number;
   date?: string;
-}
-
-interface HealthData {
-  calories: number;
-  protein: number;
-  carbs: number;
-  fat: number;
-  date: string | Date;
 }
 
 export class HealthKitService {
@@ -246,12 +238,12 @@ export class HealthKitService {
       }
 
       const result = await HealthKit.readNutritionDataRange({ startDate, endDate });
-      return result.data.map((item: HealthData) => ({
+      return result.data.map((item) => ({
         calories: item.calories || 0,
         protein: item.protein || 0,
         carbs: item.carbs || 0,
         fat: item.fat || 0,
-        date: item.date
+        date: item.date || startDate
       }));
     } catch (error) {
       console.error('Error reading nutrition data range from HealthKit:', error);
