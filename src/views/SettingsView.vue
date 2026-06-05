@@ -1805,16 +1805,9 @@ a {
   gap: 16px;
 }
 
-.premium-icon {
-  width: 40px;
-  height: 40px;
+.premium-required-message .premium-icon {
   background: linear-gradient(135deg, #FFD700, #FFA000);
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   color: #1a1d26;
-  flex-shrink: 0;
 }
 
 .premium-message-content {
