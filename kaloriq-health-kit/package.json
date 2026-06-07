@@ -1,6 +1,6 @@
 {
   "name": "kalbuddy-health-kit",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "HealthKit integration plugin for Kaloriq calorie tracking app",
   "main": "dist/plugin.js",
   "module": "dist/esm/index.js",
